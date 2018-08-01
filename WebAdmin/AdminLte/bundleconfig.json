@@ -1,0 +1,622 @@
+﻿[
+  {
+    "outputFileName": "wwwroot/css/view/login.min.css",
+    "inputFiles": [
+      "wwwroot/css/template/AdminLTE.css",
+      "wwwroot/css/template/green.css",
+      "wwwroot/css/view/login.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/view/layout.min.css",
+    "inputFiles": [
+      "wwwroot/css/template/AdminLTE.css",
+      "wwwroot/css/template/skins/skin-green.css",
+      "wwwroot/css/template/bootstrap-datepicker.css",
+      "wwwroot/css/template/dataTables.bootstrap.css",
+      "wwwroot/css/template/pace.css",
+      "wwwroot/css/template/green.css",
+      "wwwroot/css/view/layout.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/template/simditor.min.css",
+    "inputFiles": [
+      "wwwroot/css/template/simditor.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/view/ulayout.min.css",
+    "inputFiles": [
+      "wwwroot/css/template/AdminLTE.css",
+      "wwwroot/css/template/skins/skin-green.css",
+      "wwwroot/css/template/bootstrap-datepicker.css",
+      "wwwroot/css/template/dataTables.bootstrap.css",
+      "wwwroot/css/template/pace.css",
+      "wwwroot/css/template/green.css",
+      "wwwroot/css/view/ulayout.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/login.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/jquery.cookie.js",
+      "wwwroot/javascript/template/layer.js",
+      "wwwroot/javascript/view/login.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/layout.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/jquery.dataTables.js",
+      "wwwroot/javascript/template/dataTables.bootstrap.js",
+      "wwwroot/javascript/template/bootstrap-datepicker.js",
+      "wwwroot/javascript/template/bootstrap-datepicker.zh-CN.min.js",
+      "wwwroot/javascript/template/jquery.slimscroll.js",
+      "wwwroot/javascript/template/adminlte.js",
+      "wwwroot/javascript/template/pace.js",
+      "wwwroot/javascript/template/bootbox.min.js",
+      "wwwroot/javascript/view/layout.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/template/datetimepicker.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/bootstrap-datetimepicker.js",
+      "wwwroot/javascript/template/bootstrap-datetimepicker.zh-CN.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/index.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/echarts.common.min.js",
+      "wwwroot/javascript/template/macarons.js",
+      "wwwroot/javascript/view/Administrator/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/bulletin.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/bulletin.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/edit.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/module.js",
+      "wwwroot/javascript/template/hotkeys.js",
+      "wwwroot/javascript/template/uploader.js",
+      "wwwroot/javascript/template/simditor.js",
+      "wwwroot/javascript/view/Administrator/edit.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/information.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/module.js",
+      "wwwroot/javascript/template/hotkeys.js",
+      "wwwroot/javascript/template/uploader.js",
+      "wwwroot/javascript/template/simditor.js",
+      "wwwroot/javascript/view/Administrator/information.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/department.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/department.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/editdepartment.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/module.js",
+      "wwwroot/javascript/template/hotkeys.js",
+      "wwwroot/javascript/template/uploader.js",
+      "wwwroot/javascript/template/simditor.js",
+      "wwwroot/javascript/view/Administrator/editdepartment.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/majorclass.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/majorclass.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/editmajorclass.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/editmajorclass.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/building.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/building.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/dorm.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/dorm.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/editinformation.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/editinformation.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/service.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/service.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/editservice.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/editservice.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/goods.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/goods.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/editgoods.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/ajaxupload.js",
+      "wwwroot/javascript/view/Administrator/editgoods.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/question.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/question.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/reply.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/module.js",
+      "wwwroot/javascript/template/hotkeys.js",
+      "wwwroot/javascript/template/uploader.js",
+      "wwwroot/javascript/template/simditor.js",
+      "wwwroot/javascript/view/Administrator/reply.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/register.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/register.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/goodschose.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/goodschose.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/dormitory.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/dormitory.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/servicechose.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/servicechose.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/bunk.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/bunk.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/editbunk.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/ajaxupload.js",
+      "wwwroot/javascript/view/Administrator/editbunk.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/profile.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/profile.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/staff.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/staff.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/editstaff.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/editstaff.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/studentaccount.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Administrator/studentaccount.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Administrator/editstudent.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/distpicker.js",
+      "wwwroot/javascript/view/Administrator/editstudent.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/index.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/echarts.common.min.js",
+      "wwwroot/javascript/template/macarons.js",
+      "wwwroot/javascript/view/Instructor/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/bulletin.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Instructor/bulletin.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/question.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Instructor/question.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/reply.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/module.js",
+      "wwwroot/javascript/template/hotkeys.js",
+      "wwwroot/javascript/template/uploader.js",
+      "wwwroot/javascript/template/simditor.js",
+      "wwwroot/javascript/view/Instructor/reply.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/register.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Instructor/register.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/classes.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Instructor/classes.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/editclass.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Instructor/editclass.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/dormitory.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Instructor/dormitory.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/information.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Instructor/information.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Instructor/profile.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Instructor/profile.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Student/home.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/module.js",
+      "wwwroot/javascript/template/hotkeys.js",
+      "wwwroot/javascript/template/uploader.js",
+      "wwwroot/javascript/template/simditor.js",
+      "wwwroot/javascript/view/Student/home.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Student/bulletin.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Student/bulletin.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Student/profile.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/template/distpicker.js",
+      "wwwroot/javascript/view/Student/profile.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Student/information.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Student/information.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Student/register.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Student/register.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Student/booking.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Student/booking.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Student/goods.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Student/goods.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/javascript/view/Student/dormitory.min.js",
+    "inputFiles": [
+      "wwwroot/javascript/view/Student/dormitory.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

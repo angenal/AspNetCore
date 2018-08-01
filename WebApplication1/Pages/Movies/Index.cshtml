@@ -1,0 +1,70 @@
+﻿@page
+@model WebApplication1.Pages.Movies.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+<br />
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table table-bordered table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].ReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie[0].Score)
+            </th>
+            <th>
+                <span>电影相关</span>
+            </th>
+            <th class="text-warning">
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Movie)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(pm => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(pm => item.ReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(pm => item.Genre)
+                </td>
+                <td>
+                    @Html.DisplayFor(pm => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(pm => item.Score)
+                </td>
+                <td>
+                    <a asp-page="./Schedule" asp-route-id="@item.ID">管理</a>
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

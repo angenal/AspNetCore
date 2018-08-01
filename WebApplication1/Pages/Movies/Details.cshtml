@@ -1,0 +1,50 @@
+﻿@page
+@model WebApplication1.Pages.Movies.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<br />
+
+<h2>Details</h2>
+
+<div>
+    <h4>Movie</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt class="label-primary">
+            @Html.DisplayNameFor(pm => pm.Movie.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(pm => pm.Movie.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(pm => pm.Movie.ReleaseDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(pm => pm.Movie.ReleaseDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(pm => pm.Movie.Genre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(pm => pm.Movie.Genre)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(pm => pm.Movie.Price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(pm => pm.Movie.Price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(pm => pm.Movie.Score)
+        </dt>
+        <dd>
+            @Html.DisplayFor(pm => pm.Movie.Score)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Movie.ID">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

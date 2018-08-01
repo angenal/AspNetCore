@@ -1,0 +1,88 @@
+﻿@page
+@model WebApplication1.Pages.Movies.ScheduleModel
+@{
+    ViewData["Title"] = "Schedule";
+}
+<br />
+
+<h3>电影相关</h3>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="panel-title">上传</span>
+            </div>
+            <div class="panel-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label class="control-label">@Html.DisplayNameFor(pm => pm.MovieSchedules[0].Title)</label>
+                        <input asp-for="FileUpload.Title" class="form-control" />
+                        <span asp-validation-for="FileUpload.Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">@Html.DisplayNameFor(pm => pm.MovieSchedules[0].UploadSchedule)</label>
+                        <input asp-for="FileUpload.TxtFile" class="form-control" type="file" style="height:auto" />
+                        <span asp-validation-for="FileUpload.TxtFile" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">@Html.DisplayNameFor(pm => pm.MovieSchedules[0].UploadImage)</label>
+                        <input asp-for="FileUpload.ImgFile" class="form-control" type="file" style="height:auto" />
+                        <span asp-validation-for="FileUpload.ImgFile" class="text-danger"></span>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="提交" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="panel panel-info">
+            <div class="panel-body">
+                <form method="post">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <td>@Html.DisplayNameFor(pm => pm.MovieSchedules[0].ID)</td>
+                                <td>@Html.DisplayNameFor(pm => pm.MovieSchedules[0].Title)</td>
+                                <td>@Html.DisplayNameFor(pm => pm.MovieSchedules[0].UploadSchedule)</td>
+                                <td>@Html.DisplayNameFor(pm => pm.MovieSchedules[0].UploadImage)</td>
+                                <td>@Html.DisplayNameFor(pm => pm.MovieSchedules[0].UploadDT)</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in Model.MovieSchedules)
+                            {
+                                <tr>
+                                    <td>@m.ID</td>
+                                    <td>@Html.DisplayFor(pm => m.Title)</td>
+                                    <td>@Html.DisplayTextFor(pm => m.UploadSchedule)</td>
+                                    <td><img class="img-rounded w120" src="@Html.ValueFor(pm => m.UploadImage)" /></td>
+                                    <td>@Html.DisplayFor(pm => m.UploadDT)</td>
+                                    <td><button type="submit" asp-page-handler="del" asp-route-id="@m.ID" title="删除">X</button></td>
+                                </tr>
+                            }
+                            @if (Model.MovieSchedules.Count == 0)
+                            {
+                                <tr><td colspan="5" class="text-center text-warning">未查询到数据</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row well well-sm">
+    <a asp-page="./Index">返回列表</a>
+</div>
+
+<style type="text/css">
+    .w120{width:120px;height:auto;border:none;}
+</style>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
