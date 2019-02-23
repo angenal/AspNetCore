@@ -11,7 +11,9 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
     学无先后达者为师！技术改变生活！.Net群1600800，嵌入式物联网群1600838
  > https://github.com/NewLifeX
 
-#### CLI命令
-    安装模板
- > dotnet new --install Microsoft.AspNetCore.SpaTemplates::*
- > dotnet new angular # 创建新的项目使用 SPA 模板
+#### CLI命令行
+    安装模板，创建项目
+ > dotnet new --install Microsoft.AspNetCore.SpaTemplates::*<br>
+   dotnet new angular # 创建新的项目使用 SPA 模板
+
+----
