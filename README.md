@@ -16,19 +16,32 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
  > dotnet new --install Microsoft.AspNetCore.SpaTemplates::*<br>
    dotnet new angular # 创建新的项目使用 SPA 模板
 
-~~~
-  // 从数据库至代码MODEL
-  // PM> Install-Package Microsoft.EntityFrameworkCore.SqlServer
-  // PM> Install-Package Microsoft.EntityFrameworkCore.Tools
-  // PM> Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=DbName;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+~~~bash
+# <PM> 从数据库至代码MODEL
+> Install-Package Microsoft.EntityFrameworkCore.SqlServer
+> Install-Package Microsoft.EntityFrameworkCore.Tools
+> Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=DbName;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
 
-  // 从代码MODEL至数据库，名称“Initial”是任意的，用于对迁移文件进行命名
-  // PM> Add-Migration Initial
-  // PM> Update-Database
+# <PM> 从代码MODEL至数据库，名称“Initial”是任意的，用于对迁移文件进行命名
+> Add-Migration Initial
+> Update-Database
 
-  // WEB页面与代码生成器
-  // PM> Install-Package Microsoft.VisualStudio.Web.CodeGeneration.Design -Version 2.0.3
-  > dotnet aspnet-codegenerator razorpage -m Movie -dc MovieContext -udl -outDir Pages\Movies --referenceScriptLibraries
+# <PM> WEB页面与代码生成器
+> Install-Package Microsoft.VisualStudio.Web.CodeGeneration.Design -Version 2.0.3
+> dotnet aspnet-codegenerator razorpage -m Movie -dc MovieContext -udl -outDir Pages\Movies --referenceScriptLibraries
 ~~~
+
+~~~bash
+# 查看离线.NET Core项目依赖包
+> dotnet nuget locals all --list  
+  # 复制 http-cache: C:\Users\Administrator\AppData\Local\NuGet\v3-cache
+  # 复制 global-packages: C:\Users\Administrator\.nuget\packages\
+# 离线还原.NET Core项目依赖包
+> dotnet restore --source C:\Users\Administrator\.nuget\packages\
+> dotnet build --no-restore                                       # 生成项目
+> dotnet run --no-restore                                         # 运行项目
+
+~~~
+
 
 ----
