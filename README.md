@@ -16,6 +16,7 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
 # <PM> 从代码MODEL至数据库，名称“Initial”是任意的，用于对迁移文件进行命名  / CodeFirst
 > Add-Migration Initial
 > Update-Database
+$ dotnet ef migrations -h  # 使用命令行
 
 # <PM> WEB页面与代码生成器
 > Install-Package Microsoft.VisualStudio.Web.CodeGeneration.Design -Version 2.0.3
