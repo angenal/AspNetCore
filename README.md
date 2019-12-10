@@ -24,8 +24,6 @@ $ dotnet ef migrations -h  # 使用命令行
     --referenceScriptLibraries
 ~~~
 
- * [Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
-
 ~~~bash
 # 查看在线.NET Core项目依赖包
 > dotnet nuget locals all --list  
@@ -40,6 +38,8 @@ $ dotnet ef migrations -h  # 使用命令行
 ----
 
 #### [全面的c#帮助类](https://github.com/Jimmey-Jiang/Common.Utility)
+
+ * [Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
 
 ----
 
