@@ -35,16 +35,17 @@ $ dotnet ef migrations -h  # 使用命令行
 > dotnet run --no-restore     # 运行项目
 
 ~~~
+ * [开源的 gRPC / nuget](https://www.nuget.org/profiles/grpc-packages)
 ~~~shell
-# 使用gRPC 生命周期
+# 使用 gRPC [ dotnet --version >= v3.0 ] 生命周期>
   # Client（发送请求）-> Client stub（压缩/解压）-> Client RPC Transfer（发送/接收）
-   # -> Server RPC Transfer（接收/发送）-> Server stub（解压/压缩）-> Server（处理/响应）
-> dotnet tool install dotnet-grpc -g # 安装 dotnet gRPC 工具
+  # -> Server RPC Transfer（接收/发送）-> Server stub（解压/压缩）-> Server（处理/响应）
+> dotnet tool install -g dotnet-grpc # 安装 dotnet gRPC CLI工具(最新版)
 > dotnet new grpc -n gRPC.Services # 新建Server工程 < *.proto文件 <2: option csharp_namespace = "gRPC.Services";
-> dotnet-grpc add-file ../gRPC.Protos/*.proto -s Serve # 引入生成的protobuf文件到工程中\Serve\接口
+> dotnet-grpc add-file ../gRPC.Protos/*.proto -s Serve # 引入生成的protobuf文件到工程中\Serve\生成C#代码
   # 新建服务类 > 实现gRPC接口(继承) > 配置grpc服务类: endpoints.MapGrpcService<SmsService>();
 > dotnet add package Google.Protobuf # 新建Client工程依赖
-> dotnet-grpc add-file ../gRPC.Protos/*.proto -s Client # 引入生成的protobuf文件到工程中\Client\接口
+> dotnet-grpc add-file ../gRPC.Protos/*.proto -s Client # 引入生成的protobuf文件到工程中\Client\生成C#代码
 
 ~~~
 
