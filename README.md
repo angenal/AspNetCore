@@ -6,7 +6,7 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
  > dotnet new --install Microsoft.AspNetCore.SpaTemplates::*<br>
    dotnet new angular # 创建新的项目使用 SPA 模板
 
-~~~bash
+~~~cmd
 # <PM> 从数据库至代码MODEL / DbFirst
 > Install-Package Microsoft.EntityFrameworkCore.SqlServer
 > Install-Package Microsoft.EntityFrameworkCore.Tools
@@ -24,7 +24,7 @@ $ dotnet ef migrations -h  # 使用命令行
     --referenceScriptLibraries
 ~~~
 
-~~~bash
+~~~cmd
 # 查看在线.NET Core项目依赖包
 > dotnet nuget locals all --list  
   # 复制 http-cache: C:\Users\Administrator\AppData\Local\NuGet\v3-cache
@@ -35,6 +35,19 @@ $ dotnet ef migrations -h  # 使用命令行
 > dotnet run --no-restore     # 运行项目
 
 ~~~
+~~~cmd
+# 使用gRPC 生命周期
+  # Client（发送请求）-> Client stub（压缩/解压）-> Client RPC Transfer（发送/接收）
+   # -> Server RPC Transfer（接收/发送）-> Server stub（解压/压缩）-> Server（处理/响应）
+> dotnet tool install dotnet-grpc -g # 安装 dotnet gRPC 工具
+> dotnet new grpc -n gRPC.Services # 新建Server工程 < *.proto文件 <2: option csharp_namespace = "gRPC.Services";
+> dotnet-grpc add-file ../gRPC.Protos/*.proto -s Serve # 引入生成的protobuf文件到工程中\Serve\接口
+  # 新建服务类 > 实现gRPC接口(继承) > 配置grpc服务类: endpoints.MapGrpcService<SmsService>();
+> dotnet add package Google.Protobuf # 新建Client工程依赖
+> dotnet-grpc add-file ../gRPC.Protos/*.proto -s Client # 引入生成的protobuf文件到工程中\Client\接口
+
+~~~
+
 ----
 
 #### [全面的c#帮助类](https://github.com/Jimmey-Jiang/Common.Utility)
