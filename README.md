@@ -54,6 +54,13 @@ $ dotnet ef migrations -h  # 使用命令行
 #### [全面的c#帮助类](https://github.com/Jimmey-Jiang/Common.Utility)
 
  * [Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
+ * 使用反射方法
+~~~
+// 批量导入整个项目的 Abp.Authorization.AuthorizationProvider
+foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.IsClass && t.IsSubclassOf(typeof(Abp.Authorization.AuthorizationProvider))))
+    Configuration.Authorization.Providers.GetType().GetMethods().FirstOrDefault(i => i.Name == "Add")?.MakeGenericMethod(t).Invoke(Configuration.Authorization.Providers, new object[] { });
+
+~~~
 
 ----
 
