@@ -54,6 +54,10 @@ $ dotnet ef migrations -h  # 使用命令行
 #### [全面的c#帮助类](https://github.com/Jimmey-Jiang/Common.Utility)
 
  * [Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
+ * [ASP.NET Core 2.x/3.x 综合应用示例](https://github.com/CoreDX9/IdentityServerDemo)
+    * [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
+    * [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
+    * [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
  * 使用反射方法
 ~~~
 // 反射泛型方法，批量处理 Providers 继承于 AuthorizationProvider
@@ -62,7 +66,7 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
     Configuration.Authorization.Providers.GetType().GetMethods().FirstOrDefault(i => i.Name == "Add")
     ?.MakeGenericMethod(t).Invoke(Configuration.Authorization.Providers, new object[] { });
 ~~~
-
+ 
 ----
 
 #### [Util应用框架](https://github.com/dotnetcore/util/)
