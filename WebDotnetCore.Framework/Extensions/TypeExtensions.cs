@@ -124,6 +124,42 @@ namespace WebFramework.Extensions
         {
             return Get<FileSizeAttribute>(propertyName);
         }
+
+
+        #region 对象映射
+        /// <summary>
+        /// 对象映射并排除一些属性
+        /// </summary>
+        public static void MapTo<TResult, TField>(TModel model, TResult result, params Expression<Func<TModel, TField>>[] expressionExceptFields) where TResult : class
+        {
+            if (model == null || result == null) return;
+            var mm = model.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var mr = typeof(TResult).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var ex = new List<string>();
+            foreach (var x in expressionExceptFields)
+            {
+                var item = Name(x);
+                if (item != null) ex.Add(item);
+            }
+            foreach (var m in mm)
+            {
+                if (mr.Any(p => p.Name.Equals(m.Name)) && !ex.Contains(m.Name))
+                {
+                    m.SetValue(result, m.GetValue(model));
+                }
+            }
+        }
+        /// <summary>
+        /// 对象映射并排除一些属性
+        /// </summary>
+        public static TResult MapTo<TResult, TField>(TModel model, params Expression<Func<TModel, TField>>[] expressionExceptFields) where TResult : class
+        {
+            TResult result = (TResult)Activator.CreateInstance(typeof(TResult));
+            MapTo(model, result, expressionExceptFields);
+            return result;
+        }
+        #endregion
+
     }
 
 
@@ -306,39 +342,6 @@ namespace WebFramework.Extensions
                 action(key, value.ToString(), description);
             }
             return arr.Length;
-        }
-        #endregion
-
-        #region 对象映射
-        /// <summary>
-        /// 对象映射并排除一些属性
-        /// </summary>
-        public static void MapTo<TModel, TResult, TField>(this TModel model, TResult result, params Expression<Func<TModel, TField>>[] expressionExceptFields) where TModel : class where TResult : class
-        {
-            var mm = typeof(TModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            var mr = typeof(TResult).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            var ex = new List<string>();
-            foreach (var x in expressionExceptFields)
-            {
-                var item = Attr<TModel>.Name(x);
-                if (item != null) ex.Add(item);
-            }
-            foreach (var m in mm)
-            {
-                if (mr.Any(p => p.Name.Equals(m.Name)) && !ex.Contains(m.Name))
-                {
-                    m.SetValue(result, m.GetValue(model));
-                }
-            }
-        }
-        /// <summary>
-        /// 对象映射并排除一些属性
-        /// </summary>
-        public static TResult MapTo<TModel, TResult, TField>(this TModel model, params Expression<Func<TModel, TField>>[] expressionExceptFields) where TModel : class where TResult : class
-        {
-            TResult result = (TResult)Activator.CreateInstance(typeof(TResult));
-            MapTo(model, result, expressionExceptFields);
-            return result;
         }
         #endregion
 
