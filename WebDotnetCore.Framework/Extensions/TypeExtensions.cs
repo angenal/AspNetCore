@@ -309,21 +309,14 @@ namespace WebFramework.Extensions
         }
         #endregion
 
-
+        #region 对象映射
         /// <summary>
-        /// 映射对象属性值，并排除一些属性字段。
+        /// 对象映射并排除一些属性
         /// </summary>
-        /// <typeparam name="TModel"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <typeparam name="TField"></typeparam>
-        /// <param name="model"></param>
-        /// <param name="expressionExceptFields"></param>
-        /// <returns></returns>
-        public static TResult MapTo<TModel, TResult, TField>(this TModel model, params Expression<Func<TModel, TField>>[] expressionExceptFields) where TModel : class where TResult : class
+        public static void MapTo<TModel, TResult, TField>(this TModel model, TResult result, params Expression<Func<TModel, TField>>[] expressionExceptFields) where TModel : class where TResult : class
         {
             var mm = typeof(TModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var mr = typeof(TResult).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            TResult result = (TResult)Activator.CreateInstance(typeof(TResult));
             var ex = new List<string>();
             foreach (var x in expressionExceptFields)
             {
@@ -337,8 +330,17 @@ namespace WebFramework.Extensions
                     m.SetValue(result, m.GetValue(model));
                 }
             }
+        }
+        /// <summary>
+        /// 对象映射并排除一些属性
+        /// </summary>
+        public static TResult MapTo<TModel, TResult, TField>(this TModel model, params Expression<Func<TModel, TField>>[] expressionExceptFields) where TModel : class where TResult : class
+        {
+            TResult result = (TResult)Activator.CreateInstance(typeof(TResult));
+            MapTo(model, result, expressionExceptFields);
             return result;
         }
+        #endregion
 
     }
 
