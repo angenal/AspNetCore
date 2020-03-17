@@ -58,6 +58,7 @@ $ dotnet ef migrations -h  # 使用命令行
     * [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
     * [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
     * [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
+    * [Excel文档操作例子 —— npoi](https://github.com/tonyqus/npoi/tree/master/examples)
  * 使用反射方法
 ~~~
 // 反射泛型方法，批量处理 Providers 继承于 AuthorizationProvider
