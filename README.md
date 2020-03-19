@@ -84,6 +84,14 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
 
 ----
 
+
+#### [阿里云.接口文档](https://help.aliyun.com/learn/developer.html)
+ * [.NET SDK](https://github.com/aliyun/aliyun-openapi-net-sdk)、[nuget](https://www.nuget.org/profiles/aliyun-openapi-sdk)
+
+#### [腾讯云.接口文档](https://cloud.tencent.com/document/api/267/30661)
+ * [.NET SDK](https://github.com/TencentCloud/tencentcloud-sdk-dotnet)、[nuget](https://www.nuget.org/packages/TencentCloudSDK)
+
+
 #### [新生命开发团队](https://github.com/NewLifeX)
     学无先后达者为师！技术改变生活！.Net群1600800，嵌入式物联网群1600838
 
