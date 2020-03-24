@@ -67,7 +67,7 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
     Configuration.Authorization.Providers.GetType().GetMethods().FirstOrDefault(i => i.Name == "Add")
     ?.MakeGenericMethod(t).Invoke(Configuration.Authorization.Providers, new object[] { });
 ~~~
- 
+
 ----
 
 #### [Util应用框架](https://github.com/dotnetcore/util/)
@@ -91,6 +91,11 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
 #### [腾讯云.接口文档](https://cloud.tencent.com/document/api/267/30661)
  * [.NET SDK](https://github.com/TencentCloud/tencentcloud-sdk-dotnet)、[nuget](https://www.nuget.org/packages/TencentCloudSDK)
 
+#### [微信.开放平台](https://open.weixin.qq.com)
+ * [Senparc.Weixin .NET SDK](https://github.com/JeffreySu/WeiXinMPSDK)
+ * [Senparc.Weixin .Tool WeChatSampleBuilder](https://weixin.senparc.com/User)
+ * [Senparc SCF框架：模块化SenparcCoreFramework](https://github.com/SenparcCoreFramework/SCF)
+ * [Senparc SCF模块：微信管理后台](https://github.com/SenparcCoreFramework/Senparc.Xscf.WeixinManager)
 
 #### [新生命开发团队](https://github.com/NewLifeX)
     学无先后达者为师！技术改变生活！.Net群1600800，嵌入式物联网群1600838
