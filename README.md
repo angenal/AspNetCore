@@ -35,7 +35,7 @@ $ dotnet ef migrations -h  # 使用命令行
 > dotnet run --no-restore     # 运行项目
 
 ~~~
- * [开源的 gRPC / nuget](https://www.nuget.org/profiles/grpc-packages)
+ * [开源的 gRPC](https://www.nuget.org/profiles/grpc-packages)
 ~~~shell
 # 使用 gRPC [ dotnet --version >= v3.0 ] 生命周期>
   # Client（发送请求）-> Client stub（压缩/解压）-> Client RPC Transfer（发送/接收）
@@ -46,6 +46,17 @@ $ dotnet ef migrations -h  # 使用命令行
   # 新建服务类 > 实现gRPC接口(继承) > 配置grpc服务类: endpoints.MapGrpcService<SmsService>();
 > dotnet add package Google.Protobuf # 新建Client工程依赖
 > dotnet-grpc add-file ../gRPC.Protos/*.proto -s Client # 引入生成的protobuf文件到工程中\Client\生成C#代码
+
+~~~
+ * [开源的 MessagePack](https://github.com/neuecc/MessagePack-CSharp)
+~~~shell
+# 使用 MsgPack [ dotnet --version >= v2.1 ] 项目中安装>
+> Install-Package MessagePack
+> Install-Package MessagePackAnalyzer
+> Install-Package MessagePack.ImmutableCollection
+> Install-Package MessagePack.ReactiveProperty
+> Install-Package MessagePack.UnityShims
+> Install-Package MessagePack.AspNetCoreMvcFormatter
 
 ~~~
 
