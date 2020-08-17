@@ -70,7 +70,7 @@ $ dotnet ef migrations -h  # 使用命令行
     * [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
     * [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
     * [Excel文档操作例子 —— npoi](https://github.com/tonyqus/npoi/tree/master/examples)
- * 使用反射方法
+ * 类型反射
 ~~~
 // 反射泛型方法，批量处理 Providers 继承于 AuthorizationProvider
 foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.IsClass 
@@ -78,6 +78,19 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
     Configuration.Authorization.Providers.GetType().GetMethods().FirstOrDefault(i => i.Name == "Add")
     ?.MakeGenericMethod(t).Invoke(Configuration.Authorization.Providers, new object[] { });
 ~~~
+ * 同步`Synchronous`、异步`Asynchronous`
+    * 同步：发送方发送请求，然后等待立即答复；可能通过异步I/O发生，但逻辑线程被保留；请求和应答之间的关联通常是隐式的，按请求的顺序排列；错误通常流回同一路径。
+    * 异步：发送消息和进行其它事情；回复可能会在另一条路径上返回；消息可以由中介存储；可以多次尝试传递邮件。
+ * 通信方法`REST`<`RPC`<`Message Event Hub`
+ * 消息事件总线`Message Event Hub`
+    * 长时间任务/后台任务`Long-Running Work`(one producer, one consumer)
+    * 负载平衡`Load Leveling`(multiple producers, one consumer)
+    * 负载均衡和自动缩放`Load Balancing and Auto Scaling`(multiple producers, multiple consumers)
+    * 发布订阅`Publish-Subscribe`(one producer, multiple consumers)
+    * 分区`Partitioning`(one producer, multiple consumers)
+    * 多路复用/排他性消费者`Multiplexing with Exclusive Consumers`(multiple producers, multiple consumers)
+    * 状态处理`Stateful Processing`
+    * 稀疏连通性`Sparse Connectivity`
 
 ----
 
