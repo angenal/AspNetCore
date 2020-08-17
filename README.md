@@ -79,8 +79,8 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
     ?.MakeGenericMethod(t).Invoke(Configuration.Authorization.Providers, new object[] { });
 ~~~
  * 同步`Synchronous`、异步`Asynchronous`
-    * 同步：发送方发送请求，然后等待立即答复；可能通过异步I/O发生，但逻辑线程被保留；请求和应答之间的关联通常是隐式的，按请求的顺序排列；错误通常流回同一路径。
-    * 异步：发送消息和进行其它事情；回复可能会在另一条路径上返回；消息可以由中介存储；可以多次尝试传递邮件。
+    * 同步：发送方发送请求，然后等待立即答复；可能通过异步I/O发生，但逻辑线程被保留；请求和应答之间的关联通常是隐式的，按请求的顺序执行；错误通常流回同一路径。
+    * 异步：发送消息和进行其它事情；回复可能会在另一条路径上返回；消息可以由中介存储；可以多次尝试传递消息。
  * 通信方法`REST`<`RPC`<`Message Event Hub`
  * 消息事件总线`Message Event Hub`
     * 长时间任务/后台任务`Long-Running Work`(one producer, one consumer)
