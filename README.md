@@ -81,16 +81,25 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
  * 同步`Synchronous`、异步`Asynchronous`
     * 同步：发送方发送请求，然后等待立即答复；可能通过异步I/O发生，但逻辑线程被保留；请求和应答之间的关联通常是隐式的，按请求的顺序执行；错误通常流回同一路径。
     * 异步：发送消息和进行其它事情；回复可能会在另一条路径上返回；消息可以由中介存储；可以多次尝试传递消息。
+ ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/sync_async.png)
  * 通信方法`REST`<`RPC`<`Message Event Hub`
  * 消息事件总线`Message Event Hub`
     * 长时间任务/后台任务`Long-Running Work`(one producer, one consumer)
+    ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/long_running_work.png)
     * 负载平衡`Load Leveling`(multiple producers, one consumer)
+    ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/load_leveling.png)
     * 负载均衡和自动缩放`Load Balancing and Auto Scaling`(multiple producers, multiple consumers)
+    ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/load_banancing_and_auto_scaling.png)
     * 发布订阅`Publish-Subscribe`(one producer, multiple consumers)
+    ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/publish_subscribe.png)
     * 分区`Partitioning`(one producer, multiple consumers)
+    ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/partitioning.png)
     * 多路复用/排他性消费者`Multiplexing with Exclusive Consumers`(multiple producers, multiple consumers)
+    ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/multiplexing_with_exclusive_consumers.png)
     * 状态处理`Stateful Processing`
+    ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/stateful_processing.png)
     * 稀疏连通性`Sparse Connectivity`
+    ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/sparse_connectivity.png)
 
 ----
 
