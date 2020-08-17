@@ -82,19 +82,19 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
     * 同步：发送方发送请求，然后等待立即答复；可能通过异步I/O发生，但逻辑线程被保留；请求和应答之间的关联通常是隐式的，按请求的顺序执行；错误通常流回同一路径。
     * 异步：发送消息和进行其它事情；回复可能会在另一条路径上返回；消息可以由中介存储；可以多次尝试传递消息。
  ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/sync_async.png)
- * 通信方法`REST`<`RPC`<`Message Event Hub`
+ * 通信方法`REST` < `RPC` < [`Message Event Hub` Conf](https://github.com/dotnet-presentations/dotNETConf/tree/master/2020/FocusOnMicroservices/Technical),[Easy.MessageHub dll](https://github.com/NimaAra/Easy.MessageHub)
  * 消息事件总线`Message Event Hub`
-    * 长时间任务/后台任务`Long-Running Work`(one producer, one consumer)
+    * 后台任务/长时间任务`Long-Running Work`(one producer, one consumer)
     ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/long_running_work.png)
-    * 负载平衡`Load Leveling`(multiple producers, one consumer)
+    * 负载平衡/自动缩放生产`Load Leveling`(multiple producers, one consumer)
     ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/load_leveling.png)
-    * 负载均衡和自动缩放`Load Balancing and Auto Scaling`(multiple producers, multiple consumers)
+    * 负载均衡/自动缩放消费`Load Balancing and Auto Scaling`(multiple producers, multiple consumers)
     ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/load_banancing_and_auto_scaling.png)
     * 发布订阅`Publish-Subscribe`(one producer, multiple consumers)
     ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/publish_subscribe.png)
-    * 分区`Partitioning`(one producer, multiple consumers)
+    * 发布分流`Partitioning`(one producer, multiple consumers)
     ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/partitioning.png)
-    * 多路复用/排他性消费者`Multiplexing with Exclusive Consumers`(multiple producers, multiple consumers)
+    * 多路复用/排它性消费`Multiplexing with Exclusive Consumers`(multiple producers, multiple consumers)
     ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/multiplexing_with_exclusive_consumers.png)
     * 状态处理`Stateful Processing`
     ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/stateful_processing.png)
