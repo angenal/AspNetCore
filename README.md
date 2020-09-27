@@ -60,11 +60,11 @@ $ dotnet ef migrations -h  # 使用命令行
 
 ~~~
  * 开源的 Sql ORM
- - [FreeSql](https://github.com/dotnetcore/FreeSql/wiki)
- - [SqlSugar](https://github.com/sunkaixuan/SqlSugar/wiki)
+    - [FreeSql](https://github.com/dotnetcore/FreeSql/wiki)
+    - [SqlSugar](https://github.com/sunkaixuan/SqlSugar/wiki)
  
  * 开源的 Admin System
- - [.Net Core WebApi - zhontai](https://github.com/zhontai/Admin.Core) + [演示地址](https://www.admin.zhontai.net/) + [文档地址](https://www.zhontai.net/)
+    - [.Net Core WebApi - zhontai](https://github.com/zhontai/Admin.Core) + [演示地址](https://www.admin.zhontai.net/) + [文档地址](https://www.zhontai.net/)
 
 ----
 
