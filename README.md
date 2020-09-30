@@ -18,7 +18,7 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
    dotnet new angular                # 创建新的项目使用 SPA 模板
    dotnet new react                  # Web/MVC/SPA
    dotnet new reactredux             # Web/MVC/SPA
-   dotnet new --install [path-to-repository] # install templates from src dir(exists dotnet-templates.nuspec)
+   dotnet new --install [path-to-repository] # install templates from git src dir (exists *dotnet-templates.nuspec)
    dotnet new avalonia.app           # ui/xaml from https://github.com/AvaloniaUI/avalonia-dotnet-templates
    dotnet new avalonia.mvvm          # ui/xaml
    dotnet new avalonia.usercontrol   # ui/xaml
@@ -41,8 +41,11 @@ $ dotnet ef migrations -h  # 使用命令行
 
 # <PM> WEB页面与代码生成器
 > Install-Package Microsoft.VisualStudio.Web.CodeGeneration.Design -Version 2.0.3
-> dotnet aspnet-codegenerator razorpage -m Movie -dc MovieContext -udl -outDir Pages\Movies \
-    --referenceScriptLibraries
+> dotnet aspnet-codegenerator razorpage -m Movie -dc MovieContext -udl -outDir Pages\Movies --referenceScriptLibraries
+
+# <PM> Desktop桌面跨平台应用
+> Install-Package Avalonia
+> Install-Package Avalonia.Desktop
 ~~~
 
 ~~~shell
