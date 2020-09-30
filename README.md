@@ -3,8 +3,27 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
 
 #### CLI命令行
     安装模板，创建项目
- > dotnet new --install Microsoft.AspNetCore.SpaTemplates::*<br>
-   dotnet new angular # 创建新的项目使用 SPA 模板
+ > dotnet new console                # Common/Console <br>
+   dotnet new classlib               # Common/Library <br>
+   dotnet new web                    # Web/Empty <br>
+   dotnet new webapi                 # Web/WebAPI <br>
+   dotnet new mvc                    # Web/MVC <br>
+   dotnet new sln                    # Solution <br>
+   dotnet new globaljson             # Config <br>
+   dotnet new nugetconfig            # Config <br>
+   dotnet new webconfig              # Config <br>
+   dotnet new --install Microsoft.AspNetCore.SpaTemplates::* # install templates from official repository <br>
+   dotnet new angular                # 创建新的项目使用 SPA 模板 <br>
+   dotnet new react                  # Web/MVC/SPA <br>
+   dotnet new reactredux             # Web/MVC/SPA <br>
+   dotnet new --install [path-to-repository] # install templates from src dir(exists dotnet-templates.nuspec) <br>
+   dotnet new avalonia.app           # ui/xaml from https://github.com/AvaloniaUI/avalonia-dotnet-templates <br>
+   dotnet new avalonia.mvvm          # ui/xaml <br>
+   dotnet new avalonia.usercontrol   # ui/xaml <br>
+   dotnet new avalonia.window        # ui/xaml <br>
+   dotnet new avalonia.resource      # ui/xaml <br>
+   dotnet new avalonia.styles        # ui/xaml <br>
+   ... ...                           # dotnet new --help
 
 ~~~shell
 # <PM> 从数据库至代码MODEL / DbFirst
