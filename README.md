@@ -44,7 +44,7 @@ $ dotnet ef migrations -h  # 使用命令行
 > dotnet aspnet-codegenerator razorpage -m Movie -dc MovieContext -udl -outDir Pages\Movies --referenceScriptLibraries
 
 # <PM> Desktop桌面跨平台应用
-> Install-Package Avalonia
+> Install-Package Avalonia            # ui/xaml from https://github.com/AvaloniaUI/Avalonia
 > Install-Package Avalonia.Desktop
 ~~~
 
