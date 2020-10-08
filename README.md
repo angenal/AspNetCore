@@ -91,7 +91,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [.NET Core WebApi - zhontai](https://github.com/zhontai/Admin.Core) + [演示](https://www.admin.zhontai.net/) + [文档](https://www.zhontai.net/)
  
  * 扩展的 Visual Studio 2019
-       - [.NET Core Debugging with WSL 2](https://aka.ms/wsldebug)
+    - [.NET Core Debugging with WSL 2](https://aka.ms/wsldebug)
 
 ----
 
