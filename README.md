@@ -124,6 +124,39 @@ $ dotnet ef migrations -h  # 使用命令行
 
 ----
 
+#### [阿里云.接口文档](https://help.aliyun.com/learn/developer.html)
+ * [.NET SDK](https://github.com/aliyun/aliyun-openapi-net-sdk)、[nuget](https://www.nuget.org/profiles/aliyun-openapi-sdk)
+
+#### [腾讯云.接口文档](https://cloud.tencent.com/document/api/267/30661)
+ * [.NET SDK](https://github.com/TencentCloud/tencentcloud-sdk-dotnet)、[nuget](https://www.nuget.org/packages/TencentCloudSDK)
+
+#### [微信.开放平台](https://open.weixin.qq.com)
+ * [Senparc.Weixin .NET SDK](https://github.com/JeffreySu/WeiXinMPSDK)
+ * [Senparc.Weixin .Tool WeChatSampleBuilder](https://weixin.senparc.com/User)
+ * [Senparc SCF框架：模块化SenparcCoreFramework](https://github.com/SenparcCoreFramework/SCF)
+ * [Senparc SCF模块：微信管理后台](https://github.com/SenparcCoreFramework/Senparc.Xscf.WeixinManager)
+
+----
+
+#### [新生命开发团队](https://github.com/NewLifeX)
+    学无先后达者为师！技术改变生活！.Net群1600800，嵌入式物联网群1600838
+
+----
+
+#### [Util应用框架](https://github.com/dotnetcore/util/)
+    旨在提升小型团队的开发输出能力，由常用公共操作类(工具类)、分层架构基类、Ui组件，第三方组件封装，第三方业务接口封装，
+     配套代码生成模板，权限等组成。
+
+----
+
+#### [52ABP企业级开发框架](https://www.52abp.com)
+ > [ASP.NET Core与Angular开发 - 网易云课堂](https://study.163.com/course/courseMain.htm?courseId=1006191011&share=1&shareId=1151301279)
+
+    一个快速响应，移动优先的符合现代UI设计和SOLID架构的强力开发框架；包含登录，身份验证，用户/角色/权限管理，本地化，
+     设置系统，审计日志记录，多租户，UI组件，异常处理系统等功能。
+
+----
+
 #### [C#帮助类](https://github.com/Jimmey-Jiang/Common.Utility)
 
  * 类型反射
@@ -159,37 +192,3 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
 
 ----
 
-
-#### [阿里云.接口文档](https://help.aliyun.com/learn/developer.html)
- * [.NET SDK](https://github.com/aliyun/aliyun-openapi-net-sdk)、[nuget](https://www.nuget.org/profiles/aliyun-openapi-sdk)
-
-#### [腾讯云.接口文档](https://cloud.tencent.com/document/api/267/30661)
- * [.NET SDK](https://github.com/TencentCloud/tencentcloud-sdk-dotnet)、[nuget](https://www.nuget.org/packages/TencentCloudSDK)
-
-#### [微信.开放平台](https://open.weixin.qq.com)
- * [Senparc.Weixin .NET SDK](https://github.com/JeffreySu/WeiXinMPSDK)
- * [Senparc.Weixin .Tool WeChatSampleBuilder](https://weixin.senparc.com/User)
- * [Senparc SCF框架：模块化SenparcCoreFramework](https://github.com/SenparcCoreFramework/SCF)
- * [Senparc SCF模块：微信管理后台](https://github.com/SenparcCoreFramework/Senparc.Xscf.WeixinManager)
-
-----
-
-
-#### [新生命开发团队](https://github.com/NewLifeX)
-    学无先后达者为师！技术改变生活！.Net群1600800，嵌入式物联网群1600838
-
-----
-
-#### [Util应用框架](https://github.com/dotnetcore/util/)
-    旨在提升小型团队的开发输出能力，由常用公共操作类(工具类)、分层架构基类、Ui组件，第三方组件封装，第三方业务接口封装，
-     配套代码生成模板，权限等组成。
-
-----
-
-#### [52ABP企业级开发框架](https://www.52abp.com)
- > [ASP.NET Core与Angular开发 - 网易云课堂](https://study.163.com/course/courseMain.htm?courseId=1006191011&share=1&shareId=1151301279)
-
-    一个快速响应，移动优先的符合现代UI设计和SOLID架构的强力开发框架；包含登录，身份验证，用户/角色/权限管理，本地化，
-     设置系统，审计日志记录，多租户，UI组件，异常处理系统等功能。
-
-----
