@@ -83,33 +83,52 @@ $ dotnet ef migrations -h  # 使用命令行
 > Install-Package MessagePack.AspNetCoreMvcFormatter
 
 ~~~
- * 开源的 Sql ORM
-    - [FreeSql](https://github.com/dotnetcore/FreeSql/wiki)
-    - [SqlSugar](https://github.com/sunkaixuan/SqlSugar/wiki)
- 
+
  * 开源的 应用框架
     - [ABP](http://aspnetboilerplate.com)
     - [Nop](https://www.nopcommerce.com)
 
  * 开源的 Admin System
     - [.NET Core WebApi - zhontai](https://github.com/zhontai/Admin.Core) + [演示](https://www.admin.zhontai.net/) + [文档](https://www.zhontai.net/)
- 
+
+ * 开源的 Sql ORM
+    - [EntityFrameworkCore](https://docs.microsoft.com/zh-cn/ef/core)
+    - [Dapper](https://github.com/StackExchange/Dapper)
+    - [FreeSql](https://github.com/dotnetcore/FreeSql/wiki)
+    - [SqlSugar](https://github.com/sunkaixuan/SqlSugar/wiki)
+
+ * 开源的 框架
+    - [Asp.Net Core](https://docs.microsoft.com/zh-cn/aspnet/core/)
+    - [ABP](http://aspnetboilerplate.com)、[Nop](https://www.nopcommerce.com)
+    - [Ioc Autofac](https://autofaccn.readthedocs.io/zh/latest/)
+    - [Aop AspectCore-Framework](https://github.com/dotnetcore/AspectCore-Framework)
+    - [Json Json.Net](https://www.newtonsoft.com/json)
+    - [映射 AutoMapper](http://automapper.org/)
+    - [日志 NLog](http://nlog-project.org/)、[Exceptionless](https://github.com/exceptionless)
+    - [缓存 EasyCaching](https://github.com/dotnetcore/EasyCaching)
+    - [事件总线 CAP](https://github.com/dotnetcore/CAP)
+    - [二维码 QRCoder](https://github.com/codebude/QRCoder)
+    - [Id生成器 ECommon.Utilities.ObjectId](https://github.com/tangxuehua/ecommon/blob/master/src/ECommon/Utilities/ObjectId.cs)
+    - [Linq扩展 System.Linq.Dynamic.Core](https://github.com/StefH/System.Linq.Dynamic.Core)
+    - [定时任务 Quartz.Net](https://www.quartz-scheduler.net)
+    - [权限 Asp.Net Core Identity](https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/identity?tabs=visual-studio%2Caspnetcore2x)、[Identity Server 4](https://identityserver4.readthedocs.io/en/latest/)
+    - [基准/压测 Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
+    * [ASP.NET Core 2.x/3.x 综合应用示例](https://github.com/CoreDX9/IdentityServerDemo)
+       - [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
+       - [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
+       - [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
+       - [Excel文档操作例子 —— npoi](https://github.com/tonyqus/npoi/tree/master/examples)
+
  * 扩展的 Visual Studio 2019
     - [.NET Core Debugging with WSL 2](https://aka.ms/wsldebug)
 
  * 代码生成器
     - [CodeSmith](https://www.codesmithtools.com)
-    
+
 ----
 
 #### [全面的c#帮助类](https://github.com/Jimmey-Jiang/Common.Utility)
 
- * [Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
- * [ASP.NET Core 2.x/3.x 综合应用示例](https://github.com/CoreDX9/IdentityServerDemo)
-    * [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
-    * [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
-    * [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
-    * [Excel文档操作例子 —— npoi](https://github.com/tonyqus/npoi/tree/master/examples)
  * 类型反射
 ~~~
 // 反射泛型方法，批量处理 Providers 继承于 AuthorizationProvider
