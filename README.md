@@ -95,6 +95,7 @@ $ dotnet ef migrations -h  # 使用命令行
        - [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
        - [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
        - [Excel文档操作例子 —— npoi](https://github.com/tonyqus/npoi/tree/master/examples)
+       - [Admin后台 - zhontai](https://github.com/zhontai/Admin.Core) + [演示](https://www.admin.zhontai.net) + [文档](https://www.zhontai.net)
     - [Ioc Autofac](https://autofaccn.readthedocs.io/zh/latest/)
     - [Aop AspectCore-Framework](https://github.com/dotnetcore/AspectCore-Framework)
     - [Json Json.Net](https://www.newtonsoft.com/json)
@@ -108,9 +109,6 @@ $ dotnet ef migrations -h  # 使用命令行
     - [定时任务 Quartz.Net](https://www.quartz-scheduler.net)
     - [权限 Asp.Net Core Identity](https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/identity?tabs=visual-studio%2Caspnetcore2x)、[Identity Server 4](https://identityserver4.readthedocs.io/en/latest/)
     - [基准/压测 Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
-
- * 开源的 Admin System
-    - [.NET Core WebApi - zhontai](https://github.com/zhontai/Admin.Core) + [演示](https://www.admin.zhontai.net/) + [文档](https://www.zhontai.net/)
 
  * 开源的 Sql ORM
     - [EntityFrameworkCore](https://docs.microsoft.com/zh-cn/ef/core)
