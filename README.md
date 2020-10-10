@@ -87,12 +87,19 @@ $ dotnet ef migrations -h  # 使用命令行
     - [FreeSql](https://github.com/dotnetcore/FreeSql/wiki)
     - [SqlSugar](https://github.com/sunkaixuan/SqlSugar/wiki)
  
+ * 开源的 应用框架
+    - [ABP](http://aspnetboilerplate.com)
+    - [Nop](https://www.nopcommerce.com)
+
  * 开源的 Admin System
     - [.NET Core WebApi - zhontai](https://github.com/zhontai/Admin.Core) + [演示](https://www.admin.zhontai.net/) + [文档](https://www.zhontai.net/)
  
  * 扩展的 Visual Studio 2019
     - [.NET Core Debugging with WSL 2](https://aka.ms/wsldebug)
 
+ * 代码生成器
+    - [CodeSmith](https://www.codesmithtools.com)
+    
 ----
 
 #### [全面的c#帮助类](https://github.com/Jimmey-Jiang/Common.Utility)
