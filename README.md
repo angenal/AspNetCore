@@ -116,6 +116,11 @@ $ dotnet ef migrations -h  # 使用命令行
     - [FreeSql](https://github.com/dotnetcore/FreeSql/wiki)
     - [SqlSugar](https://github.com/sunkaixuan/SqlSugar/wiki)
 
+ * 开源的 跨语言+跨平台+远程调用(RPC,gRPC等)
+    - [NATS - 开源消息系统](https://nats.io/)
+    - [ZeroMQ 跨语言,LGPLed解决方案](https://zeromq.org/)
+    - [Hprose 跨语言,跨平台,无侵入式,高性能动态远程对象调用引擎库](https://hprose.com/)
+
  * 代码生成器
     - [CodeSmith](https://www.codesmithtools.com)
 
