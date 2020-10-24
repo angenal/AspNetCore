@@ -126,6 +126,7 @@ $ dotnet ef migrations -h  # 使用命令行
 
  * 扩展 Visual Studio 2019
     - [.NET Core Debugging with WSL 2](https://aka.ms/wsldebug)
+    - [搭建公网测试→转发本地流量→ Ngrok Extensions](https://marketplace.visualstudio.com/items?itemName=DavidProthero.NgrokExtensions)
 
 ----
 
