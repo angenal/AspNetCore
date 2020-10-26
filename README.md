@@ -91,7 +91,7 @@ $ dotnet ef migrations -h  # 使用命令行
 
  * 开源的 扩展框架
     * [ASP.NET Core 2.x/3.x 综合应用示例](https://github.com/CoreDX9/IdentityServerDemo)
-       - [*RBAC*→*CBAC*访问控制/身份认证(`Claim`*申明*身份的片段数据→`ClaimsIdentity`单个*身份*信息→`ClaimsPrincipal`*主体*各身份的集合)](https://www.cnblogs.com/JulianHuang/p/13725873.html)
+       - [*CBAC*访问控制/身份认证(`Claim`*申明*身份的片段数据→`ClaimsIdentity`*单个身份*信息→`ClaimsPrincipal`*主体*各身份的集合)](https://www.cnblogs.com/JulianHuang/p/13725873.html)
        - [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
        - [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
        - [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
