@@ -121,6 +121,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [NATS - 开源消息系统](https://nats.io/)
     - [ZeroMQ 跨语言,LGPLed解决方案](https://zeromq.org/)
     - [Hprose 跨语言,跨平台,无侵入式,高性能动态远程对象调用引擎库](https://hprose.com/)
+    - [ClearScript](https://github.com/microsoft/ClearScript) supports JavaScript (via [V8](https://developers.google.com/v8/) and [JScript](https://docs.microsoft.com/en-us/previous-versions//hbxc2t98(v=vs.85))) and [VBScript](https://docs.microsoft.com/en-us/previous-versions//t0aew7h6(v=vs.85)), [Examples](https://microsoft.github.io/ClearScript/Examples/Examples.html), [Tutorial](https://microsoft.github.io/ClearScript/Tutorial/FAQtorial.html)
 
  * 代码生成器
     - [CodeSmith](https://www.codesmithtools.com)
