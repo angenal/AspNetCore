@@ -105,6 +105,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [缓存 EasyCaching](https://github.com/dotnetcore/EasyCaching)
     - [事件总线 CAP](https://github.com/dotnetcore/CAP)
     - [二维码 QRCoder](https://github.com/codebude/QRCoder)
+    - [生成Excel等文档](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)
     - [Id生成器 ECommon.Utilities.ObjectId](https://github.com/tangxuehua/ecommon/blob/master/src/ECommon/Utilities/ObjectId.cs)
     - [Linq扩展 System.Linq.Dynamic.Core](https://github.com/StefH/System.Linq.Dynamic.Core)
     - [定时任务 Quartz.Net](https://www.quartz-scheduler.net)
