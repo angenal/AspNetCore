@@ -134,6 +134,9 @@ $ dotnet ef migrations -h  # 使用命令行
     - [.NET Core Debugging with WSL 2](https://aka.ms/wsldebug)
     - [搭建公网测试→转发本地流量→ Ngrok Extensions](https://marketplace.visualstudio.com/items?itemName=DavidProthero.NgrokExtensions)
 
+ * 快速开发解决方案
+    - [NetModular后端Api](https://github.com/iamoldli/NetModular)、[前端UI](https://github.com/iamoldli/NetModular.UI)
+
 ----
 
 #### [阿里云.接口文档](https://help.aliyun.com/learn/developer.html)
