@@ -90,10 +90,11 @@ $ dotnet ef migrations -h  # 使用命令行
     - [Nop](https://www.nopcommerce.com)
 
  * 开源的 扩展框架
-    * [ASP.NET Core 2.x/3.x 综合应用示例](https://github.com/CoreDX9/IdentityServerDemo)
-       - [`CBAC`基于声明的访问控制<br>身份认证(`Claim`*申明*身份的片段数据→`ClaimsIdentity`*单个身份*信息→`ClaimsPrincipal`*主体*各身份的集合)](https://www.cnblogs.com/JulianHuang/p/13725873.html)
+    - [ASP.NET Core 综合应用](https://github.com/CoreDX9/IdentityServerDemo)
        - [`ABAC`基于属性的访问控制(Attribute-Based Access Control)](https://casbin.org/)
        - [`RBAC`基于角色的访问控制(Role-Based Access Control)](https://casbin.org/)`MongoDB`
+       - [`CBAC`基于声明的访问控制(Claim-Based Access Control)](https://www.cnblogs.com/JulianHuang/p/13725873.html)
+         - 身份认证(`Claim`*申明*身份的片段数据→`ClaimsIdentity`*单个身份*信息→`ClaimsPrincipal`*主体*各身份的集合)
        - [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
        - [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
        - [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
