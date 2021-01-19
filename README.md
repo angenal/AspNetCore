@@ -88,6 +88,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [Asp.Net Core](https://docs.microsoft.com/zh-cn/aspnet/core/)
     - [ABP](http://aspnetboilerplate.com)
     - [Nop](https://www.nopcommerce.com)
+    - [ServiceStack](https://servicestack.net)
 
  * 开源的 扩展框架
     - [ASP.NET Core 综合应用](https://github.com/CoreDX9/IdentityServerDemo)
