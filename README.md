@@ -18,7 +18,7 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
    dotnet new angular                # 创建新的项目使用 SPA 模板
    dotnet new react                  # Web/MVC/SPA
    dotnet new reactredux             # Web/MVC/SPA
-   dotnet new --install [path-to-repository] # install templates from git src dir (exists *dotnet-templates.nuspec)
+   dotnet new --install [path-to-repository] # install templates from src (exists *dotnet-templates.nuspec)
    dotnet new avalonia.app           # ui/xaml from https://github.com/AvaloniaUI/avalonia-dotnet-templates
    dotnet new avalonia.mvvm          # ui/xaml
    dotnet new avalonia.usercontrol   # ui/xaml
@@ -93,9 +93,11 @@ $ dotnet ef migrations -h  # 使用命令行
  * 开源的 扩展框架
     - [ASP.NET Core 综合应用](https://github.com/CoreDX9/IdentityServerDemo)
        - [`ABAC`基于属性的访问控制(Attribute-Based Access Control)](https://casbin.org/)
-       - [`RBAC`基于角色的访问控制(Role-Based Access Control)](https://casbin.org/)`MongoDB`
+       - [`RBAC`基于角色的访问控制(Role-Based Access Control)](https://casbin.org/)→`MongoDB`→[`goRBAC`](https://github.com/mikespook/gorbac)→[`AuthBoss`](https://github.com/volatiletech/authboss)
        - [`CBAC`基于声明的访问控制(Claim-Based Access Control)](https://www.cnblogs.com/JulianHuang/p/13725873.html)
-         - 身份认证(`Claim`*申明*身份的片段数据→`ClaimsIdentity`*单个身份*信息→`ClaimsPrincipal`*主体*各身份的集合)
+         - [`身份认证`](https://www.cnblogs.com/JulianHuang/p/13725873.html)
+            - `Claim`*申明*身份的片段数据→`ClaimsIdentity`*单个身份*信息→`ClaimsPrincipal`*主体*各身份的集合
+         - [`访问控制(casbin)`](https://casbin.org/)→[`资源命名(upspin)`](https://github.com/upspin/upspin)→`AdmissionControl`*准入控制*
        - [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
        - [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
        - [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
