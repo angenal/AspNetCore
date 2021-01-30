@@ -65,7 +65,7 @@ $ dotnet ef migrations -h  # 使用命令行
   # Client（发送请求）-> Client stub（压缩/解压）-> Client RPC Transfer（发送/接收）
   # -> Server RPC Transfer（接收/发送）-> Server stub（解压/压缩）-> Server（处理/响应）
 > dotnet tool install -g dotnet-grpc # 安装 dotnet gRPC CLI工具(最新版)
-> dotnet new grpc -n gRPC.Services # 新建Server工程 < *.proto文件 <2: option csharp_namespace = "gRPC.Services";
+> dotnet new grpc -n gRPC.Services # 新建Server工程< *.proto文件<: option csharp_namespace="gRPC.Services"
 > dotnet-grpc add-file ../gRPC.Protos/*.proto -s Serve # 引入生成的protobuf文件到工程中\Serve\生成C#代码
   # 新建服务类 > 实现gRPC接口(继承) > 配置grpc服务类: endpoints.MapGrpcService<SmsService>();
 > dotnet add package Google.Protobuf # 新建Client工程依赖
@@ -97,7 +97,7 @@ $ dotnet ef migrations -h  # 使用命令行
        - [`CBAC`基于声明的访问控制(Claim-Based Access Control)](https://docs.microsoft.com/zh-cn/openspecs/windows_protocols/ms-azod/e600249e-247b-469c-8979-e0c578adfbe6)
          - [`身份认证`](https://www.cnblogs.com/JulianHuang/p/13725873.html)
             - `Claim`*申明*身份的片段数据→`ClaimsIdentity`*单个身份*信息→`ClaimsPrincipal`*主体*身份的集合
-         - [`访问控制(casbin)`](https://casbin.org/)→[`资源命名(upspin)`](https://github.com/upspin/upspin)→[`AdmissionControl`*准入控制*](https://juejin.cn/book/6844733753063915533/section/6844733753131008007)
+         - [`访问控制(casbin)`](https://casbin.org/)→[`资源命名(upspin)`](https://github.com/upspin/upspin)→[`准入控制(AdmissionControl)`](https://juejin.cn/book/6844733753063915533/section/6844733753131008007)
        - [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
        - [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
        - [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
