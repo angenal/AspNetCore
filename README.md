@@ -114,6 +114,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [生成Excel等文档](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)
     - [Id生成器 ECommon.Utilities.ObjectId](https://github.com/tangxuehua/ecommon/blob/master/src/ECommon/Utilities/ObjectId.cs)
     - [Linq扩展 System.Linq.Dynamic.Core](https://github.com/StefH/System.Linq.Dynamic.Core)
+    - [科学计算 MathNet](https://github.com/mathnet/mathnet-numerics)
     - [定时任务 Quartz.Net](https://www.quartz-scheduler.net)
     - [权限 Asp.Net Core Identity](https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/identity?tabs=visual-studio%2Caspnetcore2x)、[Identity Server 4](https://identityserver4.readthedocs.io/en/latest/)
     - [基准/压测 Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
