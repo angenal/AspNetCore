@@ -142,6 +142,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [搭建公网测试→转发本地流量→ Ngrok Extensions](https://marketplace.visualstudio.com/items?itemName=DavidProthero.NgrokExtensions)
 
  * 快速开发解决方案
+    - [Bootstrap Blazor 组件库](https://www.blazor.zone)、[`前后端C#`开源代码](https://gitee.com/LongbowEnterprise/BootstrapBlazor)
     - [NetModular后端Api](https://github.com/iamoldli/NetModular)、[前端UI](https://github.com/iamoldli/NetModular.UI)
 
 ----
