@@ -107,7 +107,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [Aop AspectCore-Framework](https://github.com/dotnetcore/AspectCore-Framework)
     - [Json Json.Net](https://www.newtonsoft.com/json)
     - [映射 AutoMapper](http://automapper.org/)
-    - [高性能存储Microsoft.FASTER](https://github.com/microsoft/FASTER)、[FASTER.KV replace ConcurrentDictionary](https://microsoft.github.io/FASTER/docs/fasterkv-basics)、[FASTER.Log](https://microsoft.github.io/FASTER/docs/fasterlog-basics/)
+    - [高性能存储Microsoft.FASTER](https://github.com/microsoft/FASTER)、[FASTER.KV replace ConcurrentDictionary](https://microsoft.github.io/FASTER/docs/fasterkv-basics)、[FASTER.Log unique hybrid records](https://microsoft.github.io/FASTER/docs/fasterlog-basics/)
     - [日志 NLog](http://nlog-project.org/)、[Exceptionless](https://github.com/exceptionless)
     - [缓存 EasyCaching](https://github.com/dotnetcore/EasyCaching)
     - [事件总线 CAP](https://github.com/dotnetcore/CAP)
