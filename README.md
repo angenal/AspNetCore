@@ -100,14 +100,11 @@ $ dotnet ef migrations -h  # 使用命令行
          - [`访问控制(casbin)`](https://casbin.org/)→[`资源命名(upspin)`](https://github.com/upspin/upspin)→[`准入控制(AdmissionControl)`](https://juejin.cn/book/6844733753063915533/section/6844733753131008007)
        - [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
        - [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
-       - [浏览器中的 .Net Core —— Blazor WebAssembly 初体验](https://www.cnblogs.com/coredx/p/12342936.html)
-       - [Excel文档操作例子 —— npoi](https://github.com/tonyqus/npoi/tree/master/examples)
-       - [Admin后台 - zhontai](https://github.com/zhontai/Admin.Core) + [演示](https://www.admin.zhontai.net) + [文档](https://www.zhontai.net)
-    - [Ioc Autofac](https://autofaccn.readthedocs.io/zh/latest/)
-    - [Aop AspectCore-Framework](https://github.com/dotnetcore/AspectCore-Framework)
-    - [Json Json.Net](https://www.newtonsoft.com/json)
-    - [映射 AutoMapper](http://automapper.org/)
-    - [高性能存储Microsoft.FASTER](https://github.com/microsoft/FASTER)、[FASTER.KV replace ConcurrentDictionary](https://microsoft.github.io/FASTER/docs/fasterkv-basics)、[FASTER.Log unique hybrid records](https://microsoft.github.io/FASTER/docs/fasterlog-basics/)
+    - [服务注入Ioc Autofac](https://autofaccn.readthedocs.io/zh/latest/)
+    - [切面编程Aop AspectCore-Framework](https://github.com/dotnetcore/AspectCore-Framework)
+    - [序列化Json Json.Net](https://www.newtonsoft.com/json)
+    - [映射模型 AutoMapper](http://automapper.org/)
+    - [高性能存储 microsoft.FASTER](https://github.com/microsoft/FASTER)、[FASTER.KV replace ConcurrentDictionary](https://microsoft.github.io/FASTER/docs/fasterkv-basics)、[FASTER.Log unique hybrid records](https://microsoft.github.io/FASTER/docs/fasterlog-basics/)
     - [日志 NLog](http://nlog-project.org/)、[Exceptionless](https://github.com/exceptionless)
     - [缓存 EasyCaching](https://github.com/dotnetcore/EasyCaching)
     - [事件总线 CAP](https://github.com/dotnetcore/CAP)
@@ -130,7 +127,15 @@ $ dotnet ef migrations -h  # 使用命令行
     - [NATS - 开源消息系统](https://nats.io/)
     - [ZeroMQ 跨语言,LGPLed解决方案](https://zeromq.org/)
     - [Hprose 跨语言,跨平台,无侵入式,高性能动态远程对象调用引擎库](https://hprose.com/)
-    - [ClearScript](https://github.com/microsoft/ClearScript) supports JavaScript (via [V8](https://developers.google.com/v8/) and [JScript](https://docs.microsoft.com/en-us/previous-versions//hbxc2t98(v=vs.85))) and [VBScript](https://docs.microsoft.com/en-us/previous-versions//t0aew7h6(v=vs.85)), [Examples](https://microsoft.github.io/ClearScript/Examples/Examples.html), [Tutorial](https://microsoft.github.io/ClearScript/Tutorial/FAQtorial.html)
+    - [microsoft.ClearScript](https://github.com/microsoft/ClearScript) supports JavaScript (via [V8](https://developers.google.com/v8/) and [JScript](https://docs.microsoft.com/en-us/previous-versions//hbxc2t98(v=vs.85))) and [VBScript](https://docs.microsoft.com/en-us/previous-versions//t0aew7h6(v=vs.85)), [Examples](https://microsoft.github.io/ClearScript/Examples/Examples.html), [Tutorial](https://microsoft.github.io/ClearScript/Tutorial/FAQtorial.html)
+
+ * 实时应用
+    - [ASP.NET Core SignalR 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/signalr)
+
+ * 界面 UI
+    - [ASP.NET Core Blazor 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/blazor)
+    - [Ant Design 的 Blazor 实现, 服务于企业级后台产品](https://ant-design-blazor.gitee.io/zh-CN/docs/i18n)
+    - [Bootstrap 的 Blazor 组件库](https://gitee.com/LongbowEnterprise/BootstrapBlazor)、[官方文档](https://www.blazor.zone/)
 
  * 代码生成器
     - [CodeSmith](https://www.codesmithtools.com)
@@ -145,6 +150,7 @@ $ dotnet ef migrations -h  # 使用命令行
  * 快速开发解决方案
     - [Bootstrap Blazor 组件库](https://www.blazor.zone)、[`前后端C#`开源代码](https://gitee.com/LongbowEnterprise/BootstrapBlazor)
     - [NetModular后端Api](https://github.com/iamoldli/NetModular)、[前端UI](https://github.com/iamoldli/NetModular.UI)
+    - [Admin后台](https://github.com/zhontai/Admin.Core) + [演示](https://www.admin.zhontai.net) + [文档](https://www.zhontai.net)
 
 ----
 
