@@ -109,7 +109,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [缓存 EasyCaching](https://github.com/dotnetcore/EasyCaching)
     - [事件总线 CAP](https://github.com/dotnetcore/CAP)
     - [二维码 QRCoder](https://github.com/codebude/QRCoder)
-    - [生成Excel表格`NPOI`](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)、[推荐`DevExpress` Office `*.doc,docx,txt,rtf,mht,odt,xml,epub,html`,`Excel`,`Pdf` File API](https://github.com/angenalZZZ/doc-zip/commit/7b8b2276f5cc07c587b433ef9b26e09f0ef04bfe)
+    - [生成Excel表格`NPOI`](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)、[`推荐``DevExpress`Office`*.doc,docx,txt,rtf,mht,odt,xml,epub,html`,`Excel`,`Pdf`File API](https://github.com/angenalZZZ/doc-zip/commit/7b8b2276f5cc07c587b433ef9b26e09f0ef04bfe)
     - [分布式主键ID生成器(雪花漂移算法500W/s)](https://github.com/yitter/IdGenerator)、[Id生成器 ECommon.Utilities.ObjectId](https://github.com/tangxuehua/ecommon/blob/master/src/ECommon/Utilities/ObjectId.cs)
     - [Linq扩展 System.Linq.Dynamic.Core](https://github.com/StefH/System.Linq.Dynamic.Core)
     - [科学计算 MathNet](https://github.com/mathnet/mathnet-numerics)
@@ -134,9 +134,9 @@ $ dotnet ef migrations -h  # 使用命令行
 
  * 界面 UI
     - [.NET Core Blazor 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/blazor)
-    - [Ant Design 的 Blazor 组件库，服务于企业级后台产品](https://ant-design-blazor.gitee.io/zh-CN/docs/i18n)
-    - [Bootstrap 的 Blazor 组件库](https://gitee.com/LongbowEnterprise/BootstrapBlazor)、[官方文档](https://www.blazor.zone/)
-    - [DevExpress 控件库`推荐`](https://www.baidu.com/s?wd=devexpress)、[示例代码](https://github.com/DevExpress-Examples)
+    - [Ant Design 的 Blazor 组件库`推荐`服务于企业级后台产品](https://ant-design-blazor.gitee.io/zh-CN/docs/i18n)
+    - [Bootstrap 的 Blazor 组件库`推荐`](https://gitee.com/LongbowEnterprise/BootstrapBlazor)、[官方文档](https://www.blazor.zone/)
+    - [DevExpress 控件库,工具,框架`推荐`](https://www.baidu.com/s?wd=devexpress%20%E7%A0%B4%E8%A7%A3)、[示例代码](https://github.com/DevExpress-Examples)
 
  * 代码生成器
     - [CodeSmith](https://www.codesmithtools.com)
