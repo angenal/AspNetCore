@@ -85,7 +85,7 @@ $ dotnet ef migrations -h  # 使用命令行
 ~~~
 
  * 开源的 应用框架
-    - [Asp.Net Core](https://docs.microsoft.com/zh-cn/aspnet/core/)
+    - [.Net Core](https://docs.microsoft.com/zh-cn/aspnet/core/)
     - [ABP](http://aspnetboilerplate.com)
     - [Nop](https://www.nopcommerce.com)
     - [ServiceStack](https://servicestack.net)
@@ -109,7 +109,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [缓存 EasyCaching](https://github.com/dotnetcore/EasyCaching)
     - [事件总线 CAP](https://github.com/dotnetcore/CAP)
     - [二维码 QRCoder](https://github.com/codebude/QRCoder)
-    - [生成Excel等文档](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)
+    - [生成Excel表格](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)
     - [Id生成器 ECommon.Utilities.ObjectId](https://github.com/tangxuehua/ecommon/blob/master/src/ECommon/Utilities/ObjectId.cs)
     - [Linq扩展 System.Linq.Dynamic.Core](https://github.com/StefH/System.Linq.Dynamic.Core)
     - [科学计算 MathNet](https://github.com/mathnet/mathnet-numerics)
@@ -130,12 +130,13 @@ $ dotnet ef migrations -h  # 使用命令行
     - [microsoft.ClearScript](https://github.com/microsoft/ClearScript) supports JavaScript (via [V8](https://developers.google.com/v8/) and [JScript](https://docs.microsoft.com/en-us/previous-versions//hbxc2t98(v=vs.85))) and [VBScript](https://docs.microsoft.com/en-us/previous-versions//t0aew7h6(v=vs.85)), [Examples](https://microsoft.github.io/ClearScript/Examples/Examples.html), [Tutorial](https://microsoft.github.io/ClearScript/Tutorial/FAQtorial.html)
 
  * 实时应用
-    - [ASP.NET Core SignalR 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/signalr)
+    - [.NET Core SignalR 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/signalr)
 
  * 界面 UI
-    - [ASP.NET Core Blazor 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/blazor)
-    - [Ant Design 的 Blazor 实现, 服务于企业级后台产品](https://ant-design-blazor.gitee.io/zh-CN/docs/i18n)
+    - [.NET Core Blazor 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/blazor)
+    - [Ant Design 的 Blazor 组件库，服务于企业级后台产品](https://ant-design-blazor.gitee.io/zh-CN/docs/i18n)
     - [Bootstrap 的 Blazor 组件库](https://gitee.com/LongbowEnterprise/BootstrapBlazor)、[官方文档](https://www.blazor.zone/)
+    - [DevExpress 控件库`推荐`](https://www.baidu.com/s?wd=devexpress)、[示例代码](https://github.com/DevExpress-Examples)
 
  * 代码生成器
     - [CodeSmith](https://www.codesmithtools.com)
