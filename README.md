@@ -109,7 +109,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [缓存 EasyCaching](https://github.com/dotnetcore/EasyCaching)
     - [事件总线 CAP](https://github.com/dotnetcore/CAP)
     - [二维码 QRCoder](https://github.com/codebude/QRCoder)
-    - [生成Excel表格`epplus`](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)、[`DevExpress` Office `*.doc,docx,txt,rtf,mht,odt,xml,epub,html`,`Excel`,`Pdf` File API](https://github.com/angenalZZZ/doc-zip/commit/7b8b2276f5cc07c587b433ef9b26e09f0ef04bfe)
+    - [生成Excel表格`NPOI`](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)、[`DevExpress` Office `*.doc,docx,txt,rtf,mht,odt,xml,epub,html`,`Excel`,`Pdf` File API](https://github.com/angenalZZZ/doc-zip/commit/7b8b2276f5cc07c587b433ef9b26e09f0ef04bfe)
     - [Id生成器 ECommon.Utilities.ObjectId](https://github.com/tangxuehua/ecommon/blob/master/src/ECommon/Utilities/ObjectId.cs)
     - [Linq扩展 System.Linq.Dynamic.Core](https://github.com/StefH/System.Linq.Dynamic.Core)
     - [科学计算 MathNet](https://github.com/mathnet/mathnet-numerics)
