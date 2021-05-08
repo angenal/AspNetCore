@@ -110,7 +110,7 @@ $ dotnet ef migrations -h  # 使用命令行
     - [事件总线 CAP](https://github.com/dotnetcore/CAP)
     - [二维码 QRCoder](https://github.com/codebude/QRCoder)
     - [开源Office组件`NPOI`](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)
-    - [破解Office组件`Spire.Office`](https://www.board4all.biz/tags/e-iceblue-spireoffice/)、[破解Office组件`Aspose`](https://www.board4all.biz/tags/aspose/)
+    - [破解Office组件`Spire(推荐)`](https://www.board4all.biz/tags/e-iceblue-spireoffice/)、[破解Office组件`Aspose`](https://www.board4all.biz/tags/aspose/)
     - [破解Office组件`DevExpress(推荐)`](https://github.com/angenalZZZ/AspNet/tree/master/src/Office),[下载`DevExpress`for`.doc,docx,txt,rtf,mht,odt,xml,epub,html`,`excel`,`pdf`](https://github.com/angenalZZZ/doc-zip/commit/7b8b2276f5cc07c587b433ef9b26e09f0ef04bfe)
     - [分布式主键ID生成器(雪花漂移算法500W/s)](https://github.com/yitter/IdGenerator)、[Id生成器 ECommon.Utilities.ObjectId](https://github.com/tangxuehua/ecommon/blob/master/src/ECommon/Utilities/ObjectId.cs)
     - [Linq扩展 System.Linq.Dynamic.Core](https://github.com/StefH/System.Linq.Dynamic.Core)
