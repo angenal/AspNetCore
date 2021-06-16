@@ -134,8 +134,8 @@ $ dotnet ef migrations -h  # 使用命令行
  * 实时应用
     - [.NET Core SignalR 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/signalr)
 
- * 界面 UI
-    - [开源WPF控件库`MaterialDesignInXAML`](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)、[`PanuonUI`](https://github.com/Panuon/PanuonUI)、[`HandyControl`](https://github.com/HandyOrg/HandyControl)
+ * 界面 UI 桌面软件(WinFrom、WPF、DotnetCore^3)
+    - [开源WPF控件库`MaterialDesignInXAML`](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)、[`PanuonUI`](https://github.com/Panuon/PanuonUI)、[`HandyControl`](https://github.com/HandyOrg/HandyControl)、[Beautiful WPF Control UI](https://github.com/aduskin/AduSkin)
     - [.NET Core Blazor 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/blazor)
     - [Ant Design 的 Blazor 组件库 `推荐`服务于企业级后台产品](https://ant-design-blazor.gitee.io/zh-CN/docs/i18n)
     - [Bootstrap 的 Blazor 组件库 `推荐`](https://gitee.com/LongbowEnterprise/BootstrapBlazor)、[官方文档](https://www.blazor.zone/)
@@ -143,9 +143,6 @@ $ dotnet ef migrations -h  # 使用命令行
 
  * 代码生成器
     - [CodeSmith](https://www.codesmithtools.com)
-
- * 桌面软件(WinFrom、WPF、DotnetCore^3)
-    - [Beautiful WPF Control UI](https://github.com/aduskin/AduSkin)
 
  * 扩展 Visual Studio 2019
     - [.NET Core Debugging with WSL 2](https://aka.ms/wsldebug)
