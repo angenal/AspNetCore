@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebDotnetCore.db.sqlservr.yz\WebDotnetCore.db.sqlservr.yz.csproj" />
-    <ProjectReference Include="..\WebDotnetCore.Framework\WebDotnetCore.Framework.csproj" />
   </ItemGroup>
 
   <ItemGroup>

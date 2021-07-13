@@ -1,0 +1,100 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>WebCore</AssemblyName>
+    <PackageId>WebDotnetCore.Core</PackageId>
+    <Configurations>Debug;Release;Validate</Configurations>
+    <RootNamespace>WebCore</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Documents\Handlers\**" />
+    <EmbeddedResource Remove="Documents\Handlers\**" />
+    <None Remove="Documents\Handlers\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Binary\BitVector.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
+    <Compile Remove="Properties\AssemblyInfo.Linux.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(OS)' != 'Windows_NT'">
+    <Compile Remove="Properties\AssemblyInfo.Windows.cs" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'MemGuard'">
+    <DefineConstants>$(DefineConstants);MEM_GUARD</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Validate'">
+    <DefineConstants>$(DefineConstants);MEM_GUARD_STACK;VALIDATE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0</DefineConstants>
+    <OutputPath>bin\Debug</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Sodium.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Sodium.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CryptoHelper" Version="3.0.2" />
+    <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.1.11" />
+    <PackageReference Include="K4os.Hash.xxHash" Version="1.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SkiaSharp" Version="1.68.3" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="ToolGood.Words" Version="3.0.2.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Xml\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Spire.Barcode">
+      <HintPath>DLL\Spire.Barcode.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Doc">
+      <HintPath>DLL\Spire.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Email">
+      <HintPath>DLL\Spire.Email.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.License">
+      <HintPath>DLL\Spire.License.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Pdf">
+      <HintPath>DLL\Spire.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Presentation">
+      <HintPath>DLL\Spire.Presentation.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.XLS">
+      <HintPath>DLL\Spire.XLS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
