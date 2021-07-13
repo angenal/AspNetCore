@@ -8,8 +8,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using WebInterface.Settings;
 
-namespace WebFramework
+namespace WebFramework.Services
 {
     /// <summary>
     /// JWT authentication service.
@@ -17,33 +18,19 @@ namespace WebFramework
     public static class JwtAuthenticationService
     {
         /// <summary>
-        /// Configuration in appsettings.json
-        /// </summary>
-        public const string AppSettings = "JWT";
-        /// <summary>
-        /// EnvironmentVariable: SecretKey
-        /// </summary>
-        public const string EnvSecretKey = "JWT_SecretKey";
-        /// <summary>
-        /// EnvironmentVariable: EncryptionKey
-        /// </summary>
-        public const string EnvEncryptionKey = "JWT_EncryptionKey";
-        /// <summary>
-        /// HttpRequest Query Variable
-        /// </summary>
-        public const string HttpRequestQuery = "token";
-
-        /// <summary>
         /// Register JWT token authentication service.
         /// </summary>
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
         {
+            var section = config.GetSection(JwtSettings.AppSettings);
+            if (!section.Exists()) return services;
+
             // Register IOptions<JwtSettings> from appsettings.json
-            services.Configure<Settings.JwtSettings>(config.GetSection(AppSettings));
+            services.Configure<JwtSettings>(section);
             // Read settings
-            config.Bind(AppSettings, JwtGenerator.Settings);
+            config.Bind(JwtSettings.AppSettings, JwtGenerator.Settings);
             // Read environment variable from the current process
-            string secretKey = Environment.GetEnvironmentVariable(EnvSecretKey), encryptionKey = Environment.GetEnvironmentVariable(EnvEncryptionKey);
+            string secretKey = Environment.GetEnvironmentVariable(JwtSettings.EnvSecretKey), encryptionKey = Environment.GetEnvironmentVariable(JwtSettings.EnvEncryptionKey);
             if (!string.IsNullOrEmpty(secretKey)) JwtGenerator.Settings.SecretKey = secretKey;
             if (!string.IsNullOrEmpty(encryptionKey)) JwtGenerator.Settings.EncryptionKey = encryptionKey;
 
@@ -88,7 +75,7 @@ namespace WebFramework
                 {
                     OnMessageReceived = context =>
                     {
-                        var accessToken = context.Request.Query[HttpRequestQuery];
+                        var accessToken = context.Request.Query[JwtSettings.HttpRequestQuery];
                         if (string.IsNullOrEmpty(accessToken)) return Task.CompletedTask;
                         context.Token = accessToken;
                         //context.HttpContext.Request.Headers.Add("X-Request-Uid", context.Request.Query["uid"]); // UserID
@@ -109,7 +96,7 @@ namespace WebFramework
         /// <summary>
         /// JWT settings.
         /// </summary>
-        public static Settings.JwtSettings Settings = new Settings.JwtSettings();
+        public static JwtSettings Settings = new JwtSettings();
 
         /// <summary>
         /// JWT token generator.

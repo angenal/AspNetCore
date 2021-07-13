@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,9 +10,7 @@ using Microsoft.Extensions.Options;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using WebCore;
 using WebCore.Documents;
-using WebCore.Security;
 using WebInterface;
 
 namespace WebFramework.Services
@@ -52,12 +49,7 @@ namespace WebFramework.Services
 
 
             // Crypto services
-            if (config.GetSection(Crypto.AesAppSettings).Exists())
-            {
-                services.Configure<Settings.AesSettings>(config.GetSection(Crypto.AesAppSettings));
-                config.Bind(Crypto.AesAppSettings, Crypto.AesSettings);
-                services.AddSingleton<ICrypto, Crypto>();
-            }
+            services.AddCrypto(config);
 
 
             // Database: LiteDB (similar to sqlite)
@@ -118,27 +110,7 @@ namespace WebFramework.Services
 
 
             // Identity system for the specified User and Role types.
-            if (liteDb.HasConnectionString)
-            {
-                services.AddIdentity<Identity.LiteDB.Models.ApplicationUser, Identity.LiteDB.IdentityRole>(options =>
-                {
-                    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
-                    options.User.RequireUniqueEmail = false;
-                    options.SignIn.RequireConfirmedEmail = false;
-                    options.SignIn.RequireConfirmedPhoneNumber = false;
-                    options.SignIn.RequireConfirmedAccount = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireDigit = false;
-                    options.Password.RequiredUniqueChars = 0;
-                    options.Password.RequiredLength = 6;
-                })
-                //.AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddUserStore<Identity.LiteDB.LiteDbUserStore<Identity.LiteDB.Models.ApplicationUser>>()
-                .AddRoleStore<Identity.LiteDB.LiteDbRoleStore<Identity.LiteDB.IdentityRole>>()
-                .AddDefaultTokenProviders();
-            }
+            services.AddIdentityLiteDB(config);
 
 
             // Authentication with JWT
@@ -165,7 +137,7 @@ namespace WebFramework.Services
 
 
             // Email
-            services.AddTransient<IEmailTools, EmailTools>();
+            services.AddEmail(config);
 
             // Excel
             services.AddSingleton<IExcelTools, ExcelTools>();

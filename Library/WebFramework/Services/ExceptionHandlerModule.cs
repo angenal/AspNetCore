@@ -11,19 +11,6 @@ using System.Threading.Tasks;
 
 namespace WebFramework.Services
 {
-    /* appsettings.json
-      "Sentry": {
-        "Dsn": "https://0357ef2d9cfd4e77a8fd05599bc385c8@o301489.ingest.sentry.io/5426676",
-        "Debug": false,
-        "SendDefaultPii": true,
-        "AttachStacktrace": true,
-        "MaxRequestBodySize": "Small",
-        "MinimumBreadcrumbLevel": "Debug",
-        "MinimumEventLevel": "Warning",
-        "DiagnosticLevel": "Error"
-      }
-    */
-
     /// <summary>
     /// Global monitoring and exception handler module
     /// </summary>
@@ -38,6 +25,13 @@ namespace WebFramework.Services
         /// </summary>
         public static IWebHostBuilder UseSentryMonitor(this IWebHostBuilder builder)
         {
+            //var section = config.GetSection(SentrySettings.AppSettings);
+            //if (!section.Exists()) return services;
+
+            //// Register IOptions<SentrySettings> from appsettings.json
+            //services.Configure<SentrySettings>(section);
+            //config.Bind(SentrySettings.AppSettings, SentrySettings.Instance);
+
             //builder.UseSentry((context, options) =>
             //{
             //    options.Environment = context.HostingEnvironment.EnvironmentName;

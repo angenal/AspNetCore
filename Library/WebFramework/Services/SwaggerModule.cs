@@ -12,8 +12,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using WebInterface.Settings;
 
-namespace WebFramework
+namespace WebFramework.Services
 {
     /// <summary>
     /// Swagger Doc service.
@@ -21,23 +22,22 @@ namespace WebFramework
     public static class SwaggerDocService
     {
         /// <summary>
-        /// Configuration in appsettings.json
-        /// </summary>
-        public const string ApiSettings = "API";
-        /// <summary>
         /// HttpRequest Query Variable for JwtAuthenticationService
         /// </summary>
-        internal const string apiKeyQueryOrCookieParameterName = JwtAuthenticationService.HttpRequestQuery;
+        internal const string apiKeyQueryOrCookieParameterName = ApiSettings.HttpRequestQuery;
 
         /// <summary>
         /// Register Swagger Doc service.
         /// </summary>
         public static IServiceCollection AddSwaggerGen(this IServiceCollection services, IConfiguration config)
         {
+            var section = config.GetSection(ApiSettings.AppSettings);
+            if (!section.Exists()) return services;
+
             // Register IOptions<JwtSettings> from appsettings.json
-            services.Configure<Settings.JwtSettings>(config.GetSection(ApiSettings));
+            services.Configure<ApiSettings>(section);
             // Read settings
-            config.Bind(ApiSettings, SwaggerDefaultValues.Settings);
+            config.Bind(ApiSettings.AppSettings, ApiSettings.Instance);
             // Configures the Swagger generation options.
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerGenConfigureOptions>();
 
@@ -139,8 +139,8 @@ namespace WebFramework
                 {
                     var info = new OpenApiInfo()
                     {
-                        Title = SwaggerDefaultValues.Settings.Title,
-                        Description = SwaggerDefaultValues.Settings.Description,
+                        Title = ApiSettings.Instance.Title,
+                        Description = ApiSettings.Instance.Description,
                         Version = description.ApiVersion.ToString(),
                         Contact = contact,
                         License = license,
@@ -161,8 +161,8 @@ namespace WebFramework
                 var ver = ApiVersionService.Versions[version];
                 var info = new OpenApiInfo
                 {
-                    Title = ver?.Name ?? SwaggerDefaultValues.Settings.Title,
-                    Description = ver?.Description ?? SwaggerDefaultValues.Settings.Description,
+                    Title = ver?.Name ?? ApiSettings.Instance.Title,
+                    Description = ver?.Description ?? ApiSettings.Instance.Description,
                     Version = string.Join(", ", ver.Versions.Select(v => v.ToString()).OrderBy(v => v)),
                     Contact = contact,
                     License = license,
@@ -179,11 +179,6 @@ namespace WebFramework
     /// Once they are fixed and published, this class can be removed.</remarks>
     public class SwaggerDefaultValues : IOperationFilter
     {
-        /// <summary>
-        /// Api settings.
-        /// </summary>
-        public static Settings.ApiSettings Settings = new Settings.ApiSettings();
-
         /// <summary>
         /// Applies the filter to the specified operation using the given context.
         /// </summary>

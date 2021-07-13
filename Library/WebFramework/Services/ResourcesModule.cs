@@ -26,9 +26,10 @@ namespace WebFramework.Services
 
         public static IServiceCollection RegisterResources(this IServiceCollection services, IConfiguration config)
         {
-            if (!config.GetSection(LanguageRouteConstraint.AppSettings).Exists()) return services;
+            var section = config.GetSection(LanguageRouteConstraint.AppSettings);
+            if (!section.Exists()) return services;
 
-            var culture = config.GetSection(LanguageRouteConstraint.AppSettings).Value;
+            var culture = section.Value;
             var cultures = Localizations.SupportedCultures();
             LanguageRouteConstraint.Cultures = cultures.Select(c => c.Name);
             services.AddLocalization(options => options.ResourcesPath = ResourcesPath);

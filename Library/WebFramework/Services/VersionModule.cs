@@ -11,8 +11,12 @@ using System.Linq;
 using System.Reflection;
 using WebCore;
 
-namespace WebFramework
+namespace WebFramework.Services
 {
+    /* appsettings.json
+      "Version": "yes"
+    */
+
     /// <summary>
     /// ApiVersionService Provides the implementation for ASP.NET Core.
     /// https://github.com/microsoft/aspnet-api-versioning/tree/master/samples/aspnetcore/SwaggerSample

@@ -16,21 +16,20 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection AddLimiting(this IServiceCollection services, IConfiguration config)
         {
-            var ipRateLimiting = config.GetSection("IpRateLimiting");
-            if (ipRateLimiting.Exists())
-            {
-                services.Configure<IpRateLimitOptions>(ipRateLimiting);
-                //services.Configure<IpRateLimitPolicies>(config.GetSection("IpRateLimitPolicies"));
-                // configure client rate limiting middleware
-                //services.Configure<ClientRateLimitOptions>(config.GetSection("ClientRateLimiting"));
-                //services.Configure<ClientRateLimitPolicies>(config.GetSection("ClientRateLimitPolicies"));
-                // register stores
-                services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-                services.AddSingleton<IClientPolicyStore, MemoryCacheClientPolicyStore>();
-                services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-                // configure resolvers, counter key builders
-                services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-            }
+            var section = config.GetSection("IpRateLimiting");
+            if (!section.Exists()) return services;
+
+            services.Configure<IpRateLimitOptions>(section);
+            //services.Configure<IpRateLimitPolicies>(config.GetSection("IpRateLimitPolicies"));
+            // configure client rate limiting middleware
+            //services.Configure<ClientRateLimitOptions>(config.GetSection("ClientRateLimiting"));
+            //services.Configure<ClientRateLimitPolicies>(config.GetSection("ClientRateLimitPolicies"));
+            // register stores
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IClientPolicyStore, MemoryCacheClientPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            // configure resolvers, counter key builders
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
             return services;
         }
