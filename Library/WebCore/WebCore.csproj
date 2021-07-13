@@ -62,6 +62,9 @@
     <Folder Include="Xml\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WebInterface\WebInterface.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Spire.Barcode">
       <HintPath>DLL\Spire.Barcode.dll</HintPath>
     </Reference>

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCoreRateLimit" Version="3.2.2" />
     <PackageReference Include="Autofac" Version="6.2.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
@@ -46,7 +47,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hangfire.LiteDB\Hangfire.LiteDB.csproj" />
+    <ProjectReference Include="..\Identity.LiteDB\Identity.LiteDB.csproj" />
     <ProjectReference Include="..\WebCore\WebCore.csproj" />
+    <ProjectReference Include="..\WebInterface\WebInterface.csproj" />
   </ItemGroup>
 
 </Project>

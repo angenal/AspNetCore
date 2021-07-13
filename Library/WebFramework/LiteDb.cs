@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
+using WebInterface;
 
 namespace WebFramework
 {
@@ -58,29 +59,10 @@ namespace WebFramework
         public LiteDatabase OpenMemory() => new LiteDatabase(new MemoryStream());
 
         public string GetConnectionString() => _connectionString;
+        public bool HasConnectionString => !string.IsNullOrEmpty(_connectionString);
 
         private readonly string _connectionString;
 
         public LiteDatabase LiteDatabase { get; protected set; }
-    }
-
-    /// <summary>
-    /// LiteDB database interface.
-    /// </summary>
-    public interface ILiteDb
-    {
-        /// <summary>
-        /// Database already open and init (or create if doesn't exist)
-        /// </summary>
-        LiteDatabase LiteDatabase { get; }
-
-        /// <summary>
-        /// Open database (or create if doesn't exist)
-        /// </summary>
-        LiteDatabase Open();
-        /// <summary>
-        /// Open Memory database (or create if doesn't exist)
-        /// </summary>
-        LiteDatabase OpenMemory();
     }
 }
