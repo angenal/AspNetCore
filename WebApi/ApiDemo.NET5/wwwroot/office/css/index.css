@@ -1,0 +1,62 @@
+ 
+.fileArea {
+  width:700px;
+  height:700px;
+}
+
+.fileArea div {
+    float: left;
+    width: 121px;
+    height: 150px;
+}
+
+.fileArea img {
+    width: 121px;
+    height: 121px;
+}
+
+.docViewDownload {
+    float: left;
+    cursor: pointer;
+    width: 55px;
+    height: 30px;
+    display: block;
+    line-height: 30px;
+    margin-left: 30px;
+    text-align:center;
+    color: white;
+    background-color: #63a1df;
+}
+
+.datagrid-mask {
+    background: #999;
+}
+
+.datagrid-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+    filter: alpha(opacity=30);
+    display: none;
+}
+
+.datagrid-mask-msg {
+}
+
+.datagrid-mask-msg {
+    position: absolute;
+    top: 50%;
+    margin-top: -20px;
+    padding: 10px 5px 10px 30px;
+    width: auto;
+    height: 16px;
+    border-width: 2px;
+    border-style: solid;
+    display: none;
+    background: #fff;
+    border: 1px solid #448abb;
+    background: #fff url('../images/loading.gif') no-repeat scroll 5px center;
+}

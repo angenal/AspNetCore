@@ -10,4 +10,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Spire.XLS">
+      <HintPath>..\WebCore\DLL\Spire.XLS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

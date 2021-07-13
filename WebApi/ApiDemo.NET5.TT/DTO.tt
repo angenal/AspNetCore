@@ -1,0 +1,188 @@
+<#@ template debug="true" hostspecific="false" language="C#" #><#@ assembly name="System.Core.dll" #><#@ assembly name="System.Data.dll" #><#@ assembly name="System.Data.DataSetExtensions.dll" #><#@ assembly name="System.Xml.dll" #><#@ import namespace="System" #><#@ import namespace="System.Collections.Generic" #><#@ import namespace="System.Data" #><#@ import namespace="System.Data.Common" #><#@ import namespace="System.Data.SqlClient" #><#@ import namespace="System.Linq" #><#@ import namespace="System.IO" #><#@ import namespace="System.Xml" #><#@ output extension=".cs" #>using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace ApiDemo.NET5.Models.DTO
+{
+<# foreach (var item in TT_MSSQL.GetTables()) {
+    var excluded = new[] { "Ip" };
+    var notRequired = new[] { "Year", "UpdateTimes", "UpdateTime", "CreateTime", "CreateUser" }; #>
+	/// <summary>
+	/// <#=item.Remark.Replace("\r\n","").Replace("&","＆") #>
+	/// </summary>
+	public class <#= item.Type #>Model
+    {
+<# foreach (var col in TT_MSSQL.GetColumns(item.Name).Where(col => !excluded.Contains(col.Name))) { #>
+
+		/// <summary>
+		/// <#=col.Remark.Replace("\r\n","").Replace("&","＆") #>
+		/// </summary>
+		[Display(Name = "<#=col.Remark.Replace("\r\n","").Replace("&","＆") #>")]
+<# if (!col.IsPrimary && !col.IsNull && !notRequired.Contains(col.Name)) { #>
+		[Required(ErrorMessage = "{0} 为必填项")]
+<# } #>
+<# if (TT_MSSQL.AsString(col.Type) == "string") { #>
+        [StringLength(<#=col.MaxLength#><# if (!col.IsNull && !notRequired.Contains(col.Name)) { #>, MinimumLength = 0<# } #>, ErrorMessage = "{0} 错误")]
+<# } #>
+		public <#= TT_MSSQL.AsString(col.Type) #><# if(col.IsNull&&TT_MSSQL.AsType(col.Type).IsValueType){ #><#= '?' #><# } #> <#= col.Name #> { get; set; }
+    <# } #>}
+<# } #>
+}
+<#+
+    public class TT_MSSQL
+    {
+        // Connect database
+        const string Connection = "Data Source=localhost;Initial Catalog=TEST;User ID=sa;Password=HGJ766GR767FKJU0;";
+        // Search tables
+        const string Conditions = "and (name like '%A%')";
+
+        public static IEnumerable<TT_Column> GetTables()
+        {
+            var sql = "select [object_id],name,(select [value] from sys.extended_properties where major_id=t.[object_id] and minor_id=0) as remark from sys.all_objects t where [type] in('U') and [object_id]>0 " + Conditions + " order by name";
+            var data = new List<TT_Column>();
+            using (IDataReader reader = ExecuteReader(sql))
+            {
+                while (reader.Read())
+                {
+                    data.Add(new TT_Column()
+                    {
+                        Name = Convert.ToString(reader[0]),
+                        Type = reader.GetString(1),
+                        Remark = Convert.ToString(reader[2])
+                    });
+                }
+            }
+            return data;
+        }
+        public static IEnumerable<TT_Column> GetColumns(string id)
+        {
+            var sql = @"select col.name,systype.name as type,col.is_nullable,col.max_length,
+is_primary=case when exists(select * from sys.index_columns as indexcols left join sys.indexes as indexs on indexs.index_id=indexcols.index_id and indexs.[object_id]=indexcols.[object_id] left join sys.all_objects as allobj on indexs.name=allobj.name where indexcols.[object_id]=col.[object_id] and indexs.is_primary_key=1 and allobj.type='PK' and indexcols.column_id=col.column_id) then convert(bit,1) else convert(bit,0) end,
+col.is_identity,isnull(propertys.value,'') as remark 
+from sys.all_columns as col left join sys.types as systype on col.user_type_id=systype.user_type_id 
+LEFT JOIN sys.extended_properties propertys ON propertys.major_id=col.[object_id] and propertys.minor_id=col.column_id 
+where col.[object_id]=@id order by col.column_id";
+            var data = new List<TT_Column>();
+            using (IDataReader reader = ExecuteReader(sql, new SqlParameter("@id", id)))
+            {
+                while (reader.Read())
+                {
+                    data.Add(new TT_Column()
+                    {
+                        Name = reader.GetString(0),
+                        Type = reader.GetString(1),
+                        IsNull = reader.GetBoolean(2),
+                        MaxLength = reader.GetInt16(3),
+                        IsPrimary = reader.GetBoolean(4),
+                        IsIdentity = reader.GetBoolean(5),
+                        Remark = reader.GetString(6)
+                    });
+                }
+            }
+            return data;
+        }
+        public static SqlDataReader ExecuteReader(string sqlString, params SqlParameter[] cmdParams)
+        {
+            var conn = new SqlConnection(Connection);
+            var cmd = new SqlCommand(sqlString, conn);
+            if (cmdParams != null) cmd.Parameters.AddRange(cmdParams);
+            conn.Open();
+            var reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            return reader;
+        }
+        public static string AsString(string dbtype)
+        {
+            if (string.IsNullOrEmpty(dbtype)) return dbtype;
+            dbtype = dbtype.ToLower();
+            string csharpType;
+            switch (dbtype)
+            {
+                case "bigint": csharpType = "long"; break;
+                case "binary": csharpType = "byte[]"; break;
+                case "bit": csharpType = "bool"; break;
+                case "char": csharpType = "string"; break;
+                case "date": csharpType = "DateTime"; break;
+                case "datetime": csharpType = "DateTime"; break;
+                case "datetime2": csharpType = "DateTime"; break;
+                case "datetimeoffset": csharpType = "DateTimeOffset"; break;
+                case "decimal": csharpType = "decimal"; break;
+                case "float": csharpType = "double"; break;
+                case "image": csharpType = "byte[]"; break;
+                case "int": csharpType = "int"; break;
+                case "money": csharpType = "decimal"; break;
+                case "nchar": csharpType = "string"; break;
+                case "ntext": csharpType = "string"; break;
+                case "numeric": csharpType = "decimal"; break;
+                case "nvarchar": csharpType = "string"; break;
+                case "real": csharpType = "Single"; break;
+                case "smalldatetime": csharpType = "DateTime"; break;
+                case "smallint": csharpType = "short"; break;
+                case "smallmoney": csharpType = "decimal"; break;
+                case "sql_variant": csharpType = "object"; break;
+                case "sysname": csharpType = "object"; break;
+                case "text": csharpType = "string"; break;
+                case "time": csharpType = "TimeSpan"; break;
+                case "timestamp": csharpType = "byte[]"; break;
+                case "tinyint": csharpType = "byte"; break;
+                case "uniqueidentifier": csharpType = "Guid"; break;
+                case "varbinary": csharpType = "byte[]"; break;
+                case "varchar": csharpType = "string"; break;
+                case "xml": csharpType = "string"; break;
+                default: csharpType = "object"; break;
+            }
+            return csharpType;
+        }
+        public static Type AsType(string dbtype)
+        {
+            if (string.IsNullOrEmpty(dbtype)) return Type.Missing.GetType();
+            dbtype = dbtype.ToLower();
+            Type commonType;
+            switch (dbtype)
+            {
+                case "bigint": commonType = typeof(long); break;
+                case "binary": commonType = typeof(byte[]); break;
+                case "bit": commonType = typeof(bool); break;
+                case "char": commonType = typeof(string); break;
+                case "date": commonType = typeof(DateTime); break;
+                case "datetime": commonType = typeof(DateTime); break;
+                case "datetime2": commonType = typeof(DateTime); break;
+                case "datetimeoffset": commonType = typeof(DateTimeOffset); break;
+                case "decimal": commonType = typeof(decimal); break;
+                case "float": commonType = typeof(double); break;
+                case "image": commonType = typeof(byte[]); break;
+                case "int": commonType = typeof(int); break;
+                case "money": commonType = typeof(decimal); break;
+                case "nchar": commonType = typeof(string); break;
+                case "ntext": commonType = typeof(string); break;
+                case "numeric": commonType = typeof(decimal); break;
+                case "nvarchar": commonType = typeof(string); break;
+                case "real": commonType = typeof(float); break;
+                case "smalldatetime": commonType = typeof(DateTime); break;
+                case "smallint": commonType = typeof(short); break;
+                case "smallmoney": commonType = typeof(decimal); break;
+                case "sql_variant": commonType = typeof(object); break;
+                case "sysname": commonType = typeof(object); break;
+                case "text": commonType = typeof(string); break;
+                case "time": commonType = typeof(TimeSpan); break;
+                case "timestamp": commonType = typeof(byte[]); break;
+                case "tinyint": commonType = typeof(byte); break;
+                case "uniqueidentifier": commonType = typeof(Guid); break;
+                case "varbinary": commonType = typeof(byte[]); break;
+                case "varchar": commonType = typeof(string); break;
+                case "xml": commonType = typeof(string); break;
+                default: commonType = typeof(object); break;
+            }
+            return commonType;
+        }
+    }
+    public class TT_Column
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public bool IsNull { get; set; }
+        public bool IsPrimary { get; set; }
+        public int MaxLength { get; set; }
+        public bool IsIdentity { get; set; }
+        public string Remark { get; set; }
+    }
+#>
