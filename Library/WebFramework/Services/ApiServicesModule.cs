@@ -141,6 +141,12 @@ namespace WebFramework.Services
 
             // Excel
             services.AddSingleton<IExcelTools, ExcelTools>();
+            // Word
+            services.AddSingleton<IWordTools, WordTools>();
+            // PPT
+            services.AddSingleton<IPptTools, PptTools>();
+            // PDF
+            services.AddSingleton<IPdfTools, PdfTools>();
 
 
             // Hangfire: Background jobs and workers

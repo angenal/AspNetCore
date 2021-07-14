@@ -1,15 +1,12 @@
+using ApiDemo.NET5.Models.DTO.Auth;
+using ApiDemo.NET5.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using ApiDemo.NET5.Common;
-using ApiDemo.NET5.Models.DTO.Auth;
-using ApiDemo.NET5.Models.Entities;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net;
-using System.Security.Claims;
+using WebFramework;
+using WebInterface;
 
 namespace ApiDemo.NET5.Controllers.V2
 {
@@ -23,10 +20,17 @@ namespace ApiDemo.NET5.Controllers.V2
     [Route("api/[controller]/[action]")]
     public class AuthController : ApiController
     {
+        private readonly ILiteDb liteDb;
+        private readonly ICrypto crypto;
         private readonly IJwtGenerator JwtToken;
 
-        public AuthController(ILiteDb db, ICrypto crypto, IJwtGenerator jwtToken) : base(db, crypto)
+        /// <summary>
+        ///
+        /// </summary>
+        public AuthController(ILiteDb liteDb, ICrypto crypto, IJwtGenerator jwtToken)
         {
+            this.liteDb = liteDb;
+            this.crypto = crypto;
             JwtToken = jwtToken;
         }
 
@@ -86,7 +90,7 @@ namespace ApiDemo.NET5.Controllers.V2
             //if (!string.IsNullOrEmpty(hash) && Crypto.VerifyHashedPassword(hash, input.Password))
             //    return Ok(LoadSession(true));
 
-            using (var db = DB.Open())
+            using (var db = liteDb.Open())
             {
                 var c = db.GetCollection<AppUser>(LiteDB.BsonAutoId.Guid);
 
@@ -95,7 +99,7 @@ namespace ApiDemo.NET5.Controllers.V2
                 if (d == null)
                     return BadRequest("Login username error");
 
-                if (!Crypto.VerifyHashedPassword(d.Password, input.Password + d.PasswordSalt))
+                if (!crypto.VerifyHashedPassword(d.Password, input.Password + d.PasswordSalt))
                     return BadRequest("Login password error");
 
                 var o = c.Query().Where(q => q.Id == d.Id).Select(q => new Session

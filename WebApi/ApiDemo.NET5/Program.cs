@@ -4,20 +4,14 @@ using Microsoft.Extensions.Hosting;
 namespace ApiDemo.NET5
 {
     /// <summary>
-    ///
+    /// Program
     /// </summary>
     public class Program
     {
         /// <summary>
-        ///
+        /// Main
         /// </summary>
         /// <param name="args"></param>
-        public static void Main(string[] args)
-        {
-            var host = WebFramework.Program.CreateHostBuilder(args).Build();
-
-            // Run MVC Host, REST API Services.
-            host.Run();
-        }
+        public static void Main(string[] args) => WebFramework.Program.CreateHostBuilder(args).Build().Run();
     }
 }

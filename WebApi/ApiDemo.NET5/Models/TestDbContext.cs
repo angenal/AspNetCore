@@ -4,10 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.DataEncryption;
 using Microsoft.EntityFrameworkCore.DataEncryption.Providers;
 using Microsoft.Extensions.Options;
-using ApiDemo.NET5.Settings;
 using System;
-using System.Linq;
 using System.Text;
+using WebInterface.Settings;
 
 namespace ApiDemo.NET5.Models
 {

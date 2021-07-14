@@ -13,6 +13,45 @@ namespace WebCore.Documents
 {
     public class ExcelTools : IExcelTools
     {
+        /// <summary>
+        /// 设置表格样式
+        /// </summary>
+        public void SetWorksheetFormat(Worksheet sheet, bool freezeFirstRow = true, bool isBoldFirstRow = true, string notBoldStartText = "＆")
+        {
+            sheet.DefaultRowHeight = 21;
+            sheet.Range.Style.HorizontalAlignment = HorizontalAlignType.Center;
+            sheet.Range.Style.VerticalAlignment = VerticalAlignType.Center;
+            if (freezeFirstRow) sheet.FreezePanes(sheet.FirstRow + 1, sheet.FirstColumn); // 冻结首行
+
+            var firstRow = sheet.Range.Rows[0];
+            firstRow.AutoFitColumns();
+            firstRow.Style.HorizontalAlignment = HorizontalAlignType.Left;
+            var firstColumn = firstRow.Columns[0];
+            firstColumn.Style.HorizontalAlignment = HorizontalAlignType.Right;
+
+            if (isBoldFirstRow)
+            {
+                var fontBold = sheet.Workbook.CreateFont();
+                fontBold.IsBold = true;
+                foreach (CellRange column in firstRow.Columns)
+                {
+                    var richText = column.RichText;
+                    var text = column.DisplayedText;
+                    int index = text.IndexOfAny(notBoldStartText.ToCharArray()), length = text.Length;
+                    if (index < 1)
+                    {
+                        richText.Text = text;
+                        richText.SetFont(0, text.Length, fontBold);
+                    }
+                    else
+                    {
+                        richText.Text = text.Substring(0, index) + (index == length - 1 ? "" : text.Substring(index + 1));
+                        richText.SetFont(0, index - 1, fontBold);
+                    }
+                }
+            }
+        }
+
         public void ExportWithList(string templateFile, string saveFileName, IEnumerable<Hashtable> list, Dictionary<string, string> columnHeaders, bool copyStyles = true, string password = null, bool readOnlyProtect = false)
         {
             if (string.IsNullOrEmpty(templateFile))
@@ -113,7 +152,7 @@ namespace WebCore.Documents
             doc.Dispose();
         }
 
-        public void ExportWithDataTable(string saveFileName, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, Action<Worksheet> action = null, string password = null, bool readOnlyProtect = false)
+        public void ExportWithDataTable(string saveFileName, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, string password = null, bool readOnlyProtect = false)
         {
             if (string.IsNullOrEmpty(saveFileName))
                 throw new ArgumentNullException(nameof(saveFileName));
@@ -128,7 +167,8 @@ namespace WebCore.Documents
             {
                 var sheet = doc.CreateEmptySheet(string.IsNullOrEmpty(dataTable.TableName) ? "Sheet1" : dataTable.TableName);
                 sheet.InsertDataTable(dataTable, columnHeaders, firstRow, firstColumn);
-                action?.Invoke(sheet);
+                // 设置表格样式
+                SetWorksheetFormat(sheet);
                 // 加密文档与只读保护
                 if (!string.IsNullOrEmpty(password))
                 {
@@ -140,7 +180,7 @@ namespace WebCore.Documents
             doc.Dispose();
         }
 
-        public void ExportWithDataTable(Stream outputStream, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, Action<Worksheet> action = null, string password = null, bool readOnlyProtect = false)
+        public void ExportWithDataTable(Stream outputStream, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, string password = null, bool readOnlyProtect = false)
         {
             if (outputStream == null)
                 throw new ArgumentNullException(nameof(outputStream));
@@ -155,7 +195,8 @@ namespace WebCore.Documents
             {
                 var sheet = doc.CreateEmptySheet(string.IsNullOrEmpty(dataTable.TableName) ? "Sheet1" : dataTable.TableName);
                 sheet.InsertDataTable(dataTable, columnHeaders, firstRow, firstColumn);
-                action?.Invoke(sheet);
+                // 设置表格样式
+                SetWorksheetFormat(sheet);
                 // 加密文档与只读保护
                 if (!string.IsNullOrEmpty(password))
                 {
@@ -167,25 +208,14 @@ namespace WebCore.Documents
             doc.Dispose();
         }
 
-        /// <summary>
-        /// 导出文档
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="outputDirectory"></param>
-        /// <param name="outputFileFormat"></param>
-        /// <param name="uriString"></param>
-        /// <param name="password"></param>
-        /// <param name="name"></param>
-        /// <param name="ts"></param>
-        /// <returns></returns>
-        public static string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null)
+        public string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null)
         {
             string filename = source.FullName, dirString = outputDirectory, fName, fPath;
             if (name == null) name = Path.GetFileNameWithoutExtension(filename);
             if (ts == null) ts = source.LastWriteTimeHex();
             var dir = new DirectoryInfo(dirString);
 
-            if (outputFileFormat == ".pdf")
+            if (outputFileFormat == "pdf" || outputFileFormat == ".pdf")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);
@@ -203,7 +233,7 @@ namespace WebCore.Documents
                 return uriString + "/" + fName;
             }
 
-            if (outputFileFormat == ".html")
+            if (outputFileFormat == "html" || outputFileFormat == ".html")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);
@@ -226,7 +256,7 @@ namespace WebCore.Documents
                 return uriString + "/" + fName;
             }
 
-            if (outputFileFormat == ".png")
+            if (outputFileFormat == "png" || outputFileFormat == ".png")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);

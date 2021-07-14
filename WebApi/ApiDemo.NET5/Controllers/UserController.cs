@@ -20,8 +20,16 @@ namespace ApiDemo.NET5.Controllers
     //[Route("{culture:culture}/[controller]/[action]")]
     public class UserController : ApiController
     {
-        public UserController(ILiteDb db, ICrypto crypto)
+        private readonly ILiteDb liteDb;
+        private readonly ICrypto crypto;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public UserController(ILiteDb liteDb, ICrypto crypto)
         {
+            this.liteDb = liteDb;
+            this.crypto = crypto;
         }
 
         #region api/user/register
@@ -48,7 +56,7 @@ namespace ApiDemo.NET5.Controllers
             //var parameters = new { username, hash = Crypto.HashPassword(input.Password), email, phone, idcard };
             //await DB.Execute("INSERT INTO User (username, hash, email, phone, idcard) VALUES (@username, @hash, @email, @phone, @idcard)", parameters);
 
-            using (var db = DB.Open())
+            using (var db = liteDb.Open())
             {
                 var c = db.GetCollection<AppUser>(LiteDB.BsonAutoId.Guid);
 
@@ -65,7 +73,7 @@ namespace ApiDemo.NET5.Controllers
                     return BadRequest("IdCard is duplicated");
 
                 var salt = new Random().Next(1000, 9999).ToString();
-                var hash = Crypto.HashPassword(input.Password + salt);
+                var hash = crypto.HashPassword(input.Password + salt);
                 var entity = new AppUser
                 {
                     CreationTime = DateTime.Now,

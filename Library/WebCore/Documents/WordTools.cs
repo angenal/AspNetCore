@@ -8,13 +8,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using WebInterface;
 
 namespace WebCore.Documents
 {
     /// <summary>
     /// Spire.Doc - Version 9.4 - Word Tool.
     /// </summary>
-    public class WordTools
+    public class WordTools : IWordTools
     {
         /// <summary>
         /// 替换文本时的模板字符串前缀
@@ -42,7 +43,7 @@ namespace WebCore.Documents
         /// <param name="dictBookMark">数据字典</param>
         /// <param name="password">文件密码,输入密码才能打开</param>
         /// <param name="readOnlyProtect">只读保护</param>
-        public static void ExportWithBookMark(string templateFile, string saveFileName, Dictionary<string, string> dictBookMark, string password = null, bool readOnlyProtect = false)
+        public void ExportWithBookMark(string templateFile, string saveFileName, Dictionary<string, string> dictBookMark, string password = null, bool readOnlyProtect = false)
         {
             if (string.IsNullOrEmpty(templateFile))
                 throw new ArgumentNullException(nameof(templateFile));
@@ -104,7 +105,7 @@ namespace WebCore.Documents
         /// <param name="saveFileName">加密文件路径</param>
         /// <param name="encryptOpen">输入密码才能打开</param>
         /// <param name="readOnlyProtect">只读保护</param>
-        public static void EncryptProtect(string filename, string password, string saveFileName = null, bool encryptOpen = true, bool readOnlyProtect = false)
+        public void EncryptProtect(string filename, string password, string saveFileName = null, bool encryptOpen = true, bool readOnlyProtect = false)
         {
             if (string.IsNullOrEmpty(password) || (!encryptOpen && !readOnlyProtect)) return;
             if (string.IsNullOrEmpty(filename))
@@ -129,7 +130,7 @@ namespace WebCore.Documents
         /// <param name="httpRootPath">http绝对路径</param>
         /// <param name="password">文件打开密码</param>
         /// <returns></returns>
-        public static string ImagePreview(string filename, string outputDirectory, string httpRootPath = "", string password = "")
+        public string ImagePreview(string filename, string outputDirectory, string httpRootPath = "", string password = "")
         {
             return SaveToFile(filename, outputDirectory, ".png", httpRootPath, password);
         }
@@ -142,7 +143,7 @@ namespace WebCore.Documents
         /// <param name="httpRootPath">http绝对路径</param>
         /// <param name="password">文件打开密码</param>
         /// <returns></returns>
-        public static string PdfPreview(string filename, string outputDirectory, string httpRootPath = "", string password = "")
+        public string PdfPreview(string filename, string outputDirectory, string httpRootPath = "", string password = "")
         {
             return SaveToFile(filename, outputDirectory, ".pdf", httpRootPath, password);
         }
@@ -155,12 +156,12 @@ namespace WebCore.Documents
         /// <param name="httpRootPath">http绝对路径</param>
         /// <param name="password">文件打开密码</param>
         /// <returns></returns>
-        public static string HtmlPreview(string filename, string outputDirectory, string httpRootPath = "", string password = "")
+        public string HtmlPreview(string filename, string outputDirectory, string httpRootPath = "", string password = "")
         {
             return SaveToFile(filename, outputDirectory, ".html", httpRootPath, password);
         }
 
-        static string SaveToFile(string filename, string outputDirectory, string outputFileFormat, string httpRootPath, string password)
+        string SaveToFile(string filename, string outputDirectory, string outputFileFormat, string httpRootPath, string password)
         {
             if (string.IsNullOrEmpty(filename))
                 throw new ArgumentNullException(nameof(filename));
@@ -183,24 +184,24 @@ namespace WebCore.Documents
         }
 
         /// <summary>
-        /// 导出文档
+        /// 另存 Word 文档(*.pdf,*.html,*.png)
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="outputDirectory"></param>
-        /// <param name="outputFileFormat"></param>
-        /// <param name="uriString"></param>
-        /// <param name="password"></param>
-        /// <param name="name"></param>
-        /// <param name="ts"></param>
+        /// <param name="source">来源文件(*.doc,*.docx)</param>
+        /// <param name="outputDirectory">输出目录</param>
+        /// <param name="outputFileFormat">选择一种输出格式(pdf,html,png)</param>
+        /// <param name="uriString">返回文件路径前缀网址</param>
+        /// <param name="password">文件密码,输入密码才能打开</param>
+        /// <param name="name">返回文件名(不包含文件扩展类型)</param>
+        /// <param name="ts">返回文件名后缀</param>
         /// <returns></returns>
-        public static string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null)
+        public string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null)
         {
             string filename = source.FullName, dirString = outputDirectory, fName, fPath;
             if (name == null) name = Path.GetFileNameWithoutExtension(filename);
             if (ts == null) ts = source.LastWriteTimeHex();
             var dir = new DirectoryInfo(dirString);
 
-            if (outputFileFormat == ".pdf")
+            if (outputFileFormat == "pdf" || outputFileFormat == ".pdf")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);
@@ -218,7 +219,7 @@ namespace WebCore.Documents
                 return uriString + "/" + fName;
             }
 
-            if (outputFileFormat == ".html")
+            if (outputFileFormat == "html" || outputFileFormat == ".html")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);
@@ -250,7 +251,7 @@ namespace WebCore.Documents
                 return uriString + "/" + fName;
             }
 
-            if (outputFileFormat == ".png")
+            if (outputFileFormat == "png" || outputFileFormat == ".png")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);

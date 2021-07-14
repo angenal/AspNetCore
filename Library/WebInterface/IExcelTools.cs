@@ -1,5 +1,3 @@
-using Spire.Xls;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -44,7 +42,7 @@ namespace WebInterface
         /// <param name="action">其它处理</param>
         /// <param name="password">文件密码,输入密码才能打开</param>
         /// <param name="readOnlyProtect">只读保护</param>
-        void ExportWithDataTable(string saveFileName, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, Action<Worksheet> action = null, string password = null, bool readOnlyProtect = false);
+        void ExportWithDataTable(string saveFileName, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, string password = null, bool readOnlyProtect = false);
 
         /// <summary>
         /// 导出 Excel 文档(*.xls,*.xlsx)
@@ -57,6 +55,19 @@ namespace WebInterface
         /// <param name="action">其它处理</param>
         /// <param name="password">文件密码,输入密码才能打开</param>
         /// <param name="readOnlyProtect">只读保护</param>
-        void ExportWithDataTable(Stream outputStream, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, Action<Worksheet> action = null, string password = null, bool readOnlyProtect = false);
+        void ExportWithDataTable(Stream outputStream, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, string password = null, bool readOnlyProtect = false);
+
+        /// <summary>
+        /// 另存 Excel 文档(*.pdf,*.html,*.png)
+        /// </summary>
+        /// <param name="source">来源文件(*.xls,*.xlsx)</param>
+        /// <param name="outputDirectory">输出目录</param>
+        /// <param name="outputFileFormat">选择一种输出格式(pdf,html,png)</param>
+        /// <param name="uriString">返回文件路径前缀网址</param>
+        /// <param name="password">文件密码,输入密码才能打开</param>
+        /// <param name="name">返回文件名(不包含文件扩展类型)</param>
+        /// <param name="ts">返回文件名后缀</param>
+        /// <returns></returns>
+        string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null);
     }
 }

@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using ApiDemo.NET5.Common;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net;
-using System.Security.Claims;
+using WebFramework;
+using WebInterface;
 
 namespace ApiDemo.NET5.Controllers.V1
 {
@@ -22,10 +19,17 @@ namespace ApiDemo.NET5.Controllers.V1
     [Route("api/[controller]/v{version:version}/[action]")]
     public class AuthController : ApiController
     {
+        private readonly ILiteDb liteDb;
+        private readonly ICrypto crypto;
         private readonly IJwtGenerator JwtToken;
 
-        public AuthController(ILiteDb db, ICrypto crypto, IJwtGenerator jwtToken) : base(db, crypto)
+        /// <summary>
+        ///
+        /// </summary>
+        public AuthController(ILiteDb liteDb, ICrypto crypto, IJwtGenerator jwtToken)
         {
+            this.liteDb = liteDb;
+            this.crypto = crypto;
             JwtToken = jwtToken;
         }
 

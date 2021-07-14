@@ -4,30 +4,20 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
+using WebInterface;
 
 namespace WebCore.Documents
 {
-    public class PdfTools
+    public class PdfTools : IPdfTools
     {
-        /// <summary>
-        /// 导出文档
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="outputDirectory"></param>
-        /// <param name="outputFileFormat"></param>
-        /// <param name="uriString"></param>
-        /// <param name="password"></param>
-        /// <param name="name"></param>
-        /// <param name="ts"></param>
-        /// <returns></returns>
-        public static string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null)
+        public string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null)
         {
             string filename = source.FullName, dirString = outputDirectory, fName, fPath;
             if (name == null) name = Path.GetFileNameWithoutExtension(filename);
             if (ts == null) ts = source.LastWriteTimeHex();
             var dir = new DirectoryInfo(dirString);
 
-            if (outputFileFormat == ".html")
+            if (outputFileFormat == "html" || outputFileFormat == ".html")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);
@@ -43,14 +33,16 @@ namespace WebCore.Documents
                 //doc.Dispose();
 
                 filename = filename.Replace('\\', '/');
-                var src = filename.Substring(filename.IndexOf("wwwroot") + 7);
+                var src = filename.Contains("wwwroot")
+                    ? filename.Substring(filename.IndexOf("wwwroot") + 7)
+                    : source.FullName.Substring(Environment.CurrentDirectory.Length).Replace('\\', '/');
                 var html = PdfTemplate(source.Name, src);
                 File.WriteAllText(fPath, html, Encoding.UTF8);
 
                 return uriString + "/" + fName;
             }
 
-            if (outputFileFormat == ".png")
+            if (outputFileFormat == "png" || outputFileFormat == ".png")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);

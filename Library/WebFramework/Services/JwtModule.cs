@@ -143,13 +143,4 @@ namespace WebFramework.Services
             return tokenHandler.WriteToken(token);
         }
     }
-
-    /// <summary>
-    /// JWT generator interface.
-    /// </summary>
-    public interface IJwtGenerator
-    {
-        string Generate(IEnumerable<Claim> claims);
-        string Generate(Func<IEnumerable<Claim>> generator);
-    }
 }

@@ -3,30 +3,20 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using WebInterface;
 
 namespace WebCore.Documents
 {
-    public class PptTools
+    public class PptTools : IPptTools
     {
-        /// <summary>
-        /// 导出文档
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="outputDirectory"></param>
-        /// <param name="outputFileFormat"></param>
-        /// <param name="uriString"></param>
-        /// <param name="password"></param>
-        /// <param name="name"></param>
-        /// <param name="ts"></param>
-        /// <returns></returns>
-        public static string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null)
+        public string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null)
         {
             string filename = source.FullName, dirString = outputDirectory, fName, fPath;
             if (name == null) name = Path.GetFileNameWithoutExtension(filename);
             if (ts == null) ts = source.LastWriteTimeHex();
             var dir = new DirectoryInfo(dirString);
 
-            if (outputFileFormat == ".pdf")
+            if (outputFileFormat == "pdf" || outputFileFormat == ".pdf")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);
@@ -44,7 +34,7 @@ namespace WebCore.Documents
                 return uriString + "/" + fName;
             }
 
-            if (outputFileFormat == ".html")
+            if (outputFileFormat == "html" || outputFileFormat == ".html")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);
@@ -59,7 +49,7 @@ namespace WebCore.Documents
                 return uriString + "/" + fName;
             }
 
-            if (outputFileFormat == ".png")
+            if (outputFileFormat == "png" || outputFileFormat == ".png")
             {
                 fName = name + ts + outputFileFormat;
                 fPath = Path.Combine(dirString, fName);

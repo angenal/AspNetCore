@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
+using WebCore;
 using WebFramework;
 using WebInterface;
 
@@ -21,18 +22,22 @@ namespace ApiDemo.NET5.Controllers
     //[Route("{culture:culture}/[controller]/[action]")]
     public class OfficeController : ApiController
     {
-        private readonly IWebHostEnvironment Env;
-        private readonly IExcelTools Excel;
+        private readonly IWebHostEnvironment env;
+        private readonly IExcelTools excel;
+        private readonly IWordTools word;
+        private readonly IPptTools ppt;
+        private readonly IPdfTools pdf;
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="env"></param>
-        /// <param name="excel"></param>
-        public OfficeController(IWebHostEnvironment env, IExcelTools excel)
+        public OfficeController(IWebHostEnvironment env, IExcelTools excel, IWordTools word, IPptTools ppt, IPdfTools pdf)
         {
-            Env = env;
-            Excel = excel;
+            this.env = env;
+            this.excel = excel;
+            this.word = word;
+            this.ppt = ppt;
+            this.pdf = pdf;
         }
 
 
@@ -57,14 +62,14 @@ namespace ApiDemo.NET5.Controllers
                     return ExcelExportDataTable(table, name);
                 }
 
-                string dir = Env.ContentRootPath, templateFile = $"{dir}\\App_Data\\template.xlsx";
+                string dir = env.ContentRootPath, templateFile = $"{dir}\\App_Data\\template.xlsx";
                 var columnHeaders = new Dictionary<string, string>
                 {
                     {"A1","NO"},{"B1","Name"},{"C1","Sex"},{"D1","Nation"},{"E1","Phone"},{"F1","IdCard"},{"G1","Memo"}
                 };
                 var content = new MemoryStream();
                 var list = input.Data.ToHashtables();
-                Excel.ExportWithList(templateFile, content, list, columnHeaders);
+                excel.ExportWithList(templateFile, content, list, columnHeaders);
                 content.Seek(0, SeekOrigin.Begin);
                 return File(content, "application/octet-stream", $"{name}.xlsx");
             }
@@ -79,37 +84,7 @@ namespace ApiDemo.NET5.Controllers
             try
             {
                 var content = new MemoryStream();
-                Excel.ExportWithDataTable(content, table, true, 1, 1, sheet =>
-                {
-                    sheet.DefaultRowHeight = 21;
-                    sheet.Range.Style.HorizontalAlignment = Spire.Xls.HorizontalAlignType.Center;
-                    sheet.Range.Style.VerticalAlignment = Spire.Xls.VerticalAlignType.Center;
-                    sheet.FreezePanes(sheet.FirstRow + 1, sheet.FirstColumn); // 冻结首行
-
-                    var firstRow = sheet.Range.Rows[0];
-                    firstRow.AutoFitColumns();
-                    firstRow.Style.HorizontalAlignment = Spire.Xls.HorizontalAlignType.Left;
-                    var firstColumn = firstRow.Columns[0];
-                    firstColumn.Style.HorizontalAlignment = Spire.Xls.HorizontalAlignType.Right;
-                    var fontBold = sheet.Workbook.CreateFont();
-                    fontBold.IsBold = true;
-                    foreach (Spire.Xls.CellRange column in firstRow.Columns)
-                    {
-                        var richText = column.RichText;
-                        var text = column.DisplayedText;
-                        int index = text.IndexOf('＆'), length = text.Length;
-                        if (index < 1)
-                        {
-                            richText.Text = text;
-                            richText.SetFont(0, text.Length, fontBold);
-                        }
-                        else
-                        {
-                            richText.Text = text.Substring(0, index) + (index == length - 1 ? "" : text.Substring(index + 1));
-                            richText.SetFont(0, index - 1, fontBold);
-                        }
-                    }
-                });
+                excel.ExportWithDataTable(content, table, true, 1, 1);
                 content.Seek(0, SeekOrigin.Begin);
 
                 return File(content, "application/octet-stream", $"{name}.xlsx");
@@ -126,65 +101,7 @@ namespace ApiDemo.NET5.Controllers
         #region api/Office/Preview
 
         /// <summary>
-        /// Generate HTML preview by Aspose
-        /// </summary>
-        /// <param name="filename">test.doc,xls,pptx,pdf</param>
-        /// <returns></returns>
-        [HttpGet]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        public ActionResult PreviewA(string filename)
-        {
-            string dir = Env.WebRootPath, files = "office/files", srcDoc = $"{files}/{filename}", srcPath = Path.Combine(dir, srcDoc);
-            var doc = new FileInfo(srcPath);
-            if (!doc.Exists) return Ok("");
-
-            string name = doc.FullName.Md5(), salt = doc.LastWriteTimeHex(), ext = ".html";
-            string saveDoc = $"{files}/temp/{name}{salt}{ext}", savePath = Path.Combine(dir, saveDoc), url = "/" + saveDoc;
-            if (System.IO.File.Exists(savePath)) return Ok(url);
-
-            bool tempImagesDelete = false;
-            switch (doc.Extension.ToLower())
-            {
-                case ".doc":
-                case ".docx":
-                    var document = new Aspose.Words.Document(doc.FullName);
-                    document.Save(savePath, Aspose.Words.SaveFormat.Html);
-                    tempImagesDelete = true;
-                    break;
-                case ".xls":
-                case ".xlsx":
-                    var xls = new Aspose.Cells.Workbook(doc.FullName);
-                    xls.Save(savePath, Aspose.Cells.SaveFormat.Html);
-                    break;
-                case ".ppt":
-                case ".pptx":
-                    var ppt = new Aspose.Slides.Presentation(doc.FullName);
-                    ppt.Save(savePath, Aspose.Slides.Export.SaveFormat.Html);
-                    break;
-                case ".pdf":
-                    string outputDirectory = Path.GetDirectoryName(savePath), uriString = $"/{files}/temp", password = null;
-                    url = PdfTools.SaveToFile(doc, outputDirectory, ext, uriString, password, name, salt);
-                    break;
-            }
-
-            var ts = new List<string>();
-            int tl = salt.Length, len = tl + ext.Length;
-            var t1 = savePath.Substring(savePath.Length - len, tl);
-            dir = Path.GetDirectoryName(savePath);
-            foreach (var file in Directory.GetFiles(dir, $"{name}*{ext}"))
-            {
-                var t0 = file.Substring(file.Length - len, tl);
-                if (t0.Equals(t1)) continue;
-                System.IO.File.Delete(file);
-                ts.Add(t0);
-            }
-            if (!tempImagesDelete) return Ok(url);
-            foreach (var t0 in ts) foreach (var file in Directory.GetFiles(dir, $"{name}{t0}.*.png")) System.IO.File.Delete(file);
-            return Ok(url);
-        }
-
-        /// <summary>
-        /// Generate HTML preview by Spire
+        /// Generate HTML Preview
         /// </summary>
         /// <param name="filename">test.doc,xls,pptx,pdf</param>
         /// <param name="format">html,png,pdf</param>
@@ -193,7 +110,7 @@ namespace ApiDemo.NET5.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult PreviewS(string filename, string format = "html")
         {
-            string dir = Env.WebRootPath, files = "office/files", srcDoc = $"{files}/{filename}", srcPath = Path.Combine(dir, srcDoc);
+            string dir = env.WebRootPath, files = "office/files", srcDoc = $"{files}/{filename}", srcPath = Path.Combine(dir, srcDoc);
             var doc = new FileInfo(srcPath);
             if (!doc.Exists) return Ok("");
 
@@ -206,18 +123,18 @@ namespace ApiDemo.NET5.Controllers
             {
                 case ".doc":
                 case ".docx":
-                    url = WordTools.SaveToFile(doc, outputDirectory, ext, uriString, password, name, salt);
+                    url = word.SaveToFile(doc, outputDirectory, ext, uriString, password, name, salt);
                     break;
                 case ".xls":
                 case ".xlsx":
-                    url = ExcelTools.SaveToFile(doc, outputDirectory, ext, uriString, password, name, salt);
+                    url = excel.SaveToFile(doc, outputDirectory, ext, uriString, password, name, salt);
                     break;
                 case ".ppt":
                 case ".pptx":
-                    url = PptTools.SaveToFile(doc, outputDirectory, ext, uriString, password, name, salt);
+                    url = ppt.SaveToFile(doc, outputDirectory, ext, uriString, password, name, salt);
                     break;
                 case ".pdf":
-                    url = PdfTools.SaveToFile(doc, outputDirectory, ext, uriString, password, name, salt);
+                    url = pdf.SaveToFile(doc, outputDirectory, ext, uriString, password, name, salt);
                     break;
             }
 
