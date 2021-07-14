@@ -1,9 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiDemo.NET5.Models.DTO.Office
 {
+    /// <summary>
+    ///
+    /// </summary>
     public class ExcelExportDataInputDto
     {
         /// <summary>
@@ -20,14 +22,38 @@ namespace ApiDemo.NET5.Models.DTO.Office
         /// </summary>
         public bool Template { get; set; }
     }
+    /// <summary>
+    ///
+    /// </summary>
     public class ExcelExportDataItemDto
     {
+        /// <summary>
+        /// 编号
+        /// </summary>
         public string NO { get; set; }
+        /// <summary>
+        /// 名字
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 性别
+        /// </summary>
         public string Sex { get; set; }
+        /// <summary>
+        /// 民族
+        /// </summary>
         public string Nation { get; set; }
+        /// <summary>
+        /// 电话
+        /// </summary>
         public string Phone { get; set; }
+        /// <summary>
+        /// 身份证
+        /// </summary>
         public string IdCard { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
         public string Memo { get; set; }
     }
 }

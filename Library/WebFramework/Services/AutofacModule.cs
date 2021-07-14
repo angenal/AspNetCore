@@ -50,7 +50,7 @@ namespace WebFramework.Services
             base.Load(builder);
 
             // Register assembly types
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+            builder.RegisterAssemblyTypes(Assembly.GetEntryAssembly())
                 .AsImplementedInterfaces().Where(i => Types.Any(t => i.Name.EndsWith(t)))
                 .PropertiesAutowired().AsSelf().InstancePerDependency();
 

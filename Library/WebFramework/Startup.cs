@@ -8,20 +8,35 @@ using WebFramework.Services;
 
 namespace WebFramework
 {
-    class ProgramStartup
+    public class Startup
     {
         readonly IConfiguration Configuration;
         readonly IWebHostEnvironment Environment;
 
-        public ProgramStartup(IConfiguration configuration, IWebHostEnvironment environment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
             Environment = environment;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public static void Run<TStartup>(string[] args) where TStartup : class
+        {
+            var host = Host.CreateDefaultBuilder(args)
+                //.ConfigureAppConfiguration((context, builder) =>
+                //{
+                //    //The following configuration has been loaded automatically by default
+                //    builder.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true);
+                //    builder.AddEnvironmentVariables();//builder.AddEnvironmentVariables("ASPNETCORE_");
+                //    builder.AddCommandLine(args);
+                //})
+                .ConfigureLogging()
+                .ConfigureWebHostDefaults(builder => builder.UseStartup<TStartup>().UseSentryMonitor())
+                .Build();
+
+            host.Run();
+        }
+
+        public void ConfigServices(IServiceCollection services)
         {
             // Adds services for api controllers
             var builder = services.AddApiControllers(); // services.AddMvc() for Mvc application
@@ -30,8 +45,7 @@ namespace WebFramework
             services.ConfigureServices(Configuration, Environment, builder);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void ConfigApp(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             // Services: Crypto,Database,Compression,Caching,CORS,Authentication,Authorization,Swagger,i18n...
             app.Configure(Configuration, env, loggerFactory);
@@ -44,14 +58,6 @@ namespace WebFramework
             //        await context.Response.WriteAsync("Hello World!");
             //    });
             //});
-
-            //API: ApiController
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute("default", "{culture:culture}/{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapControllers();
-                //endpoints.MapHub<TicketHub>("/hub", options => { }); // SignalR
-            });
         }
     }
 }

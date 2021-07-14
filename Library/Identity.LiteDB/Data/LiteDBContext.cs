@@ -45,6 +45,7 @@ namespace Identity.LiteDB.Data
         public LiteDatabase OpenMemory() => new LiteDatabase(new System.IO.MemoryStream());
 
         public string GetConnectionString() => _connectionString;
+        public bool HasConnectionString => !string.IsNullOrEmpty(_connectionString);
 
         private readonly string _connectionString;
         public LiteDatabase LiteDatabase { get; protected set; }

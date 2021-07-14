@@ -46,7 +46,7 @@ namespace WebFramework.Services
                 // add operation filter which sets default values.
                 if (ApiVersionService.UseVersionedApiExplorer) c.OperationFilter<SwaggerDefaultValues>();
                 // integrate xml comments, set project properties to generate XML file.
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetEntryAssembly().GetName().Name}.xml"), true);
                 // add authentication security scheme.
                 string name = "Authorization", scheme = JwtBearerDefaults.AuthenticationScheme;
                 var securityScheme = new OpenApiSecurityScheme

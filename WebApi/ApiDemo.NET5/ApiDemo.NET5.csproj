@@ -82,10 +82,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Library\WebCore\WebCore.csproj" />
     <ProjectReference Include="..\..\Library\WebFramework\WebFramework.csproj" />
     <ProjectReference Include="..\..\Library\WebInterface\WebInterface.csproj" />
@@ -101,6 +97,15 @@
     <Content Update="wwwroot\office\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Controllers\OfficeController.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Controllers\OfficeController.zh-CN.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

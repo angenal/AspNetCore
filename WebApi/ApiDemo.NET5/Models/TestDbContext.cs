@@ -10,6 +10,9 @@ using WebInterface.Settings;
 
 namespace ApiDemo.NET5.Models
 {
+    /// <summary>
+    ///
+    /// </summary>
     public sealed class TestDbContext : DbContext
     {
         private readonly byte[] _encryptionIV;
@@ -22,6 +25,9 @@ namespace ApiDemo.NET5.Models
         private readonly IEncryptionProvider _provider;
         private readonly IDataProtector _protector;
 
+        /// <summary>
+        ///
+        /// </summary>
         public TestDbContext(
             DbContextOptions options,
             IOptions<AesSettings> aesSettings,
@@ -60,12 +66,18 @@ namespace ApiDemo.NET5.Models
         //public DbSet<Company> Company { get; set; }
         //public DbSet<Customer> Customer { get; private set; }
 
+        /// <summary>
+        ///
+        /// </summary>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.EnableSensitiveDataLogging();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

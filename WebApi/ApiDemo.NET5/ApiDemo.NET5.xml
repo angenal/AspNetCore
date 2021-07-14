@@ -97,6 +97,11 @@
             Returns authorized session data for this user.
             </summary>
         </member>
+        <member name="T:ApiDemo.NET5.Models.DTO.Auth.LoginInputDto">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="P:ApiDemo.NET5.Models.DTO.Auth.LoginInputDto.Username">
             <summary>
             账号
@@ -106,6 +111,11 @@
             <summary>
             密码
             </summary>
+        </member>
+        <member name="T:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataInputDto">
+             <summary>
+            
+             </summary>
         </member>
         <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataInputDto.Data">
             <summary>
@@ -121,6 +131,51 @@
             <summary>
             是否使用模板 template.xlsx
             </summary>
+        </member>
+        <member name="T:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.NO">
+            <summary>
+            编号
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Name">
+            <summary>
+            名字
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Nation">
+            <summary>
+            民族
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Phone">
+            <summary>
+            电话
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.IdCard">
+            <summary>
+            身份证
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Memo">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:ApiDemo.NET5.Models.DTO.User.RegisterInputDto">
+             <summary>
+            
+             </summary>
         </member>
         <member name="P:ApiDemo.NET5.Models.DTO.User.RegisterInputDto.Username">
             <summary>
@@ -146,6 +201,16 @@
             <summary>
             身份证
             </summary>
+        </member>
+        <member name="T:ApiDemo.NET5.Models.DTO.User.RegisterOutputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.DTO.User.RegisterOutputDto.Id">
+             <summary>
+            
+             </summary>
         </member>
         <member name="T:ApiDemo.NET5.Models.DTO.PersonalAnswerModel">
             <summary>
@@ -282,14 +347,14 @@
             修改次数
             </summary>
         </member>
-        <member name="T:ApiDemo.NET5.Models.Entities.Entity">
+        <member name="T:ApiDemo.NET5.Models.Entities.AppUser">
             <summary>
-            Base Entity
+            Application User Account
             </summary>
         </member>
-        <member name="P:ApiDemo.NET5.Models.Entities.Entity.Id">
+        <member name="M:ApiDemo.NET5.Models.Entities.AppUser.#ctor(System.Boolean)">
             <summary>
-            Unique Identifier
+            New User Account
             </summary>
         </member>
         <member name="T:ApiDemo.NET5.Models.Entities.UpdateHistrories">
@@ -493,21 +558,30 @@
             修改次数
             </summary>
         </member>
+        <member name="T:ApiDemo.NET5.Models.TestDbContext">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Models.TestDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions,Microsoft.Extensions.Options.IOptions{WebInterface.Settings.AesSettings},Microsoft.Extensions.Options.IOptions{WebInterface.Settings.ApiSettings},Microsoft.AspNetCore.Http.IHttpContextAccessor,Microsoft.AspNetCore.DataProtection.IDataProtectionProvider)">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="P:ApiDemo.NET5.Models.TestDbContext.Sid">
             <summary>
             Api Client Identity Settings, Request Headers: X-Request-Sid
             </summary>
         </member>
-        <member name="T:ApiDemo.NET5.Program">
-            <summary>
-            Program
-            </summary>
+        <member name="M:ApiDemo.NET5.Models.TestDbContext.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)">
+             <summary>
+            
+             </summary>
         </member>
-        <member name="M:ApiDemo.NET5.Program.Main(System.String[])">
-            <summary>
-            Main
-            </summary>
-            <param name="args"></param>
+        <member name="M:ApiDemo.NET5.Models.TestDbContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+             <summary>
+            
+             </summary>
         </member>
     </members>
 </doc>

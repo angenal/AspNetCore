@@ -1,3 +1,6 @@
+using Identity.LiteDB;
+using Identity.LiteDB.Data;
+using Identity.LiteDB.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,15 +25,18 @@ namespace WebFramework.Services
             services.Configure<IdentitySettings>(section);
             config.Bind(IdentitySettings.AppSettings, IdentitySettings.Instance);
 
-            services.AddIdentity<Identity.LiteDB.Models.ApplicationUser, Identity.LiteDB.IdentityRole>(options =>
+            var liteDb = new LiteDbContext(IdentitySettings.Instance.LiteDB);
+            if (!liteDb.HasConnectionString) return services;
+
+            services.AddSingleton<ILiteDbContext, LiteDbContext>(_ => liteDb).AddIdentity<ApplicationUser, Identity.LiteDB.IdentityRole>(options =>
             {
                 options.User = IdentitySettings.Instance.User;
                 options.SignIn = IdentitySettings.Instance.SignIn;
                 options.Password = IdentitySettings.Instance.Password;
             })
             //.AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddUserStore<Identity.LiteDB.LiteDbUserStore<Identity.LiteDB.Models.ApplicationUser>>()
-            .AddRoleStore<Identity.LiteDB.LiteDbRoleStore<Identity.LiteDB.IdentityRole>>()
+            .AddUserStore<LiteDbUserStore<ApplicationUser>>()
+            .AddRoleStore<LiteDbRoleStore<Identity.LiteDB.IdentityRole>>()
             .AddDefaultTokenProviders();
 
             return services;

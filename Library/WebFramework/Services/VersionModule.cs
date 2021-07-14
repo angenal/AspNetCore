@@ -95,6 +95,7 @@ namespace WebFramework.Services
                         continue;
                     if (Attribute.GetCustomAttributes(p, typeof(ApiVersionAttribute)) is not ApiVersionAttribute[] attributesInMethod)
                         attributesInMethod = c.ApiVersion.Concat(new ApiVersionAttribute[] { new ApiVersionAttribute(DefaultApiVersion.ToString()) }).ToArray();
+                    if (p.Name.Equals("get_HttpContext")) break;
                     c.ApiVersions.Add(p.Name, attributesInMethod.Distinct().OrderBy(i => i.ToString()).ToArray());
                 }
                 Versions[k].Controllers.Add(c.Type.FullName, c);

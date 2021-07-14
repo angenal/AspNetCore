@@ -1,6 +1,5 @@
 using LiteDB;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -9,12 +8,16 @@ using System.Security.Claims;
 namespace Identity.LiteDB.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
+    /// <summary>
+    /// User Account to Represents a user in the identity system
+    /// </summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class ApplicationUser : IdentityUser<string>
+    public class ApplicationUser : IdentityUser
     {
-        public ApplicationUser()
+        public ApplicationUser() : base()
         {
             Id = ObjectId.NewObjectId().ToString();
+            IsActive = true;
             Roles = new List<string>();
             Logins = new List<UserLoginInfo>();
             SerializableLogins = new List<SerializableUserLoginInfo>();
@@ -22,33 +25,11 @@ namespace Identity.LiteDB.Models
             Tokens = new List<UserToken<string>>();
         }
 
-        public virtual string IdCard { get; set; }
-        public virtual string OpenId { get; set; }
-
-        public virtual int Type { get; set; }
-        public virtual int Role { get; set; }
-
-        public virtual int Sex { get; set; }
-        public virtual string Nickname { get; set; }
-        public virtual string Birthday { get; set; }
-        public virtual string Avatar { get; set; }
-
-        public virtual string Remark { get; set; }
-
-        public virtual string LastLoginIP { get; set; }
-
-        public string AuthenticationKey { get; set; }
-
-        public DateTime? EmailConfirmedTime { get; internal set; }
-
-        public DateTime? PhoneNumberConfirmedTime { get; internal set; }
-
-        public DateTimeOffset? LockoutEndDate { get; internal set; }
-
-
         public List<string> Roles { get; set; }
 
         public List<UserToken<string>> Tokens { get; set; }
+
+        public List<IdentityUserClaim<string>> Claims { get; set; }
 
         public List<SerializableUserLoginInfo> SerializableLogins { get; set; }
 
@@ -58,8 +39,6 @@ namespace Identity.LiteDB.Models
             get => SerializableLogins?.Select(x => new UserLoginInfo(x.LoginProvider, x.ProviderKey, "")).ToList() ?? new List<UserLoginInfo>();
             set => SerializableLogins = value?.Select(x => new SerializableUserLoginInfo(x.LoginProvider, x.ProviderKey)).ToList() ?? new List<SerializableUserLoginInfo>();
         }
-
-        public List<IdentityUserClaim<string>> Claims { get; set; }
 
         public virtual void AddRole(string role) => Roles.Add(role);
 

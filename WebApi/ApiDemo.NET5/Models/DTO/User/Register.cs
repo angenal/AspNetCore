@@ -1,9 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiDemo.NET5.Models.DTO.User
 {
+    /// <summary>
+    ///
+    /// </summary>
     public class RegisterInputDto
     {
         /// <summary>
@@ -40,9 +42,14 @@ namespace ApiDemo.NET5.Models.DTO.User
         [RegularExpression(@"^[0-9]{18}$", ErrorMessage = "wrong ID card format")]
         public string IdCard { get; set; }
     }
-
+    /// <summary>
+    ///
+    /// </summary>
     public class RegisterOutputDto
     {
+        /// <summary>
+        ///
+        /// </summary>
         public Guid Id { get; set; }
     }
 }

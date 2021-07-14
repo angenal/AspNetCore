@@ -39,7 +39,7 @@ namespace WebInterface.Settings
         */
 
         /// <summary>
-        /// LiteDB Stores.
+        /// LiteDB ConnectionString.
         /// </summary>
         public string LiteDB { get; set; }
 

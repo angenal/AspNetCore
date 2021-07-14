@@ -92,20 +92,20 @@ namespace ApiDemo.NET5.Controllers.V2
 
             using (var db = liteDb.Open())
             {
-                var c = db.GetCollection<AppUser>(LiteDB.BsonAutoId.Guid);
+                var c = db.GetCollection<AppUser>();
 
-                var d = c.Query().Where(q => q.Username == username).Select(q => new { q.Id, q.Password, q.PasswordSalt }).FirstOrDefault();
+                var d = c.Query().Where(q => q.UserName == username).Select(q => new { q.Id, q.PasswordHash, q.PasswordSalt }).FirstOrDefault();
 
                 if (d == null)
                     return BadRequest("Login username error");
 
-                if (!crypto.VerifyHashedPassword(d.Password, input.Password + d.PasswordSalt))
+                if (!crypto.VerifyHashedPassword(d.PasswordHash, input.Password + d.PasswordSalt))
                     return BadRequest("Login password error");
 
                 var o = c.Query().Where(q => q.Id == d.Id).Select(q => new Session
                 {
                     Id = q.Id.ToString(),
-                    UserName = q.Username,
+                    UserName = q.UserName,
                     PhoneNumber = q.PhoneNumber,
                     IdCard = q.IdCard,
                     Email = q.Email,

@@ -58,9 +58,9 @@ namespace ApiDemo.NET5.Controllers
 
             using (var db = liteDb.Open())
             {
-                var c = db.GetCollection<AppUser>(LiteDB.BsonAutoId.Guid);
+                var c = db.GetCollection<AppUser>();
 
-                if (c.Exists(q => q.Username == input.Username))
+                if (c.Exists(q => q.UserName == input.Username))
                     return BadRequest("Username is duplicated");
 
                 if (!string.IsNullOrWhiteSpace(input.Email) && c.Exists(q => q.Email == input.Email))
@@ -74,18 +74,15 @@ namespace ApiDemo.NET5.Controllers
 
                 var salt = new Random().Next(1000, 9999).ToString();
                 var hash = crypto.HashPassword(input.Password + salt);
-                var entity = new AppUser
+                var entity = new AppUser()
                 {
-                    CreationTime = DateTime.Now,
-                    IsActive = true,
-                    Username = input.Username,
+                    UserName = input.Username,
                     PhoneNumber = input.PhoneNumber,
                     IdCard = input.IdCard,
                     Email = input.Email,
-                    Password = hash,
+                    PasswordHash = hash,
                     PasswordSalt = salt,
                 };
-                entity.LastModificationTime = entity.CreationTime;
                 var id = c.Insert(entity);
                 return Ok(new RegisterOutputDto { Id = id.AsGuid });
             }

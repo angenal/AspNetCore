@@ -1,9 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiDemo.NET5.Models.DTO.Auth
 {
+    /// <summary>
+    ///
+    /// </summary>
     public class LoginInputDto
     {
         /// <summary>

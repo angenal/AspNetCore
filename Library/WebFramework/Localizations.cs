@@ -68,7 +68,7 @@ namespace WebFramework
                 if (newLocalization != (AvaliableLocalizations)Enum.Parse(type, name)) continue;
                 var field = type.GetField(name);
                 var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-                var assembly = Assembly.GetExecutingAssembly();
+                var assembly = Assembly.GetEntryAssembly();
                 var baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
                 ResourceManager = new ResourceManager(baseName, assembly);
                 break;
