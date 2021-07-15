@@ -15,22 +15,41 @@ namespace WebCore.Data.DTO
         /// <returns></returns>
         public static string Nonce() => new Random().Next(1000, 9999).ToString();
         /// <summary>
-        /// 获取 签名 HMACMD5
+        /// 获取 签名 HMAC+MD5
         /// </summary>
         /// <param name="id">appid|userid</param>
         /// <param name="timestamp">时间戳(Utc)</param>
         /// <param name="nonce">随机数值</param>
         /// <param name="secretKey">凭证密钥Key</param>
         /// <returns></returns>
-        public static string Sinature_HMACMD5(string id, string timestamp, string nonce, string secretKey) => Security.HMAC.MD5($"{id}-{timestamp}-{nonce}", secretKey);
+        public static string Sinature_HMACMD5(string id, string timestamp, string nonce, string secretKey) => Security.Crypto.HMACMD5($"{id}-{timestamp}-{nonce}", secretKey);
         /// <summary>
-        /// 获取 签名 HMACSHA1
+        /// 获取 签名 HMAC+SHA1
         /// </summary>
-        public static string Sinature_HMACSHA1(string id, string timestamp, string nonce, string secretKey) => Security.HMAC.SHA1($"{id}-{timestamp}-{nonce}", secretKey);
+        /// <param name="id">appid|userid</param>
+        /// <param name="timestamp">时间戳(Utc)</param>
+        /// <param name="nonce">随机数值</param>
+        /// <param name="secretKey">凭证密钥Key</param>
+        /// <returns></returns>
+        public static string Sinature_HMACSHA1(string id, string timestamp, string nonce, string secretKey) => Security.Crypto.HMACSHA1($"{id}-{timestamp}-{nonce}", secretKey);
         /// <summary>
-        /// 获取 签名 HMACSHA256
+        /// 获取 签名 HMAC+SHA256
         /// </summary>
-        public static string Sinature_HMACSHA256(string id, string timestamp, string nonce, string secretKey) => Security.HMAC.SHA256($"{id}-{timestamp}-{nonce}", secretKey);
+        /// <param name="id">appid|userid</param>
+        /// <param name="timestamp">时间戳(Utc)</param>
+        /// <param name="nonce">随机数值</param>
+        /// <param name="secretKey">凭证密钥Key</param>
+        /// <returns></returns>
+        public static string Sinature_HMACSHA256(string id, string timestamp, string nonce, string secretKey) => Security.Crypto.HMACSHA256($"{id}-{timestamp}-{nonce}", secretKey);
+        /// <summary>
+        /// 获取 签名 HMAC+SHA512
+        /// </summary>
+        /// <param name="id">appid|userid</param>
+        /// <param name="timestamp">时间戳(Utc)</param>
+        /// <param name="nonce">随机数值</param>
+        /// <param name="secretKey">凭证密钥Key</param>
+        /// <returns></returns>
+        public static string Sinature_HMACSHA512(string id, string timestamp, string nonce, string secretKey) => Security.Crypto.HMACSHA512($"{id}-{timestamp}-{nonce}", secretKey);
     }
     /// <summary>
     /// 客户端请求头信息

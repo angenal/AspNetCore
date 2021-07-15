@@ -347,28 +347,73 @@ namespace WebCore.Security
         {
             using (var h = SHA1.Create())
             {
-                var s = new StringBuilder();
                 byte[] o = h.ComputeHash(Encoding.UTF8.GetBytes(password));
-                foreach (var b in o) s.AppendFormat("{0:x2}", b);
-                return s.ToString();
+                return Convert.ToBase64String(o);
+                //var s = new StringBuilder();
+                //foreach (var b in o) s.AppendFormat("{0:x2}", b);
+                //return s.ToString();
             }
         }
 
         /// <summary>
-        /// HS256
+        /// 随机哈希算法 > Hmac算法也是一种哈希算法，它可以利用MD5或SHA1等哈希算法。
+        ///   不同的是，Hmac还需要一个密钥；只要密钥发生了变化，那么同样的输入也会得到不同的签名。
+        ///   因此，可以把Hmac理解为用随机数“增强”的哈希算法。
+        ///
+        /// HS256 = HMACSHA256 (HMAC+SHA256) Encryption.
         /// </summary>
         /// <param name="password"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public string HS256(string password, string key)
+        public string HS256(string password, string key) => HMACSHA256(password, key);
+        /// <summary>
+        /// HMAC+SHA256
+        /// </summary>
+        public static string HMACSHA256(string password, string key)
         {
-            using (var h = new HMACSHA256(Encoding.UTF8.GetBytes(key)))
-            {
-                var s = new StringBuilder();
-                byte[] o = h.ComputeHash(Encoding.UTF8.GetBytes(password));
-                foreach (var b in o) s.AppendFormat("{0:x2}", b);
-                return s.ToString();
-            }
+            using (var h = new HMACSHA256(Encoding.UTF8.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.UTF8.GetBytes(password)));
+        }
+        /// <summary>
+        /// HS512 = HMACSHA512
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string HS512(string password, string key) => HMACSHA512(password, key);
+        /// <summary>
+        /// HMAC+SHA512
+        /// </summary>
+        public static string HMACSHA512(string password, string key)
+        {
+            using (var h = new HMACSHA512(Encoding.UTF8.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.UTF8.GetBytes(password)));
+        }
+        /// <summary>
+        /// HS1 = HMACSHA1
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string HS1(string password, string key) => HMACSHA1(password, key);
+        /// <summary>
+        /// HMAC+SHA1
+        /// </summary>
+        public static string HMACSHA1(string password, string key)
+        {
+            using (var h = new HMACSHA1(Encoding.UTF8.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.UTF8.GetBytes(password)));
+        }
+        /// <summary>
+        /// HMD5 = HMACMD5
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string HMD5(string password, string key) => HMACMD5(password, key);
+        /// <summary>
+        /// HMAC+MD5
+        /// </summary>
+        public static string HMACMD5(string password, string key)
+        {
+            using (var h = new HMACMD5(Encoding.UTF8.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.UTF8.GetBytes(password)));
         }
 
         /// <summary>
