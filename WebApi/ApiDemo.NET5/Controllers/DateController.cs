@@ -33,7 +33,7 @@ namespace ApiDemo.NET5.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult Now()
         {
-            string timeZone = "Asia/Shanghai";
+            string timeZone = Date.DefaultTimeZone.Id;
             DateTime date = Date.Now(timeZone), dateTime = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
 
             return Ok(new
@@ -51,7 +51,10 @@ namespace ApiDemo.NET5.Controllers
                     Offset = TimeZoneInfo.Local.BaseUtcOffset,
                     Zone = TimeZoneInfo.Local.Id
                 },
-                Zones = TimeZoneInfo.GetSystemTimeZones().Where(t => t.Id.Contains("Standard"))
+                Date.DefaultTimeZone,
+                Date.LocalTimeZone,
+                Date.ChinaTimeZone,
+                Date.Tzdb
             });
         }
     }

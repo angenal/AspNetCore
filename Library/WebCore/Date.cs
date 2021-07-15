@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace WebCore
@@ -41,6 +43,26 @@ namespace WebCore
         /// Startup DateTime
         /// </summary>
         public static DateTime Startup = Now();
+
+        /// <summary>
+        /// Tzdb
+        /// </summary>
+        public static List<string> Tzdb = NodaTime.DateTimeZoneProviders.Tzdb.Ids.ToList();
+
+        /// <summary>
+        /// Default TimeZone
+        /// </summary>
+        public static NodaTime.DateTimeZone DefaultTimeZone = NodaTime.DateTimeZoneProviders.Tzdb.GetSystemDefault();
+
+        /// <summary>
+        /// Local TimeZone
+        /// </summary>
+        public static TimeZoneInfo LocalTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// China TimeZone
+        /// </summary>
+        public static TimeZoneInfo ChinaTimeZone = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(t => t.Id.Contains("China"));
 
         /// <summary>
         /// 当前本地时间 DateTime.Now
