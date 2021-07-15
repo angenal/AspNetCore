@@ -34,7 +34,8 @@ namespace WebCore.Security
         /// <param name="keySize"></param>
         /// <param name="blockSize"></param>
         /// <returns>Encrypted data</returns>
-        public byte[] AESEncrypt(byte[] password, byte[] key, byte[] iv, CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.ISO10126, int keySize = 256, int blockSize = 128)
+        public byte[] AESEncrypt(byte[] password, byte[] key, byte[] iv, CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.ISO10126, int keySize = 256, int blockSize = 128) => AESencrypt(password, key, iv, mode, padding, keySize, blockSize);
+        public static byte[] AESencrypt(byte[] password, byte[] key, byte[] iv, CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.ISO10126, int keySize = 256, int blockSize = 128)
         {
             byte[] cikti;
             using (MemoryStream ms = new MemoryStream())
@@ -66,7 +67,8 @@ namespace WebCore.Security
         /// <param name="keySize"></param>
         /// <param name="blockSize"></param>
         /// <returns>Original data</returns>
-        public byte[] AESDecrypt(byte[] hashedPassword, byte[] key, byte[] iv, CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.ISO10126, int keySize = 256, int blockSize = 128)
+        public byte[] AESDecrypt(byte[] hashedPassword, byte[] key, byte[] iv, CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.ISO10126, int keySize = 256, int blockSize = 128) => AESdecrypt(hashedPassword, key, iv, mode, padding, keySize, blockSize);
+        public static byte[] AESdecrypt(byte[] hashedPassword, byte[] key, byte[] iv, CipherMode mode = CipherMode.CBC, PaddingMode padding = PaddingMode.ISO10126, int keySize = 256, int blockSize = 128)
         {
             byte[] bytes;
             using (MemoryStream ms = new MemoryStream())
@@ -93,7 +95,8 @@ namespace WebCore.Security
         /// <summary>
         /// AESEncrypt + CBC
         /// </summary>
-        public string AESEncrypt(string password, string key, string iv)
+        public string AESEncrypt(string password, string key, string iv) => AESencrypt(password, key, iv);
+        public static string AESencrypt(string password, string key, string iv)
         {
             byte[] inputBytes = Encoding.UTF8.GetBytes(password);
             SymmetricAlgorithm des = Aes.Create();
@@ -113,7 +116,8 @@ namespace WebCore.Security
         /// <summary>
         /// AESDecrypt + CBC
         /// </summary>
-        public string AESDecrypt(string hashedPassword, string key, string iv)
+        public string AESDecrypt(string hashedPassword, string key, string iv) => AESdecrypt(hashedPassword, key, iv);
+        public static string AESdecrypt(string hashedPassword, string key, string iv)
         {
             SymmetricAlgorithm des = Aes.Create();
             des.Key = Encoding.UTF8.GetBytes(key.PadRight(32));
@@ -145,7 +149,8 @@ namespace WebCore.Security
         /// <summary>
         /// AESEncrypt + CEB
         /// </summary>
-        public string AESEncrypt(string password, string key)
+        public string AESEncrypt(string password, string key) => AESencrypt(password, key);
+        public static string AESencrypt(string password, string key)
         {
             if (string.IsNullOrEmpty(password)) return null;
             byte[] inputBytes = Encoding.UTF8.GetBytes(password);
@@ -160,7 +165,8 @@ namespace WebCore.Security
         /// <summary>
         /// AESDecrypt + CEB
         /// </summary>
-        public string AESDecrypt(string hashedPassword, string key)
+        public string AESDecrypt(string hashedPassword, string key) => AESdecrypt(hashedPassword, key);
+        public static string AESdecrypt(string hashedPassword, string key)
         {
             byte[] bKey = new byte[32], encryptedBytes = Convert.FromBase64String(hashedPassword);
             Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(bKey.Length)), bKey, bKey.Length);
