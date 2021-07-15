@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Net;
 using WebCore;
 using WebFramework;
@@ -32,7 +33,8 @@ namespace ApiDemo.NET5.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult Now()
         {
-            DateTime date = Date.Now(), dateTime = DateTime.Now;
+            string timeZone = "Asia/Shanghai";
+            DateTime date = Date.Now(timeZone), dateTime = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local);
 
             return Ok(new
             {
@@ -40,15 +42,16 @@ namespace ApiDemo.NET5.Controllers
                 {
                     Now = date.ToDateTimeString(),
                     Json = $"new Date({date.ToJavaScriptTicks()})",
-                    date.Kind,
-                    Zone = "Asia/Shanghai"
+                    Zone = timeZone
                 },
-                DateTime = new
+                Time = new
                 {
                     Now = dateTime.ToDateTimeString(),
                     Json = $"new Date({dateTime.ToJavaScriptTicks()})",
-                    dateTime.Kind
-                }
+                    Offset = TimeZoneInfo.Local.BaseUtcOffset,
+                    Zone = TimeZoneInfo.Local.Id
+                },
+                Zones = TimeZoneInfo.GetSystemTimeZones().Select(t => t.Id.Contains("Standard"))
             });
         }
     }

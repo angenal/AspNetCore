@@ -38,6 +38,11 @@ namespace WebCore
         }
 
         /// <summary>
+        /// Startup DateTime
+        /// </summary>
+        public static DateTime Startup = Now();
+
+        /// <summary>
         /// 当前本地时间 DateTime.Now
         /// </summary>
         /// <param name="timeZone">时区:上海"Asia/Shanghai"</param>
