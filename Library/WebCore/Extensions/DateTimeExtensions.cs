@@ -646,12 +646,16 @@ namespace WebCore
         /// <summary>
         /// 时间戳 DateTime 转化十六进制
         /// </summary>
-        public static string ToTimestampHex(this DateTime dateTime, bool toSeconds = true) => ToTimestampHex(toSeconds ? ToTimestamp(dateTime) / 1000 : ToTimestamp(dateTime));
+        public static string ToTimestampHex(this DateTime dateTime, bool toSeconds = true, string format = "x8") => (toSeconds ? ToTimestamp(dateTime) / 1000 : ToTimestamp(dateTime)).ToString(format);
 
         /// <summary>
-        /// 时间戳 Seconds 转化十六进制
+        /// 时间戳 Seconds 转化十六进制 小写
         /// </summary>
-        public static string ToTimestampHex(this long t) => t.ToString("x8");
+        public static string x8(this DateTime dateTime, bool toSeconds = true) => dateTime.ToTimestampHex(toSeconds, "x8");
+        /// <summary>
+        /// 时间戳 Seconds 转化十六进制 大写
+        /// </summary>
+        public static string X8(this DateTime dateTime, bool toSeconds = true) => dateTime.ToTimestampHex(toSeconds, "X8");
 
         /// <summary>
         /// 时间戳 Seconds 转化时间值
