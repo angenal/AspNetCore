@@ -51,7 +51,7 @@ namespace ApiDemo.NET5.Controllers
                     Offset = TimeZoneInfo.Local.BaseUtcOffset,
                     Zone = TimeZoneInfo.Local.Id
                 },
-                Zones = TimeZoneInfo.GetSystemTimeZones().Select(t => t.Id.Contains("Standard"))
+                Zones = TimeZoneInfo.GetSystemTimeZones().Where(t => t.Id.Contains("Standard"))
             });
         }
     }
