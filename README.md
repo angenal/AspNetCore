@@ -141,7 +141,10 @@ $ dotnet ef migrations -h  # 使用命令行
     - [Bootstrap 的 Blazor 组件库 `推荐`](https://gitee.com/LongbowEnterprise/BootstrapBlazor)、[官方文档](https://www.blazor.zone/)
     - [DevExpress 控件库,工具,框架 `推荐`](https://www.baidu.com/s?wd=devexpress%20%E7%A0%B4%E8%A7%A3)、[示例代码](https://github.com/DevExpress-Examples)
 
- * 代码生成器
+* 物联网应用
+    - [UHF RFID「超高频射频识别&标签读取器」二次开发](https://gitee.com/angenal/RFID-Toolkit)
+
+* 代码生成器
     - [CodeSmith](https://www.codesmithtools.com)
 
  * 扩展 Visual Studio 2019
