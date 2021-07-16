@@ -6,7 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{BE9FEAAB-B96B-467D-9FCD-088CDEA4698D}"
 	ProjectSection(SolutionItems) = preProject
 		Readme\EasyCaching.md = Readme\EasyCaching.md
-		PMC.txt = PMC.txt
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -32,6 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminLte", "WebAdmin\AdminL
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{8F5403C8-4EC5-4E2D-8949-674C89EDA34D}"
 	ProjectSection(SolutionItems) = preProject
+		Database\Chat.Web.db = Database\Chat.Web.db
+		Database\Chat.Web.db.sql = Database\Chat.Web.db.sql
+		Database\Chat.Web.MSSQL.sql = Database\Chat.Web.MSSQL.sql
 		Database\WebDotnetCoreLocalDB.ldf = Database\WebDotnetCoreLocalDB.ldf
 		Database\WebDotnetCoreLocalDB.mdf = Database\WebDotnetCoreLocalDB.mdf
 	EndProjectSection

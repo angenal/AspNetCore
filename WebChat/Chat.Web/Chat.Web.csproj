@@ -29,6 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\Database\Chat.Web.db" Link="Chat.Web.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Database\Chat.Web.db.sql" Link="Chat.Web.db.sql" />
+    <None Include="..\..\Database\Chat.Web.MSSQL.sql" Link="Chat.Web.MSSQL.sql" />
     <None Include="compilerconfig.json" />
     <None Include="wwwroot\favicon.ico" />
   </ItemGroup>
