@@ -407,10 +407,7 @@ namespace WebCore
         /// <returns></returns>
         public static long ToJavaScriptTicks(this DateTime dateTime)
         {
-            if (dateTime.Kind == DateTimeKind.Local)
-                dateTime = dateTime.ToUniversalTime();
-
-            return (dateTime.Ticks - InitialJavaScriptDateTicks) / 10000;
+            return ((dateTime.Kind == DateTimeKind.Utc ? dateTime : dateTime.ToUniversalTime()).Ticks - InitialJavaScriptDateTicks) / 10000;
         }
 
 

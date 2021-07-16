@@ -239,10 +239,12 @@ Generated_Code/
 # to a newer Visual Studio version. Backup files are not needed,
 # because we have git ;-)
 _UpgradeReport_Files/
+App_Data/*.db
 Backup*/
 UpgradeLog*.XML
 UpgradeLog*.htm
 ServiceFabricBackup/
+[Tt]emp/
 *.rptproj.bak
 
 # SQL Server files

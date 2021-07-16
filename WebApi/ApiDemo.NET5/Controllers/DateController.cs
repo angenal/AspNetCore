@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Net;
 using WebCore;
 using WebFramework;
@@ -38,22 +37,23 @@ namespace ApiDemo.NET5.Controllers
 
             return Ok(new
             {
-                Date = new
+                Linux = new
                 {
                     Now = date.ToDateTimeString(),
                     Json = $"new Date({date.ToJavaScriptTicks()})",
-                    Zone = timeZone
+                    Kind = date.Kind.ToString(),
+                    Local = Date.DefaultTimeZone
                 },
-                Time = new
+                Windows = new
                 {
                     Now = dateTime.ToDateTimeString(),
                     Json = $"new Date({dateTime.ToJavaScriptTicks()})",
-                    Offset = TimeZoneInfo.Local.BaseUtcOffset,
-                    Zone = TimeZoneInfo.Local.Id
+                    Kind = dateTime.Kind.ToString(),
+                    TimeZoneInfo.Local
                 },
-                Date.DefaultTimeZone,
-                Date.LocalTimeZone,
-                Date.ChinaTimeZone,
+                Startup = Date.Startup.ToDateTimeString(),
+                env.ApplicationName,
+                env.EnvironmentName,
                 Date.Tzdb
             });
         }

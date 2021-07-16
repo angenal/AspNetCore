@@ -40,34 +40,34 @@ namespace WebCore
         }
 
         /// <summary>
-        /// Startup DateTime
+        /// 系统启动时间 (Asia/Shanghai)
         /// </summary>
         public static DateTime Startup = Now();
 
         /// <summary>
-        /// Tzdb
+        /// 时区数据库
         /// </summary>
         public static List<string> Tzdb = NodaTime.DateTimeZoneProviders.Tzdb.Ids.ToList();
 
         /// <summary>
-        /// Default TimeZone
+        /// 系统默认时区
         /// </summary>
         public static NodaTime.DateTimeZone DefaultTimeZone = NodaTime.DateTimeZoneProviders.Tzdb.GetSystemDefault();
 
         /// <summary>
-        /// Local TimeZone
+        /// 本地默认时区
         /// </summary>
         public static TimeZoneInfo LocalTimeZone = TimeZoneInfo.Local;
 
         /// <summary>
-        /// China TimeZone
+        /// 中国标准时间
         /// </summary>
         public static TimeZoneInfo ChinaTimeZone = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(t => t.Id.Contains("China"));
 
         /// <summary>
-        /// 当前本地时间 DateTime.Now
+        /// 当前本地时间 Linux+Windows 跨平台 DateTime.Now (Asia/Shanghai)
         /// </summary>
-        /// <param name="timeZone">时区:上海"Asia/Shanghai"</param>
+        /// <param name="timeZone">时区,例如"Asia/Shanghai"</param>
         /// <returns></returns>
         public static DateTime Now(string timeZone = "Asia/Shanghai")
         {
