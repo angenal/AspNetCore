@@ -1,14 +1,66 @@
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebCore
 {
     public static class ListExtensions
     {
+        public static bool ContainsKeys(this IQueryCollection query, params string[] keys)
+        {
+            return !keys.Any(key => !query.ContainsKey(key));
+        }
+        public static bool ContainsKeysAny(this IQueryCollection query, params string[] keys)
+        {
+            return keys.Any(key => query.ContainsKey(key));
+        }
+        public static bool ContainsKeys(this IFormCollection form, params string[] keys)
+        {
+            return !keys.Any(key => !form.ContainsKey(key));
+        }
+        public static bool ContainsKeysAny(this IFormCollection form, params string[] keys)
+        {
+            return keys.Any(key => form.ContainsKey(key));
+        }
+
         public static T AddAndReturn<T>(this IList<T> list, T item)
         {
             list.Add(item);
             return item;
+        }
+
+        public static int ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
+        {
+            var s = enumerable as T[] ?? enumerable.ToArray();
+            foreach (var item in s) action(item);
+            return s.Length;
+        }
+        public static async Task<int> ForEachAsync<T>(this IEnumerable<T> enumerable, Func<T, Task> action)
+        {
+            var s = enumerable as T[] ?? enumerable.ToArray();
+            if (s.Any()) await Task.WhenAll(s.Select(action)); await Task.CompletedTask;
+            return s.Length;
+        }
+        public static int ForEach(this Type enumType, Action<string, string, string> action)
+        {
+            if (enumType.BaseType != typeof(Enum)) return 0;
+            var arr = Enum.GetValues(enumType);
+            foreach (var name in arr)
+            {
+                string key = name.ToString(), description = "";
+                var value = Enum.Parse(enumType, key);
+                var fieldInfo = enumType.GetField(key);
+                if (fieldInfo != null)
+                {
+                    var attr = Attribute.GetCustomAttribute(fieldInfo, typeof(DescriptionAttribute), false) as DescriptionAttribute;
+                    if (attr != null) description = attr.Description;
+                }
+                action(key, value.ToString(), description);
+            }
+            return arr.Length;
         }
 
         /// <summary>

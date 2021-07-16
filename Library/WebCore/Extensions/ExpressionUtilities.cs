@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace WebCore
 {
     /// <summary>Provides methods to handle lambda expressions. </summary>
-    public class ExpressionUtilities
+    public static class ExpressionUtilities
     {
         /// <summary>Returns the property name of the property specified in the given lambda (e.g. GetPropertyName(i => i.MyProperty)). </summary>
         /// <typeparam name="TClass">The type of the class with the property. </typeparam>

@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using WebCore.Annotations;
 
 namespace WebCore
@@ -168,6 +170,67 @@ namespace WebCore
         #endregion
 
         #region MemberInfo
+
+        /// <summary>
+        /// 从类型成员获取指定Attribute特性
+        /// </summary>
+        /// <typeparam name="T">Attribute特性类型</typeparam>
+        /// <param name="memberInfo">类型类型成员</param>
+        /// <param name="inherit">是否从继承中查找</param>
+        /// <returns>返回所有指定Attribute特性的数组</returns>
+        public static T[] GetAttributes<T>(this MemberInfo memberInfo, bool inherit = false) where T : Attribute
+        {
+            return memberInfo.GetCustomAttributes(typeof(T), inherit).Cast<T>().ToArray();
+        }
+
+        /// <summary>
+        /// 获取成员元数据的Description特性描述信息
+        /// </summary>
+        /// <param name="member">成员元数据对象</param>
+        /// <param name="inherit">是否搜索成员的继承链以查找描述特性</param>
+        /// <returns>返回Description特性描述信息，如不存在则返回成员的名称</returns>
+        public static string ToDescription(this MemberInfo member, bool inherit = false)
+        {
+            var desc = member.GetAttribute<DescriptionAttribute>(inherit);
+            return desc == null ? member.Name : desc.Description;
+        }
+
+        /// <summary>
+        /// 从类型成员获取指定Attribute特性
+        /// </summary>
+        /// <typeparam name="T">Attribute特性类型</typeparam>
+        /// <param name="memberInfo">类型类型成员</param>
+        /// <param name="inherit">是否从继承中查找</param>
+        /// <returns>存在返回第一个，不存在返回null</returns>
+        public static T GetAttribute<T>(this MemberInfo memberInfo, bool inherit = false) where T : Attribute
+        {
+            var descripts = memberInfo.GetCustomAttributes(typeof(T), inherit);
+            return descripts.FirstOrDefault() as T;
+        }
+
+        /// <summary>
+        /// 检查指定指定类型成员中是否存在指定的Attribute特性
+        /// </summary>
+        /// <typeparam name="T">要检查的Attribute特性类型</typeparam>
+        /// <param name="memberInfo">要检查的类型成员</param>
+        /// <param name="inherit">是否从继承中查找</param>
+        /// <returns>是否存在</returns>
+        public static bool AttributeExists<T>(this MemberInfo memberInfo, bool inherit = false) where T : Attribute
+        {
+            return memberInfo.GetCustomAttributes(typeof(T), inherit).Any(m => m as T != null);
+        }
+
+        /// <summary>
+        /// 获取枚举项上的<see cref="DescriptionAttribute" />特性的文字描述
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToDescription(this Enum value)
+        {
+            var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+            return member != null ? member.ToDescription() : value.ToString();
+        }
+
         public static Type GetMemberType(this MemberInfo memberInfo)
         {
             PropertyInfo propertyInfo = memberInfo as PropertyInfo;
@@ -194,6 +257,7 @@ namespace WebCore
         }
         #endregion
 
+        #region Type and Properties Info
 
         /// <summary>
         /// BindingFlags: Public Property {get;set}
@@ -484,11 +548,48 @@ namespace WebCore
             }
         }
 
+        #endregion
     }
 
     [DebuggerStepThrough]
     public static class SharedTypeExtensions
     {
+        /// <summary>
+        /// 判断类型是否为集合类型
+        /// </summary>
+        public static bool IsEnumerable(this Type type) => IsDerivedFrom(type, typeof(IEnumerable<>));
+
+        /// <summary>
+        /// 判断 <paramref name="type"/> 指定的类型是否继承自 <paramref name="pattern"/> 指定的类型，或实现了 <paramref name="pattern"/> 指定的接口
+        /// 支持未知类型参数的泛型，如typeof(List&lt;&gt;)
+        /// </summary>
+        /// <param name="type">需要测试的类型</param>
+        /// <param name="pattern">要匹配的类型，如 typeof(int)，typeof(IEnumerable)，typeof(List&lt;&gt;)，typeof(List&lt;int&gt;)，typeof(IDictionary&lt;,&gt;)</param>
+        /// <returns>如果 <paramref name="type"/> 指定的类型继承自 <paramref name="pattern"/> 指定的类型，或实现了 <paramref name="pattern"/> 指定的接口，则返回 true，否则返回 false</returns>
+        public static bool IsDerivedFrom(this Type type, Type pattern)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
+            // 测试非泛型类型（如ArrayList）或确定类型参数的泛型类型（如List<int>，类型参数T已经确定为int）
+            if (type.IsSubclassOf(pattern)) return true;
+            // 测试非泛型接口（如IEnumerable）或确定类型参数的泛型接口（如IEnumerable<int>，类型参数T已经确定为int）
+            if (pattern.IsAssignableFrom(type)) return true;
+            // 测试泛型接口（如IEnumerable<>，IDictionary<,>，未知类型参数，留空）
+            var isTheRawGenericType = type.GetInterfaces().Any(IsTheRawGenericType);
+            if (isTheRawGenericType) return true;
+            // 测试泛型类型（如List<>，Dictionary<,>，未知类型参数，留空）
+            while (type != null && type != typeof(object))
+            {
+                isTheRawGenericType = IsTheRawGenericType(type);
+                if (isTheRawGenericType) return true;
+                type = type.BaseType;
+            }
+            // 没有找到任何匹配的接口或类型
+            return false;
+            // 测试某个类型是否是指定的原始接口
+            bool IsTheRawGenericType(Type test) => pattern == (test.IsGenericType ? test.GetGenericTypeDefinition() : test);
+        }
+
         public static Type UnwrapNullableType(this Type type)
         {
             return Nullable.GetUnderlyingType(type) ?? type;
@@ -498,6 +599,18 @@ namespace WebCore
         {
             TypeInfo typeInfo = type.GetTypeInfo();
             return !typeInfo.IsValueType || (typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == typeof(Nullable<>));
+        }
+
+        public static Type GetUnNullableType(this Type type)
+        {
+            if (!IsNullableType(type)) return type;
+            var nullableConverter = new NullableConverter(type);
+            return nullableConverter.UnderlyingType;
+        }
+
+        public static Type GetNonNummableType(this Type type)
+        {
+            return IsNullableType(type) ? type.GetGenericArguments()[0] : type;
         }
 
         public static bool IsValidEntityType(this Type type)

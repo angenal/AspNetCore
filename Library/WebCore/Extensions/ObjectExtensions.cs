@@ -9,6 +9,20 @@ namespace WebCore
         public static readonly Newtonsoft.Json.JsonConverter[] JsonConverters = new Newtonsoft.Json.JsonConverter[] { new Newtonsoft.Json.Converters.IsoDateTimeConverter { DateTimeFormat = DateTimeExtensions.DateTimeFormat } };
 
         /// <summary>
+        /// Javascript: JSON.stringify
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string Stringify<T>(this T obj) => ToJson(obj);
+        /// <summary>
+        /// Javascript: JSON.parse
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static T Parse<T>(this string s) => ToObject<T>(s);
+
+        /// <summary>
         /// 对象转换JSON字符串
         /// </summary>
         /// <typeparam name="T"></typeparam>
