@@ -1,16 +1,10 @@
-//-----------------------------------------------------------------------
-// <copyright company="Hibernating Rhinos LTD">
-//     Copyright (c) Hibernating Rhinos LTD. All rights reserved.
-// </copyright>
-//-----------------------------------------------------------------------
-
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebCore.Utils
+namespace WebCore
 {
     public static class TimeoutManager
     {
@@ -127,7 +121,7 @@ namespace WebCore.Utils
                 task = WaitForInternal(duration, token);
             else
                 task = InfiniteTask;
-            
+
             if (token == CancellationToken.None || token.CanBeCanceled == false)
             {
                 await task.ConfigureAwait(false);

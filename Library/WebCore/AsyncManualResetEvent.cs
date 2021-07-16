@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
-using WebCore.Utils;
 
 namespace WebCore
 {

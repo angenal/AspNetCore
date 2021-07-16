@@ -1,4 +1,4 @@
-﻿// Copyright (c) Vladimir Sadov. All rights reserved.
+// Copyright (c) Vladimir Sadov. All rights reserved.
 //
 // This file is distributed under the MIT License. See LICENSE.md for details.
 
@@ -6,14 +6,13 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
-using WebCore.Utils;
 
 namespace WebCore.Collections.LockFree
 {
     [StructLayout(LayoutKind.Sequential)]
     internal sealed class Counter32
     {
-        private static readonly int MAX_CELL_COUNT = ProcessorInfo.ProcessorCount * 2;
+        private static readonly int MAX_CELL_COUNT = Environment.ProcessorCount * 2;
         private const int MAX_DRIFT = 1;
 
         private class Cell
@@ -41,7 +40,7 @@ namespace WebCore.Collections.LockFree
         // delayed estimated count
         private int lastCntTicks;
         private int lastCnt;
-        
+
         public Counter32()
         {
         }

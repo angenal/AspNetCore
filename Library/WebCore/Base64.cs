@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
-namespace WebCore.Utils
+namespace WebCore
 {
     public class Base64
     {
@@ -107,7 +107,7 @@ namespace WebCore.Utils
 
             // This 4-byte integer will contain the 4 codes of the current 4-char group.
             // Eeach char codes for 6 bits = 24 bits.
-            // The remaining byte will be FF, we use it as a marker when 4 chars have been processed.            
+            // The remaining byte will be FF, we use it as a marker when 4 chars have been processed.
             UInt32 currBlockCodes = 0x000000FFu;
 
             unchecked
@@ -268,7 +268,7 @@ _AllInputConsumed:
 
         public static int CalculateAndValidateOutputLength(int inputLength)
         {
-            long outlen = ((long)inputLength) / 3 * 4;          // the base length - we want integer division here. 
+            long outlen = ((long)inputLength) / 3 * 4;          // the base length - we want integer division here.
             outlen += ((inputLength % 3) != 0) ? 4 : 0;         // at most 4 more chars for the remainder
 
             if (outlen == 0)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -42,11 +42,11 @@ namespace WebCore.LowMemory
         private static bool _failedToGetAvailablePhysicalMemory;
         private static readonly MemoryInfoResult FailedResult = new MemoryInfoResult
         {
-            AvailableMemory = new Size(256, SizeUnit.Megabytes),
-            TotalPhysicalMemory = new Size(256, SizeUnit.Megabytes),
-            TotalCommittableMemory = new Size(384, SizeUnit.Megabytes),// also include "page file"
-            CurrentCommitCharge = new Size(256, SizeUnit.Megabytes),
-            InstalledMemory = new Size(256, SizeUnit.Megabytes),
+            AvailableMemory = new Size(256, SizeUnit.MB),
+            TotalPhysicalMemory = new Size(256, SizeUnit.MB),
+            TotalCommittableMemory = new Size(384, SizeUnit.MB),// also include "page file"
+            CurrentCommitCharge = new Size(256, SizeUnit.MB),
+            InstalledMemory = new Size(256, SizeUnit.MB),
             MemoryUsageRecords =
             new MemoryInfoResult.MemoryUsageLowHigh
             {
@@ -183,13 +183,13 @@ namespace WebCore.LowMemory
                     var swapTotalInKb = bufferedReader.ExtractNumericValueFromKeyValuePairsFormattedFile(SwapTotal);
                     var commitedInKb = bufferedReader.ExtractNumericValueFromKeyValuePairsFormattedFile(Committed_AS);
                     return (
-                        MemAvailable: new Size(Math.Max(memAvailableInKb, memFreeInKb), SizeUnit.Kilobytes),
-                        TotalMemory: new Size(totalMemInKb, SizeUnit.Kilobytes),
-                        Commited: new Size(commitedInKb, SizeUnit.Kilobytes),
+                        MemAvailable: new Size(Math.Max(memAvailableInKb, memFreeInKb), SizeUnit.KB),
+                        TotalMemory: new Size(totalMemInKb, SizeUnit.KB),
+                        Commited: new Size(commitedInKb, SizeUnit.KB),
 
                         // on Linux, we use the swap + ram as the commit limit, because the actual limit
                         // is dependent on many different factors
-                        CommitLimit: new Size(totalMemInKb + swapTotalInKb, SizeUnit.Kilobytes)
+                        CommitLimit: new Size(totalMemInKb + swapTotalInKb, SizeUnit.KB)
                     );
                 }
             }
@@ -205,8 +205,8 @@ namespace WebCore.LowMemory
         public static (double InstalledMemory, double UsableMemory) GetMemoryInfoInGb()
         {
             var memoryInformation = GetMemoryInfo();
-            var installedMemoryInGb = memoryInformation.InstalledMemory.GetDoubleValue(SizeUnit.Gigabytes);
-            var usableMemoryInGb = memoryInformation.TotalPhysicalMemory.GetDoubleValue(SizeUnit.Gigabytes);
+            var installedMemoryInGb = memoryInformation.InstalledMemory.GetDoubleValue(SizeUnit.GB);
+            var usableMemoryInGb = memoryInformation.TotalPhysicalMemory.GetDoubleValue(SizeUnit.GB);
             return (installedMemoryInGb, usableMemoryInGb);
         }
 
@@ -387,7 +387,7 @@ namespace WebCore.LowMemory
                 AvailableMemory = new Size((long)memoryStatus.ullAvailPhys, SizeUnit.Bytes),
                 TotalPhysicalMemory = new Size((long)memoryStatus.ullTotalPhys, SizeUnit.Bytes),
                 InstalledMemory = fetchedInstalledMemory ?
-                    new Size(installedMemoryInKb, SizeUnit.Kilobytes) :
+                    new Size(installedMemoryInKb, SizeUnit.KB) :
                     new Size((long)memoryStatus.ullTotalPhys, SizeUnit.Bytes),
                 MemoryUsageRecords = new MemoryInfoResult.MemoryUsageLowHigh
                 {

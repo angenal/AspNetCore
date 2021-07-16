@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebCore.Utils
+namespace WebCore
 {
     /// <summary>
     /// Allow to raise a task completion source with minimal costs
@@ -22,7 +22,7 @@ namespace WebCore.Utils
 
             private void Run()
             {
-                NativeMemory.EnsureRegistered();
+                Utils.NativeMemory.EnsureRegistered();
 
                 int tries = 0;
                 while (true)

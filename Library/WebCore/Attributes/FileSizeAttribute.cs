@@ -7,7 +7,7 @@ namespace WebCore.Attributes
     /// </summary>
     public class FileSizeAttribute : Attribute
     {
-        public FileSizeAttribute(long maximumSize = 1, SizeUnit sizeUnit = SizeUnit.Megabytes)
+        public FileSizeAttribute(long maximumSize = 1, SizeUnit sizeUnit = SizeUnit.MB)
         {
             MaximumSize = maximumSize;
             SizeUnit = sizeUnit;

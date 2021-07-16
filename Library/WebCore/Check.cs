@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using WebCore.Annotations;
 
-namespace WebCore.Utils
+namespace WebCore
 {
     [DebuggerStepThrough]
     public static class Check : object
@@ -14,7 +14,7 @@ namespace WebCore.Utils
         {
             if (value == null)
             {
-                Check.NotEmpty(parameterName, "parameterName");
+                NotEmpty(parameterName, "parameterName");
                 throw new ArgumentNullException(parameterName);
             }
             return value;
@@ -23,10 +23,10 @@ namespace WebCore.Utils
         [ContractAnnotation("value:null => halt")]
         public static IReadOnlyList<T> NotEmpty<T>(IReadOnlyList<T> value, [InvokerParameterName, NotNull] string parameterName)
         {
-            Check.NotNull<IReadOnlyList<T>>(value, parameterName);
+            NotNull(value, parameterName);
             if (value.Count == 0)
             {
-                Check.NotEmpty(parameterName, "parameterName");
+                NotEmpty(parameterName, "parameterName");
                 throw new ArgumentException(AbstractionsStrings.CollectionArgumentIsEmpty(parameterName));
             }
             return value;
@@ -46,7 +46,7 @@ namespace WebCore.Utils
             }
             if (ex != null)
             {
-                Check.NotEmpty(parameterName, "parameterName");
+                NotEmpty(parameterName, "parameterName");
                 throw ex;
             }
             return value;
@@ -56,7 +56,7 @@ namespace WebCore.Utils
         {
             if (value != null && value.Length == 0)
             {
-                Check.NotEmpty(parameterName, "parameterName");
+                NotEmpty(parameterName, "parameterName");
                 throw new ArgumentException(AbstractionsStrings.ArgumentIsEmpty(parameterName));
             }
             return value;
@@ -64,10 +64,10 @@ namespace WebCore.Utils
 
         public static IReadOnlyList<T> HasNoNulls<T>(IReadOnlyList<T> value, [InvokerParameterName, NotNull] string parameterName) where T : class
         {
-            Check.NotNull<IReadOnlyList<T>>(value, parameterName);
+            NotNull(value, parameterName);
             if (value.Any((T e) => e == null))
             {
-                Check.NotEmpty(parameterName, "parameterName");
+                NotEmpty(parameterName, "parameterName");
                 throw new ArgumentException(parameterName);
             }
             return value;

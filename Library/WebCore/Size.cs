@@ -1,9 +1,3 @@
-// -----------------------------------------------------------------------
-//  <copyright file="Size.cs" company="Hibernating Rhinos LTD">
-//      Copyright (c) Hibernating Rhinos LTD. All rights reserved.
-//  </copyright>
-// -----------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -11,22 +5,65 @@ using System.Linq;
 
 namespace WebCore
 {
+    /// <summary>
+    /// Size
+    /// </summary>
     public struct Size
     {
         public static readonly Size Zero = new Size(0, SizeUnit.Bytes);
 
-        private const long OneKb = 1024;
-        private const long OneMb = OneKb * 1024;
-        private const long OneGb = OneMb * 1024;
-        private const long OneTb = OneGb * 1024;
+        internal const long OneKB = 1024;
+        internal const long OneMB = OneKB * 1024;
+        internal const long OneGB = OneMB * 1024;
+        internal const long OneTB = OneGB * 1024;
 
         private readonly SizeUnit _unit;
         private long _valueInBytes;
 
+        /// <summary>
+        /// new Size
+        /// </summary>
+        public Size(int value, SizeUnit unit = SizeUnit.Bytes)
+        {
+            _unit = unit;
+            _valueInBytes = ConvertToBytes(value, unit);
+        }
+        /// <summary>
+        /// new Size
+        /// </summary>
         public Size(long value, SizeUnit unit = SizeUnit.Bytes)
         {
             _unit = unit;
             _valueInBytes = ConvertToBytes(value, unit);
+        }
+        /// <summary>
+        /// new Size
+        /// </summary>
+        public Size(double value, SizeUnit unit = SizeUnit.Bytes)
+        {
+            _unit = unit;
+            _valueInBytes = (long)ConvertToBytes(value, unit);
+        }
+        /// <summary>
+        /// Convert to Size
+        /// </summary>
+        public static explicit operator Size(int value)
+        {
+            return new Size(value);
+        }
+        /// <summary>
+        /// Convert to Size
+        /// </summary>
+        public static explicit operator Size(long value)
+        {
+            return new Size(value);
+        }
+        /// <summary>
+        /// Convert to Size
+        /// </summary>
+        public static explicit operator Size(double value)
+        {
+            return new Size(value);
         }
 
         private static long ConvertToBytes(long value, SizeUnit unit)
@@ -35,14 +72,14 @@ namespace WebCore
             {
                 case SizeUnit.Bytes:
                     return value;
-                case SizeUnit.Kilobytes:
-                    return value * OneKb;
-                case SizeUnit.Megabytes:
-                    return value * OneMb;
-                case SizeUnit.Gigabytes:
-                    return value * OneGb;
-                case SizeUnit.Terabytes:
-                    return value * OneTb;
+                case SizeUnit.KB:
+                    return value * OneKB;
+                case SizeUnit.MB:
+                    return value * OneMB;
+                case SizeUnit.GB:
+                    return value * OneGB;
+                case SizeUnit.TB:
+                    return value * OneTB;
                 default:
                     throw new NotSupportedException("Not supported size unit: " + unit);
             }
@@ -54,14 +91,14 @@ namespace WebCore
             {
                 case SizeUnit.Bytes:
                     return value;
-                case SizeUnit.Kilobytes:
-                    return value * OneKb;
-                case SizeUnit.Megabytes:
-                    return value * OneMb;
-                case SizeUnit.Gigabytes:
-                    return value * OneGb;
-                case SizeUnit.Terabytes:
-                    return value * OneTb;
+                case SizeUnit.KB:
+                    return value * OneKB;
+                case SizeUnit.MB:
+                    return value * OneMB;
+                case SizeUnit.GB:
+                    return value * OneGB;
+                case SizeUnit.TB:
+                    return value * OneTB;
                 default:
                     throw new NotSupportedException("Not supported size unit: " + unit);
             }
@@ -74,14 +111,14 @@ namespace WebCore
             {
                 case SizeUnit.Bytes:
                     return _valueInBytes;
-                case SizeUnit.Kilobytes:
-                    return _valueInBytes / OneKb;
-                case SizeUnit.Megabytes:
-                    return _valueInBytes / OneMb;
-                case SizeUnit.Gigabytes:
-                    return _valueInBytes / OneGb;
-                case SizeUnit.Terabytes:
-                    return _valueInBytes / OneTb;
+                case SizeUnit.KB:
+                    return _valueInBytes / OneKB;
+                case SizeUnit.MB:
+                    return _valueInBytes / OneMB;
+                case SizeUnit.GB:
+                    return _valueInBytes / OneGB;
+                case SizeUnit.TB:
+                    return _valueInBytes / OneTB;
                 default:
                     ThrowUnsupportedSize();
                     return -1;// never hit
@@ -95,14 +132,14 @@ namespace WebCore
             {
                 case SizeUnit.Bytes:
                     return _valueInBytes;
-                case SizeUnit.Kilobytes:
-                    return _valueInBytes / (double)OneKb;
-                case SizeUnit.Megabytes:
-                    return _valueInBytes / (double)OneMb;
-                case SizeUnit.Gigabytes:
-                    return _valueInBytes / (double)OneGb;
-                case SizeUnit.Terabytes:
-                    return _valueInBytes / (double)OneTb;
+                case SizeUnit.KB:
+                    return _valueInBytes / (double)OneKB;
+                case SizeUnit.MB:
+                    return _valueInBytes / (double)OneMB;
+                case SizeUnit.GB:
+                    return _valueInBytes / (double)OneGB;
+                case SizeUnit.TB:
+                    return _valueInBytes / (double)OneTB;
                 default:
                     ThrowUnsupportedSize();
                     return -1;// never hit
@@ -196,24 +233,33 @@ namespace WebCore
 
         public override string ToString()
         {
-            if (Math.Abs(_valueInBytes) > OneTb)
-                return $"{Math.Round(_valueInBytes / (double)OneTb, 4):#,#.####} T";
-            if (Math.Abs(_valueInBytes) > OneGb)
-                return $"{Math.Round(_valueInBytes / (double)OneGb, 3):#,#.###} G";
-            if (Math.Abs(_valueInBytes) > OneMb)
-                return $"{Math.Round(_valueInBytes / (double)OneMb, 2):#,#.##} M";
-            if (Math.Abs(_valueInBytes) > OneKb)
-                return $"{Math.Round(_valueInBytes / (double)OneKb, 2):#,#.##} K";
-            return $"{_valueInBytes:#,#0} Bytes";
+            var v = Math.Abs(_valueInBytes);
+            if (v > OneTB)
+                return $"{Math.Round(_valueInBytes / (double)OneTB, 4):#,#.####} TB";
+            if (v > OneGB)
+                return $"{Math.Round(_valueInBytes / (double)OneGB, 3):#,#.###} GB";
+            if (v > OneMB)
+                return $"{Math.Round(_valueInBytes / (double)OneMB, 2):#,#.##} MB";
+            if (v > OneKB)
+                return $"{Math.Round(_valueInBytes / (double)OneKB, 2):#,#.##} KB";
+            return $"{v:#,#0} Bytes";
         }
     }
 
+    /// <summary>
+    /// Size Unit
+    /// </summary>
     public enum SizeUnit
     {
         Bytes,
-        Kilobytes,
-        Megabytes,
-        Gigabytes,
-        Terabytes
+        KB,
+        MB,
+        GB,
+        TB
+    }
+
+    public static class Sizes
+    {
+        public static string Humane(long? size) => size == null ? null : new Size(size.Value).ToString();
     }
 }

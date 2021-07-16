@@ -3,7 +3,7 @@
 
 // define TRACE_LEAKS to get additional diagnostics that can lead to the leak sources. note: it will
 // make everything about 2-3x slower
-// 
+//
 //#define TRACE_LEAKS
 
 // define DETECT_LEAKS to detect possible leaks
@@ -30,18 +30,18 @@ namespace WebCore
     /// Generic implementation of object pooling pattern with predefined pool size limit. The main
     /// purpose is that limited number of frequently used objects can be kept in the pool for
     /// further recycling.
-    /// 
-    /// Notes: 
+    ///
+    /// Notes:
     /// 1) it is not the goal to keep all returned objects. Pool is not meant for storage. If there
     ///    is no space in the pool, extra returned objects will be dropped.
-    /// 
+    ///
     /// 2) it is implied that if object was obtained from a pool, the caller will return it back in
-    ///    a relatively short time. Keeping checked out objects for long durations is ok, but 
+    ///    a relatively short time. Keeping checked out objects for long durations is ok, but
     ///    reduces usefulness of pooling. Just new up your own.
-    /// 
-    /// Not returning objects to the pool in not detrimental to the pool's work, but is a bad practice. 
-    /// Rationale: 
-    ///    If there is no intent for reusing the object, do not use pool - just use "new". 
+    ///
+    /// Not returning objects to the pool in not detrimental to the pool's work, but is a bad practice.
+    /// Rationale:
+    ///    If there is no intent for reusing the object, do not use pool - just use "new".
     /// </summary>
     public class ObjectPool<T> : ObjectPool<T, NoResetSupport<T>>
         where T : class
@@ -55,18 +55,18 @@ namespace WebCore
     /// Generic implementation of object pooling pattern with predefined pool size limit. The main
     /// purpose is that limited number of frequently used objects can be kept in the pool for
     /// further recycling.
-    /// 
-    /// Notes: 
+    ///
+    /// Notes:
     /// 1) it is not the goal to keep all returned objects. Pool is not meant for storage. If there
     ///    is no space in the pool, extra returned objects will be dropped.
-    /// 
+    ///
     /// 2) it is implied that if object was obtained from a pool, the caller will return it back in
-    ///    a relatively short time. Keeping checked out objects for long durations is ok, but 
+    ///    a relatively short time. Keeping checked out objects for long durations is ok, but
     ///    reduces usefulness of pooling. Just new up your own.
-    /// 
-    /// Not returning objects to the pool in not detrimental to the pool's work, but is a bad practice. 
-    /// Rationale: 
-    ///    If there is no intent for reusing the object, do not use pool - just use "new". 
+    ///
+    /// Not returning objects to the pool in not detrimental to the pool's work, but is a bad practice.
+    /// Rationale:
+    ///    If there is no intent for reusing the object, do not use pool - just use "new".
     /// </summary>
     public class ObjectPool<T, TResetBehavior>
         where T : class
@@ -127,8 +127,8 @@ namespace WebCore
             {
                 var trace = GetTrace();
 
-                // If you are seeing this message it means that object has been allocated from the pool 
-                // and has not been returned back. This is not critical, but turns pool into rather 
+                // If you are seeing this message it means that object has been allocated from the pool
+                // and has not been returned back. This is not critical, but turns pool into rather
                 // inefficient kind of "new".
                 Debug.WriteLine(string.Format("TRACEOBJECTPOOLLEAKS_BEGIN\nPool detected potential leaking of {0}. \n Location of the leak: \n {1} TRACEOBJECTPOOLLEAKS_END", typeof(T), GetTrace()));
             }
@@ -137,7 +137,7 @@ namespace WebCore
 #endif
 
         public ObjectPool(Factory factory)
-            : this(factory, ProcessorInfo.ProcessorCount * 2)
+            : this(factory, Environment.ProcessorCount * 2)
         { }
 
         public ObjectPool(Factory factory, int size)
@@ -164,14 +164,14 @@ namespace WebCore
         /// </summary>
         /// <remarks>
         /// Search strategy is a simple linear probing which is chosen for it cache-friendliness.
-        /// Note that Free will try to store recycled objects close to the start thus statistically 
+        /// Note that Free will try to store recycled objects close to the start thus statistically
         /// reducing how far we will typically search.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Allocate()
         {
             // PERF: Examine the first element. If that fails, AllocateSlow will look at the remaining elements.
-            // Note that the initial read is optimistically not synchronized. That is intentional. 
+            // Note that the initial read is optimistically not synchronized. That is intentional.
             // We will interlock only when we have a candidate. in a worst case we may miss some
             // recently returned objects. Not a big deal.
             T inst = _firstItem;
@@ -190,7 +190,7 @@ namespace WebCore
 #endif
 #endif
             return inst;
-        }  
+        }
 
         private T AllocateSlow()
         {
@@ -198,7 +198,7 @@ namespace WebCore
 
             for (int i = 0; i < items.Length; i++)
             {
-                // Note that the initial read is optimistically not synchronized. That is intentional. 
+                // Note that the initial read is optimistically not synchronized. That is intentional.
                 // We will interlock only when we have a candidate. in a worst case we may miss some
                 // recently returned objects. Not a big deal.
                 T inst = items[i].Value;
@@ -219,7 +219,7 @@ namespace WebCore
         /// </summary>
         /// <remarks>
         /// Search strategy is a simple linear probing which is chosen for it cache-friendliness.
-        /// Note that Free will try to store recycled objects close to the start thus statistically 
+        /// Note that Free will try to store recycled objects close to the start thus statistically
         /// reducing how far we will typically search in Allocate.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -232,7 +232,7 @@ namespace WebCore
 
             if (_firstItem == null)
             {
-                // Intentionally not using interlocked here. 
+                // Intentionally not using interlocked here.
                 // In a worst case scenario two objects may be stored into same slot.
                 // It is very unlikely to happen and will only mean that one of the objects will get collected.
                 _firstItem = obj;
@@ -250,7 +250,7 @@ namespace WebCore
             {
                 if (items[i].Value == null)
                 {
-                    // Intentionally not using interlocked here. 
+                    // Intentionally not using interlocked here.
                     // In a worst case scenario two objects may be stored into same slot.
                     // It is very unlikely to happen and will only mean that one of the objects will get collected.
                     items[i].Value = obj;
@@ -260,11 +260,11 @@ namespace WebCore
         }
 
         /// <summary>
-        /// Removes an object from leak tracking.  
-        /// 
-        /// This is called when an object is returned to the pool.  It may also be explicitly 
+        /// Removes an object from leak tracking.
+        ///
+        /// This is called when an object is returned to the pool.  It may also be explicitly
         /// called if an object allocated from the pool is intentionally not being returned
-        /// to the pool.  This can be of use with pooled arrays if the consumer wants to 
+        /// to the pool.  This can be of use with pooled arrays if the consumer wants to
         /// return a larger array to the pool than was originally allocated.
         /// </summary>
         [Conditional("DEBUG")]
@@ -358,7 +358,7 @@ namespace WebCore
         }
     }
 
-    public struct ObjectPoolContext<T, TR> : IDisposable 
+    public struct ObjectPoolContext<T, TR> : IDisposable
         where T : class
         where TR : struct, IResetSupport<T>
     {

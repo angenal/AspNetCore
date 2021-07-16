@@ -156,7 +156,7 @@ namespace WebCore
         }
 
         /// <summary>
-        ///
+        /// Convert to DateTime
         /// </summary>
         public static implicit operator DateTime(Date d)
         {
@@ -164,7 +164,7 @@ namespace WebCore
         }
 
         /// <summary>
-        ///
+        /// Convert to Date
         /// </summary>
         public static explicit operator Date(DateTime d)
         {
