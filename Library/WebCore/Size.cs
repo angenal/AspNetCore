@@ -47,23 +47,44 @@ namespace WebCore
         /// <summary>
         /// Convert to Size
         /// </summary>
-        public static explicit operator Size(int value)
+        public static implicit operator Size(int value)
         {
             return new Size(value);
         }
         /// <summary>
         /// Convert to Size
         /// </summary>
-        public static explicit operator Size(long value)
+        public static implicit operator Size(long value)
         {
             return new Size(value);
         }
         /// <summary>
         /// Convert to Size
         /// </summary>
-        public static explicit operator Size(double value)
+        public static implicit operator Size(double value)
         {
             return new Size(value);
+        }
+        /// <summary>
+        /// Convert to int
+        /// </summary>
+        public static implicit operator int(Size value)
+        {
+            return (int)value._valueInBytes;
+        }
+        /// <summary>
+        /// Convert to long
+        /// </summary>
+        public static implicit operator long(Size value)
+        {
+            return value._valueInBytes;
+        }
+        /// <summary>
+        /// Convert to double
+        /// </summary>
+        public static implicit operator double(Size value)
+        {
+            return value._valueInBytes;
         }
 
         private static long ConvertToBytes(long value, SizeUnit unit)

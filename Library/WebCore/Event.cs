@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace WebCore.Events
+namespace WebCore
 {
     /// <summary>Provides methods to register and deregister weak events. </summary>
-    public static class WeakEvent
+    public static class Events
     {
         private static List<WeakEventRegistration> _registeredWeakEvents = null;
         internal static List<WeakEventRegistration> RegisteredWeakEvents
@@ -15,7 +15,7 @@ namespace WebCore.Events
             {
                 if (_registeredWeakEvents == null)
                 {
-                    lock (typeof(EventUtilities))
+                    lock (typeof(EventRegister))
                     {
                         if (_registeredWeakEvents == null)
                             _registeredWeakEvents = new List<WeakEventRegistration>();
@@ -25,9 +25,9 @@ namespace WebCore.Events
             }
         }
 
-        /// <summary>Registers a weak event handler which is automatically deregistered after the subscriber 
+        /// <summary>Registers a weak event handler which is automatically deregistered after the subscriber
         /// has been garbage collected (checked on each event call). </summary>
-        public static EventHandler<TArgs> RegisterEvent<TSubscriber, TArgs>(
+        public static EventHandler<TArgs> Register<TSubscriber, TArgs>(
             TSubscriber subscriber,
             Action<EventHandler<TArgs>> register,
             Action<EventHandler<TArgs>> deregister,
@@ -41,9 +41,10 @@ namespace WebCore.Events
             @delegate = converter(
                 (s, e) =>
                 {
-                    var strongReference = weakReference.Target as TSubscriber;
-                    if (strongReference != null)
+                    if (weakReference.Target is TSubscriber strongReference)
+                    {
                         handler(strongReference, s, e);
+                    }
                     else
                     {
                         deregister(@delegate);
@@ -54,14 +55,14 @@ namespace WebCore.Events
             return @delegate;
         }
 
-        /// <summary>Registers a weak event handler which is automatically deregistered after the subscriber 
+        /// <summary>Registers a weak event handler which is automatically deregistered after the subscriber
         /// has been garbage collected (checked on each event call). </summary>
         /// <param name="subscriber"></param>
         /// <param name="deregister"></param>
         /// <param name="register"></param>
         /// <param name="converter">The converter: h => (o, e) => h(o, e)</param>
         /// <param name="handler"></param>
-        public static TDelegate RegisterEvent<TSubscriber, TDelegate, TArgs>(
+        public static TDelegate Register<TSubscriber, TDelegate, TArgs>(
             TSubscriber subscriber,
             Action<TDelegate> register,
             Action<TDelegate> deregister,
@@ -97,7 +98,7 @@ namespace WebCore.Events
         /// <param name="source">The source object to register the event on. </param>
         /// <param name="eventName">The event name to create the registration for.</param>
         /// <param name="handler">The delegate that handles the event.</param>
-        public static void RegisterEvent<TEventSource, TEventArgs>(TEventSource source, string eventName, EventHandler<TEventArgs> handler)
+        public static void Register<TEventSource, TEventArgs>(TEventSource source, string eventName, EventHandler<TEventArgs> handler)
         {
             var eventInfo = typeof(TEventSource).GetRuntimeEvent(eventName);
             RegisteredWeakEvents.Add(new WeakEventRegistration(source, eventInfo, handler));
@@ -108,7 +109,7 @@ namespace WebCore.Events
         /// <param name="sourceType">The type of the class that contains the static event. </param>
         /// <param name="eventName">The event name to create the registration for.</param>
         /// <param name="handler">The delegate that handles the event.</param>
-        public static void RegisterStaticEvent<TEventArgs>(Type sourceType, string eventName, EventHandler<TEventArgs> handler)
+        public static void RegisterType<TEventArgs>(Type sourceType, string eventName, EventHandler<TEventArgs> handler)
         {
             var eventInfo = sourceType.GetRuntimeEvent(eventName);
             RegisteredWeakEvents.Add(new WeakEventRegistration(null, eventInfo, handler));
@@ -119,7 +120,7 @@ namespace WebCore.Events
         /// <typeparam name="TEventSource">The type of the class that contains the static event. </typeparam>
         /// <param name="eventName">The event name to create the registration for.</param>
         /// <param name="handler">The delegate that handles the event.</param>
-        public static void RegisterStaticEvent<TEventSource, TEventArgs>(string eventName, EventHandler<TEventArgs> handler)
+        public static void Register<TEventSource, TEventArgs>(string eventName, EventHandler<TEventArgs> handler)
         {
             var eventInfo = typeof(TEventSource).GetRuntimeEvent(eventName);
             RegisteredWeakEvents.Add(new WeakEventRegistration(null, eventInfo, handler));
@@ -131,7 +132,7 @@ namespace WebCore.Events
         /// <param name="eventName">The event name to remove the registration from.</param>
         /// <param name="handler">The handler to remove.</param>
         /// <returns>True if the event registration could be found and was removed. </returns>
-        public static bool DeregisterEvent<TEventSource>(TEventSource source, string eventName, Delegate handler)
+        public static bool Deregister<TEventSource>(TEventSource source, string eventName, Delegate handler)
         {
             var eventInfo = typeof(TEventSource).GetRuntimeEvent(eventName);
             return DeregisterEvent(source, handler, eventInfo);
@@ -142,7 +143,7 @@ namespace WebCore.Events
         /// <param name="eventName">The event name to remove the registration from.</param>
         /// <param name="handler">The handler to remove. </param>
         /// <returns>True if the event registration could be found and was removed. </returns>
-        public static bool DeregisterStaticEvent(Type sourceType, string eventName, Delegate handler)
+        public static bool DeregisterType(Type sourceType, string eventName, Delegate handler)
         {
             var eventInfo = sourceType.GetRuntimeEvent(eventName);
             return DeregisterEvent(null, handler, eventInfo);
@@ -368,6 +369,108 @@ namespace WebCore.Events
                 var eventType = _eventInfo.EventHandlerType;
                 return Delegate.CreateDelegate(eventType, this, _onEventCalledInfo);
             }
+        }
+
+#endif
+    }
+
+    /// <summary>Provides methods for event management. </summary>
+    public class EventRegister
+    {
+#if !LEGACY
+
+        /// <summary>Registers an event on the given target object. </summary>
+        /// <param name="target">The target object. </param>
+        /// <param name="eventName">The event name. </param>
+        /// <param name="callback">The callback. </param>
+        /// <returns>The registration token to deregister the event. </returns>
+        public static object RegisterEvent(object target, string eventName, Action<object, object> callback)
+        {
+            var callbackMethodInfo = callback.GetMethodInfo();
+            var eventInfo = target.GetType().GetRuntimeEvent(eventName);
+            var callbackDelegate = callbackMethodInfo.CreateDelegate(eventInfo.EventHandlerType, callback.Target);
+            return eventInfo.AddMethod.Invoke(target, new object[] { callbackDelegate });
+        }
+
+        /// <summary>Registers a static event on the given target object. </summary>
+        /// <param name="type">The target type. </param>
+        /// <param name="eventName">The event name. </param>
+        /// <param name="callback">The callback. </param>
+        /// <returns>The registration token to deregister the event. </returns>
+        public static object RegisterStaticEvent(Type type, string eventName, Action<object, object> callback)
+        {
+            var callbackMethodInfo = callback.GetMethodInfo();
+            var eventInfo = type.GetRuntimeEvent(eventName);
+            var callbackDelegate = callbackMethodInfo.CreateDelegate(eventInfo.EventHandlerType, callback.Target);
+            return eventInfo.AddMethod.Invoke(null, new object[] { callbackDelegate });
+        }
+
+        /// <summary>Deregisters an event from the target object. </summary>
+        /// <param name="target">The target object. </param>
+        /// <param name="eventName">The event name. </param>
+        /// <param name="token">The registration token. </param>
+        public static void DeregisterEvent(object target, string eventName, object token)
+        {
+            var eventInfo = target.GetType().GetRuntimeEvent(eventName);
+            eventInfo.RemoveMethod.Invoke(target, new object[] { token });
+        }
+
+        /// <summary>Deregisters a static event from the target type. </summary>
+        /// <param name="type">The target type. </param>
+        /// <param name="eventName">The event name. </param>
+        /// <param name="token">The registration token. </param>
+        public static void DeregisterStaticEvent(Type type, string eventName, object token)
+        {
+            var eventInfo = type.GetRuntimeEvent(eventName);
+            eventInfo.RemoveMethod.Invoke(null, new object[] { token });
+        }
+
+#else
+
+        /// <summary>Registers an event on the given target object. </summary>
+        /// <param name="target">The target object. </param>
+        /// <param name="eventName">The event name. </param>
+        /// <param name="callback">The callback. </param>
+        /// <returns>The registration token to deregister the event. </returns>
+        public static object RegisterEvent(object target, string eventName, Action<object, object> callback)
+        {
+            var callbackMethodInfo = callback.Method;
+            var eventInfo = target.GetType().GetEvent(eventName);
+            var callbackDelegate = Delegate.CreateDelegate(eventInfo.EventHandlerType, callback.Target, callbackMethodInfo);
+            return eventInfo.GetAddMethod().Invoke(target, new object[] { callbackDelegate });
+        }
+
+        /// <summary>Registers a static event on the given target object. </summary>
+        /// <param name="type">The target type. </param>
+        /// <param name="eventName">The event name. </param>
+        /// <param name="callback">The callback. </param>
+        /// <returns>The registration token to deregister the event. </returns>
+        public static object RegisterStaticEvent(Type type, string eventName, Action<object, object> callback)
+        {
+            var callbackMethodInfo = callback.Method;
+            var eventInfo = type.GetEvent(eventName);
+            var callbackDelegate = Delegate.CreateDelegate(eventInfo.EventHandlerType, callback.Target, callbackMethodInfo);
+            return eventInfo.GetAddMethod().Invoke(null, new object[] { callbackDelegate });
+        }
+
+        /// <summary>Deregisters an event from the target object. </summary>
+        /// <param name="target">The target object. </param>
+        /// <param name="eventName">The event name. </param>
+        /// <param name="token">The registration token. </param>
+        public static void DeregisterEvent(object target, string eventName, object token)
+        {
+            var eventInfo = target.GetType().GetEvent(eventName);
+            eventInfo.GetRemoveMethod().Invoke(target, new object[] { token });
+        }
+
+        /// <summary>Deregisters a static event from the target type. </summary>
+        /// <param name="type">The target type. </param>
+        /// <param name="eventName">The event name. </param>
+        /// <param name="token">The registration token. </param>
+        public static void DeregisterStaticEvent(Type type, string eventName, object token)
+        {
+            var eventInfo = type.GetEvent(eventName);
+            eventInfo.GetRemoveMethod().Invoke(null, new object[] { token });
         }
 
 #endif

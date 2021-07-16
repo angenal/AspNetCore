@@ -6,7 +6,7 @@ namespace WebCore
         /// <summary>
         /// 转换时间
         /// </summary>
-        public static readonly Newtonsoft.Json.JsonConverter[] JsonConverters = new Newtonsoft.Json.JsonConverter[] { new Newtonsoft.Json.Converters.IsoDateTimeConverter { DateTimeFormat = DateTimeExtensions.DateTimeFormat } };
+        public static readonly Newtonsoft.Json.JsonConverter[] JsonConverters = new Newtonsoft.Json.JsonConverter[] { new Newtonsoft.Json.Converters.IsoDateTimeConverter { DateTimeFormat = DefaultFormat.DateTimeFormats } };
 
         /// <summary>
         /// Javascript: JSON.stringify

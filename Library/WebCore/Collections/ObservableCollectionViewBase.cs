@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using WebCore.Events;
 
 namespace WebCore.Collections
 {
@@ -59,8 +58,8 @@ namespace WebCore.Collections
         /// <summary>Gets the original items source. </summary>
         public IList<TItem> Items { get; private set; }
 
-        /// <summary>Gets or sets a flag whether the view should automatically be updated when needed. 
-        /// Disable this flag when doing multiple of operations on the underlying collection. 
+        /// <summary>Gets or sets a flag whether the view should automatically be updated when needed.
+        /// Disable this flag when doing multiple of operations on the underlying collection.
         /// Enabling this flag automatically updates the view if needed. </summary>
         public bool IsTracking
         {
@@ -73,7 +72,7 @@ namespace WebCore.Collections
             }
         }
 
-        /// <summary>Gets or sets a value indicating whether the view should listen for collection 
+        /// <summary>Gets or sets a value indicating whether the view should listen for collection
         /// changed events on the underlying collection (default: true). </summary>
         public bool TrackCollectionChanges
         {
@@ -92,8 +91,8 @@ namespace WebCore.Collections
             }
         }
 
-        /// <summary>Gets or sets a value indicating whether the items in the collection should be tracked for property changes. 
-        /// The items must implement <see cref="INotifyPropertyChanged"/> to support item tracking. 
+        /// <summary>Gets or sets a value indicating whether the items in the collection should be tracked for property changes.
+        /// The items must implement <see cref="INotifyPropertyChanged"/> to support item tracking.
         /// Enable this property if your items are mutable and the list has to be restored if an item property changes. </summary>
         public bool TrackItemChanges
         {
@@ -210,11 +209,11 @@ namespace WebCore.Collections
             if (_events.ContainsKey(item))
                 return;
 
-            var handler = WeakEvent.RegisterEvent<ObservableCollectionViewBase<TItem>, PropertyChangedEventHandler, PropertyChangedEventArgs>(
+            var handler = Events.Register<ObservableCollectionViewBase<TItem>, PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 this,
                 h => item.PropertyChanged += h,
                 h => item.PropertyChanged -= h,
-                h => (o, e) => h(o, e),
+                h => (object o, PropertyChangedEventArgs e) => h(o, e),
                 (subscriber, s, e) => subscriber.Refresh());
 
             _events.Add(item, handler);
@@ -236,11 +235,11 @@ namespace WebCore.Collections
             if (items != null)
             {
                 var collection = items;
-                _itemsChangedHandler = WeakEvent.RegisterEvent<ObservableCollectionViewBase<TItem>, NotifyCollectionChangedEventHandler, NotifyCollectionChangedEventArgs>(
+                _itemsChangedHandler = Events.Register<ObservableCollectionViewBase<TItem>, NotifyCollectionChangedEventHandler, NotifyCollectionChangedEventArgs>(
                     this,
                     h => collection.CollectionChanged += h,
                     h => collection.CollectionChanged -= h,
-                    h => (o, e) => h(o, e),
+                    h => (object o, NotifyCollectionChangedEventArgs e) => h(o, e),
                     (subscriber, s, e) => subscriber.OnOriginalCollectionChanged(s, e));
             }
         }

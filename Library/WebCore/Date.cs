@@ -38,6 +38,34 @@ namespace WebCore
         {
             _dt = dateTime.AddTicks(-dateTime.Ticks % TimeSpan.TicksPerDay);
         }
+        /// <summary>
+        /// Convert to DateTime
+        /// </summary>
+        public static implicit operator DateTime(Date d)
+        {
+            return d._dt;
+        }
+        /// <summary>
+        /// Convert to Date
+        /// </summary>
+        public static implicit operator Date(DateTime d)
+        {
+            return new Date(d);
+        }
+        /// <summary>
+        /// Convert to Date
+        /// </summary>
+        public static implicit operator Date(string d)
+        {
+            return DateTime.Parse(d);
+        }
+        /// <summary>
+        /// Convert to Date
+        /// </summary>
+        public static implicit operator Date(long d)
+        {
+            return d.FromJavaScriptTicks();
+        }
 
         /// <summary>
         /// 系统启动时间 (Asia/Shanghai)
@@ -153,22 +181,6 @@ namespace WebCore
         public static bool operator >=(Date d1, Date d2)
         {
             return d1._dt >= d2._dt;
-        }
-
-        /// <summary>
-        /// Convert to DateTime
-        /// </summary>
-        public static implicit operator DateTime(Date d)
-        {
-            return d._dt;
-        }
-
-        /// <summary>
-        /// Convert to Date
-        /// </summary>
-        public static explicit operator Date(DateTime d)
-        {
-            return new Date(d);
         }
 
         /// <summary>

@@ -60,6 +60,7 @@
     <PackageReference Include="ToolGood.Words" Version="3.0.2.6" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Events\" />
     <Folder Include="Xml\" />
   </ItemGroup>
   <ItemGroup>

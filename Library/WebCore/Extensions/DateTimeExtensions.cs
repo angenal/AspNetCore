@@ -11,12 +11,6 @@ namespace WebCore
     /// </summary>
     public static class DateTimeExtensions
     {
-        /// <summary>
-        /// 转换时间的通用格式
-        /// </summary>
-        public static string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
-
-
         #region private fields and methods
 
         private static readonly DateTime _epoch_utc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
