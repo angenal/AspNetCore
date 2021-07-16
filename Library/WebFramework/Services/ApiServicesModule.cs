@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +12,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using WebCore.Documents;
+using WebFramework.Authorization;
+using WebFramework.Orm;
 using WebInterface;
 
 namespace WebFramework.Services
@@ -41,6 +44,9 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env, IMvcBuilder builder)
         {
+            // Configure IIS Out-Of-Process.
+            //services.Configure<IISOptions>(opt => { });
+
             // App_Data Directory
             var dataDirectory = new DirectoryInfo(Path.Combine(env.ContentRootPath, "App_Data"));
             if (!dataDirectory.Exists) dataDirectory.Create();
@@ -51,7 +57,15 @@ namespace WebFramework.Services
             // Crypto services
             services.AddCrypto(config);
 
-
+            // Database: InMemory
+            services.AddDbContext<ValuesDbContext>(options => options.UseInMemoryDatabase("Values"));
+            if (config.GetConnectionString("Sqlite") != null)
+                services.AddDbContextOfSqlSugar<ValuesContextOfSqlSugar>(options =>
+                {
+                    options.DbType = SqlSugar.DbType.Sqlite;
+                    options.ConnectionString = config.GetConnectionString("Sqlite");
+                    options.IsAutoCloseConnection = true;
+                });
             // Database: LiteDB (similar to sqlite)
             var liteDb = new LiteDb(config, "LiteDB");
             if (liteDb.HasConnectionString) services.AddSingleton<ILiteDb, LiteDb>(_ => liteDb);
@@ -112,6 +126,8 @@ namespace WebFramework.Services
             // Identity system for the specified User and Role types.
             services.AddIdentityLiteDB(config);
 
+            // Api Authorization with WebFramework.Authorization.
+            services.AddApiAuthorization(config);
 
             // Authentication with JWT
             services.AddJwtAuthentication(config);
@@ -212,6 +228,8 @@ namespace WebFramework.Services
             app.UseAuthentication();
             // Use Authorization
             app.UseAuthorization();
+            // Use Api Authorization
+            app.UseApiAuthorization();
 
             // Logging: Serilog Logging Module
             app.UseSerilogLogging(config, env, loggerFactory);

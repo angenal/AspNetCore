@@ -3,11 +3,11 @@ using System;
 namespace WebCore.Attributes
 {
     /// <summary>
-    /// 文件大小 [默认最大1M]
+    /// 文件大小 [默认最大2M]
     /// </summary>
     public class FileSizeAttribute : Attribute
     {
-        public FileSizeAttribute(long maximumSize = 1, SizeUnit sizeUnit = SizeUnit.MB)
+        public FileSizeAttribute(long maximumSize = 2, SizeUnit sizeUnit = SizeUnit.MB)
         {
             MaximumSize = maximumSize;
             SizeUnit = sizeUnit;

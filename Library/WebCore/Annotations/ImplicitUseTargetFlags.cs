@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 
 namespace WebCore.Annotations
 {
     [Flags]
     public enum ImplicitUseTargetFlags
     {
-        Default = 1,
+        Itself = 0,
 
-        //Itself = 1,
+        Default = 1,
 
         Members = 2,
 

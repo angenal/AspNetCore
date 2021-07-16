@@ -1,6 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace WebCore.Data.DTO
 {
@@ -9,6 +7,9 @@ namespace WebCore.Data.DTO
     /// </summary>
     public static class App
     {
+        /// <summary>
+        /// 应用列表信息
+        /// </summary>
         public static List<IAppInfo> Infos;
     }
 
