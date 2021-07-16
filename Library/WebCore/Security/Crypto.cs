@@ -234,8 +234,8 @@ namespace WebCore.Security
 
             var rsa = new RSACryptoServiceProvider(keySize);
 
-            //if (!string.IsNullOrEmpty(keyContainerName) && Environment.OSVersion.Platform < PlatformID.Unix)
-            //    rsa = new RSACryptoServiceProvider(keySize, new CspParameters() { KeyContainerName = keyContainerName });
+            if (!string.IsNullOrEmpty(keyContainerName) && !Platform.PlatformDetails.RunningOnPosix)
+                rsa = new RSACryptoServiceProvider(keySize, new CspParameters() { KeyContainerName = keyContainerName });
 
             rsa.PersistKeyInCsp = persistKeyInCsp;
             return rsa;
