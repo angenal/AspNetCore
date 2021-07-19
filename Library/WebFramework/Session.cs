@@ -10,7 +10,7 @@ using WebCore;
 namespace WebFramework
 {
     /// <summary>
-    /// 用户会话
+    /// 用户会话 by Jwt Token
     /// </summary>
     public sealed class Session : IdentityUser<string>
     {
@@ -57,7 +57,7 @@ namespace WebFramework
     }
 
     /// <summary>
-    /// 用户会话处理
+    /// 用户会话处理 by Jwt Token
     /// </summary>
     public class AsyncSessionFilter : IAsyncActionFilter
     {
@@ -80,7 +80,7 @@ namespace WebFramework
     }
 
     /// <summary>
-    /// 用户会话帮助
+    /// 用户会话帮助 by Jwt Token
     /// </summary>
     public static class SessionExtensions
     {
