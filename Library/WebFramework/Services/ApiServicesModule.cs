@@ -93,7 +93,7 @@ namespace WebFramework.Services
             });
 
             // Caching services
-            services.AddCache();
+            services.AddCache(config);
 
             // CORS
             var allowedHosts = config.GetSection("AllowedHosts").Exists() ? config.GetSection("AllowedHosts").Value.Split(',') : new[] { "*" };

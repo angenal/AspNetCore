@@ -1,4 +1,3 @@
-using EasyCaching.LiteDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +19,9 @@ namespace WebFramework.Services
             // Caching: response caching services
             //services.AddResponseCaching();
 
-            //EasyCaching  https://easycaching.readthedocs.io
+            // EasyCaching  https://easycaching.readthedocs.io
+            // Inject Controller(IEasyCachingProvider provider) or Controller(IEasyCachingProviderFactory factory)
+            // Configuration Section in appsettings.json
             /*
               "inmemory": {
                 "MaxRdSecond": 120,
@@ -53,17 +54,21 @@ namespace WebFramework.Services
                         ],
                         "Database": 0
                     }
-                }
+                },
+            "LiteDB": "Filename=App_Data/Hangfire.db;Password=HGJ766GR767FKJU0",
             */
 
             //1. In-Memory Caching  https://easycaching.readthedocs.io/en/latest/In-Memory/
-            services.AddEasyCaching(options => options.UseInMemory(config, "DefaultInMemory", "easycaching:inmemory"));
+            var section = config.GetSection("easycaching:inmemory");
+            if (section.Exists()) services.AddEasyCaching(options => options.UseInMemory(config, EasyCachingDataSource.Memory, section.Path));
 
             //2. Redis Cache  https://easycaching.readthedocs.io/en/latest/Redis/
-            services.AddEasyCaching(options => options.UseRedis(config, "DefaultRedis", "easycaching:redis"));
+            section = config.GetSection("easycaching:redis");
+            if (section.Exists()) services.AddEasyCaching(options => options.UseRedis(config, EasyCachingDataSource.Redis, section.Path));
 
-            //3. LiteDB Cache
-            services.AddEasyCaching(options => options.UseLiteDB(config => config.DBConfig = new LiteDBDBOptions { FileName = "s1.ldb" }));
+            //3. LiteDB Cache  https://easycaching.readthedocs.io/en/latest/LiteDB/
+            section = config.GetSection("easycaching:litedb");
+            if (section.Exists()) services.AddEasyCaching(options => options.UseLiteDB(config, EasyCachingDataSource.LiteDB, section.Path));
 
             return services;
         }
