@@ -1,3 +1,5 @@
+using EasyCaching.Core;
+using EasyCaching.ResponseCaching;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,56 +21,75 @@ namespace WebFramework.Services
             // Caching: response caching services
             //services.AddResponseCaching();
 
+
             // EasyCaching  https://easycaching.readthedocs.io
             // Inject Controller(IEasyCachingProvider provider) or Controller(IEasyCachingProviderFactory factory)
             // Configuration Section in appsettings.json
             /*
-              "inmemory": {
-                "MaxRdSecond": 120,
-                "EnableLogging": false,
-                "LockMs": 5000,
-                "SleepMs": 300,
-                "DBConfig":{
+              "easycaching": {
+                "inmemory": {
+                  "MaxRdSecond": 120,
+                  "EnableLogging": false,
+                  "LockMs": 5000,
+                  "SleepMs": 300,
+                  "DBConfig": {
                     "SizeLimit": 10000,
                     "ExpirationScanFrequency": 60,
                     "EnableReadDeepClone": true,
                     "EnableWriteDeepClone": false
-                }
-            },
-              "redis": {
-                    "MaxRdSecond": 120,
-                    "EnableLogging": false,
-                    "LockMs": 5000,
-                    "SleepMs": 300,
-                    "dbconfig": {
-                        "Password": null,
-                        "IsSsl": false,
-                        "SslHost": null,
-                        "ConnectionTimeout": 5000,
-                        "AllowAdmin": true,
-                        "Endpoints": [
-                            {
-                                "Host": "localhost",
-                                "Port": 6739
-                            }
-                        ],
-                        "Database": 0
-                    }
+                  }
                 },
-            "LiteDB": "Filename=App_Data/Hangfire.db;Password=HGJ766GR767FKJU0",
+                "redis": {
+                  "MaxRdSecond": 120,
+                  "EnableLogging": false,
+                  "LockMs": 5000,
+                  "SleepMs": 300,
+                  "DBConfig": {
+                    "Password": null,
+                    "IsSsl": false,
+                    "SslHost": null,
+                    "ConnectionTimeout": 5000,
+                    "AllowAdmin": true,
+                    "Endpoints": [
+                      {
+                        "Host": "localhost",
+                        "Port": 6739
+                      }
+                    ],
+                    "Database": 0
+                  }
+                },
+                "litedb": {
+                  "MaxRdSecond": 120,
+                  "EnableLogging": false,
+                  "LockMs": 5000,
+                  "SleepMs": 300,
+                  "DBConfig": {
+                    "FilePath": "App_Data/cache.db",
+                    "Password": null
+                  }
+                }
+              }
             */
+
+            // add response caching
+            services.AddEasyCachingResponseCaching(EasyCachingConstValue.DefaultInMemoryName);
 
             //1. In-Memory Caching  https://easycaching.readthedocs.io/en/latest/In-Memory/
             var section = config.GetSection("easycaching:inmemory");
-            if (section.Exists()) services.AddEasyCaching(options => options.UseInMemory(config, EasyCachingDataSource.Memory, section.Path));
+            if (section.Exists()) services.AddEasyCaching(options => options.UseInMemory(config, EasyCachingConstValue.DefaultInMemoryName, section.Path));
+            else services.AddEasyCaching(options => options.UseInMemory(EasyCachingConstValue.DefaultInMemoryName));
 
             //2. Redis Cache  https://easycaching.readthedocs.io/en/latest/Redis/
             section = config.GetSection("easycaching:redis");
-            if (section.Exists()) services.AddEasyCaching(options => options.UseRedis(config, EasyCachingDataSource.Redis, section.Path));
+            if (section.Exists()) services.AddEasyCaching(options => options.UseRedis(config, EasyCachingConstValue.DefaultRedisName, section.Path));
 
             //3. LiteDB Cache  https://easycaching.readthedocs.io/en/latest/LiteDB/
             section = config.GetSection("easycaching:litedb");
-            if (section.Exists()) services.AddEasyCaching(options => options.UseLiteDB(config, EasyCachingDataSource.LiteDB, section.Path));
+            if (section.Exists()) services.AddEasyCaching(options => options.UseLiteDB(config, EasyCachingConstValue.DefaultLiteDBName, section.Path));
+
+            //4. Caching Interceptor  https://easycaching.readthedocs.io/en/latest/AspectCore/
+            //services.ConfigureAspectCoreInterceptor(options => options.CacheProviderName = EasyCachingConstValue.DefaultInMemoryName);
 
             return services;
         }
@@ -78,11 +99,11 @@ namespace WebFramework.Services
         /// </summary>
         public static IApplicationBuilder UseCache(this IApplicationBuilder app)
         {
-            //3. Memcache Cache
-            //app.UseDefaultMemcached();
+            // Caching
+            //app.UseResponseCaching();
 
-            //4. SQLite Cache
-            //app.UseSQLiteCache();
+            // use response caching
+            app.UseEasyCachingResponseCaching();
 
             return app;
         }

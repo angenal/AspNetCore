@@ -190,7 +190,7 @@ namespace WebFramework.Services
             // Compression
             app.UseResponseCompression();
             // Caching
-            app.UseResponseCaching();
+            app.UseCache();
             // CORS
             app.UseCors(); // Use Default Policy
 

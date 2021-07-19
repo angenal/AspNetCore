@@ -4,15 +4,14 @@ using LiteDB;
 
 namespace WebFramework
 {
+    /// <summary>
+    /// EasyCaching  https://easycaching.readthedocs.io
+    /// </summary>
     public static class EasyCachingDataSource
     {
-        public const string Memory = "DefaultInMemory";
-        public const string Redis = "DefaultRedis";
-        public const string LiteDB = "DefaultLiteDB";
-
-        public static IEasyCachingProvider MemoryProvider(this IEasyCachingProviderFactory factory) => factory.GetCachingProvider(Memory);
-        public static IEasyCachingProvider RedisProvider(this IEasyCachingProviderFactory factory) => factory.GetCachingProvider(Redis);
-        public static IEasyCachingProvider LiteDBProvider(this IEasyCachingProviderFactory factory) => factory.GetCachingProvider(LiteDB);
+        public static IEasyCachingProvider MemoryProvider(this IEasyCachingProviderFactory factory) => factory.GetCachingProvider(EasyCachingConstValue.DefaultInMemoryName);
+        public static IEasyCachingProvider RedisProvider(this IEasyCachingProviderFactory factory) => factory.GetCachingProvider(EasyCachingConstValue.DefaultRedisName);
+        public static IEasyCachingProvider LiteDBProvider(this IEasyCachingProviderFactory factory) => factory.GetCachingProvider(EasyCachingConstValue.DefaultLiteDBName);
 
         public static LiteDBDBOptions GetLiteDBDBOptions(string connectionString)
         {

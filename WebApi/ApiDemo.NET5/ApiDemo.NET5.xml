@@ -598,5 +598,52 @@
             
              </summary>
         </member>
+        <member name="T:ApiDemo.NET5.Models.ValuesDbContext">
+            <summary>
+            Values 存储 内存数据库
+            </summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Models.ValuesDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{ApiDemo.NET5.Models.ValuesDbContext})">
+            <summary>
+            constructor
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.ValuesDbContext.StringValues">
+            <summary>
+            ValueModel DbSet
+            </summary>
+        </member>
+        <member name="T:ApiDemo.NET5.Models.ValuesContextOfSqlSugar">
+            <summary>
+            Values 存储 MSSQL
+            </summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Models.ValuesContextOfSqlSugar.#ctor(Microsoft.Extensions.Options.IOptions{SqlSugar.ConnectionConfig})">
+            <summary>
+            constructor
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.ValuesContextOfSqlSugar.Students">
+            <summary>
+            ValueModel DbSet
+            </summary>
+        </member>
+        <member name="T:ApiDemo.NET5.Models.ValueModel">
+            <summary>
+            Value Table Model
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.ValueModel.Id">
+            <summary>
+            Value ID 由数据库生成(非代码生成)
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Models.ValueModel.Value">
+            <summary>
+            Value 最多长度50个字
+            </summary>
+        </member>
     </members>
 </doc>
