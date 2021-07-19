@@ -18,13 +18,17 @@ namespace WebFramework.Services
         {
             // Database: InMemory
             services.AddDbContext<ValuesDbContext>(options => options.UseInMemoryDatabase("Values"));
-            if (config.GetConnectionString("Sqlite") != null)
+            // Database: Sqlite
+            var sqliteConnectionString = config.GetConnectionString("Sqlite");
+            if (!string.IsNullOrEmpty(sqliteConnectionString))
+            {
                 services.AddDbContextOfSqlSugar<ValuesContextOfSqlSugar>(options =>
                 {
                     options.DbType = SqlSugar.DbType.Sqlite;
-                    options.ConnectionString = config.GetConnectionString("Sqlite");
+                    options.ConnectionString = sqliteConnectionString;
                     options.IsAutoCloseConnection = true;
                 });
+            }
             // Database: LiteDB (similar to sqlite)
             var liteDb = new LiteDb(config, "LiteDB");
             if (liteDb.HasConnectionString) services.AddSingleton<ILiteDb, LiteDb>(_ => liteDb);
