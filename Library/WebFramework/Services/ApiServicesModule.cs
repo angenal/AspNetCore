@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,7 +12,6 @@ using System.IO.Compression;
 using System.Linq;
 using WebCore.Documents;
 using WebFramework.Authorization;
-using WebFramework.Orm;
 using WebInterface;
 
 namespace WebFramework.Services
@@ -57,27 +55,9 @@ namespace WebFramework.Services
             // Crypto services
             services.AddCrypto(config);
 
-            // Database: InMemory
-            services.AddDbContext<ValuesDbContext>(options => options.UseInMemoryDatabase("Values"));
-            if (config.GetConnectionString("Sqlite") != null)
-                services.AddDbContextOfSqlSugar<ValuesContextOfSqlSugar>(options =>
-                {
-                    options.DbType = SqlSugar.DbType.Sqlite;
-                    options.ConnectionString = config.GetConnectionString("Sqlite");
-                    options.IsAutoCloseConnection = true;
-                });
-            // Database: LiteDB (similar to sqlite)
-            var liteDb = new LiteDb(config, "LiteDB");
-            if (liteDb.HasConnectionString) services.AddSingleton<ILiteDb, LiteDb>(_ => liteDb);
-            // Database: Microsoft SQL Server Client
-            var mssqlDb = new SQLServerDb(config, "DefaultConnection");
-            if (mssqlDb.HasConnectionString) services.AddSingleton<ISQLServerDb, SQLServerDb>(_ => mssqlDb);
-            //// Database: PostgreSQL Client - Depend on Npgsql.EntityFrameworkCore.PostgreSQL, Microsoft.EntityFrameworkCore.UnitOfWork
-            //var pgsqlDb = new PostgreSqlDb(config, "PostgreDB");
-            //var connectionString = pgsqlDb.GetConnectionString();
-            //if (connectionString != null) services.AddDbContext<Models.TestDbContext>(options => options.UseNpgsql(connectionString)).AddUnitOfWork<Models.TestDbContext>();
-            //// Database: throw error pages to detect and diagnose errors with Entity Framework Core migrations.
-            //services.AddDatabaseDeveloperPageExceptionFilter();
+
+            // Database services
+            services.AddDatabase(config);
 
 
             // Global Exception Handler
@@ -112,10 +92,8 @@ namespace WebFramework.Services
                 action.Providers.Add<BrotliCompressionProvider>();
             });
 
-            // Caching: a non distributed in memory implementation
-            services.AddMemoryCache();
-            // Caching: response caching services
-            services.AddResponseCaching();
+            // Caching services
+            services.AddCache();
 
             // CORS
             var allowedHosts = config.GetSection("AllowedHosts").Exists() ? config.GetSection("AllowedHosts").Value.Split(',') : new[] { "*" };
