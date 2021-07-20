@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Content Remove="C:\Users\Administrator\.nuget\packages\mysql.data.entityframework\8.0.25\contentFiles\any\netstandard2.1\web.config.transform" />
+    <Content Remove="wwwroot\files\Readme.txt" />
     <Content Remove="wwwroot\office\files\temp\20161125a9a196a7aa6ab47debb30bce1e80c61d143600.html" />
     <Content Remove="wwwroot\office\files\temp\Readme.txt" />
   </ItemGroup>
@@ -106,6 +107,12 @@
     <EmbeddedResource Update="Resources\Controllers\OfficeController.zh-CN.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\files\Readme.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

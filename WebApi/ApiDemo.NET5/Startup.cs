@@ -27,6 +27,7 @@ namespace ApiDemo.NET5
             {
                 endpoints.MapControllerRoute("default", "{culture:culture}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllers();
+                UseEndpointsMaps(endpoints);
                 //endpoints.MapHub<TicketHub>("/tickethub", options => { });
             });
         }

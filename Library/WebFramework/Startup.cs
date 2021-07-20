@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -58,6 +59,16 @@ namespace WebFramework
             //        await context.Response.WriteAsync("Hello World!");
             //    });
             //});
+        }
+
+        /// <summary>
+        /// ApiController Endpoints Maps
+        /// </summary>
+        /// <param name="endpoints"></param>
+        public void UseEndpointsMaps(IEndpointRouteBuilder endpoints)
+        {
+            // 下载文件 Tus Endpoint Handler
+            endpoints.MapGet("/files/{fileId}", TusFileUpload.DownloadHandler);
         }
     }
 }

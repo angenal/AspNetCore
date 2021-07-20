@@ -132,7 +132,7 @@ namespace WebFramework.Services
 
 
             // Upload File
-            services.AddUpload(config);
+            services.AddUpload(config, env);
 
             // Email
             services.AddEmail(config);
