@@ -130,6 +130,9 @@ namespace WebFramework.Services
             //services.AddSignalR();
 
 
+            // Upload File
+            services.AddUpload(config);
+
             // Email
             services.AddEmail(config);
 
