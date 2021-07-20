@@ -42,8 +42,9 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env, IMvcBuilder builder)
         {
-            // Configure IIS Out-Of-Process.
-            //services.Configure<IISOptions>(opt => { });
+            // ApiServer (Kestrel,IIS) Module
+            services.ConfigureServer(config, env);
+
 
             // App_Data Directory
             var dataDirectory = new DirectoryInfo(Path.Combine(env.ContentRootPath, "App_Data"));

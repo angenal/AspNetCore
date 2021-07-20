@@ -4,21 +4,6 @@
         <name>ApiDemo.NET5</name>
     </assembly>
     <members>
-        <member name="T:ApiDemo.NET5.Controllers.DateController">
-            <summary>
-            日期时间
-            </summary>
-        </member>
-        <member name="M:ApiDemo.NET5.Controllers.DateController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="M:ApiDemo.NET5.Controllers.DateController.Now">
-            <summary>
-            Returns current time info.
-            </summary>
-        </member>
         <member name="T:ApiDemo.NET5.Controllers.OfficeController">
             <summary>
             办公文档

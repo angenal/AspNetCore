@@ -17,8 +17,8 @@ namespace WebFramework.Services
         public static IServiceCollection AddCache(this IServiceCollection services, IConfiguration config)
         {
             // Caching: a non distributed in memory implementation
-            //services.AddMemoryCache();
-            // Caching: response caching services
+            services.AddMemoryCache();
+            // Caching: response caching services, replaced by EasyCaching.ResponseCaching
             //services.AddResponseCaching();
 
 
@@ -72,7 +72,7 @@ namespace WebFramework.Services
               }
             */
 
-            // add response caching
+            // add response caching by EasyCaching.ResponseCaching
             services.AddEasyCachingResponseCaching(EasyCachingConstValue.DefaultInMemoryName);
 
             //1. In-Memory Caching  https://easycaching.readthedocs.io/en/latest/In-Memory/

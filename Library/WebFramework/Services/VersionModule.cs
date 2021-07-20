@@ -91,8 +91,7 @@ namespace WebFramework.Services
                 Versions[k].Versions = v.Distinct().OrderBy(i => i.ToString()).ToArray();
                 foreach (var p in type.GetMethods(BindingFlags.Instance | BindingFlags.Public))
                 {
-                    if (p.Name.Equals(type.Name) || p.GetCustomAttribute<NonActionAttribute>() != null)
-                        continue;
+                    if (p.Name.Equals(type.Name) || p.GetCustomAttribute<NonActionAttribute>() != null || c.ApiVersions.ContainsKey(p.Name)) continue;
                     if (Attribute.GetCustomAttributes(p, typeof(ApiVersionAttribute)) is not ApiVersionAttribute[] attributesInMethod)
                         attributesInMethod = c.ApiVersion.Concat(new ApiVersionAttribute[] { new ApiVersionAttribute(DefaultApiVersion.ToString()) }).ToArray();
                     if (p.Name.Equals("get_HttpContext")) break;

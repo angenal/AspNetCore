@@ -3,29 +3,28 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using WebCore;
-using WebFramework;
 
-namespace ApiDemo.NET5.Controllers
+namespace WebFramework.Controllers
 {
     /// <summary>
-    /// 日期时间
+    /// 系统时间
     /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class DateController : ApiController
+    public class TimeController : ApiController
     {
         private readonly IWebHostEnvironment env;
 
         /// <summary>
         ///
         /// </summary>
-        public DateController(IWebHostEnvironment env)
+        public TimeController(IWebHostEnvironment env)
         {
             this.env = env;
         }
 
         /// <summary>
-        /// Returns current time info.
+        /// 当前时间
         /// </summary>
         [HttpGet]
         [Produces("application/json")]
@@ -37,6 +36,9 @@ namespace ApiDemo.NET5.Controllers
 
             return Ok(new
             {
+                env.ApplicationName,
+                env.EnvironmentName,
+                Startup = Date.Startup.ToDateTimeString(),
                 Linux = new
                 {
                     Now = date.ToDateTimeString(),
@@ -51,9 +53,6 @@ namespace ApiDemo.NET5.Controllers
                     Kind = dateTime.Kind.ToString(),
                     TimeZoneInfo.Local
                 },
-                Startup = Date.Startup.ToDateTimeString(),
-                env.ApplicationName,
-                env.EnvironmentName,
                 Date.Tzdb
             });
         }
