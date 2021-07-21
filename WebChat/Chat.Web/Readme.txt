@@ -28,3 +28,12 @@ Chat.Web.exe
 --------------------------
 3.部署Linux
 --------------------------
+
+
+
+--------------------------
+其他相关资源
+--------------------------
+ASP.NET Core SignalR JavaScript 客户端 https://docs.microsoft.com/zh-cn/aspnet/core/signalr/javascript-client?view=aspnetcore-5.0
+--------------------------
+
