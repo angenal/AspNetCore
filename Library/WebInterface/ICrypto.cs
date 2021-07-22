@@ -114,6 +114,13 @@ namespace WebInterface
         /// <returns></returns>
         byte[] RandomBytes(int length);
 
+        uint XXH32(string text);
+        ulong XXH64(string text);
+        ushort Crc16(string text);
+        uint Crc32(string text);
+        string Crc32x8(string text);
+        string Crc32X8(string text);
+
         /// <summary>
         /// MD5 Encryption.
         /// </summary>

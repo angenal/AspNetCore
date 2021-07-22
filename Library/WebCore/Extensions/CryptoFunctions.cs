@@ -37,6 +37,12 @@ namespace WebCore
         /// <returns></returns>
         public static ulong XXH64(this string text) { var bytes = Encoding.UTF8.GetBytes(text); return K4os.Hash.xxHash.XXH64.DigestOf(bytes, 0, bytes.Length); }
         /// <summary>
+        /// Crc16
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static ushort Crc16(this string text) => Crc16Algorithm.Crc16(Encoding.ASCII.GetBytes(text));
+        /// <summary>
         /// Crc32
         /// </summary>
         /// <param name="text"></param>

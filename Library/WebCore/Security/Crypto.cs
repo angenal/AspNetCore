@@ -337,6 +337,13 @@ namespace WebCore.Security
             return bytes;
         }
 
+        public uint XXH32(string text) => text.XXH32();
+        public ulong XXH64(string text) => text.XXH64();
+        public ushort Crc16(string text) => text.Crc16();
+        public uint Crc32(string text) => text.Crc32();
+        public string Crc32x8(string text) => text.Crc32x8();
+        public string Crc32X8(string text) => text.Crc32X8();
+
         /// <summary>
         /// Md5
         /// </summary>
