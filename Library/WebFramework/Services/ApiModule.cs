@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using WebCore.Documents;
 using WebFramework.Authorization;
@@ -84,34 +82,27 @@ namespace WebFramework.Services
 
 
             // Compression: response compression services
-            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
-            services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
-            services.AddResponseCompression(action =>
-            {
-                action.EnableForHttps = true;
-                action.Providers.Add<GzipCompressionProvider>();
-                action.Providers.Add<BrotliCompressionProvider>();
-            });
+            services.AddCompression(config);
 
             // Caching services
             services.AddCache(config);
 
-            // CORS
+            // CORS services
             var allowedHosts = config.GetSection("AllowedHosts").Exists() ? config.GetSection("AllowedHosts").Value.Split(',') : new[] { "*" };
             services.AddCors(options => options.AddDefaultPolicy(policy => (allowedHosts.Any(c => c == "*") ? policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader() : policy.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials()).Build()));
             services.AddHttpContextAccessor();
 
 
-            // Identity system for the specified User and Role types.
-            services.AddIdentityLiteDB(config);
-
-            // Api Authorization with WebFramework.Authorization.
+            // ApiAuthorization using WebFramework.Authorization
             services.AddApiAuthorization(config);
-
+            // Microsoft.AspNetCore.Identity system for the specified User and Role types
+            services.AddIdentityLiteDB(config);
             // Authentication with JWT
             services.AddJwtAuthentication(config);
             // Authorization
             services.AddAuthorization();
+
+
             // ApiVersioning
             services.AddApiVersionService(config);
             // Swagger Document Generator For Development Environment
@@ -161,22 +152,9 @@ namespace WebFramework.Services
         /// </summary>
         public static IApplicationBuilder Configure(this IApplicationBuilder app, IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            //app.UseBlockingDetection();//Ben.Diagnostics
+            //app.UseBlockingDetection(); // using Ben.Diagnostics;
 
-            //app.UseFileServer(enableDirectoryBrowsing: true);
-
-            app.UseDefaultFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800")
-            });
-            //var ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All
-            });
-
-            // Build For Development Environment
+            // Run Development Environment
             if (env.IsDevelopment())
             {
                 // Captures synchronous and asynchronous System.Exception instances from the pipeline and generates HTML error responses.
@@ -187,16 +165,25 @@ namespace WebFramework.Services
             }
             else
             {
+                //app.UseExceptionHandler("/Error");
                 app.UseHsts(); // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts
                 app.UseHttpsRedirection();
             }
 
-            // Compression
-            app.UseResponseCompression();
-            // Caching
+            //app.UseHttpsRedirection();
+            //app.UseFileServer(enableDirectoryBrowsing: true);
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800") });
+            //var ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All });
+
+            // Use Compression
+            app.UseCompression();
+            // Use Caching
             app.UseCache();
-            // CORS
-            app.UseCors(); // Use Default Policy
+            // Use CORS with Default Policy
+            app.UseCors();
 
             // Use ip rate limiting middleware
             app.UseLimiting();
@@ -206,12 +193,12 @@ namespace WebFramework.Services
 
             // Use the given route template
             app.UseRouting();
-            // Use Authentication with JWT
+            // Use Authentication with JWT or Microsoft.AspNetCore.Identity system
             app.UseAuthentication();
+            // Use ApiAuthorization using WebFramework.Authorization
+            app.UseApiAuthorization();
             // Use Authorization
             app.UseAuthorization();
-            // Use Api Authorization
-            app.UseApiAuthorization();
 
             // Logging: Serilog Logging Module
             app.UseSerilogLogging(config, env, loggerFactory);
