@@ -1,5 +1,6 @@
 using LiteDB;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -9,14 +10,17 @@ namespace Identity.LiteDB.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
     /// <summary>
-    /// User Account to Represents a user in the identity system
+    /// User Account to Represents a user in the identity system.
+    /// The Id property is initialized to form a new GUID string value.
     /// </summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class ApplicationUser : IdentityUser
     {
-        public ApplicationUser() : base()
+        public ApplicationUser() : base(false)
         {
             Id = ObjectId.NewObjectId().ToString();
+            CreationTime = DateTime.Now;
+            LastModificationTime = CreationTime;
             IsActive = true;
             Roles = new List<string>();
             Logins = new List<UserLoginInfo>();

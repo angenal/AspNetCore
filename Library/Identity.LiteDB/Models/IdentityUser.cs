@@ -6,14 +6,39 @@ namespace Identity.LiteDB.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
     /// <summary>
-    /// User Account to Represents a user in the identity system
+    /// User Account to Represents a user in the identity system.
+    /// The Id property is initialized to form a new GUID string value.
     /// </summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class IdentityUser : IdentityUser<string>
     {
-        public IdentityUser(bool init = true)
+        /// <summary>
+        /// Initializes a new instance of IdentityUser.
+        /// </summary>
+        public IdentityUser()
         {
-            if (!init) return;
+            Initialize();
+        }
+        /// <summary>
+        /// Initializes a new instance of IdentityUser.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        public IdentityUser(string userName)
+        {
+            UserName = userName;
+            Initialize();
+        }
+        /// <summary>
+        /// Initializes a new instance of IdentityUser.
+        /// </summary>
+        /// <param name="init">Want to initialize?</param>
+        public IdentityUser(bool init)
+        {
+            if (init) Initialize();
+        }
+        void Initialize()
+        {
+            Id = Guid.NewGuid().ToString();
             CreationTime = DateTime.Now;
             LastModificationTime = CreationTime;
         }

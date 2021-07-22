@@ -1,5 +1,4 @@
 using Identity.LiteDB.Models;
-using System;
 
 namespace ApiDemo.NET5.Models.Entities
 {
@@ -14,7 +13,6 @@ namespace ApiDemo.NET5.Models.Entities
         public AppUser(bool init = true) : base(init)
         {
             if (!init) return;
-            Id = Guid.NewGuid().ToString();
             IsActive = true;
         }
     }
