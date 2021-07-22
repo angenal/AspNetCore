@@ -1,25 +1,38 @@
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebFramework
 {
+    /// <summary>
+    /// Default Worker for Background Service.
+    /// </summary>
     public class Worker : BackgroundService
     {
-        private readonly IHostApplicationLifetime host;
-        private readonly ILogger Logger;
+        /// <summary>
+        /// Interval Time
+        /// </summary>
+        public static TimeSpan Interval = TimeSpan.FromSeconds(2);
+        /// <summary>
+        /// Interval Actions
+        /// </summary>
+        public static List<Action> Actions = new List<Action>();
 
-        public Worker(IHostApplicationLifetime host, ILogger logger)
+        readonly IHostApplicationLifetime host;
+        readonly ILogger L;
+
+        public Worker(IHostApplicationLifetime host, ILogger logger = null)
         {
             this.host = host;
-            Logger = logger.ForContext<Worker>();
+            if (logger != null) L = logger.ForContext<Worker>();
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            Logger.Debug("Worker Start ...");
+            L.Debug("Worker Start");
             return base.StartAsync(cancellationToken);
         }
 
@@ -31,14 +44,15 @@ namespace WebFramework
                 {
                     try
                     {
-                        Logger.Debug("Worker Run: {time}", DateTimeOffset.Now);
+                        foreach (Action action in Actions) action?.Invoke();
+                        //L.Debug("Worker Run: {time}", DateTimeOffset.Now);
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ex, "");
+                        L.Error(ex.Message);
                     }
 
-                    await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+                    await Task.Delay(Interval, stoppingToken);
                 }
             }
             finally
@@ -49,7 +63,7 @@ namespace WebFramework
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            Logger.Debug("Worker Stop ...");
+            L.Debug("Worker Stop");
             return base.StopAsync(cancellationToken);
         }
     }
