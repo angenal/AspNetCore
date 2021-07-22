@@ -68,7 +68,7 @@ namespace WebFramework
         public void UseEndpointsMaps(IEndpointRouteBuilder endpoints)
         {
             // 下载文件 Tus Endpoint Handler
-            endpoints.MapGet("/files/{fileId}", TusFileUpload.DownloadHandler);
+            endpoints.MapGet(TusFileServer.UrlPath + "/{fileId}", TusFileServer.DownloadHandler);
         }
     }
 }
