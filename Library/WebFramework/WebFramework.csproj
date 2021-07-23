@@ -52,6 +52,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.4" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="tusdotnet" Version="2.4.0" />
+    <PackageReference Include="UploadStream" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
