@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using WebInterface;
 
-namespace WebFramework
+namespace WebFramework.Data
 {
     /// <summary>
     /// LiteDB database service.

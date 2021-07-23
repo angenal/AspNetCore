@@ -4,7 +4,7 @@ using SqlSugar;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebFramework
+namespace WebFramework.Orm
 {
     /// <summary>
     /// Values 存储 内存数据库

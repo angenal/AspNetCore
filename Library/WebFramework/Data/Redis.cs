@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Authentication;
 
-namespace WebFramework
+namespace WebFramework.Data
 {
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     /// <summary>

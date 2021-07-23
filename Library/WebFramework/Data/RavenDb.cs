@@ -6,7 +6,7 @@ using System.IO;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-namespace WebFramework
+namespace WebFramework.Data
 {
     /// <summary>
     /// RavenDB database service.

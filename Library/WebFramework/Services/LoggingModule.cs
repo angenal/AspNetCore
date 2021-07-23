@@ -7,6 +7,7 @@ using Serilog;
 using Serilog.Events;
 using System;
 using System.IO;
+using WebFramework.Data;
 
 namespace WebFramework.Services
 {

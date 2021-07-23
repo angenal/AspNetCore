@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebInterface;
 
-namespace WebFramework
+namespace WebFramework.Data
 {
     public sealed class SQLServerDb : ISQLServerDb
     {
@@ -26,16 +26,18 @@ namespace WebFramework
         public string GetConnectionString() => _connectionString;
         public bool HasConnectionString => !string.IsNullOrEmpty(_connectionString);
 
+        public SqlConnection Cnn { get => new SqlConnection(_connectionString); }
+
         public async Task<T> Value<T>(string query, object parameters = null)
         {
-            using var conx = new SqlConnection(_connectionString);
-            return await conx.QueryFirstOrDefaultAsync<T>(query, parameters);
+            using var cnn = Cnn;
+            return await cnn.QueryFirstOrDefaultAsync<T>(query, parameters);
         }
 
         public async Task<List<T>> List<T>(string query, object parameters = null)
         {
-            using var conx = new SqlConnection(_connectionString);
-            var results = await conx.QueryAsync<T>(query, parameters);
+            using var cnn = Cnn;
+            var results = await cnn.QueryAsync<T>(query, parameters);
             return results.ToList();
         }
 
@@ -53,8 +55,8 @@ namespace WebFramework
 
         public async Task<int> Execute(string query, object parameters = null)
         {
-            using var conx = new SqlConnection(_connectionString);
-            return await conx.ExecuteAsync(query, parameters);
+            using var cnn = Cnn;
+            return await cnn.ExecuteAsync(query, parameters);
         }
     }
 }
