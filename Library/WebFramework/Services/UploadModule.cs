@@ -28,6 +28,7 @@ namespace WebFramework.Services
         const string TusAppSettings = "Upload:Tus";
         /*
           "Upload": {
+            "WebRootPath": "/file",
             "Minio": {
               "Endpoint": "play.min.io",
               "AccessKey": "Q3AM3UQ867SPQQA43P2F",
@@ -36,8 +37,8 @@ namespace WebFramework.Services
               "SessionToken": ""
             },
             "Tus": {
-              "UrlPath": "/files",
-              "WebRootPath": "/files",
+              "UrlPath": "/api/file/tus",
+              "WebRootPath": "/file/tus",
               "ExpireMinutes": 10
             }
           }
@@ -116,44 +117,40 @@ namespace WebFramework.Services
             if (section.GetSection("UrlPath").Exists()) TusFileServer.UrlPath = section.GetSection("UrlPath").Value;
             if (section.GetSection("WebRootPath").Exists()) TusFileServer.WebRootPath = section.GetSection("WebRootPath").Value;
             TusFileServer.Expiration = TimeSpan.FromMinutes(section.GetSection("ExpireMinutes").Exists() && int.TryParse(section.GetSection("ExpireMinutes").Value, out int i) && i > 0 ? i : 10);
+            var path = Path.Combine(env.WebRootPath, TusFileServer.WebRootPath.Trim('/'));
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
-            services.AddSingleton(_ =>
+            services.AddSingleton(_ => new DefaultTusConfiguration
             {
-                var path = Path.Combine(env.WebRootPath, TusFileServer.WebRootPath.Trim('/'));
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-                return new DefaultTusConfiguration
+                UrlPath = TusFileServer.UrlPath,
+                //文件存储路径
+                Store = new TusDiskStore(path),
+                //元数据是否允许空值
+                MetadataParsingStrategy = MetadataParsingStrategy.AllowEmptyValues,
+                //文件过期后不再更新
+                Expiration = new AbsoluteExpiration(TusFileServer.Expiration),
+                //事件处理
+                Events = new Events
                 {
-                    UrlPath = TusFileServer.UrlPath,
-                    //文件存储路径
-                    Store = new TusDiskStore(path),
-                    //元数据是否允许空值
-                    MetadataParsingStrategy = MetadataParsingStrategy.AllowEmptyValues,
-                    //文件过期后不再更新
-                    Expiration = new AbsoluteExpiration(TusFileServer.Expiration),
-                    //事件处理
-                    Events = new Events
+                    //上传完成事件回调
+                    OnFileCompleteAsync = async ctx =>
                     {
-                        //上传完成事件回调
-                        OnFileCompleteAsync = async ctx =>
-                        {
-                            //获取上传文件
-                            var file = await ctx.GetFileAsync();
+                        //获取上传文件
+                        var file = await ctx.GetFileAsync();
 
-                            //获取上传文件元数据
-                            var meta = await file.GetMetadataAsync(ctx.CancellationToken);
+                        //获取上传文件元数据
+                        var meta = await file.GetMetadataAsync(ctx.CancellationToken);
 
-                            //获取上述文件元数据中的目标文件名
-                            var nameMeta = meta["name"];
+                        //获取上述文件元数据中的目标文件名
+                        var nameMeta = meta["name"];
 
-                            //目标文件名以base64编码后需要解码
-                            var fileName = nameMeta.GetString(Encoding.UTF8);
+                        //目标文件名以base64编码后需要解码
+                        var fileName = nameMeta.GetString(Encoding.UTF8);
 
-                            //将上传文件另存为实际目标文件
-                            File.Move(Path.Combine(path, ctx.FileId), Path.Combine(path, ctx.FileId + Path.GetExtension(fileName)));
-                        }
+                        //将上传文件另存为实际目标文件
+                        File.Move(Path.Combine(path, ctx.FileId), Path.Combine(path, ctx.FileId + Path.GetExtension(fileName)));
                     }
-                };
+                }
             });
         }
     }
@@ -166,12 +163,12 @@ namespace WebFramework.Services
         /// <summary>
         /// 下载目录
         /// </summary>
-        public static string UrlPath = "/files";
+        public static string UrlPath = "/api/file/tus";
 
         /// <summary>
         /// 上传目录
         /// </summary>
-        public static string WebRootPath = "/files";
+        public static string WebRootPath = "/file/tus";
 
         /// <summary>
         /// 续传过期

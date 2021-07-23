@@ -1,8 +1,13 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using UploadStream;
+using WebCore;
 
 namespace WebFramework.Controllers
 {
@@ -14,13 +19,15 @@ namespace WebFramework.Controllers
     public class FileController : ApiController
     {
         private readonly IWebHostEnvironment env;
+        private readonly IConfiguration config;
 
         /// <summary>
         ///
         /// </summary>
-        public FileController(IWebHostEnvironment env)
+        public FileController(IWebHostEnvironment env, IConfiguration config)
         {
             this.env = env;
+            this.config = config;
         }
 
         /// <summary>
@@ -31,22 +38,38 @@ namespace WebFramework.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Upload()
         {
-            // returns a generic typed model, alternatively non-generic overload if no model binding is required
-            var model = await this.StreamFiles<UploadModel>(async formFile =>
+            var section = config.GetSection("Upload:WebRootPath");
+            if (!section.Exists()) return Error("未配置该功能");
+
+            var root = section.Value.Trim('/');
+            var path = Path.Combine(env.WebRootPath, root);
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            var url = Request.RootPath() + root;
+            var files = new List<object>();
+
+            //var buffer = new byte[4096];
+            //var files = new List<IFormFile>();
+            await this.StreamFiles(async file =>
             {
-                // implement processing of stream as required via an IFormFile interface
-                using (var stream = formFile.OpenReadStream())
+                if (file.Length > 1)
                 {
+                    var filename = (Guid.NewGuid().ToString("N") + Path.GetExtension(file.FileName)).ToLower();
+                    var filepath = Path.Combine(path, filename);
+                    using (var stream = System.IO.File.Create(filepath)) await file.CopyToAsync(stream);
+                    files.Add(new { file.Name, file.FileName, file.ContentDisposition, file.ContentType, file.Length, Path = $"{url}/{filename}" });
                 }
+                //using (var stream = file.OpenReadStream())
+                //{
+                //    while (await stream.ReadAsync(buffer.AsMemory(0, buffer.Length)) > 0) { }
+                //}
+                //files.Add(file);
             });
+
             // ModelState is still validated from model
             //if (!ModelState.IsValid) { }
-            return new JsonResult(new { });
+
+            return new JsonResult(files);
         }
 
-    }
-
-    public class UploadModel
-    {
     }
 }

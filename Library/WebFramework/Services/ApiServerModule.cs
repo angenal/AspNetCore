@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebInterface.Settings;
 
 namespace WebFramework.Services
 {
@@ -17,22 +18,39 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection ConfigureServer(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
         {
+            var section = config.GetSection(ApiSettings.AppSettings);
+            if (!section.Exists()) return services;
+
+            // Configures ApiSettings
+            if (ApiSettings.Instance == null)
+            {
+                ApiSettings.Instance = new ApiSettings();
+                // Register IOptions<ApiSettings> from appsettings.json
+                services.Configure<ApiSettings>(section);
+                config.Bind(ApiSettings.AppSettings, ApiSettings.Instance);
+            }
+
+            int maxLengthLimit = ApiSettings.Instance.MaxLengthLimit; // 提交元素个数限制
+            int maxRequestBodySize = ApiSettings.Instance.MaxRequestBodySize; // 提交数据文本字节数量限制
+            int maxMultipartBodySize = ApiSettings.Instance.MaxMultipartBodySize; // 上传文件大小限制
+
             //services.Configure<IISOptions>(opt => { }); // Configure IIS Out-Of-Process.
 
-            services.Configure<IISServerOptions>(options => options.MaxRequestBodySize = 30000000); // Defaults to 30,000,000 bytes (~28.6 MB)
-            services.Configure<KestrelServerOptions>(options => options.Limits.MaxRequestBodySize = 30000000);
+            services.Configure<IISServerOptions>(options => options.MaxRequestBodySize = maxRequestBodySize);
+            services.Configure<KestrelServerOptions>(options => options.Limits.MaxRequestBodySize = maxRequestBodySize);
 
             services.Configure<FormOptions>(options =>
             {
-                options.KeyLengthLimit = 128;
-                options.ValueLengthLimit = 8000;
-                options.ValueCountLimit = 1024;
-                options.MultipartHeadersCountLimit = 1024;
-                options.MultipartHeadersLengthLimit = 8000;
-                options.MemoryBufferThreshold = FormOptions.DefaultMemoryBufferThreshold;
+
+                options.KeyLengthLimit = maxLengthLimit;
+                options.ValueCountLimit = maxLengthLimit;
+                options.ValueLengthLimit = maxMultipartBodySize;
                 options.BufferBodyLengthLimit = FormOptions.DefaultBufferBodyLengthLimit;
-                options.MultipartBoundaryLengthLimit = FormOptions.DefaultMultipartBoundaryLengthLimit;
-                options.MultipartBodyLengthLimit = FormOptions.DefaultMultipartBodyLengthLimit;
+                options.MemoryBufferThreshold = FormOptions.DefaultMemoryBufferThreshold;
+                options.MultipartHeadersCountLimit = maxLengthLimit;
+                options.MultipartHeadersLengthLimit = maxRequestBodySize;
+                options.MultipartBoundaryLengthLimit = maxLengthLimit;
+                options.MultipartBodyLengthLimit = maxMultipartBodySize;
             });
 
             return services;

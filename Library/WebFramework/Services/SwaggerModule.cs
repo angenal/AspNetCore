@@ -34,10 +34,15 @@ namespace WebFramework.Services
             var section = config.GetSection(ApiSettings.AppSettings);
             if (!section.Exists()) return services;
 
-            // Register IOptions<JwtSettings> from appsettings.json
-            services.Configure<ApiSettings>(section);
-            // Read settings
-            config.Bind(ApiSettings.AppSettings, ApiSettings.Instance);
+            // Configures ApiSettings
+            if (ApiSettings.Instance == null)
+            {
+                ApiSettings.Instance = new ApiSettings();
+                // Register IOptions<ApiSettings> from appsettings.json
+                services.Configure<ApiSettings>(section);
+                config.Bind(ApiSettings.AppSettings, ApiSettings.Instance);
+            }
+
             // Configures the Swagger generation options.
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerGenConfigureOptions>();
 
