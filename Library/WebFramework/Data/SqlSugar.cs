@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using SqlSugar;
 using System;
 
-namespace WebFramework.Orm
+namespace WebFramework.Data
 {
     /// <summary>
     /// 数据表 基类 https://www.donet5.com/home/doc

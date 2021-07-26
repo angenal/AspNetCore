@@ -4,7 +4,7 @@ using SqlSugar;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebFramework.Orm
+namespace WebFramework.Data
 {
     /// <summary>
     /// Values 存储 内存数据库
@@ -25,7 +25,7 @@ namespace WebFramework.Orm
     /// <summary>
     /// Values 存储 MSSQL
     /// </summary>
-    public class ValuesContextOfSqlSugar : Orm.DbContextOfSqlSugar
+    public class ValuesContextOfSqlSugar : DbContextOfSqlSugar
     {
         /// <summary>
         /// constructor
@@ -36,7 +36,7 @@ namespace WebFramework.Orm
         /// <summary>
         /// ValueModel DbSet
         /// </summary>
-        public Orm.DbTable<ValueModel> Students { get => new Orm.DbTable<ValueModel>(Client); }
+        public DbTable<ValueModel> Students { get => new DbTable<ValueModel>(Client); }
     }
 
     /// <summary>

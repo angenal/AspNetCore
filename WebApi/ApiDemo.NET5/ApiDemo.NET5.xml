@@ -102,7 +102,7 @@
             例子接口Values
             </summary>
         </member>
-        <member name="M:ApiDemo.NET5.Controllers.ValuesController.#ctor(WebFramework.Orm.ValuesDbContext)">
+        <member name="M:ApiDemo.NET5.Controllers.ValuesController.#ctor(WebFramework.Data.ValuesDbContext)">
             <summary> constructor </summary>
             <param name="context">DI DbContext</param>
         </member>

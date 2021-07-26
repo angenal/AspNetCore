@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebFramework.Data;
-using WebFramework.Orm;
 using WebInterface;
 
 namespace WebFramework.Services
