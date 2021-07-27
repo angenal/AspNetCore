@@ -322,9 +322,9 @@ namespace WebCore.Security
 
 
         /// <summary>
-        /// Get random or rastgele bytes.
+        /// Generates and returns a random or rastgele bytes.
         /// </summary>
-        /// <param name="length"></param>
+        /// <param name="length">Length of the bytes to be returned.</param>
         /// <returns></returns>
         public byte[] RandomBytes(int length)
         {
@@ -335,6 +335,33 @@ namespace WebCore.Security
                 rastgeleSayiOlustur.GetBytes(bytes);
             }
             return bytes;
+        }
+
+        /// <summary>
+        /// Generates and returns a random sequence of strings
+        /// </summary>
+        /// <param name="length">Length of the string to be returned.</param>
+        /// <returns>Captcha string</returns>
+        public string RandomString(int length)
+        {
+            if (length <= 0) throw new ArgumentException("length cannot be less than or equal to 0");
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var stringChars = new char[length];
+            var fillBuffer = new byte[4];
+            int number;
+
+            //CryptoService random byte generator for randomization
+            using (RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create())
+            {
+                for (int i = 0; i < stringChars.Length; i++)
+                {
+                    randomNumberGenerator.GetBytes(fillBuffer);
+                    number = Math.Abs(BitConverter.ToInt32(fillBuffer, 0)) % 60;
+                    stringChars[i] = chars[number];
+                }
+            }
+
+            return new string(stringChars);
         }
 
         public uint XXH32(string text) => text.XXH32();

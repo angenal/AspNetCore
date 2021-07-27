@@ -108,11 +108,17 @@ namespace WebInterface
         byte[] RSA2Decrypt(byte[] hashedPassword);
 
         /// <summary>
-        /// Get random or rastgele bytes.
+        /// Generates and returns a random or rastgele bytes.
         /// </summary>
-        /// <param name="length"></param>
+        /// <param name="length">Length of the bytes to be returned.</param>
         /// <returns></returns>
         byte[] RandomBytes(int length);
+        /// <summary>
+        /// Generates and returns a random sequence of strings
+        /// </summary>
+        /// <param name="length">Length of the string to be returned.</param>
+        /// <returns>Captcha string</returns>
+        string RandomString(int length);
 
         uint XXH32(string text);
         ulong XXH64(string text);
