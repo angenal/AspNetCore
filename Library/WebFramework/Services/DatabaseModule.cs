@@ -30,7 +30,7 @@ namespace WebFramework.Services
                 });
             }
             // Database: LiteDB (similar to sqlite)
-            var liteDb = new LiteDb(config, "LiteDB");
+            var liteDb = new LiteDb(config, "LiteDB", false);
             if (liteDb.HasConnectionString) services.AddSingleton<ILiteDb, LiteDb>(_ => liteDb);
             // Database: Microsoft SQL Server Client
             var mssqlDb = new SQLServerDb(config, "DefaultConnection");
