@@ -530,7 +530,7 @@ namespace Identity.LiteDB
 
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            return Task.FromResult(user.LockoutEndDate);
+            return Task.FromResult(user.LockoutEnd);
         }
 
         public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken = default)
@@ -540,7 +540,7 @@ namespace Identity.LiteDB
 
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            user.LockoutEndDate = lockoutEnd;
+            user.LockoutEnd = lockoutEnd;
             return Task.CompletedTask;
         }
 

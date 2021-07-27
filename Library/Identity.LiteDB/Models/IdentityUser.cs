@@ -67,8 +67,6 @@ namespace Identity.LiteDB.Models
 
         public DateTime? PhoneNumberConfirmedTime { get; internal set; }
 
-        public DateTimeOffset? LockoutEndDate { get; internal set; }
-
         public DateTime CreationTime { get; internal set; }
 
         public DateTime LastModificationTime { get; set; }
