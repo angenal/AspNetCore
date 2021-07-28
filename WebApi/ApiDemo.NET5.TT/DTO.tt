@@ -27,6 +27,22 @@ namespace ApiDemo.NET5.Models.DTO
 		public <#= TT_MSSQL.AsString(col.Type) #><# if(col.IsNull&&TT_MSSQL.AsType(col.Type).IsValueType){ #><#= '?' #><# } #> <#= col.Name #> { get; set; }
     <# } #>}
 <# } #>
+
+	/// <summary>
+	/// AutoMapper Profiles
+	/// </summary>
+	public class AutoMapperProfiles : AutoMapper.Profile
+	{
+		/// <summary>
+		/// AutoMapper Profiles
+		/// </summary>
+		public AutoMapperProfiles()
+		{
+<# foreach (var item in TT_MSSQL.GetTables()) {#>
+			CreateMap<<#= item.Type #>Model, Entities.<#= item.Type #>>().ReverseMap();
+<# } #>
+		}
+	}
 }
 <#+
     public class TT_MSSQL

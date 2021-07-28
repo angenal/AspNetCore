@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.IO;
 using System.Linq;
 using WebCore.Documents;
@@ -49,6 +50,9 @@ namespace WebFramework.Services
             if (!dataDirectory.Exists) dataDirectory.Create();
             // Adds services required for using options
             services.AddOptions();
+
+            // AutoMapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
             // Crypto services

@@ -212,4 +212,18 @@ namespace ApiDemo.NET5.Models.DTO
 		[Required(ErrorMessage = "{0} Îª±ØÌîÏî")]
 		public int HistoryRecords { get; set; }
     }
+
+	/// <summary>
+	/// AutoMapper Profiles
+	/// </summary>
+	public class AutoMapperProfiles : AutoMapper.Profile
+	{
+		/// <summary>
+		/// AutoMapper Profiles
+		/// </summary>
+		public AutoMapperProfiles()
+		{
+			CreateMap<PersonalAnswerModel, Entities.PersonalAnswer>().ReverseMap();
+		}
+	}
 }
