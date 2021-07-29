@@ -26,7 +26,10 @@ namespace WebFramework.Services
                 {
                     options.DbType = SqlSugar.DbType.Sqlite;
                     options.ConnectionString = sqliteConnectionString;
+                    options.InitKeyType = SqlSugar.InitKeyType.Attribute;
                     options.IsAutoCloseConnection = true;
+                    //options.MoreSettings = new SqlSugar.ConnMoreSettings() { IsAutoRemoveDataCache = true };
+                    //options.ConfigureExternalServices = new SqlSugar.ConfigureExternalServices() { DataInfoCacheService = new RedisCache() };
                 });
             }
             // Database: LiteDB (similar to sqlite)

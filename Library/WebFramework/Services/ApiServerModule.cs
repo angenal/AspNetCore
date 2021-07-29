@@ -37,7 +37,11 @@ namespace WebFramework.Services
             //services.Configure<IISOptions>(opt => { }); // Configure IIS Out-Of-Process.
 
             services.Configure<IISServerOptions>(options => options.MaxRequestBodySize = maxRequestBodySize);
-            services.Configure<KestrelServerOptions>(options => options.Limits.MaxRequestBodySize = maxRequestBodySize);
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize = maxRequestBodySize;
+                options.AllowSynchronousIO = true; //启用同步 IO
+            });
 
             services.Configure<FormOptions>(options =>
             {

@@ -54,6 +54,7 @@ namespace WebFramework.Services
         /// </summary>
         public static void ApiBehaviorOptionsAction(ApiBehaviorOptions options)
         {
+            //options.SuppressModelStateInvalidFilter = true; // 关闭系统自带模型验证
             options.InvalidModelStateResponseFactory = context =>
             {
                 if (context.ModelState.IsValid) return new OkObjectResult(context.ModelState);

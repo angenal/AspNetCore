@@ -99,6 +99,7 @@ namespace WebFramework.Services
             // Use Default Console Logging
             builder.ConfigureLogging((context, builder) =>
             {
+                builder.ClearProviders();
                 var configuration = context.Configuration.GetSection("Logging");
                 if (configuration.Exists()) builder.AddConfiguration(configuration).AddConsole().AddDebug();
                 else CreateBootstrapLogger();

@@ -70,8 +70,11 @@ namespace WebFramework.Services
             // Newtonsoft.Json override the default System.Text.Json of .NET Library
             builder.AddNewtonsoftJson(x =>
             {
+                //x.SerializerSettings.ContractResolver = new DefaultContractResolver();
                 x.SerializerSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore;
                 x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                //x.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                //x.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
             });
 
             // Adds Controller's Attributes Injection for Mvc application

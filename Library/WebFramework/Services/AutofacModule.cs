@@ -51,8 +51,10 @@ namespace WebFramework.Services
 
             // Register assembly types
             builder.RegisterAssemblyTypes(Assembly.GetEntryAssembly())
-                .AsImplementedInterfaces().Where(i => Types.Any(t => i.Name.EndsWith(t)))
-                .PropertiesAutowired().AsSelf().InstancePerDependency();
+                .InstancePerDependency()//瞬时单例
+                .AsImplementedInterfaces().Where(i => Types.Any(t => i.Name.EndsWith(t)))//自动以其实现的所有接口类型暴露
+                //.EnableInterfaceInterceptors() //引用 Autofac.Extras.DynamicProxy;
+                .PropertiesAutowired().AsSelf();
 
             // Register custom types
             builder.RegisterType<Crypto>().AsSelf().SingleInstance();

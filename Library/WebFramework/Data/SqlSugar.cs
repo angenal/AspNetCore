@@ -1,7 +1,9 @@
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SqlSugar;
 using System;
+using System.Collections.Generic;
 
 namespace WebFramework.Data
 {
@@ -20,6 +22,8 @@ namespace WebFramework.Data
                 ConnectionString = connection.DefaultConnection,
                 InitKeyType = InitKeyType.Attribute,
                 IsAutoCloseConnection = true,
+                MoreSettings = new ConnMoreSettings() { IsAutoRemoveDataCache = true },
+                ConfigureExternalServices = new ConfigureExternalServices() { DataInfoCacheService = new RedisCache() }
             });
         }
     }
@@ -29,7 +33,11 @@ namespace WebFramework.Data
     public class DbContextOfSqlSugar
     {
         public SqlSugarClient Client;
-        public DbContextOfSqlSugar(IOptions<ConnectionConfig> options) => Client = new SqlSugarClient(options.Value);
+        public DbContextOfSqlSugar(IOptions<ConnectionConfig> options)
+        {
+            Client = new SqlSugarClient(options.Value);
+            //Client.Aop.OnLogExecuting = (sql, pars) => Debug.WriteLine(sql); //调式代码,打印SQL
+        }
     }
     /// <summary>
     /// 把数据库访问类 注册到服务容器中
@@ -46,6 +54,7 @@ namespace WebFramework.Data
             return services;
         }
     }
+
     //public static class SqlSugarExtensions
     //{
     //    public static IApplicationBuilder UseSqlSugar(this IApplicationBuilder builder)
@@ -53,4 +62,53 @@ namespace WebFramework.Data
     //        return builder.UseMiddleware<SqlSugarMiddleware>();
     //    }
     //}
+
+    public class RedisCache : ICacheService
+    {
+        public static MemoryCache Cache = new MemoryCache(new MemoryCacheOptions());
+
+        public void Add<V>(string key, V value)
+        {
+            Cache.Set(key, value);
+        }
+
+        public void Add<V>(string key, V value, int cacheDurationInSeconds)
+        {
+            Cache.Set(key, value, TimeSpan.FromSeconds(cacheDurationInSeconds));
+        }
+
+        public bool ContainsKey<V>(string key)
+        {
+            return Cache.TryGetValue(key, out _);
+        }
+
+        public V Get<V>(string key)
+        {
+            return Cache.Get<V>(key);
+        }
+
+        public IEnumerable<string> GetAllKey<V>()
+        {
+            return new string[0];
+        }
+
+        public V GetOrCreate<V>(string cacheKey, Func<V> create, int cacheDurationInSeconds = int.MaxValue)
+        {
+            if (Cache.TryGetValue(cacheKey, out object v))
+            {
+                return (V)v;
+            }
+            else
+            {
+                var result = create();
+                Add(cacheKey, result, cacheDurationInSeconds);
+                return result;
+            }
+        }
+
+        public void Remove<V>(string key)
+        {
+            Cache.Remove(key.Remove(0, 6));
+        }
+    }
 }
