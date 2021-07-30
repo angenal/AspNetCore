@@ -390,6 +390,16 @@
             修改次数
             </summary>
         </member>
+        <member name="T:ApiDemo.NET5.Models.DTO.AutoMapperProfiles">
+            <summary>
+            AutoMapper Profiles
+            </summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Models.DTO.AutoMapperProfiles.#ctor">
+            <summary>
+            AutoMapper Profiles
+            </summary>
+        </member>
         <member name="T:ApiDemo.NET5.Models.Entities.AppUser">
             <summary>
             Application User Account

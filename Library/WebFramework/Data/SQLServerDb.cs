@@ -14,10 +14,13 @@ namespace WebFramework.Data
     {
         private readonly string _connectionString;
 
+        public static string DefaultConnection;
+
         public SQLServerDb(IConfiguration config, string connectionStringName = "DefaultConnection")
         {
             var connectionString = Environment.GetEnvironmentVariable(connectionStringName);
             if (string.IsNullOrEmpty(connectionString)) connectionString = config.GetConnectionString(connectionStringName);
+            if (DefaultConnection == null) DefaultConnection = connectionString;
             _connectionString = connectionString;
         }
 
