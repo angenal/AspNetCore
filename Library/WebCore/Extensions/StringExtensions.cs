@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using ToolGood.Words;
 
 namespace WebCore
@@ -280,6 +281,57 @@ namespace WebCore
         {
             if (s == null || s.Length <= i) return s;
             return s.Substring(s.Length - i);
+        }
+
+
+        /// <summary>
+        /// 验证邮箱
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsEmail(string s)
+        {
+            return Regex.IsMatch(s, @"^[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$");
+        }
+
+        /// <summary>
+        /// 验证电话号码
+        /// </summary>
+        public static bool IsTelephone(this string s)
+        {
+            return !string.IsNullOrEmpty(s) && Regex.IsMatch(s, @"^(\d{3,4}-)?\d{6,8}$");
+        }
+
+        /// <summary>
+        /// 验证手机号码
+        /// </summary>
+        public static bool IsPhoneNumber(this string s)
+        {
+            return !string.IsNullOrEmpty(s) && Regex.IsMatch(s, @"^1[0-9]{10}$");
+        }
+
+        /// <summary>
+        /// 验证身份证号
+        /// </summary>
+        public static bool IsIdCard(this string s)
+        {
+            return !string.IsNullOrEmpty(s) && Regex.IsMatch(s, @"(^\d{18}$)|(^\d{15}$)");
+        }
+
+        /// <summary>
+        /// 验证输入数字
+        /// </summary>
+        public static bool IsNumber(string s)
+        {
+            return !string.IsNullOrEmpty(s) && (int.TryParse(s, out _) || double.TryParse(s, out _));
+        }
+
+        /// <summary>
+        /// 验证邮编
+        /// </summary>
+        public static bool IsPostalcode(string s)
+        {
+            return !string.IsNullOrEmpty(s) && Regex.IsMatch(s, @"^\d{6}$");
         }
 
     }
