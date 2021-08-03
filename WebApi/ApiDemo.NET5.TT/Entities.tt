@@ -18,7 +18,7 @@ namespace ApiDemo.NET5.Models.Entities
 		[Display(Name = "<#=col.Remark.Replace("\r\n","").Replace("&","＆") #>")]<# if (col.IsPrimary || !col.IsNull) { #>
 <# if(col.IsPrimary){ #>
 
-        [Key<# if(col.IsIdentity){ #>()<# } #>][SqlSugar.SugarColumn(IsPrimaryKey = true)]<# } #>
+        [Key<# if(col.IsIdentity){ #>()<# } #>][SqlSugar.SugarColumn(IsPrimaryKey = true<# if(col.IsIdentity){ #>, IsIdentity = true<# } #>)]<# } #>
 
 		[Required]
 <# } else { #>

@@ -27,6 +27,22 @@
             <param name="format">html,png,pdf</param>
             <returns></returns>
         </member>
+        <member name="T:ApiDemo.NET5.Controllers.PersonalAnswerController">
+            <summary>
+            用户账号
+            </summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Controllers.PersonalAnswerController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Controllers.PersonalAnswerController.Get">
+            <summary>
+            查询 - Values
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:ApiDemo.NET5.Controllers.UserController">
             <summary>
             用户账号

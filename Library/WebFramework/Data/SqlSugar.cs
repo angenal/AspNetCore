@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace WebFramework.Data
@@ -85,7 +84,7 @@ namespace WebFramework.Data
         {
             if (pars == null) return null;
             var s = new StringBuilder();
-            foreach (SugarParameter p in pars) s.Append($"    {p.ParameterName} ({p.TypeName.Split('.').LastOrDefault()}) = {p.Value}");
+            foreach (SugarParameter p in pars) s.Append($"    {p.ParameterName} = {p.Value} {Environment.NewLine}");
             return s.ToString();
         }
         //public static IApplicationBuilder UseSqlSugar(this IApplicationBuilder builder)
