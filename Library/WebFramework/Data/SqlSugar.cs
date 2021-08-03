@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace WebFramework.Data
 {
@@ -13,6 +15,11 @@ namespace WebFramework.Data
     /// <typeparam name="T"></typeparam>
     public class DbTable<T> : SimpleClient<T> where T : class, new()
     {
+        /// <summary>
+        /// 数据表
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="connection"></param>
         public DbTable(ISqlSugarClient context = null, ConnectionStrings connection = null) : base(context)
         {
             if (context != null || connection == null) return;
@@ -32,37 +39,63 @@ namespace WebFramework.Data
     /// </summary>
     public class DbContextOfSqlSugar
     {
+        /// <summary>
+        /// 访问上下文
+        /// </summary>
         public SqlSugarClient Client;
-        public DbContextOfSqlSugar(IOptions<ConnectionConfig> options)
-        {
-            Client = new SqlSugarClient(options.Value);
-            //Client.Aop.OnLogExecuting = (sql, pars) => Debug.WriteLine(sql); //调式代码,打印SQL
-        }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="options"></param>
+        public DbContextOfSqlSugar(IOptions<ConnectionConfig> options) => Client = new SqlSugarClient(options.Value);
     }
     /// <summary>
     /// 把数据库访问类 注册到服务容器中
     /// </summary>
     public static class SqlSugarServiceCollectionExtensions
     {
-        public static IServiceCollection AddDbContextOfSqlSugar<TContext>(this IServiceCollection services,
-            Action<ConnectionConfig> optionsAction = null) where TContext : DbContextOfSqlSugar
+        /// <summary>
+        /// 注册到服务容器中
+        /// </summary>
+        public static IServiceCollection AddDbContextOfSqlSugar<TContext>(this IServiceCollection services, Action<ConnectionConfig> optionsAction = null) where TContext : DbContextOfSqlSugar
         {
             if (optionsAction != null) services.Configure(optionsAction);
-
             services.AddScoped<TContext>();
-
             return services;
         }
     }
-
-    //public static class SqlSugarExtensions
-    //{
-    //    public static IApplicationBuilder UseSqlSugar(this IApplicationBuilder builder)
-    //    {
-    //        return builder.UseMiddleware<SqlSugarMiddleware>();
-    //    }
-    //}
-
+    /// <summary>
+    /// 数据库 扩展方法
+    /// </summary>
+    public static class SqlSugarExtensions
+    {
+        /// <summary>
+        /// 调式代码,打印SQL
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        public static SqlSugarClient Debug(this SqlSugarClient db, Action<string> action = null)
+        {
+            if (db == null) return db;
+            if (action == null) action = sql => System.Diagnostics.Debug.WriteLine(sql);
+            if (db.Aop != null) db.Aop.OnLogExecuting = (sql, pars) => action.Invoke("  " + sql + Environment.NewLine + WriteLineSugarParameter(pars));
+            return db;
+        }
+        static string WriteLineSugarParameter(SugarParameter[] pars)
+        {
+            if (pars == null) return null;
+            var s = new StringBuilder();
+            foreach (SugarParameter p in pars) s.Append($"    {p.ParameterName} ({p.TypeName.Split('.').LastOrDefault()}) = {p.Value}");
+            return s.ToString();
+        }
+        //public static IApplicationBuilder UseSqlSugar(this IApplicationBuilder builder)
+        //{
+        //    return builder.UseMiddleware<SqlSugarMiddleware>();
+        //}
+    }
+    /// <summary>
+    /// 数据库 缓存Redis
+    /// </summary>
     public class RedisCache : ICacheService
     {
         public static MemoryCache Cache = new MemoryCache(new MemoryCacheOptions());

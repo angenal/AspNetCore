@@ -14,7 +14,7 @@ namespace ApiDemo.NET5.Models.Entities
 		/// ±àºÅ
 		/// </summary>
 		[Display(Name = "±àºÅ")]
-        [Key()]
+        [Key()][SqlSugar.SugarColumn(IsPrimaryKey = true)]
 		[Required]
         public int Id { get; set; }
     
