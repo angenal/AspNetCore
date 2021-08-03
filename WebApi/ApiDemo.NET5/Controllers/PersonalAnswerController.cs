@@ -80,6 +80,8 @@ namespace ApiDemo.NET5.Controllers
 
             first1.Ip = ip;
             first1.Title = "B";
+            var i = await db.Updateable(first1).ExecuteCommandAsync();
+
             await db.Updateable(first1).UpdateColumns(q => new { q.Ip, q.Title }).ExecuteCommandAsync();
 
             await db.Updateable(new PersonalAnswer { Id = id, Ip = ip, Title = "C" }).UpdateColumns(q => new { q.Ip, q.Title }).ExecuteCommandAsync();
