@@ -78,6 +78,21 @@ namespace ApiDemo.NET5.Controllers
 
             id = first1.Id;
 
+            var entity = await db.Queryable("PersonalAnswer", "t1")
+                .Where("t1.Id=@id", new { id })
+                .Select<PersonalAnswerModel1>("t1.Id,t1.Ip,t1.Title")
+                .FirstAsync();
+
+            entity = await db.Queryable<PersonalAnswer>()
+                .Where(q => q.Id == id)
+                .Select(q => new PersonalAnswerModel1 { Id = q.Id, Ip = q.Ip, Title = q.Title })
+                .FirstAsync();
+
+            entity = await db.Queryable<PersonalAnswer>()
+                .Where(q => q.Id == id)
+                .Select<PersonalAnswerModel1>("Id,Ip,Title")
+                .FirstAsync();
+
             first1.Ip = ip;
             first1.Title = "B";
             var i = await db.Updateable(first1).ExecuteCommandAsync();
@@ -96,5 +111,25 @@ namespace ApiDemo.NET5.Controllers
 
             return Ok();
         }
+    }
+    /// <summary>
+    ///
+    /// </summary>
+    public class PersonalAnswerModel1
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public string Ip { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public string Title { get; set; }
     }
 }

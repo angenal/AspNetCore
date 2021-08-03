@@ -43,6 +43,26 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:ApiDemo.NET5.Controllers.PersonalAnswerModel1">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Controllers.PersonalAnswerModel1.Id">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Controllers.PersonalAnswerModel1.Ip">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Controllers.PersonalAnswerModel1.Title">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="T:ApiDemo.NET5.Controllers.UserController">
             <summary>
             用户账号
