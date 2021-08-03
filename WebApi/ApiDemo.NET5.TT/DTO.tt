@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations;
 namespace ApiDemo.NET5.Models.DTO
 {
 <# foreach (var item in TT_MSSQL.GetTables()) {
-    var excluded = new[] { "Ip" };
-    var notRequired = new[] { "Year", "UpdateTimes", "UpdateTime", "CreateTime", "CreateUser" }; #>
+    var excluded = new[] { "Ip", "LoginIp", "LoginCode", "CreateUser" };
+    var notRequired = new[] { "Year", "UpdateTimes", "UserId", "UpdateTime", "UpdateUser", "CreateTime", "CreateUser" }; #>
 	/// <summary>
 	/// <#=item.Remark.Replace("\r\n","").Replace("&","＆") #>
 	/// </summary>
