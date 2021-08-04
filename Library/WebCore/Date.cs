@@ -68,9 +68,17 @@ namespace WebCore
         }
 
         /// <summary>
+        /// 初始化
+        /// </summary>
+        internal static void Init()
+        {
+            Startup = Now();
+        }
+
+        /// <summary>
         /// 系统启动时间 (Asia/Shanghai)
         /// </summary>
-        public static DateTime Startup = Now();
+        public static DateTime Startup;
 
         /// <summary>
         /// 时区数据库

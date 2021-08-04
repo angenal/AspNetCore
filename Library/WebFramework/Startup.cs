@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebCore;
 using WebFramework.Services;
 
 namespace WebFramework
@@ -22,6 +23,9 @@ namespace WebFramework
 
         public static void Run<TStartup>(string[] args) where TStartup : class
         {
+            // 系统入口:初始化
+            Main.Init();
+            // 系统应用:初始化
             var host = Host.CreateDefaultBuilder(args)
                 //.ConfigureAppConfiguration((context, builder) =>
                 //{

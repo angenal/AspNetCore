@@ -17,13 +17,7 @@ namespace WebFramework
         /// <summary>
         /// new SqlSugarClient
         /// </summary>
-        public SqlSugarClient db => _db ??= new SqlSugarClient(new ConnectionConfig()
-        {
-            ConnectionString = Data.SQLServerDb.DefaultConnection,
-            DbType = DbType.SqlServer,
-            InitKeyType = InitKeyType.Attribute,
-            IsAutoCloseConnection = true,
-        });
+        public SqlSugarClient db => _db ??= SqlSugarExtensions.NewSqlSugarClient(Data.SQLServerDb.DefaultConnection);
         private SqlSugarClient _db;
 
         public ApiController() { }

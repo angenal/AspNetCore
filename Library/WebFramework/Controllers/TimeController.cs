@@ -39,6 +39,7 @@ namespace WebFramework.Controllers
                 env.ApplicationName,
                 env.EnvironmentName,
                 Startup = Date.Startup.ToDateTimeString(),
+                Uptime = DateTime.Now - Date.Startup,
                 Linux = new
                 {
                     Now = date.ToDateTimeString(),
