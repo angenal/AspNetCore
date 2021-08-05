@@ -126,7 +126,7 @@ namespace WebFramework.Services
 
 
             // SignalR
-            //services.AddSignalR();
+            services.AddSignalR();
 
 
             // Upload File

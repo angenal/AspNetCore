@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WebFramework.SignalR;
 
 namespace ApiDemo.NET5
 {
@@ -27,8 +28,8 @@ namespace ApiDemo.NET5
             {
                 endpoints.MapControllerRoute("default", "{culture:culture}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chatHub");
                 UseEndpointsMaps(endpoints);
-                //endpoints.MapHub<TicketHub>("/tickethub", options => { });
             });
         }
     }

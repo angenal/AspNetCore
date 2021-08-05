@@ -131,11 +131,11 @@ namespace WebFramework.SignalR
                 var user = ChatUser.Get(Context);
                 if (string.IsNullOrEmpty(user.Id)) return Abort();
 
-                // 角色 : 查数据库确定
-                user.Room = string.IsNullOrEmpty(user.Room) ? "default" : user.Room;
-
                 if (!Connections.Any(u => u.Id == user.Id))
                 {
+                    // 聊天室(群)
+                    user.Room = string.IsNullOrEmpty(user.Room) ? "default" : user.Room;
+
                     // Adds user
                     Connections.Add(user);
                     // Adds mapping
