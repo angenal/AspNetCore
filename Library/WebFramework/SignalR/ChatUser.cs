@@ -8,7 +8,7 @@ namespace WebFramework.SignalR
     /// <summary>
     /// 聊天用户
     /// </summary>
-    public class ChatUser
+    public class ChatUser : User
     {
         /// <summary>
         /// Gets the user from the hub caller connection.
@@ -42,6 +42,44 @@ namespace WebFramework.SignalR
         }
 
         /// <summary>
+        /// Gets User Id.
+        /// </summary>
+        /// <param name="Context"></param>
+        /// <returns></returns>
+        public static string GetId(HubCallerContext Context)
+        {
+            var id = Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sid);
+            return !string.IsNullOrEmpty(id) ? id : Context.GetHttpContext().Request.Query["id"].ToString();
+        }
+
+        /// <summary>
+        /// Gets User Name.
+        /// </summary>
+        /// <param name="Context"></param>
+        /// <returns></returns>
+        public static string GetName(HubCallerContext Context)
+        {
+            var req = Context.GetHttpContext().Request;
+            var name = Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            return !string.IsNullOrEmpty(name) ? name : req.Query.ContainsKey("name") ? req.Query["name"].ToString() : Context.User?.Identity?.Name;
+        }
+
+        /// <summary>
+        /// 聊天室(群)
+        /// </summary>
+        public string Room { get; set; }
+        /// <summary>
+        /// 设备标识
+        /// </summary>
+        public string Device { get; set; }
+    }
+
+    /// <summary>
+    /// 用户信息
+    /// </summary>
+    public class User
+    {
+        /// <summary>
         /// 用户Id
         /// </summary>
         public string Id { get; set; }
@@ -53,13 +91,5 @@ namespace WebFramework.SignalR
         /// 角色(类别)
         /// </summary>
         public string Role { get; set; }
-        /// <summary>
-        /// 聊天室(群)
-        /// </summary>
-        public string Room { get; set; }
-        /// <summary>
-        /// 设备标识
-        /// </summary>
-        public string Device { get; set; }
     }
 }
