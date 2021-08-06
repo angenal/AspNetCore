@@ -14,8 +14,13 @@
           >> 应用程序池 >> 基本设置 >> .NET CLR 版本：无托管代码 >>依赖IIS模块AspNetCoreModuleV2<<目标框架：.NET 5.0 >> 不再属于.NET Framework
           >> 应用程序池 >> 高级设置 >> 进程模型 >> 标识(应用程序标识) >> 内置账户：LocalSystem (用于提高调用系统资源的权限)
           >> 重启网站
+
 --------------------------
 2.命令行 on Windows for Server: Kestrel
+--------------------------
+set output=./bin/Release/net5.0/publish
+if exist "%output%" rd /S /Q "%output%"
+dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=false -f net5.0 -r win-x64 -o "%output%/win-x64"
 --------------------------
 >> 点击:发布 >> 配置：Release; 部署模式：独立
 cd /publish
@@ -25,10 +30,14 @@ set ASPNETCORE_URLS=https://localhost:44354;http://localhost:44355
 >> 开始运行
 Chat.Web.exe
 >> 结束: Press Ctrl+C to shut down.
+
 --------------------------
 3.部署Linux
 --------------------------
-
+set output=./bin/Release/net5.0/publish
+if exist "%output%" rd /S /Q "%output%"
+dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true -f net5.0 -r linux-x64 -o "%output%/linux-x64"
+--------------------------
 
 
 --------------------------
