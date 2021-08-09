@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace WebFramework.SignalR
 {
@@ -22,6 +24,15 @@ namespace WebFramework.SignalR
         /// <summary>
         /// 时间戳
         /// </summary>
-        public DateTime Timestamp { get; set; }
+        public DateTime Time { get; set; }
+    }
+
+    /// <summary>
+    /// 聊天消息管理
+    /// </summary>
+    public class ChatMessage
+    {
+        public static void Add(string groupName, Message message) => Data.RedisList.Add(groupName, message);
+        public static IEnumerable<Message> Get(string groupName, int size = 20) => Data.RedisList.GetLastestResult<Message>(groupName, size).OrderByDescending(t => t.Time);
     }
 }
