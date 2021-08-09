@@ -1,4 +1,5 @@
 using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Authentication;
@@ -156,6 +157,62 @@ namespace WebFramework.Data
             }
 
             return string.IsNullOrEmpty(_hostname) ? string.Join(",", config) : $"{_hostname},{string.Join(",", config)}";
+        }
+    }
+
+    /// <summary>
+    /// Redis db manager
+    /// </summary>
+    public static class RedisManager
+    {
+        /// <summary>
+        /// Redis server connection string
+        /// </summary>
+        private const string DefaultConfiguration = "localhost:6379";
+
+        /// <summary>
+        /// Redis database
+        /// </summary>
+        private const int DataBase = -1;
+
+        /// <summary>
+        /// The redis configuration string
+        /// </summary>
+        private static string _configuration = DefaultConfiguration;
+
+        /// <summary>
+        /// Get the redis connection multiplexer once
+        /// </summary>
+        private static readonly Lazy<IConnectionMultiplexer> redis = new Lazy<IConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(_configuration));
+
+        /// <summary>
+        /// Get redis db instance
+        /// </summary>
+        public static IDatabase Db => redis.Value.GetDatabase(DataBase);
+
+        /// <summary>
+        /// Get redis db instance
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        public static IDatabase GetDatabase(int db = -1) => redis.Value.GetDatabase(db);
+
+        /// <summary>
+        /// Init redis cache configuration
+        /// </summary>
+        /// <param name="configuration"></param>
+        public static void Init(string configuration)
+        {
+            _configuration = configuration;
+        }
+
+        /// <summary>
+        /// Init redis cache configuration
+        /// </summary>
+        /// <param name="configuration"></param>
+        public static void Init(RedisConfiguration configuration)
+        {
+            _configuration = configuration.ToString();
         }
     }
 }
