@@ -12,6 +12,7 @@ namespace WebFramework.SignalR
     {
         /// <summary>
         /// Gets the user from the hub caller connection.
+        /// https://docs.microsoft.com/en-us/aspnet/core/signalr/configuration?view=aspnetcore-5.0&tabs=javascript#configure-additional-options
         /// </summary>
         /// <param name="Context">A context abstraction for accessing information.</param>
         /// <returns></returns>
@@ -21,6 +22,17 @@ namespace WebFramework.SignalR
             var id = Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sid);
             var jwt = !string.IsNullOrEmpty(id);
 
+            /*
+            let connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chat", {
+                    // accessTokenFactory: () => { return '$token' }, // Get and return the access token.
+                    headers: { "id": '$id', "name": '$name', "room": '$room' }, // Get and return the user info
+                    transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
+                })
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+             */
+
             var user = jwt ? new ChatUser
             {
                 Id = id,
@@ -28,14 +40,14 @@ namespace WebFramework.SignalR
                 Role = Context.User.FindFirstValue("role"),
             } : new ChatUser
             {
-                Id = req.Query["id"].ToString(),
-                Name = req.Query.ContainsKey("name") ? req.Query["name"].ToString() : Context.User?.Identity?.Name,
-                Role = req.Query["role"].ToString(),
+                Id = req.Headers.ContainsKey("id") ? req.Headers["id"].ToString() : req.Query.ContainsKey("id") ? req.Query["id"].ToString() : null,
+                Name = req.Headers.ContainsKey("name") ? req.Headers["name"].ToString() : req.Query.ContainsKey("name") ? req.Query["name"].ToString() : Context.User?.Identity?.Name,
+                Role = req.Headers.ContainsKey("role") ? req.Headers["role"].ToString() : req.Query.ContainsKey("role") ? req.Query["role"].ToString() : null,
             };
 
-            user.Room = req.Query.ContainsKey("room") ? req.Query["room"].ToString() : Context.User?.FindFirstValue("room");
+            user.Room = req.Headers.ContainsKey("room") ? req.Headers["room"].ToString() : req.Query.ContainsKey("room") ? req.Query["room"].ToString() : Context.User?.FindFirstValue("room");
 
-            var device = req.Query.TryGetValue("device", out var query) ? query.ToString() : req.Headers["device"].ToString();
+            var device = req.Headers.ContainsKey("device") ? req.Headers["device"].ToString() : req.Query.TryGetValue("device", out var query) ? query.ToString() : "web";
             user.Device = !string.IsNullOrEmpty(device) && (device.Equals("desktop", StringComparison.OrdinalIgnoreCase) || device.Equals("mobile", StringComparison.OrdinalIgnoreCase)) ? device : "web";
 
             return user;
@@ -48,8 +60,9 @@ namespace WebFramework.SignalR
         /// <returns></returns>
         public static string GetId(HubCallerContext Context)
         {
+            var req = Context.GetHttpContext().Request;
             var id = Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sid);
-            return !string.IsNullOrEmpty(id) ? id : Context.GetHttpContext().Request.Query["id"].ToString();
+            return !string.IsNullOrEmpty(id) ? id : req.Headers.ContainsKey("id") ? req.Headers["id"].ToString() : req.Query.ContainsKey("id") ? req.Query["id"].ToString() : null;
         }
 
         /// <summary>
@@ -61,7 +74,7 @@ namespace WebFramework.SignalR
         {
             var req = Context.GetHttpContext().Request;
             var name = Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            return !string.IsNullOrEmpty(name) ? name : req.Query.ContainsKey("name") ? req.Query["name"].ToString() : Context.User?.Identity?.Name;
+            return !string.IsNullOrEmpty(name) ? name : req.Headers.ContainsKey("name") ? req.Headers["name"].ToString() : req.Query.ContainsKey("name") ? req.Query["name"].ToString() : Context.User?.Identity?.Name;
         }
 
         /// <summary>
