@@ -44,5 +44,28 @@ dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true -f ne
 其他相关资源
 --------------------------
 ASP.NET Core SignalR JavaScript 客户端 https://docs.microsoft.com/zh-cn/aspnet/core/signalr/javascript-client?view=aspnetcore-5.0
+配置文档参考 https://docs.microsoft.com/en-us/aspnet/core/signalr/configuration?view=aspnetcore-5.0&tabs=javascript#configure-additional-options
 --------------------------
-
+// javascript
+let connection = new signalR.HubConnectionBuilder()
+    .withUrl("/chat", {
+        // accessTokenFactory: () => { return '$token' }, // Get and return the access token.
+        headers: { "id": '$id', "name": '$name', "room": '$room' }, // Get and return the user info
+        transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
+    })
+    .configureLogging(signalR.LogLevel.Information)
+    .build();
+// start connect...
+connection.start().then(function () {
+    console.log('SignalR Started...')
+}).catch(function (err) {
+    return console.error(err);
+});
+// receive messages...
+connection.on("onError", function (message) {
+    //viewModel.serverInfoMessage(message);
+    $("#errorAlert").removeClass("d-none").show().delay(5000).fadeOut(500);
+});
+connection.on("newMessage", function (messageView) {
+    // logic is here.
+});
