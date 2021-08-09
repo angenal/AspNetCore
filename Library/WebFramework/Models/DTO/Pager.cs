@@ -49,6 +49,14 @@ namespace WebFramework.Models.DTO
         /// <summary>
         ///
         /// </summary>
+        public PageOutputDto(int pageIndex, int pageSize)
+        {
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+        }
+        /// <summary>
+        ///
+        /// </summary>
         public PageOutputDto(IEnumerable<T> data, int pageIndex, int pageSize, int pageNumber)
         {
             Data = data;
