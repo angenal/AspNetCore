@@ -95,7 +95,7 @@ namespace WebFramework.SignalR
                     Id = Guid.NewGuid().ToString("N"),
                     Content = Regex.Replace(message, @"(?i)<(?!img|a|/a|/img).*?>", string.Empty),
                     From = sender.Name,
-                    Timestamp = DateTime.Now,
+                    Time = DateTime.Now,
                 };
 
                 // Send the message

@@ -1,6 +1,8 @@
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Security.Authentication;
 
@@ -181,6 +183,11 @@ namespace WebFramework.Data
         private static string _configuration = DefaultConfiguration;
 
         /// <summary>
+        /// The connection multiplexer.
+        /// </summary>
+        private static Lazy<ConnectionMultiplexer> _connectionMultiplexer;
+
+        /// <summary>
         /// Get the redis connection multiplexer once
         /// </summary>
         private static readonly Lazy<IConnectionMultiplexer> redis = new Lazy<IConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(_configuration));
@@ -198,6 +205,12 @@ namespace WebFramework.Data
         public static IDatabase GetDatabase(int db = -1) => redis.Value.GetDatabase(db);
 
         /// <summary>
+        /// Get redis client connection
+        /// </summary>
+        /// <returns></returns>
+        public static IConnectionMultiplexer GetConnection() => _connectionMultiplexer?.Value;
+
+        /// <summary>
         /// Init redis cache configuration
         /// </summary>
         /// <param name="configuration"></param>
@@ -213,6 +226,80 @@ namespace WebFramework.Data
         public static void Init(RedisConfiguration configuration)
         {
             _configuration = configuration.ToString();
+        }
+
+        public static void Init(EasyCaching.Redis.RedisDBOptions options)
+        {
+            if (string.IsNullOrWhiteSpace(options.Configuration))
+            {
+                var configurationOptions = new ConfigurationOptions
+                {
+                    ConnectTimeout = options.ConnectionTimeout,
+                    User = options.Username,
+                    Password = options.Password,
+                    Ssl = options.IsSsl,
+                    SslHost = options.SslHost,
+                    AllowAdmin = options.AllowAdmin,
+                    DefaultDatabase = options.Database,
+                    AbortOnConnectFail = options.AbortOnConnectFail,
+                };
+
+                foreach (var endpoint in options.Endpoints)
+                {
+                    configurationOptions.EndPoints.Add(endpoint.Host, endpoint.Port);
+                }
+
+                _configuration = configurationOptions.ToString();
+            }
+            else
+            {
+                _configuration = options.Configuration;
+            }
+
+            _connectionMultiplexer = new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(_configuration));
+        }
+
+        /// <summary>
+        /// Gets the server list.
+        /// </summary>
+        /// <returns>The server list.</returns>
+        public static IEnumerable<IServer> GetServerList()
+        {
+            var endpoints = GetMastersServersEndpoints();
+
+            foreach (var endpoint in endpoints)
+            {
+                yield return _connectionMultiplexer.Value.GetServer(endpoint);
+            }
+        }
+
+        /// <summary>
+        /// Gets the masters servers endpoints.
+        /// </summary>
+        public static List<EndPoint> GetMastersServersEndpoints()
+        {
+            var masters = new List<EndPoint>();
+            if (_connectionMultiplexer == null) return masters;
+            foreach (var ep in _connectionMultiplexer.Value.GetEndPoints())
+            {
+                var server = _connectionMultiplexer.Value.GetServer(ep);
+                if (server.IsConnected)
+                {
+                    //Cluster
+                    if (server.ServerType == ServerType.Cluster)
+                    {
+                        masters.AddRange(server.ClusterConfiguration.Nodes.Where(n => !n.IsReplica).Select(n => n.EndPoint));
+                        break;
+                    }
+                    // Single , Master-Slave
+                    if (server.ServerType == ServerType.Standalone && !server.IsReplica)
+                    {
+                        masters.Add(ep);
+                        break;
+                    }
+                }
+            }
+            return masters;
         }
     }
 }

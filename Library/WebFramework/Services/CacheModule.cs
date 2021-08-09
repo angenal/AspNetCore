@@ -83,6 +83,14 @@ namespace WebFramework.Services
             //2. Redis Cache  https://easycaching.readthedocs.io/en/latest/Redis/
             section = config.GetSection("easycaching:redis");
             if (section.Exists()) services.AddEasyCaching(options => options.UseRedis(config, EasyCachingConstValue.DefaultRedisName, section.Path));
+            //2.1 Redis manager init.
+            if (section.Exists())
+            {
+                var dbConfig = config.GetSection(section.Path);
+                var redisOptions = new EasyCaching.Redis.RedisOptions();
+                dbConfig.Bind(redisOptions);
+                Data.RedisManager.Init(redisOptions.DBConfig);
+            }
 
             //3. LiteDB Cache  https://easycaching.readthedocs.io/en/latest/LiteDB/
             section = config.GetSection("easycaching:litedb");
