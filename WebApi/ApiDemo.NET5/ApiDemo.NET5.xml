@@ -672,5 +672,23 @@
             
              </summary>
         </member>
+        <member name="T:ApiDemo.NET5.Program">
+            <summary></summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Program.Main(System.String[])">
+            <summary></summary>
+        </member>
+        <member name="T:ApiDemo.NET5.Startup">
+            <summary></summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary></summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary></summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary></summary>
+        </member>
     </members>
 </doc>

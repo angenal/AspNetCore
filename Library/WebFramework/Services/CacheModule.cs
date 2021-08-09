@@ -53,7 +53,7 @@ namespace WebFramework.Services
                     "Endpoints": [
                       {
                         "Host": "localhost",
-                        "Port": 6739
+                        "Port": 6379
                       }
                     ],
                     "Database": 0
