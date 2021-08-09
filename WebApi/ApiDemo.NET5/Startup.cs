@@ -30,9 +30,9 @@ namespace ApiDemo.NET5
             //API: ApiController
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllerRoute("default", "{culture:culture}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("/chatHub");
                 UseEndpointsMaps(endpoints);
             });
         }

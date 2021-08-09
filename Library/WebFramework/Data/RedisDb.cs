@@ -36,7 +36,7 @@ namespace WebFramework.Data
             if (!s.HasValue || !int.TryParse(s.ToString(), out var count) || count == 0)
                 return Array.Empty<T>();
 
-            var startingFrom = count > size ? count - size : 0;
+            var startingFrom = count > size && size > 0 ? count - size : 0;
             var list = Redis.ListRange(new RedisKey(key), startingFrom);
 
             var rows = new List<T>();
