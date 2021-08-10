@@ -10,6 +10,148 @@ namespace WebFramework.Data
 {
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     /// <summary>
+    /// Redis db manager
+    /// </summary>
+    public static class RedisManager
+    {
+        /// <summary>
+        /// Redis server connection string  https://stackexchange.github.io/StackExchange.Redis/Configuration.html
+        /// </summary>
+        private const string DefaultConfiguration = "localhost:6379";
+
+        /// <summary>
+        /// Redis database
+        /// </summary>
+        private const int DataBase = -1;
+
+        /// <summary>
+        /// The redis configuration string
+        /// </summary>
+        private static string _configuration = DefaultConfiguration;
+
+        /// <summary>
+        /// The connection multiplexer.
+        /// </summary>
+        private static Lazy<ConnectionMultiplexer> _connectionMultiplexer;
+
+        /// <summary>
+        /// Get the redis connection multiplexer once
+        /// </summary>
+        private static readonly Lazy<IConnectionMultiplexer> redis = new Lazy<IConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(_configuration));
+
+        /// <summary>
+        /// Get redis db instance
+        /// </summary>
+        public static IDatabase Db => redis.Value.GetDatabase(DataBase);
+
+        /// <summary>
+        /// Get redis db instance
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        public static IDatabase GetDatabase(int db = -1) => redis.Value.GetDatabase(db);
+
+        /// <summary>
+        /// Get redis client connection
+        /// </summary>
+        /// <returns></returns>
+        public static IConnectionMultiplexer GetConnection() => _connectionMultiplexer?.Value;
+
+        /// <summary>
+        /// Init redis cache configuration
+        /// </summary>
+        /// <param name="configuration"></param>
+        public static void Init(string configuration)
+        {
+            _configuration = configuration;
+        }
+
+        /// <summary>
+        /// Init redis cache configuration
+        /// </summary>
+        /// <param name="configuration"></param>
+        public static void Init(RedisConfiguration configuration)
+        {
+            _configuration = configuration.ToString();
+        }
+
+        public static void Init(EasyCaching.Redis.RedisDBOptions options)
+        {
+            if (string.IsNullOrWhiteSpace(options.Configuration))
+            {
+                var configurationOptions = new ConfigurationOptions
+                {
+                    ConnectTimeout = options.ConnectionTimeout,
+                    User = options.Username,
+                    Password = options.Password,
+                    Ssl = options.IsSsl,
+                    SslHost = options.SslHost,
+                    AllowAdmin = options.AllowAdmin,
+                    DefaultDatabase = options.Database,
+                    AbortOnConnectFail = options.AbortOnConnectFail,
+                };
+
+                foreach (var endpoint in options.Endpoints)
+                {
+                    configurationOptions.EndPoints.Add(endpoint.Host, endpoint.Port);
+                }
+
+                _configuration = configurationOptions.ToString();
+            }
+            else
+            {
+                _configuration = options.Configuration;
+            }
+
+            _connectionMultiplexer = new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(_configuration));
+        }
+
+        /// <summary>
+        /// Gets the server list.
+        /// </summary>
+        /// <returns>The server list.</returns>
+        public static IEnumerable<IServer> GetServerList()
+        {
+            var endpoints = GetMastersServersEndpoints();
+
+            foreach (var endpoint in endpoints)
+            {
+                yield return _connectionMultiplexer.Value.GetServer(endpoint);
+            }
+        }
+
+        /// <summary>
+        /// Gets the masters servers endpoints.
+        /// </summary>
+        public static List<EndPoint> GetMastersServersEndpoints()
+        {
+            var masters = new List<EndPoint>();
+            if (_connectionMultiplexer == null) return masters;
+            foreach (var ep in _connectionMultiplexer.Value.GetEndPoints())
+            {
+                var server = _connectionMultiplexer.Value.GetServer(ep);
+                if (server.IsConnected)
+                {
+                    //Cluster
+                    if (server.ServerType == ServerType.Cluster)
+                    {
+                        masters.AddRange(server.ClusterConfiguration.Nodes.Where(n => !n.IsReplica).Select(n => n.EndPoint));
+                        break;
+                    }
+                    // Single , Master-Slave
+                    if (server.ServerType == ServerType.Standalone && !server.IsReplica)
+                    {
+                        masters.Add(ep);
+                        break;
+                    }
+                }
+            }
+            return masters;
+        }
+    }
+
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
+    /// <summary>
     /// Redis configuration
     /// </summary>
     public class RedisConfiguration
@@ -159,147 +301,6 @@ namespace WebFramework.Data
             }
 
             return string.IsNullOrEmpty(_hostname) ? string.Join(",", config) : $"{_hostname},{string.Join(",", config)}";
-        }
-    }
-
-    /// <summary>
-    /// Redis db manager
-    /// </summary>
-    public static class RedisManager
-    {
-        /// <summary>
-        /// Redis server connection string
-        /// </summary>
-        private const string DefaultConfiguration = "localhost:6379";
-
-        /// <summary>
-        /// Redis database
-        /// </summary>
-        private const int DataBase = -1;
-
-        /// <summary>
-        /// The redis configuration string
-        /// </summary>
-        private static string _configuration = DefaultConfiguration;
-
-        /// <summary>
-        /// The connection multiplexer.
-        /// </summary>
-        private static Lazy<ConnectionMultiplexer> _connectionMultiplexer;
-
-        /// <summary>
-        /// Get the redis connection multiplexer once
-        /// </summary>
-        private static readonly Lazy<IConnectionMultiplexer> redis = new Lazy<IConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(_configuration));
-
-        /// <summary>
-        /// Get redis db instance
-        /// </summary>
-        public static IDatabase Db => redis.Value.GetDatabase(DataBase);
-
-        /// <summary>
-        /// Get redis db instance
-        /// </summary>
-        /// <param name="db"></param>
-        /// <returns></returns>
-        public static IDatabase GetDatabase(int db = -1) => redis.Value.GetDatabase(db);
-
-        /// <summary>
-        /// Get redis client connection
-        /// </summary>
-        /// <returns></returns>
-        public static IConnectionMultiplexer GetConnection() => _connectionMultiplexer?.Value;
-
-        /// <summary>
-        /// Init redis cache configuration
-        /// </summary>
-        /// <param name="configuration"></param>
-        public static void Init(string configuration)
-        {
-            _configuration = configuration;
-        }
-
-        /// <summary>
-        /// Init redis cache configuration
-        /// </summary>
-        /// <param name="configuration"></param>
-        public static void Init(RedisConfiguration configuration)
-        {
-            _configuration = configuration.ToString();
-        }
-
-        public static void Init(EasyCaching.Redis.RedisDBOptions options)
-        {
-            if (string.IsNullOrWhiteSpace(options.Configuration))
-            {
-                var configurationOptions = new ConfigurationOptions
-                {
-                    ConnectTimeout = options.ConnectionTimeout,
-                    User = options.Username,
-                    Password = options.Password,
-                    Ssl = options.IsSsl,
-                    SslHost = options.SslHost,
-                    AllowAdmin = options.AllowAdmin,
-                    DefaultDatabase = options.Database,
-                    AbortOnConnectFail = options.AbortOnConnectFail,
-                };
-
-                foreach (var endpoint in options.Endpoints)
-                {
-                    configurationOptions.EndPoints.Add(endpoint.Host, endpoint.Port);
-                }
-
-                _configuration = configurationOptions.ToString();
-            }
-            else
-            {
-                _configuration = options.Configuration;
-            }
-
-            _connectionMultiplexer = new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(_configuration));
-        }
-
-        /// <summary>
-        /// Gets the server list.
-        /// </summary>
-        /// <returns>The server list.</returns>
-        public static IEnumerable<IServer> GetServerList()
-        {
-            var endpoints = GetMastersServersEndpoints();
-
-            foreach (var endpoint in endpoints)
-            {
-                yield return _connectionMultiplexer.Value.GetServer(endpoint);
-            }
-        }
-
-        /// <summary>
-        /// Gets the masters servers endpoints.
-        /// </summary>
-        public static List<EndPoint> GetMastersServersEndpoints()
-        {
-            var masters = new List<EndPoint>();
-            if (_connectionMultiplexer == null) return masters;
-            foreach (var ep in _connectionMultiplexer.Value.GetEndPoints())
-            {
-                var server = _connectionMultiplexer.Value.GetServer(ep);
-                if (server.IsConnected)
-                {
-                    //Cluster
-                    if (server.ServerType == ServerType.Cluster)
-                    {
-                        masters.AddRange(server.ClusterConfiguration.Nodes.Where(n => !n.IsReplica).Select(n => n.EndPoint));
-                        break;
-                    }
-                    // Single , Master-Slave
-                    if (server.ServerType == ServerType.Standalone && !server.IsReplica)
-                    {
-                        masters.Add(ep);
-                        break;
-                    }
-                }
-            }
-            return masters;
         }
     }
 }

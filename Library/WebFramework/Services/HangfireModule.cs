@@ -16,6 +16,7 @@ namespace WebFramework.Services
     /* appsettings.json
       "Hangfire": {
         "LiteDB": "Filename=App_Data/Hangfire.db;Password=HGJ766GR767FKJU0",
+        "Redis": "127.0.0.1:6379,defaultDatabase=0",
         "DashboardTitle": "Hangfire Dashboard",
         "Authorization": {
           "User": "demo",
@@ -45,19 +46,19 @@ namespace WebFramework.Services
                     TransactionTimeout = TimeSpan.FromMinutes(5),        // 交易超时 默认5分钟
                     PrepareSchemaIfNecessary = true,                     // 如果设置为true 则创建数据库表 默认true
                     DashboardJobListLimit = 50000,                       // 仪表板作业列表限制 默认50000
-                    //InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务(重新加入)默认5分钟
+                    InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
                 }));
             // LiteDb Storage
             else if (config.GetSection("Hangfire:LiteDB").Exists())
                 services.AddHangfire(x => x.UseLiteDbStorage(config.GetSection("Hangfire:LiteDB").Value, new LiteDbStorageOptions
                 {
                     //Prefix = "hangfire",                               // 数据表前缀 默认hangfire
-                    DashboardTitle = "存储: LiteDB",                     // 数据库描述
+                    DashboardTitle = "存储: LiteDB",                     // 数据库描述（控制台底部显示）
                     QueuePollInterval = TimeSpan.FromSeconds(15),        // 作业队列轮询间隔 默认15秒
                     JobExpirationCheckInterval = TimeSpan.FromHours(1),  // 作业到期检查间隔（管理过期记录）默认1小时
                     CountersAggregateInterval = TimeSpan.FromMinutes(5), // 聚合计数器的间隔 默认5分钟
-                    DistributedLockLifetime = TimeSpan.FromSeconds(30),  // 分布式锁的生存期
-                    InvisibilityTimeout = TimeSpan.FromMinutes(30),      // 超时后由另一个工作进程接手该后台作业任务(重新加入)默认30分钟
+                    DistributedLockLifetime = TimeSpan.FromSeconds(30),  // 分布式锁的生存期 默认30秒
+                    InvisibilityTimeout = TimeSpan.FromMinutes(30),      // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认30分钟
                 }));
             // Redis Storage  https://stackexchange.github.io/StackExchange.Redis/Configuration.html
             else if (config.GetSection("Hangfire:Redis").Exists())
@@ -66,7 +67,7 @@ namespace WebFramework.Services
                     Prefix = "hangfire:ApiDemo",
                     MaxDeletedListLength = 1000,
                     MaxSucceededListLength = 10000,
-                    InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务(重新加入)默认5分钟
+                    InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
                 }));
 
             services.AddHangfireServer(options =>
