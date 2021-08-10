@@ -32,11 +32,13 @@ namespace WebFramework.Data
 
         public static IEnumerable<T> GetLastestResult<T>(string key, int size = 20)
         {
-            var s = Redis.StringGet(key + IncrementKeyTail);
-            if (!s.HasValue || !int.TryParse(s.ToString(), out var count) || count == 0)
-                return Array.Empty<T>();
-
-            var startingFrom = count > size && size > 0 ? count - size : 0;
+            var startingFrom = 0;
+            if (size > 0)
+            {
+                var s = Redis.StringGet(key + IncrementKeyTail);
+                if (s.HasValue && int.TryParse(s.ToString(), out var count) && count > size)
+                    startingFrom = count - size;
+            }
             var list = Redis.ListRange(new RedisKey(key), startingFrom);
 
             var rows = new List<T>();
