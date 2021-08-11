@@ -76,6 +76,7 @@ namespace WebFramework.Services
                 //x.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 //x.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
             });
+            //builder.AddJsonOptions(x => x.JsonSerializerOptions.WriteIndented = true); // default System.Text.Json
 
             // Adds Controller's Attributes Injection for Mvc application
             //builder.AddControllersAsServices().AddViewComponentsAsServices().AddTagHelpersAsServices();

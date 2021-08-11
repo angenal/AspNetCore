@@ -96,13 +96,19 @@ namespace WebFramework.Services
                 return builder;
             }
 
-            // Use Default Console Logging
+            // Use Default Logging, Only Output Console
             builder.ConfigureLogging((context, builder) =>
             {
                 builder.ClearProviders();
                 var configuration = context.Configuration.GetSection("Logging");
-                if (configuration.Exists()) builder.AddConfiguration(configuration).AddConsole().AddDebug();
-                else CreateBootstrapLogger();
+                if (configuration.Exists())
+                {
+                    builder.AddConfiguration(configuration).AddConsole(); // using Microsoft.Extensions.Logging;
+#if DEBUG
+                    builder.AddDebug();
+#endif
+                }
+                else CreateBootstrapLogger(); // using Default Bootstrap Logger of Serilog
             });
 
             // If Not Use Serilog
