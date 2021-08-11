@@ -69,6 +69,8 @@ namespace WebFramework.Services
                     MaxSucceededListLength = 10000,
                     InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
                 }));
+            // using HangFire.Redis.StackExchange;  https://github.com/marcoCasamento/Hangfire.Redis.StackExchange
+            //services.AddHangfire(x => x.UseRedisStorage(StackExchange.Redis.ConnectionMultiplexer.Connect(config.GetSection("Hangfire:Redis").Value)));
 
             services.AddHangfireServer(options =>
             {
