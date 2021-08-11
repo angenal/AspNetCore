@@ -71,6 +71,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chat.Desktop", "WebChat\Cha
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservice", "Microservice", "{40A3A782-CB2E-45EF-AB7A-5ACCC1D54A9D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NATS.Services", "Microservice\NATS.Services\NATS.Services.csproj", "{6618171F-A2F7-4013-B893-A632AE96605A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,6 +158,12 @@ Global
 		{38F2C68E-9D8A-4EC2-8BB9-B746B254C5E8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38F2C68E-9D8A-4EC2-8BB9-B746B254C5E8}.Validate|Any CPU.ActiveCfg = Debug|Any CPU
 		{38F2C68E-9D8A-4EC2-8BB9-B746B254C5E8}.Validate|Any CPU.Build.0 = Debug|Any CPU
+		{6618171F-A2F7-4013-B893-A632AE96605A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6618171F-A2F7-4013-B893-A632AE96605A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6618171F-A2F7-4013-B893-A632AE96605A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6618171F-A2F7-4013-B893-A632AE96605A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6618171F-A2F7-4013-B893-A632AE96605A}.Validate|Any CPU.ActiveCfg = Debug|Any CPU
+		{6618171F-A2F7-4013-B893-A632AE96605A}.Validate|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +179,7 @@ Global
 		{6E704561-F525-452E-8C0C-040D5A3C10FE} = {ACBDA220-5958-4AEC-96CF-83DC1AB888DA}
 		{F1E3B086-ECE7-4D64-A101-9F10CCC4E1A4} = {40634868-C78D-4B2B-B08C-4E987CFF2A97}
 		{38F2C68E-9D8A-4EC2-8BB9-B746B254C5E8} = {40634868-C78D-4B2B-B08C-4E987CFF2A97}
+		{6618171F-A2F7-4013-B893-A632AE96605A} = {40A3A782-CB2E-45EF-AB7A-5ACCC1D54A9D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45294AD6-9FCA-4349-830D-F7C62E6E68DD}
