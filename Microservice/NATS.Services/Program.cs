@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -47,24 +48,23 @@ namespace NATS.Services
                     .CreateBootstrapLogger();
             }
 
+            var watch = Stopwatch.StartNew();
+            var separator = new string('-', 20);
+
             try
             {
-                // test log.
-                // var position = new { Latitude = 25, Longitude = 134 };
-                // var elapsed = 34;
-                // Log.Information("Processed {@Position} in {Elapsed:000} ms.", position, elapsed);
-
-                var separator = new string('-', 30);
-
-                Log.Information($"{separator} Starting host {separator} ");
+                Log.Information($"{separator} Start run host {separator} ");
 
                 CreateHostBuilder(args).Build().Run();
 
-                Log.Information($"{separator} Exit host {separator} ");
+                watch.Stop();
+                Log.Information($"{separator} Normal exit host {watch.Elapsed} elapsed {separator} ");
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex, "Host terminated unexpectedly");
+                watch.Stop();
+                Log.Information($"{separator} Abnormal exit host {watch.Elapsed} elapsed {separator} ");
+                Log.Fatal(ex, " host error ");
             }
             finally
             {
