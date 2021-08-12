@@ -18,36 +18,57 @@ namespace WebFramework.SignalR
         /// <returns></returns>
         public static ChatUser Get(HubCallerContext Context)
         {
-            var req = Context.GetHttpContext().Request;
-            var id = Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sid);
-            var jwt = !string.IsNullOrEmpty(id);
-
             /*
-            let connection = new signalR.HubConnectionBuilder()
-                .withUrl("/chat", {
-                    // accessTokenFactory: () => { return '$token' }, // Get and return the access token.
-                    headers: { "id": '$id', "name": '$name', "room": '$room' }, // Get and return the user info
+            var q = { "sid": "b970d79f-6c9c-41a9-8e54-3bb0a5fb9274", "name": "your name", "room": "1" };
+            var qs = "?sid=" + q.sid + "&name=" + encodeURIComponent(q.name) + "&room=" + q.room;
+
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chat" + qs, {
+                    //accessTokenFactory: function () { return '$token' }, // Get and return the access token.
+                    //headers: q, // Get and return the user info, only for LongPolling.
                     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
                 })
+                //.withAutomaticReconnect([0, 3000, 5000, 10000, 15000, 30000])
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
+
+            connection.start().then(function () {
+                console.log('SignalR Started...')
+            }).catch(function (err) {
+                return console.error(err);
+            });
+
+            connection.on("newMessage", function (message) {
+                console.log(message);
+            });
+
+            connection.on("onDebug", function (message) {
+                console.log(message);
+            });
+
+            connection.on("onError", function (message) {
+                console.error(message);
+            });
              */
 
-            var user = jwt ? new ChatUser
+            var req = Context.GetHttpContext().Request;
+            var sid = Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sid);
+
+            var user = !string.IsNullOrEmpty(sid) ? new ChatUser
             {
-                Id = id,
+                Id = sid,
                 Name = Context.User.FindFirstValue(JwtRegisteredClaimNames.Sub),
                 Role = Context.User.FindFirstValue("role"),
             } : new ChatUser
             {
-                Id = req.Headers.ContainsKey("id") ? req.Headers["id"].ToString() : req.Query.ContainsKey("id") ? req.Query["id"].ToString() : null,
-                Name = req.Headers.ContainsKey("name") ? req.Headers["name"].ToString() : req.Query.ContainsKey("name") ? req.Query["name"].ToString() : Context.User?.Identity?.Name,
-                Role = req.Headers.ContainsKey("role") ? req.Headers["role"].ToString() : req.Query.ContainsKey("role") ? req.Query["role"].ToString() : null,
+                Id = req.Query.ContainsKey("sid") ? req.Query["sid"].ToString() : req.Headers.ContainsKey("sid") ? req.Headers["sid"].ToString() : null,
+                Name = req.Query.ContainsKey("name") ? req.Query["name"].ToString() : req.Headers.ContainsKey("name") ? req.Headers["name"].ToString() : Context.User?.Identity?.Name,
+                Role = req.Query.ContainsKey("role") ? req.Query["role"].ToString() : req.Headers.ContainsKey("role") ? req.Headers["role"].ToString() : null,
             };
 
-            user.Room = req.Headers.ContainsKey("room") ? req.Headers["room"].ToString() : req.Query.ContainsKey("room") ? req.Query["room"].ToString() : Context.User?.FindFirstValue("room");
+            user.Room = req.Query.ContainsKey("room") ? req.Query["room"].ToString() : req.Headers.ContainsKey("room") ? req.Headers["room"].ToString() : Context.User?.FindFirstValue("room");
 
-            var device = req.Headers.ContainsKey("device") ? req.Headers["device"].ToString() : req.Query.TryGetValue("device", out var query) ? query.ToString() : "web";
+            var device = req.Query.ContainsKey("device") ? req.Query["device"].ToString() : req.Headers.ContainsKey("device") ? req.Headers["device"].ToString() : "web";
             user.Device = !string.IsNullOrEmpty(device) && (device.Equals("desktop", StringComparison.OrdinalIgnoreCase) || device.Equals("mobile", StringComparison.OrdinalIgnoreCase)) ? device : "web";
 
             return user;
@@ -62,7 +83,7 @@ namespace WebFramework.SignalR
         {
             var req = Context.GetHttpContext().Request;
             var id = Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sid);
-            return !string.IsNullOrEmpty(id) ? id : req.Headers.ContainsKey("id") ? req.Headers["id"].ToString() : req.Query.ContainsKey("id") ? req.Query["id"].ToString() : null;
+            return !string.IsNullOrEmpty(id) ? id : req.Query.ContainsKey("sid") ? req.Query["sid"].ToString() : req.Headers.ContainsKey("sid") ? req.Headers["sid"].ToString() : null;
         }
 
         /// <summary>
@@ -74,7 +95,7 @@ namespace WebFramework.SignalR
         {
             var req = Context.GetHttpContext().Request;
             var name = Context.User?.FindFirstValue(JwtRegisteredClaimNames.Sub);
-            return !string.IsNullOrEmpty(name) ? name : req.Headers.ContainsKey("name") ? req.Headers["name"].ToString() : req.Query.ContainsKey("name") ? req.Query["name"].ToString() : Context.User?.Identity?.Name;
+            return !string.IsNullOrEmpty(name) ? name : req.Query.ContainsKey("name") ? req.Query["name"].ToString() : req.Headers.ContainsKey("name") ? req.Headers["name"].ToString() : Context.User?.Identity?.Name;
         }
 
         /// <summary>
