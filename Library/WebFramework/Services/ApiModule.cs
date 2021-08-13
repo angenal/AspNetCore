@@ -119,14 +119,18 @@ namespace WebFramework.Services
             // Authentication with OAuth
             if (config.GetSection("OAuth").Exists())
             {
-                services.AddAuthentication().AddQQAuthentication(t =>
+                var oAuth = services.AddAuthentication();
+                string qq = config.GetValue<string>("OAuth:QQ:ClientId"), qqSecret = config.GetValue<string>("OAuth:QQ:ClientSecret");
+                string wx = config.GetValue<string>("OAuth:Weixin:ClientId"), wxSecret = config.GetValue<string>("OAuth:Weixin:ClientSecret");
+                if (!string.IsNullOrEmpty(qq) && !string.IsNullOrEmpty(qqSecret)) oAuth.AddQQAuthentication(t =>
                 {
-                    t.ClientId = config.GetValue<string>("OAuth:QQ:ClientId");
-                    t.ClientSecret = config.GetValue<string>("OAuth:QQ:ClientSecret");
-                }).AddWeixinAuthentication(t =>
+                    t.ClientId = qq;
+                    t.ClientSecret = qqSecret;
+                });
+                if (!string.IsNullOrEmpty(wx) && !string.IsNullOrEmpty(wxSecret)) oAuth.AddWeixinAuthentication(t =>
                 {
-                    t.ClientId = config.GetValue<string>("OAuth:Weixin:ClientId");
-                    t.ClientSecret = config.GetValue<string>("OAuth:Weixin:ClientSecret");
+                    t.ClientId = wx;
+                    t.ClientSecret = wxSecret;
                 });
             }
             // Authorization
