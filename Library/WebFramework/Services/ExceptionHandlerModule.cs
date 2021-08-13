@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using WebFramework.Filters;
 
 namespace WebFramework.Services
 {
@@ -50,11 +51,25 @@ namespace WebFramework.Services
         }
 
         /// <summary>
+        /// Global Exception Filters
+        /// </summary>
+        /// <param name="options"></param>
+        public static void ApiExceptionsFilters(MvcOptions options)
+        {
+            options.Filters.Add<HttpResponseExceptionFilter>();
+            //options.Filters.Add<GlobalExceptions>();
+        }
+
+        /// <summary>
         /// Configure BadRequest Error Handler with Invalid ModelState Response
         /// </summary>
         public static void ApiBehaviorOptionsAction(ApiBehaviorOptions options)
         {
+            //options.SuppressConsumesConstraintForFormFileParameters = true;
+            //options.SuppressInferBindingSourcesForParameters = true;
             //options.SuppressModelStateInvalidFilter = true; // 关闭系统自带模型验证
+            //options.SuppressMapClientErrors = true;
+            //options.ClientErrorMapping[StatusCodes.Status404NotFound].Link = "https://*.com/404";
             options.InvalidModelStateResponseFactory = context =>
             {
                 if (context.ModelState.IsValid) return new OkObjectResult(context.ModelState);

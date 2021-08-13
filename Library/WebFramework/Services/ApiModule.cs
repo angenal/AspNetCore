@@ -32,7 +32,7 @@ namespace WebFramework.Services
             return services.AddControllers(options =>
             {
                 // 全局异常过滤
-                //options.Filters.Add<GlobalExceptions>();
+                ExceptionHandlerModule.ApiExceptionsFilters(options);
                 // 全局日志
                 //options.Filters.Add<GlobalActionMonitor>();
                 // 用户会话处理
