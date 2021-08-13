@@ -116,6 +116,19 @@ namespace WebFramework.Services
             services.AddIdentityLiteDB(config);
             // Authentication with JWT
             services.AddJwtAuthentication(config);
+            // Authentication with OAuth
+            if (config.GetSection("OAuth").Exists())
+            {
+                services.AddAuthentication().AddQQAuthentication(t =>
+                {
+                    t.ClientId = config.GetValue<string>("OAuth:QQ:ClientId");
+                    t.ClientSecret = config.GetValue<string>("OAuth:QQ:ClientSecret");
+                }).AddWeixinAuthentication(t =>
+                {
+                    t.ClientId = config.GetValue<string>("OAuth:Weixin:ClientId");
+                    t.ClientSecret = config.GetValue<string>("OAuth:Weixin:ClientSecret");
+                });
+            }
             // Authorization
             services.AddAuthorization(options =>
             {
