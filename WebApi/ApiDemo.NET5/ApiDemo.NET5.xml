@@ -103,6 +103,22 @@
             Returns current user info.
             </summary>
         </member>
+        <member name="M:ApiDemo.NET5.Controllers.UserController.ExternalQQLoginCallback(System.String,System.String)">
+            <summary>
+            QQ登陆
+            </summary>
+            <param name="returnUrl"></param>
+            <param name="remoteError"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ApiDemo.NET5.Controllers.UserController.ExternalWeixinLoginCallback(System.String,System.String)">
+            <summary>
+            微信登陆
+            </summary>
+            <param name="returnUrl"></param>
+            <param name="remoteError"></param>
+            <returns></returns>
+        </member>
         <member name="T:ApiDemo.NET5.Controllers.V1.AuthController">
             <summary>
             认证授权

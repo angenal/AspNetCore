@@ -1,9 +1,12 @@
 using ApiDemo.NET5.Models.DTO.User;
 using ApiDemo.NET5.Models.Entities;
+using Microsoft.AspNetCore.Authentication.QQ;
+using Microsoft.AspNetCore.Authentication.Weixin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using WebFramework;
 using WebInterface;
 
@@ -101,6 +104,38 @@ namespace ApiDemo.NET5.Controllers
         public ActionResult Info()
         {
             return Ok(user);
+        }
+
+
+        /// <summary>
+        /// QQ登陆
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <param name="remoteError"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalQQLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            // get information from HttpContext (using Microsoft.AspNetCore.Authentication.QQ;)
+            var loginInfo = await HttpContext.GetExternalQQLoginInfoAsync();
+
+            return Ok(loginInfo);
+        }
+        /// <summary>
+        /// 微信登陆
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <param name="remoteError"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalWeixinLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            // get information from HttpContext (using Microsoft.AspNetCore.Authentication.Weixin;)
+            var loginInfo = await HttpContext.GetExternalWeixinLoginInfoAsync();
+
+            return Ok(loginInfo);
         }
 
     }
