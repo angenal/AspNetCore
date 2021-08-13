@@ -28,26 +28,28 @@ namespace WebFramework.SignalR
                     //headers: q, // Get and return the user info, only for LongPolling.
                     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
                 })
-                //.withAutomaticReconnect([0, 3000, 5000, 10000, 15000, 30000])
+                //.withAutomaticReconnect([0, 3000, 5000, 10000, 15000, 30000]) // If no parameters can be set, it is the default setting.
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
+            // start connect...
             connection.start().then(function () {
                 console.log('SignalR Started...')
             }).catch(function (err) {
                 return console.error(err);
             });
 
-            connection.on("newMessage", function (message) {
-                console.log(message);
-            });
-
+            // server debugger and tracer
             connection.on("onDebug", function (message) {
                 console.log(message);
             });
-
+            // server throw errors
             connection.on("onError", function (message) {
-                console.error(message);
+                $("#errorAlert").html(message).removeClass("d-none").show().delay(5000).fadeOut(500);
+            });
+            // receive messages...
+            connection.on("newMessage", function (messages) {
+                // logic is here.
             });
              */
 
