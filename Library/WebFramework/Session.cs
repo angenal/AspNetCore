@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using WebCore;
+using WebInterface.Settings;
 
 namespace WebFramework
 {
@@ -33,11 +35,11 @@ namespace WebFramework
         /// <summary>
         /// 类别
         /// </summary>
-        public int Type { get; set; }
+        public string Type { get; set; }
         /// <summary>
         /// 角色
         /// </summary>
-        public int Role { get; set; }
+        public string Role { get; set; }
         /// <summary>
         /// 姓名
         /// </summary>
@@ -93,10 +95,12 @@ namespace WebFramework
         {
             if (user == null) return null;
 
-            var session = new Session(user.FindFirstValue(JwtRegisteredClaimNames.Sid), user.FindFirstValue(JwtRegisteredClaimNames.Sub));
+            var session = new Session(user.FindFirstValue(JwtSettings.NameClaimType), user.FindFirstValue(JwtRegisteredClaimNames.Sub));
 
-            if (int.TryParse(user.FindFirstValue("type"), out int type)) session.Type = type;
-            if (int.TryParse(user.FindFirstValue("role"), out int role)) session.Role = role;
+            var roles = user.FindAll(t => t.Type.Equals(JwtSettings.RoleClaimType)).Select(t => t.Value);
+            session.Role = string.Join(',', roles);
+
+            session.Type = user.FindFirstValue("type");
 
             session.Name = user.FindFirstValue("name");
             session.Nickname = user.FindFirstValue("nickname");
@@ -130,11 +134,13 @@ namespace WebFramework
         {
             if (session != null)
             {
-                yield return new Claim(JwtRegisteredClaimNames.Sid, session.Id.ToString());
+                yield return new Claim(JwtSettings.NameClaimType, session.Id.ToString());
                 yield return new Claim(JwtRegisteredClaimNames.Sub, session.UserName);
 
-                yield return new Claim("type", session.Type.ToString());
-                yield return new Claim("role", session.Role.ToString());
+                string[] roles = (session.Role ??= "").Split(',');
+                foreach (string role in roles) yield return new Claim(JwtSettings.RoleClaimType, role.Trim());
+
+                yield return new Claim("type", session.Type ??= "");
 
                 yield return new Claim("name", session.Name ??= "");
                 yield return new Claim("nickname", session.Nickname ??= "");
@@ -146,7 +152,7 @@ namespace WebFramework
                 yield return new Claim("email", session.Email ??= "");
 
                 yield return new Claim("cs", session.ConcurrencyStamp ??= "");
-                yield return new Claim("ss", session.SecurityStamp ??= DateTime.Now.ToTimestampHex());
+                yield return new Claim("ss", session.SecurityStamp ??= DateTime.Now.x8());
             }
         }
     }

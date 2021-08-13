@@ -56,6 +56,8 @@ namespace WebFramework.Services
                     ValidateIssuerSigningKey = true, // Token signature will be verified using a secret key.
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtGenerator.Settings.SecretKey)),
                     ValidateLifetime = true, // Token will only be valid if not expired yet, default 5 minutes clock skew.
+                    NameClaimType = JwtSettings.NameClaimType,
+                    RoleClaimType = JwtSettings.RoleClaimType,
                     ClockSkew = JwtGenerator.Settings.ClockSkew
                 }
                 // With encryption
@@ -69,14 +71,19 @@ namespace WebFramework.Services
                     RequireSignedTokens = true,
                     RequireExpirationTime = true,
                     ValidateLifetime = true, // Token will only be valid if not expired yet, default 5 minutes clock skew.
+                    NameClaimType = JwtSettings.NameClaimType,
+                    RoleClaimType = JwtSettings.RoleClaimType,
                     ClockSkew = JwtGenerator.Settings.ClockSkew
                 };
                 options.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
                     {
-                        var accessToken = context.Request.Query[JwtSettings.HttpRequestQuery];
+                        var accessToken = context.Request.Query.ContainsKey("access_token") ? context.Request.Query["access_token"] : context.Request.Query[JwtSettings.HttpRequestQuery];
                         if (string.IsNullOrEmpty(accessToken)) return Task.CompletedTask;
+                        if (!string.IsNullOrEmpty(JwtGenerator.Settings.EncryptionKey))
+                        {
+                        }
                         context.Token = accessToken;
                         //context.HttpContext.Request.Headers.Add("X-Request-Uid", context.Request.Query["uid"]); // UserID
                         return Task.CompletedTask;
@@ -108,17 +115,21 @@ namespace WebFramework.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
+            SecurityToken token;
+            var nbf = DateTime.UtcNow;
+            var exp = nbf.AddMinutes(Convert.ToDouble(Settings.ExpireMinutes));
+
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 //new Claim(JwtRegisteredClaimNames.Sid, data["userid"].ToString()),
                 //new Claim(JwtRegisteredClaimNames.Sub, data["username"].ToString()),
             };
-            if (claim != null) claims.AddRange(claim);
 
-            SecurityToken token;
-            var nbf = DateTime.UtcNow;
-            var exp = nbf.AddMinutes(Convert.ToDouble(Settings.ExpireMinutes));
+            if (claim != null)
+            {
+                claims.AddRange(claim);
+            }
 
             // Without encryption
             if (string.IsNullOrEmpty(Settings.EncryptionKey))

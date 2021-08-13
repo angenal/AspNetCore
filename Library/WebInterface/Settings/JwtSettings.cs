@@ -41,6 +41,15 @@ namespace WebInterface.Settings
         public const string HttpRequestQuery = "token";
 
         /// <summary>
+        /// Gets or sets a System.String that defines the System.Security.Claims.ClaimsIdentity.NameClaimType.
+        /// </summary>
+        public const string NameClaimType = "sid";
+        /// <summary>
+        /// Gets or sets the System.String that defines the System.Security.Claims.ClaimsIdentity.RoleClaimType.
+        /// </summary>
+        public const string RoleClaimType = "role";
+
+        /// <summary>
         /// 谁颁发?
         /// </summary>
         public string Issuer { get; set; }

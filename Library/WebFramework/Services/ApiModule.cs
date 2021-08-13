@@ -31,6 +31,10 @@ namespace WebFramework.Services
             // 注册全局过滤器
             return services.AddControllers(options =>
             {
+                // 全局异常过滤
+                //options.Filters.Add<GlobalExceptions>();
+                // 全局日志
+                //options.Filters.Add<GlobalActionMonitor>();
                 // 用户会话处理
                 options.Filters.Add<AsyncSessionFilter>();
             });
@@ -97,7 +101,12 @@ namespace WebFramework.Services
 
             // CORS services
             var allowedHosts = config.GetSection("AllowedHosts").Exists() ? config.GetSection("AllowedHosts").Value.Split(',') : new[] { "*" };
-            services.AddCors(options => options.AddDefaultPolicy(policy => (allowedHosts.Any(c => c == "*") ? policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader() : policy.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials()).Build()));
+            services.AddCors(options => options.AddDefaultPolicy(policy =>
+            {
+                if (allowedHosts.Any(c => c == "*")) policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                else policy.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+            }));
+            //services.AddCors(options => options.AddDefaultPolicy(policy => (allowedHosts.Any(c => c == "*") ? policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader() : policy.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials()).Build()));
             services.AddHttpContextAccessor();
 
 
@@ -108,7 +117,13 @@ namespace WebFramework.Services
             // Authentication with JWT
             services.AddJwtAuthentication(config);
             // Authorization
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("test", policy => policy.RequireClaim("name", "测试"));
+                options.AddPolicy("User", policy => policy.RequireAssertion(context =>
+                    context.User.HasClaim(c => c.Type == "role" && c.Value.StartsWith("User")) ||
+                    context.User.HasClaim(c => c.Type == "name" && c.Value.StartsWith("User"))));
+            });
 
 
             // ApiVersioning

@@ -48,7 +48,8 @@ namespace ApiDemo.NET5.Controllers.V2
         {
             var o = new Session(Guid.NewGuid().ToString(), "User" + new Random().Next(100, 999))
             {
-                Name = "测试 Version " + HttpContext.GetRequestedApiVersion()
+                Name = "测试 Version " + HttpContext.GetRequestedApiVersion(),
+                Role = "User",
             };
             var claims = o.Claims();
             var session = JObject.FromObject(o);
@@ -60,7 +61,7 @@ namespace ApiDemo.NET5.Controllers.V2
         /// Returns authorized session data for test user.
         /// </summary>
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "User")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(Session), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
@@ -109,8 +110,8 @@ namespace ApiDemo.NET5.Controllers.V2
                     PhoneNumber = q.PhoneNumber,
                     IdCard = q.IdCard,
                     Email = q.Email,
-                    Type = q.Type,
-                    Role = q.Role,
+                    Type = q.Type.ToString(),
+                    Role = q.Role.ToString(),
                     Name = q.Name,
                     Nickname = q.Nickname,
                     Avatar = q.Avatar,

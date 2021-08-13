@@ -123,6 +123,11 @@
             Returns authorized session data for test user.
             </summary>
         </member>
+        <member name="M:ApiDemo.NET5.Controllers.V1.AuthController.TestRole">
+            <summary>
+            Returns authorized session data for test user.
+            </summary>
+        </member>
         <member name="T:ApiDemo.NET5.Controllers.V2.AuthController">
             <summary>
             认证授权
@@ -195,6 +200,39 @@
             删除 - Value
             </summary>
             <param name="id"></param>
+        </member>
+        <member name="T:ApiDemo.NET5.Filters.PermissionAttrbute">
+            <summary>
+            访问授权 Authority Permissions
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Filters.PermissionAttrbute.Type">
+            <summary>
+            类别
+            </summary>
+        </member>
+        <member name="P:ApiDemo.NET5.Filters.PermissionAttrbute.Code">
+            <summary>
+            权限表的Code唯一编码
+            </summary>
+        </member>
+        <member name="F:ApiDemo.NET5.Filters.PermissionAttrbute.Permissions">
+            <summary>
+            权限表[角色:对应权限]
+            </summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Filters.PermissionAttrbute.#ctor(System.String)">
+            <summary>
+            访问授权
+            </summary>
+            <param name="code"></param>
+        </member>
+        <member name="M:ApiDemo.NET5.Filters.PermissionAttrbute.Valid(System.Collections.Generic.IList{System.String})">
+            <summary>
+            授权验证
+            </summary>
+            <param name="roleList"></param>
+            <returns></returns>
         </member>
         <member name="T:ApiDemo.NET5.Models.DTO.Auth.LoginInputDto">
              <summary>

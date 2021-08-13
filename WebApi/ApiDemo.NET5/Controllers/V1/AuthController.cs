@@ -46,7 +46,8 @@ namespace ApiDemo.NET5.Controllers.V1
         {
             var o = new Session(Guid.NewGuid().ToString(), "User" + new Random().Next(100, 999))
             {
-                Name = "测试 Version " + HttpContext.GetRequestedApiVersion() // ApiVersionService.Controllers[GetType().FullName].Versions(nameof(TestLogin)).LastOrDefault(),
+                Name = "测试", // ApiVersionService.Controllers[GetType().FullName].Versions(nameof(TestLogin)).LastOrDefault(),
+                Role = "test",
             };
             var claims = o.Claims();
             var session = new JObject();
@@ -63,6 +64,19 @@ namespace ApiDemo.NET5.Controllers.V1
         [ProducesResponseType(typeof(Session), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public ActionResult TestSession()
+        {
+            return Ok(new { userid = User.Identity.Name, user });
+        }
+
+        /// <summary>
+        /// Returns authorized session data for test user.
+        /// </summary>
+        [HttpGet]
+        [Authorize(Policy = "test", Roles = "test")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(Session), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public ActionResult TestRole()
         {
             return Ok(user);
         }
