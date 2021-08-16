@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -60,6 +61,18 @@ namespace WebCore
         /// <param name="text"></param>
         /// <returns></returns>
         public static string Crc32X8(this string text) => Crc32(text).ToString("X8");
+
+        /// <summary>
+        /// Encrypt an array with XOR.
+        /// </summary>
+        /// <param name="data">An unencrypted array.</param>
+        /// <param name="keys">The encryption keys.</param>
+        /// <returns>An encrypted array.</returns>
+        public static byte[] Xor(this byte[] data, IReadOnlyList<byte> keys)
+        {
+            for (var i = 0; i < data.Length; i++) data[i] = (byte)(data[i] ^ keys[i]);
+            return data;
+        }
 
 
         #region OneTime Auth Sign/Verify
