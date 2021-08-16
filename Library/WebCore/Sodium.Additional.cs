@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace WebCore
 {
-    public static unsafe partial class Sodium
+    public static unsafe partial class SodiumApi
     {
         public static void ZeroBuffer(byte[] buffer)
         {

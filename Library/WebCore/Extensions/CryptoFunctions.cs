@@ -62,13 +62,99 @@ namespace WebCore
         public static string Crc32X8(this string text) => Crc32(text).ToString("X8");
 
 
+        #region OneTime Auth Sign/Verify
+        /// <summary>
+        /// This is the .NET equivalent of crypto_onetimeauth.
+        /// authenticates a message, with a key.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/poly1305.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>The signature data 16 bytes</returns>
+        public static byte[] OneTimeAuthSign(this byte[] message, byte[] key) => Sodium.OneTimeAuth.Sign(message, key);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_onetimeauth_verify.
+        /// verifies a message, with a signature and a key.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/poly1305.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="signature">The signature must be 16 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>returns true on success, otherwise false.</returns>
+        public static bool OneTimeAuthVerify(this byte[] message, byte[] signature, byte[] key) => Sodium.OneTimeAuth.Verify(message, signature, key);
+        /// <summary>
+        /// Generate a 32 byte key, or GenerateKey(), or GenerateNonceBytes(32) to generate a 32 byte key.
+        /// </summary>
+        /// <returns></returns>
+        public static byte[] OneTimeAuthKey() => Sodium.OneTimeAuth.GenerateKey();
+        #endregion
 
         #region chacha20-ietf-poly1305
-
+        /// <summary>
+        /// This is the .NET equivalent of crypto_stream_chacha20_xor.
+        /// encrypts a message using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/chacha20.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="nonce">The nonce must be 8 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>Encrypted data</returns>
+        public static byte[] EncryptChaCha20(this byte[] message, byte[] nonce, byte[] key) => Sodium.StreamEncryption.EncryptChaCha20(message, nonce, key);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_stream_chacha20_xor.
+        /// decrypts a message cipher using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/chacha20.html
+        /// </summary>
+        /// <param name="cipher">Encrypted data</param>
+        /// <param name="nonce">The nonce must be 8 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>Original data</returns>
+        public static byte[] DecryptChaCha20(this byte[] cipher, byte[] nonce, byte[] key) => Sodium.StreamEncryption.DecryptChaCha20(cipher, nonce, key);
         #endregion
 
         #region aes-256-gcm
-
+        /// <summary>
+        /// This is the .NET equivalent of crypto_aead_aes256gcm_encrypt,
+        /// encrypts a message using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/aes256_gcm.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="nonce">The nonce must be 12 bytes, or use Sodium.SecretAead.GenerateNonce()</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <param name="additionalData">The additionalData between 0 and 16 bytes</param>
+        /// <returns>Encrypted data</returns>
+        public static byte[] AES256GCMEncrypt(this byte[] message, byte[] nonce, byte[] key, byte[] additionalData = null) => Sodium.SecretAeadAes.Encrypt(message, nonce, key, additionalData);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_aead_aes256gcm_decrypt,
+        /// decrypts a message cipher using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/aes256_gcm.html
+        /// </summary>
+        /// <param name="cipher">Encrypted data</param>
+        /// <param name="nonce">The nonce must be 12 bytes, or use GenerateNonce()</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <param name="additionalData">The additionalData between 0 and 16 bytes</param>
+        /// <returns>Original data</returns>
+        public static byte[] AES256GCMDecrypt(this byte[] cipher, byte[] nonce, byte[] key, byte[] additionalData = null) => Sodium.SecretAeadAes.Decrypt(cipher, nonce, key, additionalData);
+        /// <summary>
+        /// Generate a 32 byte key, or GenerateNonceBytes(32) to generate a 32 byte key.
+        /// </summary>
+        /// <returns></returns>
+        public static byte[] GenerateKey() => Sodium.StreamEncryption.GenerateKey();
+        /// <summary>
+        /// Generate 12 bytes for AES256GCMEncrypt(),AES256GCMDecrypt()
+        /// </summary>
+        /// <returns></returns>
+        public static byte[] GenerateNonce() => Sodium.SecretAeadChaCha20Poly1305.GenerateNonce();
+        /// <summary>
+        /// Generate 8 bytes for EncryptChaCha20()
+        /// </summary>
+        /// <returns></returns>
+        public static byte[] GenerateNonceBytes(int count = 8) => Sodium.SodiumCore.GetRandomBytes(count);
+        /// <summary>
+        /// Generate 8 bytes for EncryptChaCha20()
+        /// </summary>
+        /// <returns></returns>
+        public static byte[] GenerateNonceChaCha20() => Sodium.StreamEncryption.GenerateNonceChaCha20();
         #endregion
 
         #region AES

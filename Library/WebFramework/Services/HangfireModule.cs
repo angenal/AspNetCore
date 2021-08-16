@@ -17,6 +17,7 @@ namespace WebFramework.Services
       "Hangfire": {
         "LiteDB": "Filename=App_Data/Hangfire.db;Password=HGJ766GR767FKJU0",
         "Redis": "127.0.0.1:6379,defaultDatabase=0",
+        "Prefix": "hangfire:demo",
         "DashboardTitle": "Hangfire Dashboard",
         "Authorization": {
           "User": "demo",
@@ -64,13 +65,17 @@ namespace WebFramework.Services
             else if (config.GetSection("Hangfire:Redis").Exists())
                 services.AddHangfire(x => x.UseRedisStorage(config.GetSection("Hangfire:Redis").Value, new RedisStorageOptions
                 {
-                    Prefix = "hangfire:ApiDemo",
+                    Prefix = config.GetSection("Hangfire:Prefix").Value,
                     MaxDeletedListLength = 1000,
-                    MaxSucceededListLength = 10000,
+                    MaxSucceededListLength = 1000,
                     InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
                 }));
-            // using HangFire.Redis.StackExchange;  https://github.com/marcoCasamento/Hangfire.Redis.StackExchange
-            //services.AddHangfire(x => x.UseRedisStorage(StackExchange.Redis.ConnectionMultiplexer.Connect(config.GetSection("Hangfire:Redis").Value)));
+            // Hangfire.AspNetCore + HangFire.Redis.StackExchange  https://github.com/marcoCasamento/Hangfire.Redis.StackExchange
+            //services.AddHangfire(x => x.UseRedisStorage(StackExchange.Redis.ConnectionMultiplexer.Connect(config.GetSection("Hangfire:Redis").Value), new RedisStorageOptions
+            //{
+            //    Prefix = config.GetSection("Hangfire:Prefix").Value,
+            //    //InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
+            //}));
 
             services.AddHangfireServer(options =>
             {
