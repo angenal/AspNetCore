@@ -137,6 +137,7 @@ namespace WebFramework.Services
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("test", policy => policy.RequireClaim("name", "测试"));
+                options.AddPolicy("Upload", policy => policy.RequireAuthenticatedUser());
                 options.AddPolicy("User", policy => policy.RequireAssertion(context =>
                     context.User.HasClaim(c => c.Type == "role" && c.Value.StartsWith("User")) ||
                     context.User.HasClaim(c => c.Type == "name" && c.Value.StartsWith("User"))));

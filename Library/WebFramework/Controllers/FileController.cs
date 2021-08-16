@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -40,9 +41,10 @@ namespace WebFramework.Controllers
         /// 上传文件
         /// </summary>
         [HttpPost]
+        [Authorize(Policy = "Upload")]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(List<UploadFileOutputDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorJsonResultObject), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Upload()
         {
             var section = config.GetSection("Upload:WebRootPath");
@@ -53,7 +55,7 @@ namespace WebFramework.Controllers
             var path = Path.Combine(env.WebRootPath, root);
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             var url = Request.RootPath() + root;
-            var files = new List<object>();
+            var files = new List<UploadFileOutputDto>();
 
             // upload file
             //var buffer = new byte[4096];
@@ -61,7 +63,7 @@ namespace WebFramework.Controllers
             {
                 var name = (Guid.NewGuid().ToString("N") + Path.GetExtension(file.FileName)).ToLower();
                 using (var stream = System.IO.File.Create(Path.Combine(path, name))) await file.CopyToAsync(stream);
-                files.Add(new { key = file.Name, value = file.FileName, file.ContentType, file.Length, Path = $"{url}/{name}" });
+                files.Add(new UploadFileOutputDto { Key = file.Name, Value = file.FileName, ContentType = file.ContentType, Length = file.Length, Path = $"{url}/{name}" });
                 //using (var stream = file.OpenReadStream()) while (await stream.ReadAsync(buffer.AsMemory(0, buffer.Length)) > 0) { }
             });
 
@@ -69,6 +71,32 @@ namespace WebFramework.Controllers
             //if (!ModelState.IsValid) { }
 
             return new JsonResult(files);
+        }
+        /// <summary>
+        /// Upload File Output
+        /// </summary>
+        public class UploadFileOutputDto
+        {
+            /// <summary>
+            /// the form field name.
+            /// </summary>
+            public string Key { get; set; }
+            /// <summary>
+            /// the file name.
+            /// </summary>
+            public string Value { get; set; }
+            /// <summary>
+            /// the raw Content-Type header of the uploaded file.
+            /// </summary>
+            public string ContentType { get; set; }
+            /// <summary>
+            /// the file length in bytes.
+            /// </summary>
+            public long Length { get; set; }
+            /// <summary>
+            /// Output File Path.
+            /// </summary>
+            public string Path { get; set; }
         }
 
         /// <summary>
