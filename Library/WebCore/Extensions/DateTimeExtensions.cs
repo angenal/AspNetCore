@@ -609,6 +609,27 @@ namespace WebCore
         }
 
         /// <summary>
+        /// Convert To Time String
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static string ToTimeString(this DateTime dt, string format = "HH:mm:ss")
+        {
+            return dt.ToString(format);
+        }
+
+        /// <summary>
+        /// Convert To Time String Equals 00:00:00
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public static bool IsZeroTime(this DateTime dt)
+        {
+            return dt.ToTimeString().Equals("00:00:00");
+        }
+
+        /// <summary>
         /// Convert To DateTime String
         /// </summary>
         /// <param name="dt"></param>
