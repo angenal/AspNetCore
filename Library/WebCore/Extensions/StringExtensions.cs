@@ -11,6 +11,61 @@ namespace WebCore
 {
     public static class StringExtensions
     {
+        /// <summary>
+        /// Binary To Hex
+        /// </summary>
+        /// <param name="a"></param>
+        /// <returns></returns>
+        public static string BinaryToHex(this byte[] data)
+        {
+            return Sodium.Utilities.BinaryToHex(data);
+        }
+
+        /// <summary>
+        /// Hex To Binary
+        /// </summary>
+        /// <param name="hex"></param>
+        /// <returns></returns>
+        public static byte[] HexToBinary(this string hex)
+        {
+            return Sodium.Utilities.HexToBinary(hex);
+        }
+
+        /// <summary>
+        /// Binary To Base64
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="variant"></param>
+        /// <returns></returns>
+        public static string BinaryToBase64(this byte[] data)
+        {
+            return Sodium.Utilities.BinaryToBase64(data);
+        }
+
+        /// <summary>
+        /// Base64 To Binary
+        /// </summary>
+        /// <param name="base64"></param>
+        /// <param name="ignoredChars"></param>
+        /// <param name="variant"></param>
+        /// <returns></returns>
+        public static byte[] Base64ToBinary(this string base64, string ignoredChars)
+        {
+            return Sodium.Utilities.Base64ToBinary(base64, ignoredChars);
+        }
+
+        /// <summary>
+        /// Compare a > b or a == b ...
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool Compare(this byte[] a, byte[] b)
+        {
+            return Sodium.Utilities.Compare(a, b);
+        }
+
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetUtf8MaxSize(this string value)
         {

@@ -108,39 +108,54 @@ namespace WebFramework.Controllers
         /// <returns></returns>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(List<UploadFileOutputDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MinisignKeyOutputDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorJsonResultObject), (int)HttpStatusCode.BadRequest)]
         public IActionResult MinisignGenerateKey(MinisignGenerateKeyInputDto input)
         {
-            var path = Path.Combine(env.WebRootPath, "minisign");
+            var path = Path.Combine(env.WebRootPath, "file", "minisign");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            if (string.IsNullOrWhiteSpace(input.FileName)) input.FileName = "minisign";
-            string privateKeyFile = Path.Combine(path, $"{input.FileName}.key"), publicKeyFile = Path.Combine(path, $"{input.FileName}.pub");
+            if (string.IsNullOrWhiteSpace(input.KeyFile)) input.KeyFile = "minisign";
+            string privateKeyFile = Path.Combine(path, $"{input.KeyFile}.key"), publicKeyFile = Path.Combine(path, $"{input.KeyFile}.pub");
 
             var existsKey = System.IO.File.Exists(privateKeyFile) && System.IO.File.Exists(publicKeyFile);
             if (existsKey && input.Renew.HasValue && input.Renew == true)
             {
-                System.IO.File.Delete(privateKeyFile);
-                System.IO.File.Delete(publicKeyFile);
+                System.IO.File.Delete(privateKeyFile); System.IO.File.Delete(publicKeyFile);
             }
 
-
-            var keyPair = Minisign.GenerateKeyPair(input.KeyPass, true, path, input.FileName);
+            var keyPair = Minisign.GenerateKeyPair(input.KeyPass, true, path, input.KeyFile);
             privateKeyFile = keyPair.MinisignPrivateKeyFilePath; publicKeyFile = keyPair.MinisignPublicKeyFilePath;
             if (!System.IO.File.Exists(privateKeyFile) || !System.IO.File.Exists(publicKeyFile))
                 return Error("生成失败!");
 
             var privateKey = Minisign.LoadPrivateKeyFromFile(privateKeyFile, input.KeyPass);
             var publicKey = Minisign.LoadPublicKeyFromFile(publicKeyFile);
-            if (!privateKey.KeyId.Equals(publicKey.KeyId))
+            string privateKeyId = privateKey.KeyId.BinaryToHex(), publicKeyId = publicKey.KeyId.BinaryToHex();
+            if (!privateKeyId.Equals(publicKeyId))
                 return Error("生成失败!");
 
-            return Ok(new { keyId = Sodium.Utilities.BinaryToHex(publicKey.KeyId), keyPass = input.KeyPass });
+            var result = new MinisignKeyOutputDto
+            {
+                KeyId = publicKeyId,
+                KeyPass = input.KeyPass,
+                KeyFile = input.KeyFile
+            };
+            return Ok(result);
         }
         /// <summary>
-        /// 生成签名密钥 Minisign
+        /// 生成签名密钥 by Minisign
         /// </summary>
-        public class MinisignGenerateKeyInputDto
+        public class MinisignGenerateKeyInputDto : MinisignKeyInputDto
+        {
+            /// <summary>
+            /// 重新生成
+            /// </summary>
+            public bool? Renew { get; set; }
+        }
+        /// <summary>
+        /// 签名密钥 by Minisign
+        /// </summary>
+        public class MinisignKeyInputDto
         {
             /// <summary>
             /// 安全密钥
@@ -149,13 +164,20 @@ namespace WebFramework.Controllers
             [StringLength(64, MinimumLength = 8, ErrorMessage = "安全密钥字符长度为8～64")]
             public string KeyPass { get; set; }
             /// <summary>
-            /// 证书文件;不包括文件扩展名,默认minisign
+            /// 密钥文件名;不包括文件扩展名,默认minisign
             /// </summary>
-            public string FileName { get; set; } = "minisign";
+            public string KeyFile { get; set; } = "minisign";
+        }
+        /// <summary>
+        /// 签名密钥 by Minisign
+        /// </summary>
+        public class MinisignKeyOutputDto : MinisignKeyInputDto
+        {
             /// <summary>
-            /// 重新生成
+            /// 安全密钥Id
             /// </summary>
-            public bool? Renew { get; set; }
+            [Required]
+            public string KeyId { get; set; }
         }
 
         /// <summary>
@@ -164,61 +186,60 @@ namespace WebFramework.Controllers
         /// <returns></returns>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(List<UploadFileOutputDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MinisignFileSignOutputDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorJsonResultObject), (int)HttpStatusCode.BadRequest)]
         public IActionResult MinisignFileSign(MinisignFileSignInputDto input)
         {
-            var path = Path.Combine(env.WebRootPath, "minisign");
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            if (string.IsNullOrWhiteSpace(input.FileName)) input.FileName = "minisign";
-            string privateKeyFile = Path.Combine(path, $"{input.FileName}.key"), publicKeyFile = Path.Combine(path, $"{input.FileName}.pub");
+            if (!input.Path.StartsWith("/")) return Error("文件不存在!");
+            var file = Path.Combine(env.WebRootPath, input.Path.TrimStart('/'));
+            if (!System.IO.File.Exists(file)) return Error("文件不存在!");
+
+            var path = Path.Combine(env.WebRootPath, "file", "minisign");
+            if (!Directory.Exists(path)) return Error("签名密钥未找到!");
+            if (string.IsNullOrWhiteSpace(input.KeyFile)) input.KeyFile = "minisign";
+            string privateKeyFile = Path.Combine(path, $"{input.KeyFile}.key"), publicKeyFile = Path.Combine(path, $"{input.KeyFile}.pub");
 
             var existsKey = System.IO.File.Exists(privateKeyFile) && System.IO.File.Exists(publicKeyFile);
-            if (!existsKey) return Error("签名文件不存在!");
+            if (!existsKey) return Error("安全密钥文件不存在!");
 
             var privateKey = Minisign.LoadPrivateKeyFromFile(privateKeyFile, input.KeyPass);
             var publicKey = Minisign.LoadPublicKeyFromFile(publicKeyFile);
-            if (!privateKey.KeyId.Equals(publicKey.KeyId))
-                return Error("签名文件错误!");
-
-            var file = Path.Combine(env.WebRootPath, input.Path);
-            var signedFile = Minisign.Sign(file, privateKey);
-
-            var signature = Minisign.LoadSignatureFromFile(signedFile);
-            if (!input.KeyId.Equals(Sodium.Utilities.BinaryToHex(signature.KeyId)) || !input.KeyId.Equals(Sodium.Utilities.BinaryToHex(publicKey.KeyId)))
+            if (!privateKey.KeyId.Compare(publicKey.KeyId))
                 return Error("安全密钥错误!");
+            if (!input.KeyId.Equals(publicKey.KeyId.BinaryToHex()))
+                return Error("安全密钥Id错误!");
 
+            var signedFile = Minisign.Sign(file, privateKey);
+            var signature = Minisign.LoadSignatureFromFile(signedFile);
+            if (!input.KeyId.Equals(signature.KeyId.BinaryToHex()))
+                return Error("文件签名失败!");
             if (!Minisign.ValidateSignature(file, signature, publicKey))
-                return Error("签名失败!");
+                return Error("文件签名失败!");
 
-            return Ok(new { signedFile });
+            var result = new MinisignFileSignOutputDto { Path = input.Path + ".minisig" };
+            return Ok(result);
         }
         /// <summary>
         /// 文件签名 by Minisign
         /// </summary>
-        public class MinisignFileSignInputDto
+        public class MinisignFileSignInputDto : MinisignKeyOutputDto
         {
             /// <summary>
-            /// 被签名文件的路径
+            /// 未签名文件的路径
             /// </summary>
             [Required]
+            [StringLength(255, MinimumLength = 1, ErrorMessage = "文件路径错误")]
             public string Path { get; set; }
+        }
+        /// <summary>
+        /// 文件签名 by Minisign
+        /// </summary>
+        public class MinisignFileSignOutputDto
+        {
             /// <summary>
-            /// 安全密钥Id
+            /// 已签名文件的路径
             /// </summary>
-            [Required]
-            public string KeyId { get; set; }
-            /// <summary>
-            /// 安全密钥
-            /// </summary>
-            [Required]
-            [StringLength(64, MinimumLength = 8, ErrorMessage = "安全密钥字符长度为8～64")]
-            public string KeyPass { get; set; }
-            /// <summary>
-            /// 证书文件;不包括文件扩展名,默认minisign
-            /// </summary>
-            [Required]
-            public string FileName { get; set; } = "minisign";
+            public string Path { get; set; }
         }
 
 

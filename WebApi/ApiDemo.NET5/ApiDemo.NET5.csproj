@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\file\minisign\**" />
+    <Content Remove="wwwroot\file\minisign\**" />
+    <EmbeddedResource Remove="wwwroot\file\minisign\**" />
+    <None Remove="wwwroot\file\minisign\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="C:\Users\Administrator\.nuget\packages\mysql.data.entityframework\8.0.25\contentFiles\any\netstandard2.1\web.config.transform" />
     <Content Remove="wwwroot\files\Readme.txt" />
     <Content Remove="wwwroot\file\Readme.txt" />
