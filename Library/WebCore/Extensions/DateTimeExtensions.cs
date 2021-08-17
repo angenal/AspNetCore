@@ -472,7 +472,7 @@ namespace WebCore
         /// <returns>The new date time. </returns>
         public static DateTime ToEndOfDay(this DateTime dt)
         {
-            return new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59, 999);
+            return new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59, 0);
         }
 
         /// <summary>Resets the time part to 00:00:00. </summary>
