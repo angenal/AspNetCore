@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.IO;
+using WebInterface.Settings;
 
 namespace WebInterface
 {
@@ -16,5 +18,22 @@ namespace WebInterface
         /// <param name="ts">返回文件名后缀</param>
         /// <returns></returns>
         string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null);
+
+        /// <summary>
+        /// Apply digital signature
+        /// </summary>
+        /// <param name="unsignedDocument"></param>
+        /// <param name="signedDocument"></param>
+        /// <param name="hashAlgorithm"></param>
+        /// <param name="signingReason"></param>
+        /// <param name="signingLocation"></param>
+        void Sign(string unsignedDocument, string signedDocument, string hashAlgorithm = "SHA256", string signingReason = null, string signingLocation = null);
+
+        /// <summary>
+        /// Gets digital signature infos
+        /// </summary>
+        /// <param name="signedDocument"></param>
+        /// <returns></returns>
+        IEnumerable<CertInfo> GetSignInfo(string signedDocument);
     }
 }

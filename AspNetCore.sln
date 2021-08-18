@@ -14,6 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDotnetCore.db.sqlservr.y
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cert", "Cert", "{A9B91010-CD2C-4945-AB6B-CA0430F4A340}"
 	ProjectSection(SolutionItems) = preProject
+		Cert\PdfCert.pfx = Cert\PdfCert.pfx
 		Cert\WebRootCA.cer = Cert\WebRootCA.cer
 		Cert\WebRootCA.pfx = Cert\WebRootCA.pfx
 	EndProjectSection

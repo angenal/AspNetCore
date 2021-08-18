@@ -118,6 +118,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\Cert\PdfCert.pfx" Link="PdfCert.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\files\Readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

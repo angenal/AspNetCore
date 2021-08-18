@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -57,6 +57,7 @@
     <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="ToolGood.Words" Version="3.0.2.6" />
   </ItemGroup>
@@ -68,6 +69,12 @@
     <ProjectReference Include="..\WebInterface\WebInterface.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="itextsharp">
+      <HintPath>DLL\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SignLib">
+      <HintPath>DLL\SignLib.dll</HintPath>
+    </Reference>
     <Reference Include="Spire.Barcode">
       <HintPath>DLL\Spire.Barcode.dll</HintPath>
     </Reference>
