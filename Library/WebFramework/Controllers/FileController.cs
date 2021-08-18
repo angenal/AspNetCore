@@ -14,6 +14,7 @@ using System.Net;
 using System.Threading.Tasks;
 using WebCore;
 using WebCore.Security;
+using WebInterface;
 
 namespace WebFramework.Controllers
 {
@@ -28,15 +29,17 @@ namespace WebFramework.Controllers
         private readonly IWebHostEnvironment env;
         private readonly IConfiguration config;
         private readonly IMemoryCache cache;
+        private readonly IPdfTools pdf;
 
         /// <summary>
         ///
         /// </summary>
-        public FileController(IWebHostEnvironment env, IConfiguration config, IMemoryCache cache)
+        public FileController(IWebHostEnvironment env, IConfiguration config, IMemoryCache cache, IPdfTools pdf)
         {
             this.env = env;
             this.config = config;
             this.cache = cache;
+            this.pdf = pdf;
         }
 
         /// <summary>
@@ -101,6 +104,18 @@ namespace WebFramework.Controllers
             public string Path { get; set; }
         }
 
+
+        #region PDF数字签名
+
+        public IActionResult PdfFileSign()
+        {
+            return Ok();
+        }
+
+        #endregion
+
+
+        #region 文件签名 by Minisign
 
         /// <summary>
         /// 生成签名密钥 by Minisign
@@ -241,6 +256,8 @@ namespace WebFramework.Controllers
             /// </summary>
             public string Path { get; set; }
         }
+
+        #endregion
 
 
         /// <summary>

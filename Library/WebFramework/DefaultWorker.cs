@@ -10,12 +10,12 @@ namespace WebFramework
     /// <summary>
     /// Default Worker for Background Service.
     /// </summary>
-    public class Worker : BackgroundService
+    public class DefaultWorker : BackgroundService
     {
         /// <summary>
-        /// Interval Time
+        /// Interval Time, Default 5 Seconds
         /// </summary>
-        public static TimeSpan Interval = TimeSpan.FromSeconds(2);
+        public static TimeSpan Interval = TimeSpan.FromSeconds(5);
         /// <summary>
         /// Interval Actions
         /// </summary>
@@ -24,10 +24,10 @@ namespace WebFramework
         readonly IHostApplicationLifetime host;
         readonly ILogger L;
 
-        public Worker(IHostApplicationLifetime host, ILogger logger = null)
+        public DefaultWorker(IHostApplicationLifetime host, ILogger logger = null)
         {
             this.host = host;
-            if (logger != null) L = logger.ForContext<Worker>();
+            if (logger != null) L = logger.ForContext<DefaultWorker>();
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)

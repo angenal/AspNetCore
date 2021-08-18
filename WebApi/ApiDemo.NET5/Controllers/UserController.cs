@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.QQ;
 using Microsoft.AspNetCore.Authentication.Weixin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -25,14 +26,16 @@ namespace ApiDemo.NET5.Controllers
     {
         private readonly ILiteDb liteDb;
         private readonly ICrypto crypto;
+        private readonly IMemoryCache cache;
 
         /// <summary>
         ///
         /// </summary>
-        public UserController(ILiteDb liteDb, ICrypto crypto)
+        public UserController(ILiteDb liteDb, ICrypto crypto, IMemoryCache cache)
         {
             this.liteDb = liteDb;
             this.crypto = crypto;
+            this.cache = cache;
         }
 
         #region api/user/register
@@ -107,6 +110,10 @@ namespace ApiDemo.NET5.Controllers
         }
 
 
+        #region get external login information when ( QQ, Weixin ) login success
+
+        // api/User/QQLogin
+
         /// <summary>
         /// QQ登陆
         /// </summary>
@@ -115,13 +122,26 @@ namespace ApiDemo.NET5.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalQQLoginCallback(string returnUrl = null, string remoteError = null)
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(Session), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> QQLogin(string returnUrl = null, string remoteError = null)
         {
-            // get information from HttpContext (using Microsoft.AspNetCore.Authentication.QQ;)
+            if (!string.IsNullOrEmpty(remoteError)) return BadRequest(remoteError);
+
+            // get information from HttpContext using Microsoft.AspNetCore.Authentication.QQ
             var loginInfo = await HttpContext.GetExternalQQLoginInfoAsync();
+
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                //cache.Set();
+            }
 
             return Ok(loginInfo);
         }
+
+        // api/User/WxLogin
+
         /// <summary>
         /// 微信登陆
         /// </summary>
@@ -130,13 +150,22 @@ namespace ApiDemo.NET5.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalWeixinLoginCallback(string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> WxLogin(string returnUrl = null, string remoteError = null)
         {
-            // get information from HttpContext (using Microsoft.AspNetCore.Authentication.Weixin;)
+            if (!string.IsNullOrEmpty(remoteError)) return BadRequest(remoteError);
+
+            // get information from HttpContext using Microsoft.AspNetCore.Authentication.Weixin
             var loginInfo = await HttpContext.GetExternalWeixinLoginInfoAsync();
+
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                //cache.Set();
+            }
 
             return Ok(loginInfo);
         }
+
+        #endregion
 
     }
 }

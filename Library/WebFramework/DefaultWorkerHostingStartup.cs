@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: HostingStartup(typeof(WebFramework.WorkerHostingStartup))]
+[assembly: HostingStartup(typeof(WebFramework.DefaultWorkerHostingStartup))]
 namespace WebFramework
 {
-    public class WorkerHostingStartup : IHostingStartup
+    public class DefaultWorkerHostingStartup : IHostingStartup
     {
         public void Configure(IWebHostBuilder builder)
         {
             builder.ConfigureServices((context, services) =>
             {
-                services.AddHostedService<Worker>();
+                services.AddHostedService<DefaultWorker>();
             });
         }
     }
