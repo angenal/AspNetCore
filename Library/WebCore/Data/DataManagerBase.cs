@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -49,7 +49,7 @@ namespace WebCore.Data
         /// <returns>The item. </returns>
         public Task<T> GetItemAsync<T>(TIdentity id, bool reload = true, params Expression<Func<T, object>>[] included)
         {
-            return GetItemAsync<T>(id, reload, included.Select(ExpressionUtilities.GetPropertyName).ToArray());
+            return GetItemAsync<T>(id, reload, included.Select(ExpressionExtensions.GetPropertyName).ToArray());
         }
 
         /// <summary>Loads a single item. </summary>
@@ -118,7 +118,7 @@ namespace WebCore.Data
         /// <returns>The loaded items. </returns>
         public Task<IEnumerable<T>> GetAllItemsAsync<T>(bool reload = true, params Expression<Func<T, object>>[] included)
         {
-            return GetAllItemsAsync<T>(reload, included.Select(ExpressionUtilities.GetPropertyName).ToArray());
+            return GetAllItemsAsync<T>(reload, included.Select(ExpressionExtensions.GetPropertyName).ToArray());
         }
 
         /// <summary>Loads all items of a given type. </summary>
@@ -181,7 +181,7 @@ namespace WebCore.Data
             where T : IEntity<TIdentity>
             where TProperty : IEntity<TIdentity>
         {
-            return LoadPropertyForItemAsync<T, TProperty>(item, ExpressionUtilities.GetPropertyName(propertyName), reload, included);
+            return LoadPropertyForItemAsync<T, TProperty>(item, ExpressionExtensions.GetPropertyName(propertyName), reload, included);
         }
 
         /// <summary>Loads a property for a given item. </summary>

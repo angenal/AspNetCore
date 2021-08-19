@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebCore
 {
-    // TODO: Improve these classes
-
 #pragma warning disable 1591
 
     public interface ICommandEx
@@ -16,7 +14,7 @@ namespace WebCore
     }
 
     /// <summary>
-    /// Provides a command processor. 
+    /// Provides a command processor.
     /// </summary>
     public class CommandProcessor
     {
@@ -70,7 +68,7 @@ namespace WebCore
                 catch (Exception)
                 {
                     //if (Debugger.IsAttached)
-                    //	Debugger.Break();
+                    //  Debugger.Break();
                 }
 
                 if (!successful)
@@ -122,5 +120,5 @@ namespace WebCore
         }
     }
 
-    #pragma warning restore 1591
+#pragma warning restore 1591
 }

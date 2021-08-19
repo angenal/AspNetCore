@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 
 namespace WebCore
 {
     /// <summary>Provides methods to handle geo locations. </summary>
-    public static class GeolocationUtilities
+    public static class Geolocation
     {
         /// <summary>Calculates the distance between to coordinates. </summary>
         /// <param name="lat1">Latitude of the first coordinate. </param>

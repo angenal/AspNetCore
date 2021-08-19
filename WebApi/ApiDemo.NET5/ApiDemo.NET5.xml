@@ -88,7 +88,7 @@
             用户账号
             </summary>
         </member>
-        <member name="M:ApiDemo.NET5.Controllers.UserController.#ctor(WebInterface.ILiteDb,WebInterface.ICrypto)">
+        <member name="M:ApiDemo.NET5.Controllers.UserController.#ctor(WebInterface.ILiteDb,WebInterface.ICrypto,Microsoft.Extensions.Caching.Memory.IMemoryCache)">
              <summary>
             
              </summary>
@@ -103,7 +103,7 @@
             Returns current user info.
             </summary>
         </member>
-        <member name="M:ApiDemo.NET5.Controllers.UserController.ExternalQQLoginCallback(System.String,System.String)">
+        <member name="M:ApiDemo.NET5.Controllers.UserController.QQLogin(System.String,System.String)">
             <summary>
             QQ登陆
             </summary>
@@ -111,7 +111,7 @@
             <param name="remoteError"></param>
             <returns></returns>
         </member>
-        <member name="M:ApiDemo.NET5.Controllers.UserController.ExternalWeixinLoginCallback(System.String,System.String)">
+        <member name="M:ApiDemo.NET5.Controllers.UserController.WxLogin(System.String,System.String)">
             <summary>
             微信登陆
             </summary>

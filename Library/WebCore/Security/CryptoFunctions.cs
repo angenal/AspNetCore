@@ -154,6 +154,13 @@ namespace WebCore
         /// <returns></returns>
         public static byte[] GenerateKey() => Sodium.StreamEncryption.GenerateKey();
         /// <summary>
+        /// Generate a 24 byte nonce for encrypt: Sodium.SecretBox.Create(message, nonce, key), decrypt: Sodium.SecretBox.Open(ciphertext, nonce, key)
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/authenticated_encryption.html
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static byte[] GetRandomBytes(int count = 24) => Sodium.SodiumCore.GetRandomBytes(count);
+        /// <summary>
         /// Generate 12 bytes for AES256GCMEncrypt(),AES256GCMDecrypt()
         /// </summary>
         /// <returns></returns>

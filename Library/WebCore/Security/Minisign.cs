@@ -10,7 +10,9 @@ using WebCore.Security.Models;
 namespace WebCore.Security
 {
     /// <summary>
-    /// Minisign files and objects.
+    /// Minisign is a dead simple tool to sign files and verify signatures.
+    /// It is portable, lightweight, and uses the highly secure Ed25519 public-key signature system.
+    /// Reference website: https://jedisct1.github.io/minisign
     /// </summary>
     public static class Minisign
     {
