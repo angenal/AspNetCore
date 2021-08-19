@@ -2,6 +2,9 @@ namespace WebCore
 {
     public static class DefaultFormat
     {
+        public const string CommaChars = ",，";
+        public static readonly char[] SeparatorChars = CommaChars.ToCharArray();
+
         public static readonly string DateTimeFormats = "yyyy-MM-dd HH:mm:ss";
         public static readonly string DateFormats = "yyyy-MM-dd";
         public static readonly string TimeFormats = "HH:mm:ss";
@@ -16,7 +19,7 @@ namespace WebCore
         };
 
         /// <remarks>
-        /// 'r' format is used on the in metadata, because it's delivered as http header. 
+        /// 'r' format is used on the in metadata, because it's delivered as http header.
         /// </remarks>
         public static readonly string[] DateTimeFormatsToRead = {
             DateTimeOffsetFormatsToWrite,

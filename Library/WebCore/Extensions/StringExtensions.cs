@@ -107,6 +107,15 @@ namespace WebCore
 
 
         /// <summary>
+        /// 逗号拆分字符串
+        /// </summary>
+        public static string SplitComma(this string str, string comma = DefaultFormat.CommaChars)
+        {
+            return string.Join(",", str.Split(comma.ToCharArray()));
+        }
+
+
+        /// <summary>
         /// 截断字符串长度
         /// </summary>
         public static string Substr(this string str, int maxlength)
