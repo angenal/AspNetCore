@@ -209,7 +209,6 @@ namespace ApiDemo.NET5.Models.DTO
 		/// 修改次数
 		/// </summary>
 		[Display(Name = "修改次数")]
-		[Required(ErrorMessage = "{0} 为必填项")]
 		public int HistoryRecords { get; set; }
     }
 

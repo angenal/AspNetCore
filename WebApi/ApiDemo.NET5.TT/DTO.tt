@@ -18,7 +18,7 @@ namespace ApiDemo.NET5.Models.DTO
 		/// <#=col.Remark.Replace("\r\n","").Replace("&","＆") #>
 		/// </summary>
 		[Display(Name = "<#=col.Remark.Replace("\r\n","").Replace("&","＆") #>")]
-<# if (!col.IsPrimary && !col.IsNull && !notRequired.Contains(col.Name)) { #>
+<# if (!col.IsPrimary && !col.IsNull && col.IsNaN && !notRequired.Contains(col.Name)) { #>
 		[Required(ErrorMessage = "{0} 为必填项")]
 <# } #>
 <# if (TT_MSSQL.AsString(col.Type) == "string") { #>
@@ -200,5 +200,12 @@ where col.[object_id]=@id order by col.column_id";
         public int MaxLength { get; set; }
         public bool IsIdentity { get; set; }
         public string Remark { get; set; }
+        public bool IsNaN
+        {
+            get
+            {
+                return "bit,decimal,float,int,money,numeric,real,smallint,smallmoney,tinyint".IndexOf(Type) == -1;
+            }
+        }
     }
 #>
