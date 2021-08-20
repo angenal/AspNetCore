@@ -74,6 +74,7 @@ namespace WebCore
             return data;
         }
 
+
         /// <summary>
         /// This is the .NET equivalent of crypto_auth.
         /// signs a message with a key.
@@ -103,6 +104,7 @@ namespace WebCore
         /// <summary>verifies a message with a signature and a key signed.</summary>
         public static bool VerifyHmacSha512(this byte[] message, byte[] signature, byte[] key) => Sodium.SecretKeyAuth.VerifyHmacSha512(message, signature, key);
 
+
         /// <summary>
         /// This is the .NET equivalent of crypto_secretbox_easy.
         /// encrypts a message with a key and a nonce to keep it confidential.
@@ -114,6 +116,18 @@ namespace WebCore
         /// <returns>Encrypted data</returns>
         public static byte[] Encrypt(this byte[] message, byte[] nonce, byte[] key) => Sodium.SecretBox.Create(message, nonce, key);
         /// <summary>
+        /// This is the .NET equivalent of crypto_aead_chacha20poly1305_encrypt.
+        /// encrypts a message using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/aead.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="nonce">The nonce must be 8 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <param name="additionalData">The additionalData may be null, or between 0 and 16 bytes</param>
+        /// <returns>Encrypted data</returns>
+        public static byte[] Encrypt(this byte[] message, byte[] nonce, byte[] key, byte[] additionalData) => Sodium.SecretAeadChaCha20Poly1305.Encrypt(message, nonce, key, additionalData);
+
+        /// <summary>
         /// This is the .NET equivalent of crypto_secretbox_open_easy.
         /// decrypts a cipherText produced by Create(), with a key and a nonce.
         /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/authenticated_encryption.html
@@ -123,6 +137,18 @@ namespace WebCore
         /// <param name="key">The key must be 32 bytes</param>
         /// <returns>Original data</returns>
         public static byte[] Decrypt(this byte[] cipher, byte[] nonce, byte[] key) => Sodium.SecretBox.Open(cipher, nonce, key);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_aead_chacha20poly1305_decrypt.
+        /// decrypts a message cipher using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/authenticated_encryption.html
+        /// </summary>
+        /// <param name="cipher">Encrypted data</param>
+        /// <param name="nonce">The nonce must be 8 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <param name="additionalData">The additionalData may be null, or between 0 and 16 bytes</param>
+        /// <returns>Original data</returns>
+        public static byte[] Decrypt(this byte[] cipher, byte[] nonce, byte[] key, byte[] additionalData) => Sodium.SecretAeadChaCha20Poly1305.Decrypt(cipher, nonce, key, additionalData);
+
 
 
         #region OneTime Auth Sign/Verify
