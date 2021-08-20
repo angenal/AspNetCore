@@ -75,6 +75,28 @@ namespace WebCore
         }
 
 
+        /// <summary>
+        /// This is the .NET equivalent of crypto_secretbox_easy.
+        /// encrypts a message with a key and a nonce to keep it confidential.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/authenticated_encryption.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="nonce">The nonce must be 24 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>Encrypted data</returns>
+        public static byte[] Encrypt(this byte[] message, byte[] nonce, byte[] key) => Sodium.SecretBox.Create(message, nonce, key);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_secretbox_open_easy.
+        /// decrypts a cipherText produced by Create(), with a key and a nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/authenticated_encryption.html
+        /// </summary>
+        /// <param name="cipher">Encrypted data</param>
+        /// <param name="nonce">The nonce must be 24 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>Original data</returns>
+        public static byte[] Decrypt(this byte[] cipher, byte[] nonce, byte[] key) => Sodium.SecretBox.Open(cipher, nonce, key);
+
+
         #region OneTime Auth Sign/Verify
         /// <summary>
         /// This is the .NET equivalent of crypto_onetimeauth.
