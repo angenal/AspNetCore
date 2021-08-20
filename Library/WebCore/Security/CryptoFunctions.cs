@@ -74,6 +74,34 @@ namespace WebCore
             return data;
         }
 
+        /// <summary>
+        /// This is the .NET equivalent of crypto_auth.
+        /// signs a message with a key.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/secret-key_authentication.html
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>The signature with 32 bytes</returns>
+        public static byte[] Sign(this byte[] message, byte[] key) => Sodium.SecretKeyAuth.Sign(message, key);
+        /// <summary>signs a message with a key.</summary>
+        public static byte[] SignHmacSha256(this byte[] message, byte[] key) => Sodium.SecretKeyAuth.SignHmacSha256(message, key);
+        /// <summary>signs a message with a key.</summary>
+        public static byte[] SignHmacSha512(this byte[] message, byte[] key) => Sodium.SecretKeyAuth.SignHmacSha512(message, key);
+
+        /// <summary>
+        /// This is the .NET equivalent of crypto_auth_verify.
+        /// verifies a message with a signature and a key signed by Sign().
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/secret-key_authentication.html
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="signature">The signature must be 32 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns></returns>
+        public static bool Verify(this byte[] message, byte[] signature, byte[] key) => Sodium.SecretKeyAuth.Verify(message, signature, key);
+        /// <summary>verifies a message with a signature and a key signed.</summary>
+        public static bool VerifyHmacSha256(this byte[] message, byte[] signature, byte[] key) => Sodium.SecretKeyAuth.VerifyHmacSha256(message, signature, key);
+        /// <summary>verifies a message with a signature and a key signed.</summary>
+        public static bool VerifyHmacSha512(this byte[] message, byte[] signature, byte[] key) => Sodium.SecretKeyAuth.VerifyHmacSha512(message, signature, key);
 
         /// <summary>
         /// This is the .NET equivalent of crypto_secretbox_easy.
