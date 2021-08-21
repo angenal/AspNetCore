@@ -14,8 +14,35 @@ using System.Threading.Tasks;
 
 namespace WebFramework
 {
+    /// <summary>
+    /// Attribute for File Upload Controller
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    public class DisableFormModelBindingAttribute : Attribute, IResourceFilter
+    {
+        public void OnResourceExecuting(ResourceExecutingContext context)
+        {
+            var formValueProviderFactory = context.ValueProviderFactories.OfType<FormValueProviderFactory>().FirstOrDefault();
+            if (formValueProviderFactory != null) context.ValueProviderFactories.Remove(formValueProviderFactory);
+
+            var formFileValueProviderFactory = context.ValueProviderFactories.OfType<FormFileValueProviderFactory>().FirstOrDefault();
+            if (formFileValueProviderFactory != null) context.ValueProviderFactories.Remove(formFileValueProviderFactory);
+
+            var jqueryFormValueProviderFactory = context.ValueProviderFactories.OfType<JQueryFormValueProviderFactory>().FirstOrDefault();
+            if (jqueryFormValueProviderFactory != null) context.ValueProviderFactories.Remove(jqueryFormValueProviderFactory);
+        }
+
+        public void OnResourceExecuted(ResourceExecutedContext context) { }
+    }
+
+    /// <summary>
+    /// HttpRequest Extensions for File Upload Action
+    /// </summary>
     public static class HttpRequestExtensions
     {
+        /// <summary>
+        /// File Upload Action
+        /// </summary>
         public static async Task<FormValueProvider> UploadFile(this HttpRequest request, Func<IFormFile, Task> func)
         {
             if (!MultipartRequestHelper.IsMultipartContentType(request.ContentType))
@@ -77,24 +104,6 @@ namespace WebFramework
             // Bind form data to a model
             return new FormValueProvider(BindingSource.Form, new FormCollection(formAccumulator.GetResults()), CultureInfo.CurrentCulture);
         }
-    }
-
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class DisableFormModelBindingAttribute : Attribute, IResourceFilter
-    {
-        public void OnResourceExecuting(ResourceExecutingContext context)
-        {
-            var formValueProviderFactory = context.ValueProviderFactories.OfType<FormValueProviderFactory>().FirstOrDefault();
-            if (formValueProviderFactory != null) context.ValueProviderFactories.Remove(formValueProviderFactory);
-
-            var formFileValueProviderFactory = context.ValueProviderFactories.OfType<FormFileValueProviderFactory>().FirstOrDefault();
-            if (formFileValueProviderFactory != null) context.ValueProviderFactories.Remove(formFileValueProviderFactory);
-
-            var jqueryFormValueProviderFactory = context.ValueProviderFactories.OfType<JQueryFormValueProviderFactory>().FirstOrDefault();
-            if (jqueryFormValueProviderFactory != null) context.ValueProviderFactories.Remove(jqueryFormValueProviderFactory);
-        }
-
-        public void OnResourceExecuted(ResourceExecutedContext context) { }
     }
 
     public class MultipartFile : IFormFile
@@ -163,7 +172,7 @@ namespace WebFramework
 
         public static bool IsMultipartContentType(string contentType)
         {
-            return !string.IsNullOrEmpty(contentType) && contentType.IndexOf("multipart/", StringComparison.OrdinalIgnoreCase) >= 0;
+            return contentType != null && contentType.Contains("multipart/", StringComparison.OrdinalIgnoreCase);
         }
     }
 

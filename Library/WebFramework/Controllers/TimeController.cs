@@ -17,9 +17,7 @@ namespace WebFramework.Controllers
     {
         private readonly IWebHostEnvironment env;
 
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         public TimeController(IWebHostEnvironment env)
         {
             this.env = env;

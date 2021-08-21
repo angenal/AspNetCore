@@ -5,7 +5,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -14,6 +13,7 @@ using System.Net;
 using System.Threading.Tasks;
 using WebCore;
 using WebCore.Security;
+using WebFramework.Models.DTO;
 using WebInterface;
 
 namespace WebFramework.Controllers
@@ -31,9 +31,7 @@ namespace WebFramework.Controllers
         private readonly IMemoryCache cache;
         private readonly IPdfTools pdf;
 
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         public FileController(IWebHostEnvironment env, IConfiguration config, IMemoryCache cache, IPdfTools pdf)
         {
             this.env = env;
@@ -41,6 +39,9 @@ namespace WebFramework.Controllers
             this.cache = cache;
             this.pdf = pdf;
         }
+
+
+        #region 上传文件 api/File/Upload
 
         /// <summary>
         /// 上传文件
@@ -62,7 +63,6 @@ namespace WebFramework.Controllers
             var url = Request.RootPath() + root;
             var files = new List<UploadFileOutputDto>();
 
-            // upload file
             //var buffer = new byte[4096];
             var result = await Request.UploadFile(async file =>
             {
@@ -77,48 +77,39 @@ namespace WebFramework.Controllers
 
             return new JsonResult(files);
         }
+
+        #endregion
+
+
+        #region PDF数字签名 api/File/PdfFileSign
+
         /// <summary>
-        /// Upload File Output
+        /// PDF数字签名 by SignLib
         /// </summary>
-        public class UploadFileOutputDto
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public IActionResult PdfFileSign(PdfFileSignInputDto input)
         {
-            /// <summary>
-            /// the form field name.
-            /// </summary>
-            public string Key { get; set; }
-            /// <summary>
-            /// the file name.
-            /// </summary>
-            public string Value { get; set; }
-            /// <summary>
-            /// the raw Content-Type header of the uploaded file.
-            /// </summary>
-            public string ContentType { get; set; }
-            /// <summary>
-            /// the file length in bytes.
-            /// </summary>
-            public long Length { get; set; }
-            /// <summary>
-            /// Output File Path.
-            /// </summary>
-            public string Path { get; set; }
-        }
+            if (!input.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)) return Error("文件格式错误!");
+            if (!input.Path.StartsWith("/")) return Error("文件不存在!");
+            var file = Path.Combine(env.WebRootPath, input.Path.TrimStart('/'));
+            if (!System.IO.File.Exists(file)) return Error("文件不存在!");
 
+            var signedFile = file.Substring(0, file.Length - 4) + "Signed.pdf";
+            // Sign by the signature certificate file: PdfCert.pfx
+            pdf.Sign(file, signedFile);
 
-        #region PDF数字签名
-
-        public IActionResult PdfFileSign()
-        {
-            return Ok();
+            var result = new FileSignOutputDto { Path = signedFile };
+            return Ok(result);
         }
 
         #endregion
 
 
-        #region 文件签名 by Minisign
+        #region 文件签名 api/File/MinisignFileSign
 
         /// <summary>
-        /// 生成签名密钥 by Minisign
+        /// 配置密钥 for Minisign
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -157,43 +148,6 @@ namespace WebFramework.Controllers
             };
             return Ok(result);
         }
-        /// <summary>
-        /// 生成签名密钥 by Minisign
-        /// </summary>
-        public class MinisignGenerateKeyInputDto : MinisignKeyInputDto
-        {
-            /// <summary>
-            /// 重新生成
-            /// </summary>
-            public bool? Renew { get; set; }
-        }
-        /// <summary>
-        /// 签名密钥 by Minisign
-        /// </summary>
-        public class MinisignKeyInputDto
-        {
-            /// <summary>
-            /// 安全密钥
-            /// </summary>
-            [Required]
-            [StringLength(64, MinimumLength = 8, ErrorMessage = "安全密钥字符长度为8～64")]
-            public string KeyPass { get; set; }
-            /// <summary>
-            /// 密钥文件名;不包括文件扩展名,默认minisign
-            /// </summary>
-            public string KeyFile { get; set; } = "minisign";
-        }
-        /// <summary>
-        /// 签名密钥 by Minisign
-        /// </summary>
-        public class MinisignKeyOutputDto : MinisignKeyInputDto
-        {
-            /// <summary>
-            /// 安全密钥Id
-            /// </summary>
-            [Required]
-            public string KeyId { get; set; }
-        }
 
         /// <summary>
         /// 文件签名 by Minisign
@@ -201,7 +155,7 @@ namespace WebFramework.Controllers
         /// <returns></returns>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(MinisignFileSignOutputDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FileSignOutputDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorJsonResultObject), (int)HttpStatusCode.BadRequest)]
         public IActionResult MinisignFileSign(MinisignFileSignInputDto input)
         {
@@ -231,34 +185,14 @@ namespace WebFramework.Controllers
             if (!Minisign.ValidateSignature(file, signature, publicKey))
                 return Error("文件签名失败!");
 
-            var result = new MinisignFileSignOutputDto { Path = input.Path + ".minisig" };
+            var result = new FileSignOutputDto { Path = input.Path + ".minisig" };
             return Ok(result);
-        }
-        /// <summary>
-        /// 文件签名 by Minisign
-        /// </summary>
-        public class MinisignFileSignInputDto : MinisignKeyOutputDto
-        {
-            /// <summary>
-            /// 未签名文件的路径
-            /// </summary>
-            [Required]
-            [StringLength(255, MinimumLength = 1, ErrorMessage = "文件路径错误")]
-            public string Path { get; set; }
-        }
-        /// <summary>
-        /// 文件签名 by Minisign
-        /// </summary>
-        public class MinisignFileSignOutputDto
-        {
-            /// <summary>
-            /// 已签名文件的路径
-            /// </summary>
-            public string Path { get; set; }
         }
 
         #endregion
 
+
+        #region 图片验证码 api/File/CaptchaCode
 
         /// <summary>
         /// 图片验证码
@@ -328,5 +262,8 @@ namespace WebFramework.Controllers
            new Font(new FontFamily("Times New Roman"), fontSize, FontStyle.Bold | FontStyle.Italic),
            new Font(new FontFamily("Comic Sans MS"), fontSize, FontStyle.Bold | FontStyle.Italic)
         };
+
+        #endregion
+
     }
 }
