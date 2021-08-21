@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WebFramework.SignalR;
 
 namespace ApiDemo.NET5
 {
@@ -31,10 +29,8 @@ namespace ApiDemo.NET5
             //API: ApiController
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<ChatHub>("/chat", options => options.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling);
-                endpoints.MapControllerRoute("default", "{culture:culture}/{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapControllers();
                 UseEndpointsMaps(endpoints);
+                endpoints.MapControllers();
             });
         }
     }

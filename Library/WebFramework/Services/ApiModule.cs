@@ -31,11 +31,11 @@ namespace WebFramework.Services
             // 注册全局过滤器
             return services.AddControllers(options =>
             {
-                // 全局异常过滤
-                ExceptionHandlerModule.ApiExceptionsFilters(options);
-                // 全局日志
+                // 全局日志记录
                 //options.Filters.Add<GlobalActionMonitor>();
-                // 用户会话处理
+                // 全局异常处理 error handler
+                ExceptionHandlerModule.ApiExceptionsFilters(options);
+                // 用户会话状态 user session
                 options.Filters.Add<AsyncSessionFilter>();
             });
         }
@@ -68,9 +68,9 @@ namespace WebFramework.Services
 
 
             // Global Exception Handler
-            services.AddExceptionHandler(ExceptionHandlerModule.ExceptionHandlerOptionsAction);
-            // BadRequest Error Handler
-            builder.ConfigureApiBehaviorOptions(ExceptionHandlerModule.ApiBehaviorOptionsAction);
+            services.AddExceptionHandler(ExceptionHandlerModule.ExceptionHandler);
+            // Global ApiBehavior for BadRequest
+            builder.ConfigureApiBehaviorOptions(ExceptionHandlerModule.ApiBehavior);
             // Newtonsoft.Json override the default System.Text.Json of .NET Library
             builder.AddNewtonsoftJson(x =>
             {
@@ -78,7 +78,7 @@ namespace WebFramework.Services
                 x.SerializerSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore;
                 x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 //x.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                //x.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                x.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
             });
             //builder.AddJsonOptions(x => x.JsonSerializerOptions.WriteIndented = true); // default System.Text.Json
 

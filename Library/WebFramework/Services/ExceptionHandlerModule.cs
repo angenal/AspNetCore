@@ -18,7 +18,7 @@ namespace WebFramework.Services
     public static class ExceptionHandlerModule
     {
         /// <summary>
-        /// Configure Monitoring Module
+        /// Global Monitor System
         /// Sentry: Exception Monitoring Platform
         /// https://sentry.io/signup
         /// https://github.com/docker-library/docs/tree/master/sentry
@@ -51,33 +51,34 @@ namespace WebFramework.Services
         }
 
         /// <summary>
-        /// Global Exception Filters
+        /// Global Exception Filters for MVC
         /// </summary>
         /// <param name="options"></param>
         public static void ApiExceptionsFilters(MvcOptions options)
         {
             options.Filters.Add<HttpResponseExceptionFilter>();
-            //options.Filters.Add<GlobalExceptions>();
         }
 
         /// <summary>
-        /// Configure BadRequest Error Handler with Invalid ModelState Response
+        /// Configure Global ApiBehavior for BadRequest Error Handler with Invalid ModelState Response
         /// </summary>
-        public static void ApiBehaviorOptionsAction(ApiBehaviorOptions options)
+        public static void ApiBehavior(ApiBehaviorOptions options)
         {
+            //options.ClientErrorMapping[StatusCodes.Status404NotFound].Link = "https://*.com/404";
             //options.SuppressConsumesConstraintForFormFileParameters = true;
             //options.SuppressInferBindingSourcesForParameters = true;
-            //options.SuppressModelStateInvalidFilter = true; // 关闭系统自带模型验证
+            //options.SuppressModelStateInvalidFilter = true; // 关闭系统自带模型验证(使用第三方库代理)
             //options.SuppressMapClientErrors = true;
-            //options.ClientErrorMapping[StatusCodes.Status404NotFound].Link = "https://*.com/404";
             options.InvalidModelStateResponseFactory = context =>
             {
-                if (context.ModelState.IsValid) return new OkObjectResult(context.ModelState);
+                var s = context.ModelState.Values;
+                if (context.ModelState.IsValid || !s.Any() || !s.First().Errors.Any()) 
+                    return new OkObjectResult(context.ModelState);
                 var result = new BadRequestObjectResult(new
                 {
                     status = 400,
-                    title = Convert.ToString(context.ModelState.Values.First().Errors.First().ErrorMessage).Replace("＆", " "),
-                    errors = Convert.ToString(string.Join("；", context.ModelState.Values.Select(v => string.Join("；", v.Errors.Select(e => e.ErrorMessage))))).Replace("＆", " ")
+                    title = s.First().Errors.First().ErrorMessage.Replace("＆", " "),
+                    errors = string.Join("；", s.Select(v => string.Join("；", v.Errors.Select(e => e.ErrorMessage)))).Replace("＆", " ")
                 });
                 result.ContentTypes.Add(System.Net.Mime.MediaTypeNames.Application.Json);
                 return result;
@@ -85,14 +86,16 @@ namespace WebFramework.Services
         }
 
         /// <summary>
-        /// Configure Global Exception Handler
+        /// Configure Global Exception Handler in Services Container
         /// </summary>
         /// <param name="options"></param>
-        public static void ExceptionHandlerOptionsAction(ExceptionHandlerOptions options)
+        public static void ExceptionHandler(ExceptionHandlerOptions options)
         {
             // Passing by 404
             options.AllowStatusCode404Response = true;
-            // Exception Handler
+            // The path to the exception handling endpoint
+            options.ExceptionHandlingPath = null;
+            // Handle the exception
             options.ExceptionHandler = context =>
             {
                 var e = context.Features.Get<IExceptionHandlerFeature>().Error;
@@ -108,9 +111,15 @@ namespace WebFramework.Services
                     return context.Response.WriteAsync(text);
                 }
 
+                if (!context.Request.Path.StartsWithSegments("/api/"))
+                {
+                    return Task.CompletedTask;
+                }
+
+                // Api Response for Internal Server Error
+                context.Response.ContentType = "application/json";
                 //context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                context.Response.ContentType = "application/json";
 
                 text = Newtonsoft.Json.JsonConvert.SerializeObject(new { status = 500, title = e.Message });
 
