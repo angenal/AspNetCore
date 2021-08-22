@@ -38,7 +38,7 @@ namespace WebFramework.Models.DTO
         /// <summary>
         /// 未签名文件的路径(以/开头)
         /// </summary>
-        [Required]
+        //[Required]
         [StringLength(255, MinimumLength = 6, ErrorMessage = "文件路径错误")]
         public string Path { get; set; }
     }

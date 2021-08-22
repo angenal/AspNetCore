@@ -93,15 +93,17 @@ namespace WebFramework.Services
         {
             // Passing by 404
             options.AllowStatusCode404Response = true;
-            // The path to the exception handling endpoint
-            options.ExceptionHandlingPath = new PathString("/api");
+            // The path to the exception handling endpoint for MVC
+            //options.ExceptionHandlingPath = new PathString("/error");
             // Handle the exception
             options.ExceptionHandler = context =>
             {
-                //if (!context.Request.Path.StartsWithSegments("/api")) return Task.CompletedTask;
-
                 var e = context.Features.Get<IExceptionHandlerFeature>().Error;
-                if (e is IOException || e is WebException) return Task.CompletedTask;
+                if (e is WebException)
+                {
+                    context.Abort();
+                    return Task.CompletedTask;
+                }
 
                 var text = string.Empty;
                 if (e is TaskCanceledException || e is OperationCanceledException)
@@ -110,10 +112,25 @@ namespace WebFramework.Services
                     return context.Response.WriteAsync(text);
                 }
 
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                const int status = StatusCodes.Status500InternalServerError;
+                if (!context.Request.Path.StartsWithSegments("/api"))
+                {
+                    context.Response.StatusCode = status;
+                    return context.Response.WriteAsync(e.Message);
+                }
 
-                text = Newtonsoft.Json.JsonConvert.SerializeObject(new { status = 400, title = e.Message });
+                context.Response.Clear();
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = status;
+
+                var detail = e.ToString();
+                var s = detail.Split(Environment.NewLine);
+                if (s.Length > 3) detail = string.Join(Environment.NewLine, s[0], s[1], s[2]);
+                var error = new { title = e.Message, detail, trace = context.TraceIdentifier, status };
+
+                //Serilog.Log.Logger.Error(e, $"{context.Request.Path} {context.Request.QueryString} {Environment.NewLine}");
+
+                text = Newtonsoft.Json.JsonConvert.SerializeObject(error);
 
                 return context.Response.WriteAsync(text);
             };

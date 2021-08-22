@@ -199,14 +199,15 @@ namespace WebFramework.Services
             if (env.IsDevelopment())
             {
                 // Captures synchronous and asynchronous System.Exception instances from the pipeline and generates HTML error responses.
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler();
 
                 // Swagger Doc Generator
                 app.UseSwaggerGen(config);
             }
             else
             {
-                //app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler();
                 app.UseHsts(); // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts
             }
 

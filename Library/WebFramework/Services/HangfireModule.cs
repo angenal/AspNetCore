@@ -34,7 +34,6 @@ namespace WebFramework.Services
         /// <summary>
         /// Register services
         /// </summary>
-        [Obsolete]
         public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration config)
         {
             // SqlServer Storage
@@ -48,7 +47,7 @@ namespace WebFramework.Services
                     TransactionTimeout = TimeSpan.FromMinutes(5),        // 交易超时 默认5分钟
                     PrepareSchemaIfNecessary = true,                     // 如果设置为true 则创建数据库表 默认true
                     DashboardJobListLimit = 50000,                       // 仪表板作业列表限制 默认50000
-                    InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
+                    //InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
                 }));
             // LiteDb Storage
             else if (config.GetSection("Hangfire:LiteDB").Exists())
