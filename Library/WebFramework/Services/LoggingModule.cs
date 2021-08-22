@@ -18,28 +18,30 @@ namespace WebFramework.Services
           "Microsoft": "Error",
           "Microsoft.Hosting.Lifetime": "Error",
           "System": "Error"
-        },
-        "Serilog": {
-          "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
-          "MinimumLevel": "Information",
-          "WriteTo": [
-            { "Name": "Console" },
-            {
-              "Name": "File",
-              "Args": {
-                "path": "logs/file/log.txt",
-                "outputTemplate": "{Timestamp:HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
-                "buffered": true,
-                "flushToDiskInterval": "10s",
-                "rollingInterval": "Day"
-              }
-            }
-          ],
-          "Enrich": [ "FromLogContext", "WithThreadId" ],
-          "Destructure": [],
-          "Properties": {}
         }
-      }
+      },
+      "Serilog": {
+        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
+        "MinimumLevel": "Information",
+        "WriteTo": [
+          { "Name": "Console" },
+          {
+            "Name": "File",
+            "Args": {
+              "buffered": true,
+              "path": "logs/file/log-.txt",
+              "outputTemplate": "{Timestamp:HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+              "flushToDiskInterval": "10s",
+              "rollingInterval": "Day",
+              "retainedFileCountLimit": "7",
+              "restrictedToMinimumLevel": "Warning"
+            }
+          }
+        ],
+        "Enrich": [ "FromLogContext", "WithThreadId" ],
+        "Destructure": [],
+        "Properties": {}
+      },
     */
 
     /// <summary>
@@ -119,7 +121,7 @@ namespace WebFramework.Services
 
             // Use Serilog appsettings.json (replace default logger) https://github.com/serilog/serilog-settings-configuration
             return builder.UseSerilog((context, services, configuration) => configuration
-                  .ReadFrom.Configuration(context.Configuration, "Logging:Serilog")
+                  .ReadFrom.Configuration(context.Configuration, "Serilog")
                   .ReadFrom.Services(services)//.Enrich.WithThreadId() // using Serilog.Enrichers.Thread
                   .Enrich.FromLogContext());
         }

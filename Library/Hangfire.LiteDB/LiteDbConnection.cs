@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -53,7 +53,10 @@ namespace Hangfire.LiteDB
             return new LiteDbDistributedLock($"HangFire:{resource}", timeout, Database, _storageOptions);
         }
 
+        [Obsolete]
+#pragma warning disable CS0809 // 过时成员重写未过时成员
         public override string CreateExpiredJob(Job job, IDictionary<string, string> parameters, DateTime createdAt,
+#pragma warning restore CS0809 // 过时成员重写未过时成员
             TimeSpan expireIn)
         {
             if (job == null)
@@ -146,7 +149,10 @@ namespace Hangfire.LiteDB
             return value;
         }
 
+        [Obsolete]
+#pragma warning disable CS0809 // 过时成员重写未过时成员
         public override JobData GetJobData(string jobId)
+#pragma warning restore CS0809 // 过时成员重写未过时成员
         {
             if (jobId == null)
                 throw new ArgumentNullException(nameof(jobId));

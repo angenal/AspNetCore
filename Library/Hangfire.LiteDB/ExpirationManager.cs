@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq.Expressions;
 using System.Threading;
 using Hangfire.Logging;
@@ -11,6 +11,7 @@ namespace Hangfire.LiteDB
     /// <summary>
     /// Represents Hangfire expiration manager for LiteDB database
     /// </summary>
+    [Obsolete]
     public class ExpirationManager : IBackgroundProcess, IServerComponent
     {
         private const string DistributedLockKey = "locks:expirationmanager";
@@ -118,7 +119,7 @@ namespace Hangfire.LiteDB
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, () => $"Error in RemoveExpireRows Method. Details: {e.ToString()}", e);
+                Logger.Log(LogLevel.Error, () => $"Error in RemoveExpireRows Method. Details: {e}", e);
             }
 
 #if DEBUG

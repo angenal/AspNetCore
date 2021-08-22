@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hangfire.Common;
@@ -34,6 +34,7 @@ namespace Hangfire.LiteDB
         /// 
         /// </summary>
         /// <returns></returns>
+        [Obsolete]
         public IList<QueueWithTopEnqueuedJobsDto> Queues()
         {
             return UseConnection<IList<QueueWithTopEnqueuedJobsDto>>(connection =>
@@ -89,6 +90,7 @@ namespace Hangfire.LiteDB
         /// </summary>
         /// <param name="jobId"></param>
         /// <returns></returns>
+        [Obsolete]
         public JobDetailsDto JobDetails(string jobId)
         {
             return UseConnection(ctx =>
@@ -158,6 +160,7 @@ namespace Hangfire.LiteDB
         /// <param name="from"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
+        [Obsolete]
         public JobList<EnqueuedJobDto> EnqueuedJobs(string queue, int from, int perPage)
         {
             return UseConnection(connection =>
@@ -176,6 +179,7 @@ namespace Hangfire.LiteDB
         /// <param name="from"></param>
         /// <param name="perPage"></param>
         /// <returns></returns>
+        [Obsolete]
         public JobList<FetchedJobDto> FetchedJobs(string queue, int from, int perPage)
         {
             return UseConnection(connection =>
@@ -193,6 +197,7 @@ namespace Hangfire.LiteDB
         /// <param name="from"></param>
         /// <param name="count"></param>
         /// <returns></returns>
+        [Obsolete]
         public JobList<ProcessingJobDto> ProcessingJobs(int from, int count)
         {
             return UseConnection(connection => GetJobs(
@@ -213,6 +218,7 @@ namespace Hangfire.LiteDB
         /// <param name="from"></param>
         /// <param name="count"></param>
         /// <returns></returns>
+        [Obsolete]
         public JobList<ScheduledJobDto> ScheduledJobs(int from, int count)
         {
             return UseConnection(connection => GetJobs(connection, from, count, ScheduledState.StateName,
@@ -230,6 +236,7 @@ namespace Hangfire.LiteDB
         /// <param name="from"></param>
         /// <param name="count"></param>
         /// <returns></returns>
+        [Obsolete]
         public JobList<SucceededJobDto> SucceededJobs(int from, int count)
         {
             return UseConnection(connection => GetJobs(connection, from, count, SucceededState.StateName,
@@ -250,6 +257,7 @@ namespace Hangfire.LiteDB
         /// <param name="from"></param>
         /// <param name="count"></param>
         /// <returns></returns>
+        [Obsolete]
         public JobList<FailedJobDto> FailedJobs(int from, int count)
         {
             return UseConnection(connection => GetJobs(connection, from, count, FailedState.StateName,
@@ -270,6 +278,7 @@ namespace Hangfire.LiteDB
         /// <param name="from"></param>
         /// <param name="count"></param>
         /// <returns></returns>
+        [Obsolete]
         public JobList<DeletedJobDto> DeletedJobs(int from, int count)
         {
             return UseConnection(connection => GetJobs(connection, from, count, DeletedState.StateName,
@@ -400,6 +409,7 @@ namespace Hangfire.LiteDB
         }
 
         //TODO: need test Query.In method
+        [Obsolete]
         private JobList<EnqueuedJobDto> EnqueuedJobs(HangfireDbContext connection, IEnumerable<int> jobIds)
         {
             var jobs = connection.Job
@@ -445,6 +455,7 @@ namespace Hangfire.LiteDB
                 });
         }
 
+        [Obsolete]
         private static JobList<TDto> DeserializeJobs<TDto>(ICollection<JobDetailedDto> jobs, Func<JobDetailedDto, Job, Dictionary<string, string>, TDto> selector)
         {
             var result = new List<KeyValuePair<string, TDto>>(jobs.Count);
@@ -458,6 +469,7 @@ namespace Hangfire.LiteDB
             return new JobList<TDto>(result);
         }
 
+        [Obsolete]
         private static Job DeserializeJob(string invocationData, string arguments)
         {
             var data = SerializationHelper.Deserialize<InvocationData>(invocationData, SerializationOption.User);
@@ -481,6 +493,7 @@ namespace Hangfire.LiteDB
             return monitoringApi;
         }
 
+        [Obsolete]
         private JobList<FetchedJobDto> FetchedJobs(HangfireDbContext connection, IEnumerable<int> jobIds)
         {
             var jobs = connection.Job
@@ -529,6 +542,7 @@ namespace Hangfire.LiteDB
             return new JobList<FetchedJobDto>(result);
         }
 
+        [Obsolete]
         private JobList<TDto> GetJobs<TDto>(HangfireDbContext connection, int from, int count, string stateName, Func<JobDetailedDto, Job, Dictionary<string, string>, TDto> selector)
         {
             var jobs = connection.Job

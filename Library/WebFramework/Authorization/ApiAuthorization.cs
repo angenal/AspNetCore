@@ -175,9 +175,11 @@ namespace WebFramework.Authorization
             if (!context.Response.HasStarted)
             {
                 var path = context.Request.Path;
-                if (!string.IsNullOrWhiteSpace(options.Path) && path.HasValue
-                    && !path.Value.EndsWith("favicon.ico")
-                    && new Regex(options.Path, RegexOptions.IgnoreCase).IsMatch(path.Value))
+                if (options.Path == null || !path.StartsWithSegments("/api") || !new Regex(options.Path, RegexOptions.IgnoreCase).IsMatch(path.Value))
+                {
+                    await next.Invoke(context); // skip auth
+                }
+                else
                 {
                     switch (context.Request.Method.ToUpper())
                     {
@@ -194,10 +196,6 @@ namespace WebFramework.Authorization
                     {
                         await next.Invoke(context); // skip auth
                     }
-                }
-                else
-                {
-                    await next.Invoke(context); // skip auth
                 }
             }
             else

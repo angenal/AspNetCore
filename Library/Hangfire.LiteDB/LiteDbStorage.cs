@@ -106,7 +106,10 @@ namespace Hangfire.LiteDB
         /// 
         /// </summary>
         /// <returns></returns>
+        [Obsolete]
+#pragma warning disable CS0809 // 过时成员重写未过时成员
         public override IEnumerable<IServerComponent> GetComponents()
+#pragma warning restore CS0809 // 过时成员重写未过时成员
         {
             yield return new ExpirationManager(this, _storageOptions.JobExpirationCheckInterval);
             yield return new CountersAggregator(this, _storageOptions.CountersAggregateInterval);

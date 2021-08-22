@@ -36,10 +36,10 @@ namespace WebFramework.Models.DTO
     public class PdfFileSignInputDto
     {
         /// <summary>
-        /// 未签名文件的路径
+        /// 未签名文件的路径(以/开头)
         /// </summary>
         [Required]
-        [StringLength(255, MinimumLength = 1, ErrorMessage = "文件路径错误")]
+        [StringLength(255, MinimumLength = 6, ErrorMessage = "文件路径错误")]
         public string Path { get; set; }
     }
 
@@ -87,12 +87,13 @@ namespace WebFramework.Models.DTO
     public class MinisignFileSignInputDto : MinisignKeyOutputDto
     {
         /// <summary>
-        /// 未签名文件的路径
+        /// 未签名文件的路径(以/开头)
         /// </summary>
         [Required]
-        [StringLength(255, MinimumLength = 1, ErrorMessage = "文件路径错误")]
+        [StringLength(255, MinimumLength = 6, ErrorMessage = "文件路径错误")]
         public string Path { get; set; }
     }
+
     /// <summary>
     /// 文件签名结果
     /// </summary>
@@ -103,5 +104,4 @@ namespace WebFramework.Models.DTO
         /// </summary>
         public string Path { get; set; }
     }
-
 }

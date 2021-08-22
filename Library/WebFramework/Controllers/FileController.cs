@@ -22,7 +22,6 @@ namespace WebFramework.Controllers
     /// 文件
     /// </summary>
     [ApiController]
-    [DisableFormModelBinding]
     [Route("api/[controller]/[action]")]
     public class FileController : ApiController
     {
@@ -47,6 +46,7 @@ namespace WebFramework.Controllers
         /// 上传文件
         /// </summary>
         [HttpPost]
+        [DisableFormModelBinding]
         [Authorize(Policy = "Upload")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(List<UploadFileOutputDto>), (int)HttpStatusCode.OK)]
@@ -86,8 +86,10 @@ namespace WebFramework.Controllers
         /// <summary>
         /// PDF数字签名 by SignLib
         /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(FileSignOutputDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorJsonResultObject), (int)HttpStatusCode.BadRequest)]
         public IActionResult PdfFileSign(PdfFileSignInputDto input)
         {
             if (!input.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)) return Error("文件格式错误!");
@@ -111,7 +113,6 @@ namespace WebFramework.Controllers
         /// <summary>
         /// 配置密钥 for Minisign
         /// </summary>
-        /// <returns></returns>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(MinisignKeyOutputDto), (int)HttpStatusCode.OK)]
@@ -152,7 +153,6 @@ namespace WebFramework.Controllers
         /// <summary>
         /// 文件签名 by Minisign
         /// </summary>
-        /// <returns></returns>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(FileSignOutputDto), (int)HttpStatusCode.OK)]

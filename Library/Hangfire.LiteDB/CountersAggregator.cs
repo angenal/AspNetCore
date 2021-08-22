@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using Hangfire.LiteDB.Entities;
@@ -11,6 +11,7 @@ namespace Hangfire.LiteDB
     /// <summary>
     /// Represents Counter collection aggregator for LiteDB database
     /// </summary>
+    [Obsolete]
     public class CountersAggregator : IBackgroundProcess, IServerComponent
     {
         private static readonly ILog Logger = LogProvider.For<CountersAggregator>();
@@ -36,6 +37,7 @@ namespace Hangfire.LiteDB
         /// Runs aggregator
         /// </summary>
         /// <param name="context">Background processing context</param>
+        [Obsolete]
         public void Execute(BackgroundProcessContext context)
         {
             Execute(context.CancellationToken);

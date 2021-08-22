@@ -34,7 +34,7 @@ namespace WebFramework.Services
                 // 全局日志记录
                 //options.Filters.Add<GlobalActionMonitor>();
                 // 全局异常处理 error handler
-                ExceptionHandlerModule.ApiExceptionsFilters(options);
+                //ExceptionHandlerModule.ApiExceptionsFilters(options);
                 // 用户会话状态 user session
                 options.Filters.Add<AsyncSessionFilter>();
             });
@@ -67,7 +67,7 @@ namespace WebFramework.Services
             services.AddDatabase(config);
 
 
-            // Global Exception Handler
+            // Global Exception Handler (excluding 500)
             services.AddExceptionHandler(ExceptionHandlerModule.ExceptionHandler);
             // Global ApiBehavior for BadRequest
             builder.ConfigureApiBehaviorOptions(ExceptionHandlerModule.ApiBehavior);
@@ -111,9 +111,9 @@ namespace WebFramework.Services
 
 
             // ApiAuthorization using WebFramework.Authorization
-            services.AddApiAuthorization(config);
+            //services.AddApiAuthorization(config);
             // Microsoft.AspNetCore.Identity system for the specified User and Role types
-            services.AddIdentityLiteDB(config);
+            //services.AddIdentityLiteDB(config);
             // Authentication with JWT
             services.AddJwtAuthentication(config);
             // Authentication with OAuth
@@ -208,12 +208,11 @@ namespace WebFramework.Services
             {
                 //app.UseExceptionHandler("/Error");
                 app.UseHsts(); // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts
-                app.UseHttpsRedirection();
             }
 
-            //app.UseHttpsRedirection();
-            //app.UseFileServer(enableDirectoryBrowsing: true);
+            app.UseHttpsRedirection();
 
+            //app.UseFileServer(enableDirectoryBrowsing: true);
             app.UseDefaultFiles();
             app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800") });
             //var ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
@@ -237,7 +236,7 @@ namespace WebFramework.Services
             // Use Authentication with JWT or Microsoft.AspNetCore.Identity system
             app.UseAuthentication();
             // Use ApiAuthorization using WebFramework.Authorization
-            app.UseApiAuthorization();
+            //app.UseApiAuthorization();
             // Use Authorization
             app.UseAuthorization();
 

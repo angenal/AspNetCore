@@ -56,7 +56,7 @@ namespace WebFramework.Services
         /// <param name="options"></param>
         public static void ApiExceptionsFilters(MvcOptions options)
         {
-            options.Filters.Add<HttpResponseExceptionFilter>();
+            //options.Filters.Add<HttpResponseExceptionFilter>();
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace WebFramework.Services
             options.InvalidModelStateResponseFactory = context =>
             {
                 var s = context.ModelState.Values;
-                if (context.ModelState.IsValid || !s.Any() || !s.First().Errors.Any()) 
+                if (context.ModelState.IsValid || !s.Any() || !s.First().Errors.Any())
                     return new OkObjectResult(context.ModelState);
                 var result = new BadRequestObjectResult(new
                 {
@@ -86,7 +86,7 @@ namespace WebFramework.Services
         }
 
         /// <summary>
-        /// Configure Global Exception Handler in Services Container
+        /// Configure Global Exception Handler (excluding 500) in Services Container
         /// </summary>
         /// <param name="options"></param>
         public static void ExceptionHandler(ExceptionHandlerOptions options)
@@ -94,15 +94,14 @@ namespace WebFramework.Services
             // Passing by 404
             options.AllowStatusCode404Response = true;
             // The path to the exception handling endpoint
-            options.ExceptionHandlingPath = null;
+            options.ExceptionHandlingPath = new PathString("/api");
             // Handle the exception
             options.ExceptionHandler = context =>
             {
+                //if (!context.Request.Path.StartsWithSegments("/api")) return Task.CompletedTask;
+
                 var e = context.Features.Get<IExceptionHandlerFeature>().Error;
-                if (e is IOException || e is WebException)
-                {
-                    return Task.CompletedTask;
-                }
+                if (e is IOException || e is WebException) return Task.CompletedTask;
 
                 var text = string.Empty;
                 if (e is TaskCanceledException || e is OperationCanceledException)
@@ -111,17 +110,10 @@ namespace WebFramework.Services
                     return context.Response.WriteAsync(text);
                 }
 
-                if (!context.Request.Path.StartsWithSegments("/api/"))
-                {
-                    return Task.CompletedTask;
-                }
-
-                // Api Response for Internal Server Error
                 context.Response.ContentType = "application/json";
-                //context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
-                text = Newtonsoft.Json.JsonConvert.SerializeObject(new { status = 500, title = e.Message });
+                text = Newtonsoft.Json.JsonConvert.SerializeObject(new { status = 400, title = e.Message });
 
                 return context.Response.WriteAsync(text);
             };

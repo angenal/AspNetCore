@@ -34,6 +34,7 @@ namespace WebFramework.Services
         /// <summary>
         /// Register services
         /// </summary>
+        [Obsolete]
         public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration config)
         {
             // SqlServer Storage
