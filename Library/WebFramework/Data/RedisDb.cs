@@ -11,12 +11,14 @@ namespace WebFramework.Data
     /// </summary>
     public static class RedisList
     {
+        /// <summary></summary>
         public static void Add<T>(string key, T value)
         {
             if (0 < Redis.ListRightPush(new RedisKey(key), new RedisValue(value.ToJson())))
                 Redis.StringIncrement(key + IncrementKeyTail);
         }
 
+        /// <summary></summary>
         public static void Add<T>(string key, T[] value)
         {
             var l = value.Length;
@@ -30,6 +32,7 @@ namespace WebFramework.Data
         }
 
 
+        /// <summary></summary>
         public static IEnumerable<T> GetLastestResult<T>(string key, int size = 20)
         {
             var startingFrom = 0;
@@ -47,6 +50,7 @@ namespace WebFramework.Data
             return rows;
         }
 
+        /// <summary></summary>
         public static PageOutputDto<T> GetPagingResult<T>(string key, int pageIndex = 1, int pageSize = 20, bool orderDesc = true)
         {
             if (pageIndex <= 0) pageIndex = 1;
@@ -70,6 +74,7 @@ namespace WebFramework.Data
             return new PageOutputDto<T>(rows, pageIndex, pageSize, result.PageNumber);
         }
 
+        /// <summary></summary>
         public static void Remove(string key)
         {
             var k = new RedisKey(key);

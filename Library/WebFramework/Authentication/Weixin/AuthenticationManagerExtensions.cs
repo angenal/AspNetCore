@@ -12,6 +12,7 @@ using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Authentication.Weixin
 {
+    /// <summary></summary>
     public static class HttpContextExtensions
     {
         /// <summary>

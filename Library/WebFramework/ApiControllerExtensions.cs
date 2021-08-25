@@ -34,6 +34,7 @@ namespace WebFramework
         /// 调式代码,打印SQL
         /// </summary>
         /// <param name="db"></param>
+        /// <param name="action"></param>
         /// <returns></returns>
         public static SqlSugarClient Debug(this SqlSugarClient db, Action<string> action = null)
         {

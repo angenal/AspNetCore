@@ -120,39 +120,55 @@ namespace WebFramework.Services
         }
     }
 
+    /// <summary></summary>
     public class HangfireResolvers : IDashboardAuthorizationFilter, ITimeZoneResolver
     {
+        /// <summary></summary>
         public bool Authorize([NotNull] DashboardContext context)
         {
             string ip = context.Request.LocalIpAddress;
             return ip.Equals("127.0.0.1") || ip.Equals("::1");
         }
 
+        /// <summary></summary>
         public bool IsReadOnlyFunc([NotNull] DashboardContext context) => !Authorize(context);
 
+        /// <summary></summary>
         public TimeZoneInfo GetTimeZoneById([NotNull] string timeZoneId) => TimeZoneInfo.Local;
     }
 
+    /// <summary></summary>
     public class HangfireBasicAuthenticationTokens
     {
         private readonly string[] _tokens;
 
+        /// <summary></summary>
         public string User => _tokens[0];
+        /// <summary></summary>
         public string Pass => _tokens[1];
 
+        /// <summary></summary>
         public HangfireBasicAuthenticationTokens(string[] tokens) => _tokens = tokens;
 
+        /// <summary></summary>
         public bool IsInvalid() => _tokens.Length == 2 && string.IsNullOrWhiteSpace(User) && string.IsNullOrWhiteSpace(Pass);
 
+        /// <summary></summary>
         public bool IsMatch(string user, string pass) => User.Equals(user) && Pass.Equals(pass);
     }
+    /// <summary></summary>
     public class HangfireBasicAuthenticationFilter : IDashboardAuthorizationFilter
     {
+        /// <summary></summary>
         const string Scheme = "Basic";
+        /// <summary></summary>
         public string DashboardTitle { get; set; }
+        /// <summary></summary>
         public string User { get; set; }
+        /// <summary></summary>
         public string Pass { get; set; }
 
+        /// <summary></summary>
         public bool Authorize(DashboardContext context)
         {
             var httpContext = context.GetHttpContext();
@@ -189,6 +205,7 @@ namespace WebFramework.Services
             return false;
         }
 
+        /// <summary></summary>
         void SetChallengeResponse(HttpContext httpContext)
         {
             httpContext.Response.StatusCode = 401;
@@ -196,12 +213,14 @@ namespace WebFramework.Services
             httpContext.Response.WriteAsync("Authentication is required.");
         }
 
+        /// <summary></summary>
         static HangfireBasicAuthenticationTokens ExtractTokens(AuthenticationHeaderValue authValues)
         {
             var parameter = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(authValues.Parameter));
             return new HangfireBasicAuthenticationTokens(parameter.Split(':'));
         }
 
+        /// <summary></summary>
         static bool Not_Basic_Authentication(AuthenticationHeaderValue authValues)
         {
             return !Scheme.Equals(authValues.Scheme, StringComparison.InvariantCultureIgnoreCase);

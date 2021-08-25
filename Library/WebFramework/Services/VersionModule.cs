@@ -30,13 +30,21 @@ namespace WebFramework.Services
         /// "Version": "no" => [ApiExplorerSettings(GroupName = "demo"), Display(Name = "演示系统", Description = "演示系统描述文字")] [Route("api/[controller]/v1/[action]")]
         /// </summary>
         public const string AppSettings = "Version";
+        /// <summary></summary>
         public const string HeaderApiVersion = "X-Api-Version";
+        /// <summary></summary>
         public const string DefaultQueryParameterName = "version";
-        public const string SelectDefinitionPrefix = "版本"; // select a definition in SwaggerUI
-        internal static bool UseVersionedApiExplorer = false; // false, if "Version" in appsettings.json is not yes
-        internal static string DefaultVersion = "v1"; // please do not modify the variable
+        /// <summary>select a definition in SwaggerUI</summary>
+        public const string SelectDefinitionPrefix = "版本";
+        /// <summary>false, if "Version" in appsettings.json is not yes</summary>
+        internal static bool UseVersionedApiExplorer = false;
+        /// <summary>please do not modify the variable</summary>
+        internal static string DefaultVersion = "v1";
+        /// <summary></summary>
         internal static ApiVersion DefaultApiVersion = ApiVersion.Default;
+        /// <summary></summary>
         internal static readonly string[] ControllerBaseClasses = new string[] { "ControllerBase" };
+        /// <summary></summary>
         internal const string controller = "Controller", controllerRoute = "[controller]";
         /// <summary>
         /// Api Controllers and Attributes.

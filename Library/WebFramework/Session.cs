@@ -68,8 +68,10 @@ namespace WebFramework
         /// </summary>
         public Session user;
 
+        /// <summary></summary>
         public AsyncSessionFilter(Session session) => user = session;
 
+        /// <summary></summary>
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             user = context.HttpContext.User.Session();

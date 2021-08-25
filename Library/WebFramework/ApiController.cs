@@ -20,12 +20,15 @@ namespace WebFramework
         public SqlSugarClient db => _db ??= SqlSugarExtensions.NewSqlSugarClient(Data.SQLServerDb.DefaultConnection);
         private SqlSugarClient _db;
 
+        /// <summary></summary>
         public ApiController() { }
 
+        /// <summary></summary>
         protected BadRequestObjectResult Error(string title, int status = 400)
         {
             return BadRequest(new ErrorJsonResultObject { Status = status, Title = title });
         }
+        /// <summary></summary>
         protected BadRequestObjectResult Error(string title, string detail, int status = 400)
         {
             return BadRequest(new ErrorJsonResultObject { Status = status, Title = title, Detail = detail });
@@ -42,6 +45,7 @@ namespace WebFramework
         [ActionResultObjectValue]
         public ErrorJsonResultModel Error { get; set; }
     }
+    /// <summary></summary>
     public class ErrorJsonResultModel
     {
         /// <summary>

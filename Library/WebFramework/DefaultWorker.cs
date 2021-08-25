@@ -24,18 +24,21 @@ namespace WebFramework
         readonly IHostApplicationLifetime host;
         readonly ILogger L;
 
+        /// <summary></summary>
         public DefaultWorker(IHostApplicationLifetime host, ILogger logger = null)
         {
             this.host = host;
             if (logger != null) L = logger.ForContext<DefaultWorker>();
         }
 
+        /// <summary></summary>
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             L.Debug("Worker Start");
             return base.StartAsync(cancellationToken);
         }
 
+        /// <summary></summary>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
@@ -61,6 +64,7 @@ namespace WebFramework
             }
         }
 
+        /// <summary></summary>
         public override Task StopAsync(CancellationToken cancellationToken)
         {
             L.Debug("Worker Stop");

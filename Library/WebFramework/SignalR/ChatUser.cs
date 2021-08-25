@@ -10,9 +10,9 @@ namespace WebFramework.SignalR
     /// </summary>
     public class ChatUser : User
     {
+        // https://docs.microsoft.com/en-us/aspnet/core/signalr/configuration?view=aspnetcore-5.0&tabs=javascript#configure-additional-options
         /// <summary>
         /// Gets the user from the hub caller connection.
-        /// https://docs.microsoft.com/en-us/aspnet/core/signalr/configuration?view=aspnetcore-5.0&tabs=javascript#configure-additional-options
         /// </summary>
         /// <param name="Context">A context abstraction for accessing information.</param>
         /// <returns></returns>

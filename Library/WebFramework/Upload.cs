@@ -20,6 +20,7 @@ namespace WebFramework
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class DisableFormModelBindingAttribute : Attribute, IResourceFilter
     {
+        /// <summary></summary>
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
             var formValueProviderFactory = context.ValueProviderFactories.OfType<FormValueProviderFactory>().FirstOrDefault();
@@ -32,6 +33,7 @@ namespace WebFramework
             if (jqueryFormValueProviderFactory != null) context.ValueProviderFactories.Remove(jqueryFormValueProviderFactory);
         }
 
+        /// <summary></summary>
         public void OnResourceExecuted(ResourceExecutedContext context) { }
     }
 
@@ -106,29 +108,37 @@ namespace WebFramework
         }
     }
 
+    /// <summary></summary>
     public class MultipartFile : IFormFile
     {
         // Stream.CopyTo method uses 128KB as the default buffer size.
         const int DefaultBufferSize = 128 * 1024;
         readonly Stream Stream;
 
+        /// <summary></summary>
         public string ContentType
         {
             get { return Headers["Content-Type"]; }
             set { Headers["Content-Type"] = value; }
         }
 
+        /// <summary></summary>
         public string ContentDisposition
         {
             get { return Headers["Content-Disposition"]; }
             set { Headers["Content-Disposition"] = value; }
         }
 
+        /// <summary></summary>
         public IHeaderDictionary Headers { get; set; } = new HeaderDictionary();
+        /// <summary></summary>
         public long Length => Stream.Length;
+        /// <summary></summary>
         public string Name { get; set; }
+        /// <summary></summary>
         public string FileName { get; set; }
 
+        /// <summary></summary>
         public MultipartFile(Stream stream, string name, string filename)
         {
             Stream = stream;
@@ -136,28 +146,33 @@ namespace WebFramework
             FileName = filename;
         }
 
+        /// <summary></summary>
         public void CopyTo(Stream target)
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
             Stream.CopyTo(target);
         }
 
+        /// <summary></summary>
         public Task CopyToAsync(Stream target, CancellationToken cancellationToken = default)
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
             return Stream.CopyToAsync(target, DefaultBufferSize, cancellationToken);
         }
 
+        /// <summary></summary>
         public Stream OpenReadStream()
         {
             return Stream;
         }
     }
 
+    /// <summary></summary>
     public static class MultipartRequestHelper
     {
         // Content-Type: multipart/form-data; boundary="----WebKitFormBoundarymx2fSWqWSd0OxQqq"
         // The spec says 70 characters is a reasonable limit.
+        /// <summary></summary>
         public static string GetBoundary(MediaTypeHeaderValue contentType, int lengthLimit)
         {
             var boundary = HeaderUtilities.RemoveQuotes(contentType.Boundary).Value;
@@ -170,14 +185,17 @@ namespace WebFramework
             return boundary;
         }
 
+        /// <summary></summary>
         public static bool IsMultipartContentType(string contentType)
         {
             return contentType != null && contentType.Contains("multipart/", StringComparison.OrdinalIgnoreCase);
         }
     }
 
+    /// <summary></summary>
     public static class MultipartSectionExtensions
     {
+        /// <summary></summary>
         public static Encoding GetEncoding(this MultipartSection section)
         {
             var hasMediaTypeHeader = MediaTypeHeaderValue.TryParse(section.ContentType, out MediaTypeHeaderValue mediaType);

@@ -75,6 +75,7 @@ namespace WebFramework.Data
             _configuration = configuration.ToString();
         }
 
+        /// <summary></summary>
         public static void Init(EasyCaching.Redis.RedisDBOptions options)
         {
             if (string.IsNullOrWhiteSpace(options.Configuration))
@@ -158,10 +159,15 @@ namespace WebFramework.Data
     {
         private readonly string _hostname;
 
+        /// <summary></summary>
         public const int DefaultSyncTimeout = 5000;
+        /// <summary></summary>
         public const int DefaultConnectTimeout = 5000;
+        /// <summary></summary>
         public const int DefaultConnectRetry = 3;
+        /// <summary></summary>
         public const int DefaultConfigCheckSeconds = 60;
+        /// <summary></summary>
         public const int DefaultWriteBuffer = 4096;
 
         /// <summary>
@@ -283,9 +289,12 @@ namespace WebFramework.Data
         /// </summary>
         public int? WriteBuffer { get; set; } = DefaultWriteBuffer;
 
+        /// <summary></summary>
         public RedisConfiguration() { }
+        /// <summary></summary>
         public RedisConfiguration(string hostname) { _hostname = hostname; }
 
+        /// <summary></summary>
         public override string ToString()
         {
             var config = new List<string>();

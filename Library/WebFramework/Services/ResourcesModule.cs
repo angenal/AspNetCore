@@ -24,6 +24,7 @@ namespace WebFramework.Services
         /// </summary>
         public const string ResourcesPath = "Resources";
 
+        /// <summary></summary>
         public static IServiceCollection RegisterResources(this IServiceCollection services, IConfiguration config)
         {
             var section = config.GetSection(LanguageRouteConstraint.AppSettings);
@@ -46,6 +47,7 @@ namespace WebFramework.Services
         }
     }
 
+    /// <summary></summary>
     public class LanguageRouteConstraint : IRouteConstraint
     {
         /// <summary>
@@ -53,10 +55,13 @@ namespace WebFramework.Services
         /// </summary>
         public static string AppSettings => Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(Key);
 
+        /// <summary></summary>
         public const string Key = "culture";
 
+        /// <summary></summary>
         internal static IEnumerable<string> Cultures = Array.Empty<string>();
 
+        /// <summary></summary>
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
         {
             if (!values.ContainsKey(Key)) return false;
@@ -65,11 +70,15 @@ namespace WebFramework.Services
         }
     }
 
+    /// <summary></summary>
     public class RouteDataRequestCultureProvider : RequestCultureProvider
     {
+        /// <summary></summary>
         public int IndexOfCulture { get; set; } = (int)Localizations.Default;
+        /// <summary></summary>
         public int IndexofUICulture { get; set; } = (int)Localizations.Default;
 
+        /// <summary></summary>
         public override Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext httpContext)
         {
             if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));

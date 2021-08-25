@@ -15,6 +15,7 @@ namespace WebFramework.Data
     {
         internal static X509Certificate2 cert;
 
+        /// <summary></summary>
         public static IDocumentStore CreateRavenDocStore(IWebHostEnvironment env,
             string connectionString = "https://a.free.xxx.ravendb.cloud",
             string database = "app", string certPassword = "UsawpF4uIKy5Ju7P",
@@ -34,6 +35,7 @@ namespace WebFramework.Data
             return db;
         }
 
+        /// <summary></summary>
         public static bool RemoteCertificateValidationCallback(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors errors) => true;
     }
 }

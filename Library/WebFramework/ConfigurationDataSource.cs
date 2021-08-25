@@ -11,7 +11,9 @@ namespace WebFramework
     /// </summary>
     public class ConfigurationDbContext : DbContext
     {
+        /// <summary></summary>
         public ConfigurationDbContext(DbContextOptions options) : base(options) { }
+        /// <summary></summary>
         public DbSet<AppSetting> AppSettings { get; set; }
     }
     /// <summary>
@@ -19,7 +21,9 @@ namespace WebFramework
     /// </summary>
     public class AppSetting
     {
+        /// <summary></summary>
         public string Id { get; set; }
+        /// <summary></summary>
         public string Value { get; set; }
     }
     /// <summary>
@@ -38,16 +42,23 @@ namespace WebFramework
             return builder.Add(new ConfigurationDataSource(optionsAction));
         }
     }
+    /// <summary></summary>
     public class ConfigurationDataSource : IConfigurationSource
     {
+        /// <summary></summary>
         private readonly Action<DbContextOptionsBuilder> optionsAction;
+        /// <summary></summary>
         public ConfigurationDataSource(Action<DbContextOptionsBuilder> optionsAction) => this.optionsAction = optionsAction;
+        /// <summary></summary>
         public IConfigurationProvider Build(IConfigurationBuilder builder) => new ConfigurationDataSourceProvider(optionsAction);
     }
+    /// <summary></summary>
     public class ConfigurationDataSourceProvider : ConfigurationProvider
     {
+        /// <summary></summary>
         public ConfigurationDataSourceProvider(Action<DbContextOptionsBuilder> optionsAction) => OptionsAction = optionsAction;
 
+        /// <summary></summary>
         Action<DbContextOptionsBuilder> OptionsAction { get; }
 
         /// <summary>

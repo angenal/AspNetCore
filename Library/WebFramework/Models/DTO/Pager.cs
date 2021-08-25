@@ -10,6 +10,7 @@ namespace WebFramework.Models.DTO
     /// </summary>
     public static class SqlSugarExtensions
     {
+        /// <summary></summary>
         public static PageOutputDto<T> ToPage<T>(this ISugarQueryable<T> query, PagerInputDto input)
         {
             int pageIndex = Math.Max(1, input.PageIndex), pageSize = Math.Min(1000, Math.Max(1, input.PageSize)), totalNumber = 0;
@@ -17,6 +18,7 @@ namespace WebFramework.Models.DTO
             var result = new PageOutputDto<T>(data, pageIndex, pageSize, totalNumber);
             return result;
         }
+        /// <summary></summary>
         public static async Task<PageOutputDto<T>> ToPageAsync<T>(this ISugarQueryable<T> query, PagerInputDto input)
         {
             RefAsync<int> totalNumber = 0;

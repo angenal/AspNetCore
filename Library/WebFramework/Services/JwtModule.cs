@@ -111,6 +111,7 @@ namespace WebFramework.Services
         /// <param name="generator"></param>
         /// <returns></returns>
         public string Generate(Func<IEnumerable<Claim>> generator) => Generate(() => generator());
+        /// <summary></summary>
         public string Generate(IEnumerable<Claim> claim)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

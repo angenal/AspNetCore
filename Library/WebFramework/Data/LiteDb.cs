@@ -12,6 +12,7 @@ namespace WebFramework.Data
     /// </summary>
     public class LiteDb : ILiteDb
     {
+        /// <summary></summary>
         public LiteDb(IConfiguration config, string connectionStringName = null, bool init = true)
         {
             string connectionString;
@@ -37,32 +38,42 @@ namespace WebFramework.Data
             if (init) LiteDatabase = new LiteDatabase(connectionString);
         }
 
+        /// <summary></summary>
         public LiteDb(bool init = true)
         {
             if (init) LiteDatabase = OpenMemory();
         }
 
+        /// <summary></summary>
         public LiteDb(string connectionString, bool init = true)
         {
             _connectionString = connectionString;
             if (init) LiteDatabase = new LiteDatabase(connectionString);
         }
 
+        /// <summary></summary>
         public LiteDb(string connectionString, BsonMapper mapper) => LiteDatabase = new LiteDatabase(connectionString, mapper);
 
+        /// <summary></summary>
         public LiteDb(ConnectionString connectionString, BsonMapper mapper) => LiteDatabase = new LiteDatabase(connectionString, mapper);
 
+        /// <summary></summary>
         public LiteDb(LiteDatabase liteDatabase) => LiteDatabase = liteDatabase;
 
 
+        /// <summary>Open Current ConnectionString Database</summary>
         public LiteDatabase Open() => new LiteDatabase(_connectionString);
+        /// <summary>Open Memory Database</summary>
         public LiteDatabase OpenMemory() => new LiteDatabase(new MemoryStream());
 
+        /// <summary></summary>
         public string GetConnectionString() => _connectionString;
+        /// <summary></summary>
         public bool HasConnectionString => !string.IsNullOrEmpty(_connectionString);
 
         private readonly string _connectionString;
 
+        /// <summary></summary>
         public LiteDatabase LiteDatabase { get; protected set; }
     }
 }

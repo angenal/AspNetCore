@@ -43,8 +43,10 @@ namespace WebFramework.Services
     /// </summary>
     public class AutofacServicesModule : Autofac.Module
     {
+        /// <summary></summary>
         static readonly string[] Types = new[] { "Controller", "Service" };
 
+        /// <summary></summary>
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);

@@ -8,6 +8,7 @@ using System.Threading;
 
 namespace WebFramework
 {
+    /// <summary>Localizations for ResourceManager</summary>
     public sealed class Localizations
     {
         /// <summary>

@@ -12,6 +12,7 @@ using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Authentication.QQ
 {
+    /// <summary></summary>
     public static class HttpContextExtensions
     {
         /// <summary>

@@ -63,37 +63,44 @@ namespace WebFramework.Data
         }
     }
     /// <summary>
-    /// 数据库 缓存Redis
+    /// 数据库 缓存Redis for SqlSugar
     /// </summary>
     public class RedisCache : ICacheService
     {
+        /// <summary></summary>
         public static MemoryCache Cache = new MemoryCache(new MemoryCacheOptions());
 
+        /// <summary></summary>
         public void Add<V>(string key, V value)
         {
             Cache.Set(key, value);
         }
 
+        /// <summary></summary>
         public void Add<V>(string key, V value, int cacheDurationInSeconds)
         {
             Cache.Set(key, value, TimeSpan.FromSeconds(cacheDurationInSeconds));
         }
 
+        /// <summary></summary>
         public bool ContainsKey<V>(string key)
         {
             return Cache.TryGetValue(key, out _);
         }
 
+        /// <summary></summary>
         public V Get<V>(string key)
         {
             return Cache.Get<V>(key);
         }
 
+        /// <summary></summary>
         public IEnumerable<string> GetAllKey<V>()
         {
             return new string[0];
         }
 
+        /// <summary></summary>
         public V GetOrCreate<V>(string cacheKey, Func<V> create, int cacheDurationInSeconds = int.MaxValue)
         {
             if (Cache.TryGetValue(cacheKey, out object v))
@@ -108,6 +115,7 @@ namespace WebFramework.Data
             }
         }
 
+        /// <summary></summary>
         public void Remove<V>(string key)
         {
             Cache.Remove(key.Remove(0, 6));

@@ -16,6 +16,7 @@ namespace WebFramework
     /// </summary>
     public class DownloadHttpFile
     {
+        /// <summary></summary>
         public static async Task<string> Download(string url, string file = null, HttpMethod httpMethod = null,
             NameValueCollection headers = null,
             string userAgent = DefaultFormat.UserAgent)
@@ -41,6 +42,7 @@ namespace WebFramework
             return file;
         }
 
+        /// <summary></summary>
         public static async Task Download(string url, string file,
             Action<object, DownloadStartedEventArgs> downloadStarted,
             Action<object, AsyncCompletedEventArgs> downloadFileCompleted,
@@ -65,6 +67,7 @@ namespace WebFramework
             await downloader.DownloadFileTaskAsync(url, file);
         }
 
+        /// <summary></summary>
         public static DownloadConfiguration GetDownloadConfiguration(NameValueCollection headers = null, Cookie[] cookies = null, string userAgent = DefaultFormat.UserAgent)
         {
             var config = new DownloadConfiguration()

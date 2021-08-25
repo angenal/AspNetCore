@@ -9,6 +9,7 @@ namespace Microsoft.AspNetCore.Authentication.Weixin
     /// </summary>
     public class WeixinAuthenticationOptions : OAuthOptions
     {
+        /// <summary></summary>
         public WeixinAuthenticationOptions()
         {
             ClaimsIssuer = WeixinAuthenticationDefaults.Issuer;

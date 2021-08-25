@@ -6,11 +6,15 @@ using System.Collections.Generic;
 
 namespace WebFramework
 {
+    /// <summary></summary>
     public class AppSettings
     {
+        /// <summary></summary>
         public IConfiguration Configuration { get; set; }
+        /// <summary></summary>
         public IWebHostEnvironment Environment { get; set; }
 
+        /// <summary></summary>
         public AppSettings(IWebHostEnvironment environment, IConfiguration configuration = null,
             Dictionary<string, string> initialData = null,
             string path = "appsettings.json", bool reloadOnChange = true)
@@ -84,7 +88,7 @@ namespace WebFramework
             }
         }
         /// <summary>
-        /// 获取配置 单个值 如:GetValue<string>("Administrators:0:Name")-取数组元素
+        /// 获取配置 单个值 如:GetValue("Administrators:0:Name")-取数组元素
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
@@ -110,8 +114,10 @@ namespace WebFramework
         }
     }
 
+    /// <summary></summary>
     public class ConnectionStrings
     {
+        /// <summary></summary>
         public string DefaultConnection { get; set; }
     }
 }

@@ -22,7 +22,8 @@ namespace WebFramework
         /// </summary>
         /// <param name="modelState"></param>
         /// <param name="file"></param>
-        /// <param name="fileMaxLength"></param>
+        /// <param name="maximumLength"></param>
+        /// <param name="autoConvertToUtf8"></param>
         /// <returns>文件内容</returns>
         public static async Task<string> GetUploadedTextFile(ModelStateDictionary modelState, IFormFile file, int maximumLength, bool autoConvertToUtf8 = false)
         {
@@ -72,7 +73,7 @@ namespace WebFramework
         /// <param name="modelState"></param>
         /// <param name="file"></param>
         /// <param name="filePath">指定的位置具有写入权限</param>
-        /// <param name="fileMaxLength"></param>
+        /// <param name="maximumLength"></param>
         /// <returns></returns>
         public static async Task<bool> SaveUploadedTextFile(ModelStateDictionary modelState, IFormFile file, string filePath, int maximumLength)
         {
@@ -125,6 +126,7 @@ namespace WebFramework
         }
 
 
+        /// <summary></summary>
         internal static (bool Checked, string kErr, string vErr) CheckUploadedFile(ModelStateDictionary modelState, IFormFile file, FileSomeType fileType, Size[] sizes, string[] fileTypes, string fileTypeName)
         {
             bool _Checked = modelState.IsValid;

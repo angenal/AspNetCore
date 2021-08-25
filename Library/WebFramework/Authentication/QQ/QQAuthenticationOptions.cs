@@ -8,8 +8,10 @@ namespace Microsoft.AspNetCore.Authentication.QQ
     /// </summary>
     public class QQAuthenticationOptions : OAuthOptions
     {
+        /// <summary></summary>
         public string OpenIdEndpoint { get; set; }
 
+        /// <summary></summary>
         public QQAuthenticationOptions()
         {
             ClaimsIssuer = QQAuthenticationDefaults.Issuer;

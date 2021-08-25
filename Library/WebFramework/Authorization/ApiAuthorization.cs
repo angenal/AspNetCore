@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -25,6 +26,7 @@ namespace WebFramework.Authorization
         /// 添加 Api认证授权 服务
         /// </summary>
         /// <param name="services">The <see cref="IServiceCollection"/> for adding services.</param>
+        /// <param name="configuration"></param>
         /// <returns></returns>
         public static IServiceCollection AddApiAuthorization(this IServiceCollection services, IConfiguration configuration)
         {
@@ -36,6 +38,7 @@ namespace WebFramework.Authorization
         /// 添加 Api认证授权 服务
         /// </summary>
         /// <param name="services">The <see cref="IServiceCollection"/> for adding services.</param>
+        /// <param name="configuration"></param>
         /// <param name="configureOptions">A delegate to configure the <see cref="ResponseCompressionOptions"/>.</param>
         /// <returns></returns>
         public static IServiceCollection AddApiAuthorization(this IServiceCollection services, IConfiguration configuration, Action<ApiAuthorizationOptions> configureOptions)
@@ -82,6 +85,7 @@ namespace WebFramework.Authorization
     {
         internal static ApiAuthorization Authorization;
 
+        /// <summary></summary>
         public ApiAuthorization(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -105,6 +109,7 @@ namespace WebFramework.Authorization
         /// 初始化 App.Infos
         /// </summary>
         /// <param name="action"></param>
+        /// <param name="_async"></param>
         public static void ConfigAppAsync(Func<List<IAppInfo>> action, bool _async = false)
         {
             if (_async)
@@ -120,6 +125,7 @@ namespace WebFramework.Authorization
         /// 初始化 User.Infos
         /// </summary>
         /// <param name="action"></param>
+        /// <param name="_async"></param>
         public static void ConfigUserAsync(Func<List<IUserInfo>> action, bool _async = false)
         {
             if (_async)
@@ -132,6 +138,7 @@ namespace WebFramework.Authorization
             }
         }
 
+        /// <summary></summary>
         internal IConfiguration Configuration { get; }
     }
     /// <summary>
@@ -164,12 +171,14 @@ namespace WebFramework.Authorization
         private readonly RequestDelegate next;
         private readonly ApiAuthorizationOptions options;
 
+        /// <summary></summary>
         public ApiAuthorizationMiddleware(RequestDelegate next, IOptions<ApiAuthorizationOptions> options)
         {
             this.next = next;
             this.options = options.Value;
         }
 
+        /// <summary></summary>
         public async Task Invoke(HttpContext context)
         {
             if (!context.Response.HasStarted)

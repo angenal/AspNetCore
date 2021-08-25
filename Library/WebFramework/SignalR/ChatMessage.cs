@@ -32,7 +32,9 @@ namespace WebFramework.SignalR
     /// </summary>
     public class ChatMessage
     {
+        /// <summary></summary>
         public static void Add(string groupName, Message message) => Data.RedisList.Add(groupName, message);
+        /// <summary></summary>
         public static IEnumerable<Message> Get(string groupName, int size = 20) => Data.RedisList.GetLastestResult<Message>(groupName, size).OrderByDescending(t => t.Time);
     }
 }
