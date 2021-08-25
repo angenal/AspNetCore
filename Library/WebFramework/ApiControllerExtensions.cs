@@ -26,6 +26,7 @@ namespace WebFramework
 #if DEBUG
             return db.Debug();
 #else
+            db.Ado.IsEnableLogEvent = false;
             return db;
 #endif
         }
