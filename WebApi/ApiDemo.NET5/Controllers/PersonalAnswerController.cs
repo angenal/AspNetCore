@@ -19,9 +19,7 @@ namespace ApiDemo.NET5.Controllers
     {
         private readonly IWebHostEnvironment env;
 
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         public PersonalAnswerController(IWebHostEnvironment env)
         {
             this.env = env;
@@ -29,9 +27,8 @@ namespace ApiDemo.NET5.Controllers
 
 
         /// <summary>
-        /// 查询 - Values
+        /// 查询
         /// </summary>
-        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult> Get()
         {
@@ -112,24 +109,14 @@ namespace ApiDemo.NET5.Controllers
             return Ok();
         }
     }
-    /// <summary>
-    ///
-    /// </summary>
+    /// <summary></summary>
     public class PersonalAnswerModel1
     {
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         public int Id { get; set; }
-
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         public string Ip { get; set; }
-
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         public string Title { get; set; }
     }
 }
