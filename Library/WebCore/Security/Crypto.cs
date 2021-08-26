@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using WebInterface;
 
 namespace WebCore.Security
@@ -70,7 +71,7 @@ namespace WebCore.Security
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public string  Crc32X8(string text) => Crc32(text).ToString("X8");
+        public string Crc32X8(string text) => Crc32(text).ToString("X8");
 
 
         /// <summary>
@@ -83,6 +84,28 @@ namespace WebCore.Security
         {
             for (var i = 0; i < data.Length; i++) data[i] = (byte)(data[i] ^ keys[i]);
             return data;
+        }
+
+
+        /// <summary>
+        /// 文本Base64编码 = btoa(encodeURIComponent(text))
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public string ToBase64String(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return text;
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(HttpUtility.UrlEncode(text)));
+        }
+        /// <summary>
+        /// 文本Base64解码 = decodeURIComponent(atob(text))
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public string FromBase64String(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return text;
+            return HttpUtility.UrlDecode(Encoding.UTF8.GetString(Convert.FromBase64String(text)));
         }
 
 

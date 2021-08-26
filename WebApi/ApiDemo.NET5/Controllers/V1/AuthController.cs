@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
@@ -52,6 +53,15 @@ namespace ApiDemo.NET5.Controllers.V1
             var claims = o.Claims();
             var session = new JObject();
             session["token"] = JwtToken.Generate(claims);
+
+            var refreshToken = crypto.RandomString(32);
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7), // one week expiry time
+            };
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+
             return Ok(session);
         }
 
@@ -66,6 +76,23 @@ namespace ApiDemo.NET5.Controllers.V1
         public ActionResult TestSession()
         {
             return Ok(new { userid = User.Identity.Name, user });
+        }
+
+        /// <summary>
+        /// Refresh token test.
+        /// </summary>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public IActionResult TestRefreshToken()
+        {
+            string cookieValue = Request.Cookies["refreshToken"];
+
+            // If cookie is expired then it will give null
+            if (cookieValue == null) return Unauthorized();
+
+            return RedirectToAction("TestLogin");
         }
 
         /// <summary>

@@ -7,8 +7,8 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 using WebFramework.Models.DTO;
+using WebInterface;
 using WebInterface.Settings;
 
 namespace WebFramework.Controllers
@@ -22,46 +22,46 @@ namespace WebFramework.Controllers
     {
         private readonly IWebHostEnvironment env;
         private readonly IConfiguration config;
+        private readonly ICrypto crypto;
         private readonly IMemoryCache cache;
 
         /// <summary></summary>
-        public DataController(IWebHostEnvironment env, IConfiguration config, IMemoryCache cache)
+        public DataController(IWebHostEnvironment env, IConfiguration config, ICrypto crypto, IMemoryCache cache)
         {
             this.env = env;
             this.config = config;
+            this.crypto = crypto;
             this.cache = cache;
         }
 
 
         /// <summary>
-        /// 文本编码 = btoa(encodeURIComponent(text))
+        /// 文本Base64编码 = btoa(encodeURIComponent(text))
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult Encode([FromBody] EncodeTextInputDto input)
         {
-            var result = new EncodeTextOutputDto();
-
-            if (!string.IsNullOrWhiteSpace(input.Text))
-                result.Text = Convert.ToBase64String(Encoding.UTF8.GetBytes(HttpUtility.UrlEncode(input.Text)));
-
+            var result = new EncodeTextOutputDto()
+            {
+                Text = crypto.ToBase64String(input.Text)
+            };
             return Ok(result);
         }
 
         /// <summary>
-        /// 文本解码 = decodeURIComponent(atob(text))
+        /// 文本Base64解码 = decodeURIComponent(atob(text))
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult Decode([FromBody] EncodeTextInputDto input)
         {
-            var result = new EncodeTextOutputDto();
-
-            if (!string.IsNullOrWhiteSpace(input.Text))
-                result.Text = HttpUtility.UrlDecode(Encoding.UTF8.GetString(Convert.FromBase64String(input.Text)));
-
+            var result = new EncodeTextOutputDto()
+            {
+                Text = crypto.FromBase64String(input.Text)
+            };
             return Ok(result);
         }
 

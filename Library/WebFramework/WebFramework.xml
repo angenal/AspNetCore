@@ -402,17 +402,17 @@
             数据
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.DataController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Caching.Memory.IMemoryCache)">
+        <member name="M:WebFramework.Controllers.DataController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,WebInterface.ICrypto,Microsoft.Extensions.Caching.Memory.IMemoryCache)">
             <summary></summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.Encode(WebFramework.Models.DTO.EncodeTextInputDto)">
             <summary>
-            文本编码 = btoa(encodeURIComponent(text))
+            文本Base64编码 = btoa(encodeURIComponent(text))
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.Decode(WebFramework.Models.DTO.EncodeTextInputDto)">
             <summary>
-            文本解码 = decodeURIComponent(atob(text))
+            文本Base64解码 = decodeURIComponent(atob(text))
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.Encrypt(WebFramework.Models.DTO.EncryptTextInputDto)">

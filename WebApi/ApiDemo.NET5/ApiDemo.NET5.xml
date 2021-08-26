@@ -49,7 +49,7 @@
         </member>
         <member name="T:ApiDemo.NET5.Controllers.PersonalAnswerController">
             <summary>
-            用户账号
+            演示
             </summary>
         </member>
         <member name="M:ApiDemo.NET5.Controllers.PersonalAnswerController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
@@ -126,6 +126,11 @@
         <member name="M:ApiDemo.NET5.Controllers.V1.AuthController.TestSession">
             <summary>
             Returns authorized session data for test user.
+            </summary>
+        </member>
+        <member name="M:ApiDemo.NET5.Controllers.V1.AuthController.TestRefreshToken">
+            <summary>
+            Refresh token test.
             </summary>
         </member>
         <member name="M:ApiDemo.NET5.Controllers.V1.AuthController.TestRole">

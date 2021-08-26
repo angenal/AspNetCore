@@ -5,12 +5,11 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading.Tasks;
 using WebFramework;
-using WebFramework.Data;
 
 namespace ApiDemo.NET5.Controllers
 {
     /// <summary>
-    /// 用户账号
+    /// 演示
     /// </summary>
     [ApiController]
     //[ApiExplorerSettings(GroupName = "demo"), Display(Name = "演示系统", Description = "演示系统描述文字")]

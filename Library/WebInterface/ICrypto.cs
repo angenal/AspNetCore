@@ -25,6 +25,19 @@ namespace WebInterface
         /// <returns>An encrypted array.</returns>
         byte[] Xor(byte[] data, IReadOnlyList<byte> keys);
 
+        /// <summary>
+        /// 文本Base64编码 = btoa(encodeURIComponent(text))
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        string ToBase64String(string text);
+        /// <summary>
+        /// 文本Base64解码 = decodeURIComponent(atob(text))
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        string FromBase64String(string text);
+
 
         /// <summary>
         /// This is the .NET equivalent of crypto_auth.
