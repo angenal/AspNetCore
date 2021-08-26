@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace WebInterface
@@ -7,6 +8,203 @@ namespace WebInterface
     /// </summary>
     public interface ICrypto
     {
+        uint XXH32(byte[] bytes);
+        uint XXH32(string text);
+        ulong XXH64(byte[] bytes);
+        ulong XXH64(string text);
+        ushort Crc16(string text);
+        uint Crc32(string text);
+        string Crc32x8(string text);
+        string Crc32X8(string text);
+
+        /// <summary>
+        /// Encrypt an array with XOR.
+        /// </summary>
+        /// <param name="data">An unencrypted array.</param>
+        /// <param name="keys">The encryption keys.</param>
+        /// <returns>An encrypted array.</returns>
+        byte[] Xor(byte[] data, IReadOnlyList<byte> keys);
+
+
+        /// <summary>
+        /// This is the .NET equivalent of crypto_auth.
+        /// signs a message with a key.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/secret-key_authentication.html
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>The signature with 32 bytes</returns>
+        byte[] Sign(byte[] message, byte[] key);
+        /// <summary>signs a message with a key.</summary>
+        byte[] SignHmacSha256(byte[] message, byte[] key);
+        /// <summary>signs a message with a key.</summary>
+        byte[] SignHmacSha512(byte[] message, byte[] key);
+
+        /// <summary>
+        /// This is the .NET equivalent of crypto_auth_verify.
+        /// verifies a message with a signature and a key signed by Sign().
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/secret-key_authentication.html
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="signature">The signature must be 32 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns></returns>
+        bool Verify(byte[] message, byte[] signature, byte[] key);
+        /// <summary>verifies a message with a signature and a key signed.</summary>
+        bool VerifyHmacSha256(byte[] message, byte[] signature, byte[] key);
+        /// <summary>verifies a message with a signature and a key signed.</summary>
+        bool VerifyHmacSha512(byte[] message, byte[] signature, byte[] key);
+
+
+        /// <summary>
+        /// This is the .NET equivalent of crypto_secretbox_easy.
+        /// encrypts a message with a key and a nonce to keep it confidential.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/authenticated_encryption.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="nonce">The nonce must be 24 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>Encrypted data</returns>
+        byte[] Encrypt(byte[] message, byte[] nonce, byte[] key);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_aead_chacha20poly1305_encrypt.
+        /// encrypts a message using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/aead.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="nonce">The nonce must be 8 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <param name="additionalData">The additionalData may be null, or between 0 and 16 bytes</param>
+        /// <returns>Encrypted data</returns>
+        byte[] Encrypt(byte[] message, byte[] nonce, byte[] key, byte[] additionalData);
+
+        /// <summary>
+        /// This is the .NET equivalent of crypto_secretbox_open_easy.
+        /// decrypts a cipherText produced by Create(), with a key and a nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/authenticated_encryption.html
+        /// </summary>
+        /// <param name="cipher">Encrypted data</param>
+        /// <param name="nonce">The nonce must be 24 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>Original data</returns>
+        byte[] Decrypt(byte[] cipher, byte[] nonce, byte[] key);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_aead_chacha20poly1305_decrypt.
+        /// decrypts a message cipher using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/authenticated_encryption.html
+        /// </summary>
+        /// <param name="cipher">Encrypted data</param>
+        /// <param name="nonce">The nonce must be 8 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <param name="additionalData">The additionalData may be null, or between 0 and 16 bytes</param>
+        /// <returns>Original data</returns>
+        byte[] Decrypt(byte[] cipher, byte[] nonce, byte[] key, byte[] additionalData);
+
+
+
+        #region OneTime Auth Sign/Verify
+        /// <summary>
+        /// This is the .NET equivalent of crypto_onetimeauth.
+        /// authenticates a message, with a key.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/poly1305.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>The signature data 16 bytes</returns>
+        byte[] OneTimeAuthSign(byte[] message, byte[] key);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_onetimeauth_verify.
+        /// verifies a message, with a signature and a key.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/poly1305.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="signature">The signature must be 16 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>returns true on success, otherwise false.</returns>
+        bool OneTimeAuthVerify(byte[] message, byte[] signature, byte[] key);
+        /// <summary>
+        /// Generate a 32 byte key, or GenerateKey(), or GenerateNonceBytes(32) to generate a 32 byte key.
+        /// </summary>
+        /// <returns></returns>
+        byte[] OneTimeAuthKey();
+        #endregion
+
+        #region chacha20-ietf-poly1305
+        /// <summary>
+        /// This is the .NET equivalent of crypto_stream_chacha20_xor.
+        /// encrypts a message using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/chacha20.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="nonce">The nonce must be 8 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>Encrypted data</returns>
+        byte[] EncryptChaCha20(byte[] message, byte[] nonce, byte[] key);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_stream_chacha20_xor.
+        /// decrypts a message cipher using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/chacha20.html
+        /// </summary>
+        /// <param name="cipher">Encrypted data</param>
+        /// <param name="nonce">The nonce must be 8 bytes</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <returns>Original data</returns>
+        byte[] DecryptChaCha20(byte[] cipher, byte[] nonce, byte[] key);
+        #endregion
+
+        #region aes-256-gcm
+        /// <summary>
+        /// This is the .NET equivalent of crypto_aead_aes256gcm_encrypt,
+        /// encrypts a message using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/aes256_gcm.html
+        /// </summary>
+        /// <param name="message">Original data</param>
+        /// <param name="nonce">The nonce must be 12 bytes, or use Sodium.SecretAead.GenerateNonce()</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <param name="additionalData">The additionalData between 0 and 16 bytes</param>
+        /// <returns>Encrypted data</returns>
+        byte[] AES256GCMEncrypt(byte[] message, byte[] nonce, byte[] key, byte[] additionalData = null);
+        /// <summary>
+        /// This is the .NET equivalent of crypto_aead_aes256gcm_decrypt,
+        /// decrypts a message cipher using a secret key and a public nonce.
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/advanced/aes256_gcm.html
+        /// </summary>
+        /// <param name="cipher">Encrypted data</param>
+        /// <param name="nonce">The nonce must be 12 bytes, or use GenerateNonce()</param>
+        /// <param name="key">The key must be 32 bytes</param>
+        /// <param name="additionalData">The additionalData between 0 and 16 bytes</param>
+        /// <returns>Original data</returns>
+        byte[] AES256GCMDecrypt(byte[] cipher, byte[] nonce, byte[] key, byte[] additionalData = null);
+        /// <summary>
+        /// Generate a 32 byte key, or GenerateNonceBytes(32) to generate a 32 byte key.
+        /// </summary>
+        /// <returns></returns>
+        byte[] GenerateKey();
+        /// <summary>
+        /// Generate a 24 byte nonce for encrypt: Sodium.SecretBox.Create(message, nonce, key), decrypt: Sodium.SecretBox.Open(ciphertext, nonce, key)
+        /// https://bitbeans.gitbooks.io/libsodium-net/content/secret-key_cryptography/authenticated_encryption.html
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        byte[] GetRandomBytes(int count = 24);
+        /// <summary>
+        /// Generate 12 bytes for AES256GCMEncrypt(),AES256GCMDecrypt()
+        /// </summary>
+        /// <returns></returns>
+        byte[] GenerateNonce();
+        /// <summary>
+        /// Generate 8 bytes for EncryptChaCha20()
+        /// </summary>
+        /// <returns></returns>
+        byte[] GenerateNonceBytes(int count = 8);
+        /// <summary>
+        /// Generate 8 bytes for EncryptChaCha20()
+        /// </summary>
+        /// <returns></returns>
+        byte[] GenerateNonceChaCha20();
+        #endregion
+
+
         /// <summary>
         /// Get encrypted data with AES Rijndael
         /// </summary>
@@ -119,13 +317,6 @@ namespace WebInterface
         /// <param name="length">Length of the string to be returned.</param>
         /// <returns>Captcha string</returns>
         string RandomString(int length);
-
-        uint XXH32(string text);
-        ulong XXH64(string text);
-        ushort Crc16(string text);
-        uint Crc32(string text);
-        string Crc32x8(string text);
-        string Crc32X8(string text);
 
         /// <summary>
         /// MD5 Encryption.
