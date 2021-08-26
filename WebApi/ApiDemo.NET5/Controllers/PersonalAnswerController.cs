@@ -34,7 +34,7 @@ namespace ApiDemo.NET5.Controllers
             var ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
             var now = DateTime.Now;
 
-            if (env.IsDevelopment()) db.Debug();
+            //if (env.IsDevelopment()) db.Debug();
 
             var id = 1;
             var first1 = await db.Queryable<PersonalAnswer>().FirstAsync(q => q.Id == id);

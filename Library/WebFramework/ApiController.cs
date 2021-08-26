@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using SqlSugar;
+using WebFramework.Data;
 
 namespace WebFramework
 {
@@ -17,7 +18,7 @@ namespace WebFramework
         /// <summary>
         /// new SqlSugarClient
         /// </summary>
-        public SqlSugarClient db => _db ??= SqlSugarExtensions.NewSqlSugarClient(Data.SQLServerDb.DefaultConnection);
+        public SqlSugarClient db => _db ??= SQLServerDb.DefaultConnection.NewSqlSugarClient();
         private SqlSugarClient _db;
 
         /// <summary></summary>

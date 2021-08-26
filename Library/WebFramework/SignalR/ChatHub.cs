@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WebFramework.Data;
 
 namespace WebFramework.SignalR
 {
@@ -19,7 +20,7 @@ namespace WebFramework.SignalR
         /// <summary>
         /// new SqlSugarClient
         /// </summary>
-        public SqlSugarClient db => _db ??= SqlSugarExtensions.NewSqlSugarClient(Data.SQLServerDb.DefaultConnection);
+        public SqlSugarClient db => _db ??= SQLServerDb.DefaultConnection.NewSqlSugarClient();
         private SqlSugarClient _db;
 
         /// <summary>

@@ -72,26 +72,6 @@
             A human-readable explanation specific to this occurrence of the problem.
             </summary>
         </member>
-        <member name="T:WebFramework.SqlSugarExtensions">
-            <summary>
-            数据库 扩展方法
-            </summary>
-        </member>
-        <member name="M:WebFramework.SqlSugarExtensions.NewSqlSugarClient(System.String)">
-            <summary>
-            new SqlSugarClient
-            </summary>
-            <param name="connectionString"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebFramework.SqlSugarExtensions.Debug(SqlSugar.SqlSugarClient,System.Action{System.String})">
-            <summary>
-            调式代码,打印SQL
-            </summary>
-            <param name="db"></param>
-            <param name="action"></param>
-            <returns></returns>
-        </member>
         <member name="T:WebFramework.AppSettings">
             <summary></summary>
         </member>
@@ -841,36 +821,59 @@
         </member>
         <member name="T:WebFramework.Data.DbTable`1">
             <summary>
-            数据表 基类 https://www.donet5.com/home/doc
+            数据表 基类 inheritors of SqlSugar Client
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:WebFramework.Data.DbTable`1.#ctor(SqlSugar.ISqlSugarClient,WebFramework.ConnectionStrings)">
+        <member name="M:WebFramework.Data.DbTable`1.#ctor(SqlSugar.ISqlSugarClient,WebFramework.ConnectionStrings,System.String)">
             <summary>
-            数据表
+            数据表 基类
             </summary>
             <param name="context"></param>
-            <param name="connection"></param>
+            <param name="connectionString"></param>
+            <param name="separatorChars"></param>
+        </member>
+        <member name="T:WebFramework.Data.ThreadLocalSqlSugar">
+            <summary>
+            当前线程的数据库访问类 for SqlSugar Client
+            </summary>
+        </member>
+        <member name="M:WebFramework.Data.ThreadLocalSqlSugar.Get(System.String,System.String)">
+            <summary>
+            获取当前线程的 SqlSugar Client
+            </summary>
+        </member>
+        <member name="M:WebFramework.Data.ThreadLocalSqlSugar.Init(System.String,System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Data.ThreadLocalSqlSugar.#cctor">
+            <summary></summary>
+        </member>
+        <member name="F:WebFramework.Data.ThreadLocalSqlSugar.threadLocal">
+            <summary></summary>
+        </member>
+        <member name="F:WebFramework.Data.ThreadLocalSqlSugar.cache">
+            <summary></summary>
         </member>
         <member name="T:WebFramework.Data.DbContextOfSqlSugar">
             <summary>
-            数据库 访问上下文
+            数据库访问类 访问上下文 for SqlSugar Client
             </summary>
         </member>
         <member name="F:WebFramework.Data.DbContextOfSqlSugar.Client">
             <summary>
-            访问上下文
+            获取数据库访问类 访问上下文
             </summary>
         </member>
         <member name="M:WebFramework.Data.DbContextOfSqlSugar.#ctor(Microsoft.Extensions.Options.IOptions{SqlSugar.ConnectionConfig})">
-             <summary>
-            
-             </summary>
-             <param name="options"></param>
+            <summary>
+            创建数据库访问类 访问上下文
+            </summary>
+            <param name="options"></param>
         </member>
         <member name="T:WebFramework.Data.SqlSugarServiceCollectionExtensions">
             <summary>
-            把数据库访问类 注册到服务容器中
+            数据库访问类 注册到服务容器 for Services Container
             </summary>
         </member>
         <member name="M:WebFramework.Data.SqlSugarServiceCollectionExtensions.AddDbContextOfSqlSugar``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SqlSugar.ConnectionConfig})">
@@ -878,34 +881,58 @@
             注册到服务容器中
             </summary>
         </member>
-        <member name="T:WebFramework.Data.RedisCache">
+        <member name="T:WebFramework.Data.SqlSugarMemoryCache">
             <summary>
-            数据库 缓存Redis for SqlSugar
+            数据库内存缓存 for SqlSugar Client
             </summary>
         </member>
-        <member name="F:WebFramework.Data.RedisCache.Cache">
+        <member name="F:WebFramework.Data.SqlSugarMemoryCache.cache">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Data.RedisCache.Add``1(System.String,``0)">
+        <member name="F:WebFramework.Data.SqlSugarMemoryCache.keys">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Data.RedisCache.Add``1(System.String,``0,System.Int32)">
+        <member name="M:WebFramework.Data.SqlSugarMemoryCache.Add``1(System.String,``0)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Data.RedisCache.ContainsKey``1(System.String)">
+        <member name="M:WebFramework.Data.SqlSugarMemoryCache.Add``1(System.String,``0,System.Int32)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Data.RedisCache.Get``1(System.String)">
+        <member name="M:WebFramework.Data.SqlSugarMemoryCache.ContainsKey``1(System.String)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Data.RedisCache.GetAllKey``1">
+        <member name="M:WebFramework.Data.SqlSugarMemoryCache.Get``1(System.String)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Data.RedisCache.GetOrCreate``1(System.String,System.Func{``0},System.Int32)">
+        <member name="M:WebFramework.Data.SqlSugarMemoryCache.GetAllKey``1">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Data.RedisCache.Remove``1(System.String)">
+        <member name="M:WebFramework.Data.SqlSugarMemoryCache.GetOrCreate``1(System.String,System.Func{``0},System.Int32)">
             <summary></summary>
+        </member>
+        <member name="M:WebFramework.Data.SqlSugarMemoryCache.Remove``1(System.String)">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Data.SqlSugarExtensions">
+            <summary>
+            数据库访问类 扩展方法
+            </summary>
+        </member>
+        <member name="M:WebFramework.Data.SqlSugarExtensions.NewSqlSugarClient(System.String,System.String)">
+            <summary>
+            new SqlSugarClient
+            </summary>
+            <param name="connectionString"></param>
+            <param name="separatorChars"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Data.SqlSugarExtensions.Debug(SqlSugar.SqlSugarClient,System.Action{System.String})">
+            <summary>
+            调式代码,打印SQL
+            </summary>
+            <param name="db"></param>
+            <param name="action"></param>
+            <returns></returns>
         </member>
         <member name="T:WebFramework.Data.ValuesDbContext">
             <summary>
