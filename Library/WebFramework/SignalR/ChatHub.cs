@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using SqlSugar;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -14,18 +15,19 @@ namespace WebFramework.SignalR
     /// </summary>
     public class ChatHub : Hub
     {
-        private readonly static List<ChatUser> Connections = new List<ChatUser>();
-        private readonly static Dictionary<string, string> ConnectionsMap = new Dictionary<string, string>();
+        /// <summary>
+        /// 在线用户列表
+        /// </summary>
+        public readonly static List<ChatUser> Connections = new List<ChatUser>();
+        private readonly static ConcurrentDictionary<string, string> ConnectionsMap = new ConcurrentDictionary<string, string>();
 
         /// <summary>
-        /// new SqlSugarClient
+        /// 数据库访问类 SqlSugar Client
         /// </summary>
         public SqlSugarClient db => _db ??= SQLServerDb.DefaultConnection.NewSqlSugarClient();
         private SqlSugarClient _db;
 
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         public ChatHub() { }
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace WebFramework.SignalR
         {
             try
             {
-                var user = ChatUser.Get(Context);
+                var user = Context.GetChatUser();
 
                 var item = Connections.Where(u => u.Id == user.Id).FirstOrDefault();
                 if (item != null && item.Room != room)
@@ -87,21 +89,22 @@ namespace WebFramework.SignalR
                 if (!string.IsNullOrEmpty(room)) clients.Add(Clients.Group(room));
                 if (!string.IsNullOrEmpty(userId) && ConnectionsMap.TryGetValue(userId, out string connectionId)) clients.Add(Clients.Client(connectionId));
 
-                var id = ChatUser.GetId(Context);
-                var sender = Connections.Where(u => u.Id == id).First();
-
-                // Build the message
-                var item = new Message
+                var id = Context.GetId();
+                foreach (var sender in Connections.Where(u => u.Id == id))
                 {
-                    Id = Guid.NewGuid().ToString("N"),
-                    Content = Regex.Replace(message, @"(?i)<(?!img|a|/a|/img).*?>", string.Empty),
-                    From = sender.Name,
-                    Time = DateTime.Now,
-                };
+                    // Build the message
+                    var item = new Message
+                    {
+                        Id = Guid.NewGuid().ToString("N"),
+                        Content = Regex.Replace(message, @"(?i)<(?!img|a|/a|/img).*?>", string.Empty),
+                        From = sender.Name,
+                        Time = DateTime.Now,
+                    };
 
-                // Send the message
-                foreach (IClientProxy client in clients) await client.SendAsync(method, item);
-                //await Clients.Caller.SendAsync("newMessage", item);
+                    // Send the message
+                    foreach (IClientProxy client in clients) await client.SendAsync(method, item);
+                    //await Clients.Caller.SendAsync("newMessage", item);
+                }
             }
         }
 
@@ -129,21 +132,19 @@ namespace WebFramework.SignalR
 
             try
             {
-                var user = ChatUser.Get(Context);
+                var user = Context.GetChatUser();
                 if (string.IsNullOrEmpty(user.Id)) return Abort();
 
-                if (!Connections.Any(u => u.Id == user.Id))
+                if (ConnectionsMap.TryAdd(user.Id + user.Device, Context.ConnectionId))
                 {
                     // 聊天室(群)
-                    user.Room = string.IsNullOrEmpty(user.Room) ? "default" : user.Room;
-
+                    var groupName = string.IsNullOrEmpty(user.Room) ? "default" : user.Room;
+                    // Adds group
+                    Groups.AddToGroupAsync(Context.ConnectionId, groupName).Wait();
                     // Adds user
                     Connections.Add(user);
-                    // Adds mapping
-                    ConnectionsMap.Add(user.Id, Context.ConnectionId);
-                    // Adds groups
-                    Groups.AddToGroupAsync(Context.ConnectionId, user.Room).Wait();
-                    //Groups.RemoveFromGroupAsync(Context.ConnectionId, user.Room);
+                    // Remove old group
+                    //Groups.RemoveFromGroupAsync(Context.ConnectionId, old);
                 }
 
                 //Clients.Caller.SendAsync("getProfileInfo", user.Name, user.Avatar);
@@ -163,18 +164,20 @@ namespace WebFramework.SignalR
         {
             try
             {
-                var userId = ChatUser.GetId(Context);
-                var item = Connections.Where(u => u.Id == userId).First();
+                var user = Context.GetIdAndDevice();
+                if (user.Id == null) return base.OnDisconnectedAsync(exception);
+
+                // Remove mapping
+                ConnectionsMap.TryRemove(user.Id + user.Device, out _);
+
+                // Remove user
+                var item = Connections.Where(u => u.Id == user.Id && u.Device == user.Device).First();
                 if (item != null)
                 {
-                    // Remove user
                     Connections.Remove(item);
 
                     // Tell other users to remove you from their list
                     //Clients.OthersInGroup(user.Room).SendAsync("removeUser", user);
-
-                    // Remove mapping
-                    ConnectionsMap.Remove(userId);
                 }
             }
             catch (Exception ex)

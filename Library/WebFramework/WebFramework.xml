@@ -1462,6 +1462,16 @@
             Register all services
             </summary>
         </member>
+        <member name="T:WebFramework.Services.AuthModule">
+            <summary>
+            Api Authentication + Authorization Module
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.AuthModule.AddAuth(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            Register Authentication + Authorization services
+            </summary>
+        </member>
         <member name="T:WebFramework.Services.AutofacStartup">
             <summary>
             AutofacStartup extends Startup class
@@ -1566,6 +1576,23 @@
             Global monitoring and exception handler module
             </summary>
         </member>
+        <member name="M:WebFramework.Services.ExceptionHandlerModule.ApiBehavior(Microsoft.AspNetCore.Mvc.ApiBehaviorOptions)">
+            <summary>
+            Configure Global ApiBehavior for 400 BadRequest Error Handler with Invalid ModelState Response
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.ExceptionHandlerModule.ExceptionHandler(Microsoft.AspNetCore.Builder.ExceptionHandlerOptions)">
+            <summary>
+            Configure Global Exception Handler (excluding 500) in Services Container
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:WebFramework.Services.ExceptionHandlerModule.ApiExceptionsFilters(Microsoft.AspNetCore.Mvc.MvcOptions)">
+            <summary>
+            Global Exception Filters for MVC
+            </summary>
+            <param name="options"></param>
+        </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.UseSentryMonitor(Microsoft.AspNetCore.Hosting.IWebHostBuilder)">
             <summary>
             Global Monitor System
@@ -1574,23 +1601,6 @@
             https://github.com/docker-library/docs/tree/master/sentry
             https://github.com/getsentry/onpremise > ./install.sh (docker)
             </summary>
-        </member>
-        <member name="M:WebFramework.Services.ExceptionHandlerModule.ApiExceptionsFilters(Microsoft.AspNetCore.Mvc.MvcOptions)">
-            <summary>
-            Global Exception Filters for MVC
-            </summary>
-            <param name="options"></param>
-        </member>
-        <member name="M:WebFramework.Services.ExceptionHandlerModule.ApiBehavior(Microsoft.AspNetCore.Mvc.ApiBehaviorOptions)">
-            <summary>
-            Configure Global ApiBehavior for BadRequest Error Handler with Invalid ModelState Response
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.ExceptionHandlerModule.ExceptionHandler(Microsoft.AspNetCore.Builder.ExceptionHandlerOptions)">
-            <summary>
-            Configure Global Exception Handler (excluding 500) in Services Container
-            </summary>
-            <param name="options"></param>
         </member>
         <member name="T:WebFramework.Services.HangfireModule">
             <summary>
@@ -2156,15 +2166,18 @@
             聊天系统
             </summary>
         </member>
+        <member name="F:WebFramework.SignalR.ChatHub.Connections">
+            <summary>
+            在线用户列表
+            </summary>
+        </member>
         <member name="P:WebFramework.SignalR.ChatHub.db">
             <summary>
-            new SqlSugarClient
+            数据库访问类 SqlSugar Client
             </summary>
         </member>
         <member name="M:WebFramework.SignalR.ChatHub.#ctor">
-             <summary>
-            
-             </summary>
+            <summary></summary>
         </member>
         <member name="M:WebFramework.SignalR.ChatHub.Join(System.String)">
             <summary>
@@ -2251,35 +2264,10 @@
             聊天用户
             </summary>
         </member>
-        <member name="M:WebFramework.SignalR.ChatUser.Get(Microsoft.AspNetCore.SignalR.HubCallerContext)">
-            <summary>
-            Gets the user from the hub caller connection.
-            </summary>
-            <param name="Context">A context abstraction for accessing information.</param>
-            <returns></returns>
-        </member>
-        <member name="M:WebFramework.SignalR.ChatUser.GetId(Microsoft.AspNetCore.SignalR.HubCallerContext)">
-            <summary>
-            Gets User Id.
-            </summary>
-            <param name="Context"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebFramework.SignalR.ChatUser.GetName(Microsoft.AspNetCore.SignalR.HubCallerContext)">
-            <summary>
-            Gets User Name.
-            </summary>
-            <param name="Context"></param>
-            <returns></returns>
-        </member>
         <member name="P:WebFramework.SignalR.ChatUser.Room">
             <summary>
             聊天室(群)
-            </summary>
-        </member>
-        <member name="P:WebFramework.SignalR.ChatUser.Device">
-            <summary>
-            设备标识
+            from Query["room"]
             </summary>
         </member>
         <member name="T:WebFramework.SignalR.User">
@@ -2290,17 +2278,87 @@
         <member name="P:WebFramework.SignalR.User.Id">
             <summary>
             用户Id
+            from JwtRegisteredClaimNames.Sid
             </summary>
         </member>
         <member name="P:WebFramework.SignalR.User.Name">
             <summary>
             用户名
+            from JwtRegisteredClaimNames.Sub
             </summary>
         </member>
         <member name="P:WebFramework.SignalR.User.Role">
             <summary>
             角色(类别)
+            from JwtSettings.RoleClaimType
             </summary>
+        </member>
+        <member name="P:WebFramework.SignalR.User.Device">
+            <summary>
+            设备标识
+            from Query["device"]
+            </summary>
+        </member>
+        <member name="T:WebFramework.SignalR.HubCallerContextChatUserExtensions">
+            <summary>
+            Gets the chat user from the hub caller connection.
+            </summary>
+        </member>
+        <member name="M:WebFramework.SignalR.HubCallerContextChatUserExtensions.GetChatUser(Microsoft.AspNetCore.SignalR.HubCallerContext)">
+            <summary>
+            Gets the chat user from the hub caller connection.
+            </summary>
+            <param name="Context">A context abstraction for accessing information.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.HubCallerContextChatUserExtensions.GetUser(Microsoft.AspNetCore.SignalR.HubCallerContext)">
+            <summary>
+            Gets the user from the hub caller connection.
+            </summary>
+            <param name="Context">A context abstraction for accessing information.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.HubCallerContextChatUserExtensions.GetId(Microsoft.AspNetCore.SignalR.HubCallerContext)">
+            <summary>
+            Gets user id or User.Identity.Name.
+            </summary>
+            <param name="Context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.HubCallerContextChatUserExtensions.GetName(Microsoft.AspNetCore.SignalR.HubCallerContext)">
+            <summary>
+            Gets user name.
+            </summary>
+            <param name="Context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.HubCallerContextChatUserExtensions.GetRole(Microsoft.AspNetCore.SignalR.HubCallerContext)">
+            <summary>
+            Gets user role.
+            </summary>
+            <param name="Context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.HubCallerContextChatUserExtensions.GetDevice(Microsoft.AspNetCore.SignalR.HubCallerContext)">
+            <summary>
+            Gets user device.
+            </summary>
+            <param name="Context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.HubCallerContextChatUserExtensions.GetRoom(Microsoft.AspNetCore.SignalR.HubCallerContext)">
+            <summary>
+            Gets the chat room.
+            </summary>
+            <param name="Context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.HubCallerContextChatUserExtensions.GetIdAndDevice(Microsoft.AspNetCore.SignalR.HubCallerContext)">
+            <summary>
+            Gets user id and device.
+            </summary>
+            <param name="Context"></param>
+            <returns></returns>
         </member>
         <member name="T:WebFramework.Startup">
             <summary></summary>

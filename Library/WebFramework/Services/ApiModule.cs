@@ -10,7 +10,6 @@ using System;
 using System.IO;
 using System.Linq;
 using WebCore.Documents;
-using WebFramework.Authorization;
 using WebInterface;
 
 namespace WebFramework.Services
@@ -110,38 +109,8 @@ namespace WebFramework.Services
             services.AddHttpContextAccessor();
 
 
-            // ApiAuthorization using WebFramework.Authorization
-            //services.AddApiAuthorization(config);
-            // Microsoft.AspNetCore.Identity system for the specified User and Role types
-            //services.AddIdentityLiteDB(config);
-            // Authentication with JWT
-            services.AddJwtAuthentication(config);
-            // Authentication with OAuth
-            if (config.GetSection("OAuth").Exists())
-            {
-                var oAuth = services.AddAuthentication();
-                string qq = config.GetValue<string>("OAuth:QQ:ClientId"), qqSecret = config.GetValue<string>("OAuth:QQ:ClientSecret");
-                string wx = config.GetValue<string>("OAuth:Weixin:ClientId"), wxSecret = config.GetValue<string>("OAuth:Weixin:ClientSecret");
-                if (!string.IsNullOrEmpty(qq) && !string.IsNullOrEmpty(qqSecret)) oAuth.AddQQAuthentication(t =>
-                {
-                    t.ClientId = qq;
-                    t.ClientSecret = qqSecret;
-                });
-                if (!string.IsNullOrEmpty(wx) && !string.IsNullOrEmpty(wxSecret)) oAuth.AddWeixinAuthentication(t =>
-                {
-                    t.ClientId = wx;
-                    t.ClientSecret = wxSecret;
-                });
-            }
-            // Authorization
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("test", policy => policy.RequireClaim("name", "测试"));
-                options.AddPolicy("Upload", policy => policy.RequireAuthenticatedUser());
-                options.AddPolicy("User", policy => policy.RequireAssertion(context =>
-                    context.User.HasClaim(c => c.Type == "role" && c.Value.StartsWith("User")) ||
-                    context.User.HasClaim(c => c.Type == "name" && c.Value.StartsWith("User"))));
-            });
+            // Authentication + Authorization
+            services.AddAuth(config, env);
 
 
             // ApiVersioning

@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using WebFramework.Filters;
 
 namespace WebFramework.Services
 {
@@ -18,49 +17,7 @@ namespace WebFramework.Services
     public static class ExceptionHandlerModule
     {
         /// <summary>
-        /// Global Monitor System
-        /// Sentry: Exception Monitoring Platform
-        /// https://sentry.io/signup
-        /// https://github.com/docker-library/docs/tree/master/sentry
-        /// https://github.com/getsentry/onpremise > ./install.sh (docker)
-        /// </summary>
-        public static IWebHostBuilder UseSentryMonitor(this IWebHostBuilder builder)
-        {
-            //var section = config.GetSection(SentrySettings.AppSettings);
-            //if (!section.Exists()) return services;
-
-            //// Register IOptions<SentrySettings> from appsettings.json
-            //services.Configure<SentrySettings>(section);
-            //config.Bind(SentrySettings.AppSettings, SentrySettings.Instance);
-
-            //builder.UseSentry((context, options) =>
-            //{
-            //    options.Environment = context.HostingEnvironment.EnvironmentName;
-            //    options.Dsn = context.Configuration.GetSection("Sentry:Dsn").Value;
-            //    options.Debug = bool.Parse(context.Configuration.GetSection("Sentry:Debug").Value);
-            //    options.SendDefaultPii = bool.Parse(context.Configuration.GetSection("Sentry:SendDefaultPii").Value);
-            //    options.AttachStacktrace = bool.Parse(context.Configuration.GetSection("Sentry:AttachStacktrace").Value);
-            //    options.MaxRequestBodySize = Enum.Parse<Sentry.Extensibility.RequestSize>(context.Configuration.GetSection("Sentry:MaxRequestBodySize").Value);
-            //    options.MinimumBreadcrumbLevel = Enum.Parse<Microsoft.Extensions.Logging.LogLevel>(context.Configuration.GetSection("Sentry:MinimumBreadcrumbLevel").Value);
-            //    options.MinimumEventLevel = Enum.Parse<Microsoft.Extensions.Logging.LogLevel>(context.Configuration.GetSection("Sentry:MinimumEventLevel").Value);
-            //    options.DiagnosticLevel = Enum.Parse<Sentry.SentryLevel>(context.Configuration.GetSection("Sentry:DiagnosticLevel").Value);
-            //    options.BeforeSend = (e) => e.Exception is TaskCanceledException || e.Exception is OperationCanceledException ? null : e;
-            //});
-
-            return builder;
-        }
-
-        /// <summary>
-        /// Global Exception Filters for MVC
-        /// </summary>
-        /// <param name="options"></param>
-        public static void ApiExceptionsFilters(MvcOptions options)
-        {
-            //options.Filters.Add<HttpResponseExceptionFilter>();
-        }
-
-        /// <summary>
-        /// Configure Global ApiBehavior for BadRequest Error Handler with Invalid ModelState Response
+        /// Configure Global ApiBehavior for 400 BadRequest Error Handler with Invalid ModelState Response
         /// </summary>
         public static void ApiBehavior(ApiBehaviorOptions options)
         {
@@ -112,6 +69,7 @@ namespace WebFramework.Services
                     return context.Response.WriteAsync(text);
                 }
 
+                // Check if it is an API request
                 const int status = StatusCodes.Status500InternalServerError;
                 if (!context.Request.Path.StartsWithSegments("/api"))
                 {
@@ -128,12 +86,54 @@ namespace WebFramework.Services
                 if (s.Length > 3) detail = string.Join(Environment.NewLine, s[0], s[1], s[2]);
                 var error = new { title = e.Message, detail, trace = context.TraceIdentifier, status };
 
-                //Serilog.Log.Logger.Error(e, $"{context.Request.Path} {context.Request.QueryString} {Environment.NewLine}");
+                Serilog.Log.Logger.Error(e, $"{context.Request.Path} {context.Request.QueryString}");
 
                 text = Newtonsoft.Json.JsonConvert.SerializeObject(error);
 
                 return context.Response.WriteAsync(text);
             };
+        }
+
+        /// <summary>
+        /// Global Exception Filters for MVC
+        /// </summary>
+        /// <param name="options"></param>
+        public static void ApiExceptionsFilters(MvcOptions options)
+        {
+            //options.Filters.Add<HttpResponseExceptionFilter>();
+        }
+
+        /// <summary>
+        /// Global Monitor System
+        /// Sentry: Exception Monitoring Platform
+        /// https://sentry.io/signup
+        /// https://github.com/docker-library/docs/tree/master/sentry
+        /// https://github.com/getsentry/onpremise > ./install.sh (docker)
+        /// </summary>
+        public static IWebHostBuilder UseSentryMonitor(this IWebHostBuilder builder)
+        {
+            //var section = config.GetSection(SentrySettings.AppSettings);
+            //if (!section.Exists()) return services;
+
+            //// Register IOptions<SentrySettings> from appsettings.json
+            //services.Configure<SentrySettings>(section);
+            //config.Bind(SentrySettings.AppSettings, SentrySettings.Instance);
+
+            //builder.UseSentry((context, options) =>
+            //{
+            //    options.Environment = context.HostingEnvironment.EnvironmentName;
+            //    options.Dsn = context.Configuration.GetSection("Sentry:Dsn").Value;
+            //    options.Debug = bool.Parse(context.Configuration.GetSection("Sentry:Debug").Value);
+            //    options.SendDefaultPii = bool.Parse(context.Configuration.GetSection("Sentry:SendDefaultPii").Value);
+            //    options.AttachStacktrace = bool.Parse(context.Configuration.GetSection("Sentry:AttachStacktrace").Value);
+            //    options.MaxRequestBodySize = Enum.Parse<Sentry.Extensibility.RequestSize>(context.Configuration.GetSection("Sentry:MaxRequestBodySize").Value);
+            //    options.MinimumBreadcrumbLevel = Enum.Parse<Microsoft.Extensions.Logging.LogLevel>(context.Configuration.GetSection("Sentry:MinimumBreadcrumbLevel").Value);
+            //    options.MinimumEventLevel = Enum.Parse<Microsoft.Extensions.Logging.LogLevel>(context.Configuration.GetSection("Sentry:MinimumEventLevel").Value);
+            //    options.DiagnosticLevel = Enum.Parse<Sentry.SentryLevel>(context.Configuration.GetSection("Sentry:DiagnosticLevel").Value);
+            //    options.BeforeSend = (e) => e.Exception is TaskCanceledException || e.Exception is OperationCanceledException ? null : e;
+            //});
+
+            return builder;
         }
     }
 }

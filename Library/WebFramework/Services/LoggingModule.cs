@@ -29,9 +29,9 @@ namespace WebFramework.Services
             "Name": "File",
             "Args": {
               "buffered": true,
+              "flushToDiskInterval": "5s",
               "path": "logs/file/log-.txt",
               "outputTemplate": "{Timestamp:HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
-              "flushToDiskInterval": "10s",
               "rollingInterval": "Day",
               "retainedFileCountLimit": "7",
               "restrictedToMinimumLevel": "Warning"
