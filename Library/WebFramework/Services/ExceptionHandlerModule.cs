@@ -89,7 +89,7 @@ namespace WebFramework.Services
 
                 var url = context.Request.GetDisplayUrl();
                 string detail = e.ToString(), details = detail;
-                var s = detail.Split(Environment.NewLine);
+                string[] s = detail.Split(Environment.NewLine);
                 if (s.Length > 3) detail = string.Join(" → ", s[0], s[1], s[2]);
 
                 var error = new
