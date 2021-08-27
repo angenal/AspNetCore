@@ -7,6 +7,7 @@ using Serilog;
 using Serilog.Events;
 using System;
 using System.IO;
+using System.Text;
 using WebFramework.Data;
 
 namespace WebFramework.Services
@@ -28,13 +29,14 @@ namespace WebFramework.Services
           {
             "Name": "File",
             "Args": {
-              "buffered": true,
-              "flushToDiskInterval": "5s",
               "path": "logs/file/log-.txt",
+              "restrictedToMinimumLevel": "Warning",
               "outputTemplate": "{Timestamp:HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+              "buffered": true,
+              "shared": false,
+              "flushToDiskInterval": "5s",
               "rollingInterval": "Day",
-              "retainedFileCountLimit": "7",
-              "restrictedToMinimumLevel": "Warning"
+              "retainedFileCountLimit": "7"
             }
           }
         ],
@@ -90,7 +92,13 @@ namespace WebFramework.Services
         /// <returns></returns>
         public static IHostBuilder ConfigureLogging(this IHostBuilder builder)
         {
-            Enabled = "Development" == Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (string.IsNullOrEmpty(environment)) environment = "Production";
+
+            // Use Default Logging for Development Environment
+            Enabled = "Development".Equals(environment, StringComparison.OrdinalIgnoreCase);
+
+            // 启用Serilog 请提前创建日志目录logs
             EnabledSerilog = Directory.Exists("logs");
             if (!Enabled && !EnabledSerilog)
             {
@@ -164,7 +172,7 @@ namespace WebFramework.Services
                 // Output to Console
                 .WriteTo.Console()
                 // Output to File
-                .WriteTo.File(dir.FullName, outputTemplate: template, buffered: true, flushToDiskInterval: TimeSpan.FromSeconds(10), rollingInterval: RollingInterval.Day)
+                .WriteTo.File(dir.FullName, restrictedToMinimumLevel: LogEventLevel.Warning, outputTemplate: template, buffered: true, shared: false, flushToDiskInterval: TimeSpan.FromSeconds(5), rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, encoding: Encoding.UTF8)
                 // Output to RavenDB
                 .WriteTo.RavenDB(RavenDb.CreateRavenDocStore(env), errorExpiration: TimeSpan.FromDays(60))
                 .CreateLogger();

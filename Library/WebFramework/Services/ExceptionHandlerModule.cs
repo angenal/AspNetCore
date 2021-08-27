@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
@@ -12,12 +13,17 @@ using System.Threading.Tasks;
 namespace WebFramework.Services
 {
     /// <summary>
-    /// Global monitoring and exception handler module
+    /// Configure Global monitoring and exception handler module
     /// </summary>
     public static class ExceptionHandlerModule
     {
         /// <summary>
-        /// Configure Global ApiBehavior for 400 BadRequest Error Handler with Invalid ModelState Response
+        /// Web logs files directory
+        /// </summary>
+        public const string FilesDirectory = "files";
+
+        /// <summary>
+        /// Global Error Handler for Status 400 BadRequest with Invalid ModelState
         /// </summary>
         public static void ApiBehavior(ApiBehaviorOptions options)
         {
@@ -43,7 +49,7 @@ namespace WebFramework.Services
         }
 
         /// <summary>
-        /// Configure Global Exception Handler (excluding 500) in Services Container
+        /// Global Exception Handler for Status 404 ~ 500 Internal Server Error
         /// </summary>
         /// <param name="options"></param>
         public static void ExceptionHandler(ExceptionHandlerOptions options)
@@ -81,12 +87,31 @@ namespace WebFramework.Services
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = status;
 
-                var detail = e.ToString();
+                string detail = e.ToString(), url = context.Request.GetDisplayUrl(), details = detail;
                 var s = detail.Split(Environment.NewLine);
-                if (s.Length > 3) detail = string.Join(Environment.NewLine, s[0], s[1], s[2]);
-                var error = new { title = e.Message, detail, trace = context.TraceIdentifier, status };
+                if (s.Length > 3) detail = string.Join(" → ", s[0], s[1], s[2]);
 
-                Serilog.Log.Logger.Error(e, $"{context.Request.Path} {context.Request.QueryString}");
+                var error = new
+                {
+                    title = e.Message,
+                    detail,
+                    trace = context.TraceIdentifier,
+                    status,
+                };
+
+                // Record logs, if exists Web logs files directory
+                var path = Path.Combine(context.Features.Get<IWebHostEnvironment>().WebRootPath, FilesDirectory);
+                if (Directory.Exists(path))
+                {
+                    path = Path.Combine(path, status.ToString());
+                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                    details = $"{url}{Environment.NewLine}{Environment.NewLine}{details}";
+                    File.WriteAllTextAsync(Path.Combine(path, $"{error.trace}.txt"), details).Start();
+                }
+                else
+                {
+                    Serilog.Log.Logger.Error(e, url);
+                }
 
                 text = Newtonsoft.Json.JsonConvert.SerializeObject(error);
 

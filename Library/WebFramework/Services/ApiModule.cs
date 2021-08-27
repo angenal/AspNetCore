@@ -66,9 +66,9 @@ namespace WebFramework.Services
             services.AddDatabase(config);
 
 
-            // Global Exception Handler (excluding 500)
+            // Global Exception Handler for Status 404 ~ 500 Internal Server Error
             services.AddExceptionHandler(ExceptionHandlerModule.ExceptionHandler);
-            // Global ApiBehavior for BadRequest
+            // Global Error Handler for Status 400 BadRequest with Invalid ModelState
             builder.ConfigureApiBehaviorOptions(ExceptionHandlerModule.ApiBehavior);
             // Newtonsoft.Json override the default System.Text.Json of .NET Library
             builder.AddNewtonsoftJson(x =>

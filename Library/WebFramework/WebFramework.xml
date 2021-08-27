@@ -1573,17 +1573,22 @@
         </member>
         <member name="T:WebFramework.Services.ExceptionHandlerModule">
             <summary>
-            Global monitoring and exception handler module
+            Configure Global monitoring and exception handler module
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.ExceptionHandlerModule.FilesDirectory">
+            <summary>
+            Web logs files directory
             </summary>
         </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.ApiBehavior(Microsoft.AspNetCore.Mvc.ApiBehaviorOptions)">
             <summary>
-            Configure Global ApiBehavior for 400 BadRequest Error Handler with Invalid ModelState Response
+            Global Error Handler for Status 400 BadRequest with Invalid ModelState
             </summary>
         </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.ExceptionHandler(Microsoft.AspNetCore.Builder.ExceptionHandlerOptions)">
             <summary>
-            Configure Global Exception Handler (excluding 500) in Services Container
+            Global Exception Handler for Status 404 ~ 500 Internal Server Error
             </summary>
             <param name="options"></param>
         </member>
