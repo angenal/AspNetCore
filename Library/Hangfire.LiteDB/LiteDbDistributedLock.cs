@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
 using Hangfire.LiteDB.Entities;
 using Hangfire.Logging;
 using Hangfire.Storage;
 using LiteDB;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Hangfire.LiteDB
 {
@@ -144,7 +144,7 @@ namespace Hangfire.LiteDB
                         // The lock already exists preventing us from inserting.
                         continue;
                     }
-                    
+
                     // If result is null, then it means we acquired the lock
                     if (result == null)
                     {
@@ -182,16 +182,16 @@ namespace Hangfire.LiteDB
 
                 if (!isLockAcquired)
                 {
-                    throw new DistributedLockTimeoutException($"Could not place a lock on the resource \'{_resource}\': The lock request timed out.");
+                    //throw new DistributedLockTimeoutException($"Could not place a lock on the resource \'{_resource}\': The lock request timed out.");
                 }
             }
             catch (DistributedLockTimeoutException)
             {
                 //throw;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new LiteDbDistributedLockException($"Could not place a lock on the resource \'{_resource}\': Check inner exception for details.", ex);
+                //throw new LiteDbDistributedLockException($"Could not place a lock on the resource \'{_resource}\': Check inner exception for details.", ex);
             }
         }
 
