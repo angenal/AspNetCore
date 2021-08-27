@@ -87,7 +87,8 @@ namespace WebFramework.Services
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = status;
 
-                string detail = e.ToString(), url = context.Request.GetDisplayUrl(), details = detail;
+                var url = context.Request.GetDisplayUrl();
+                string detail = e.ToString(), details = detail;
                 var s = detail.Split(Environment.NewLine);
                 if (s.Length > 3) detail = string.Join(" → ", s[0], s[1], s[2]);
 
