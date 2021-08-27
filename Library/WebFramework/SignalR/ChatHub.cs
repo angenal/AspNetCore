@@ -16,10 +16,41 @@ namespace WebFramework.SignalR
     public class ChatHub : Hub
     {
         /// <summary>
-        /// 在线用户列表
+        /// 在线用户列表.
         /// </summary>
-        public readonly static List<ChatUser> Connections = new List<ChatUser>();
+        private readonly static List<ChatUser> Connections = new List<ChatUser>();
+        /// <summary>
+        /// 在线用户连接ID.
+        /// </summary>
         private readonly static ConcurrentDictionary<string, string> ConnectionsMap = new ConcurrentDictionary<string, string>();
+
+        /// <summary>
+        /// 获取在线用户连接ID.
+        /// </summary>
+        /// <returns></returns>
+        public static List<ChatUser> GetConnections() => Connections.ToList();
+        /// <summary>
+        /// 获取在线用户.
+        /// </summary>
+        /// <param name="userId">用户Id from JwtRegisteredClaimNames.Sid</param>
+        /// <returns></returns>
+        public static List<ChatUser> GetConnections(string userId) => Connections.Where(u => u.Id == userId).ToList();
+        /// <summary>
+        /// 获取在线用户连接ID.
+        /// </summary>
+        /// <param name="userId">用户Id from JwtRegisteredClaimNames.Sid</param>
+        /// <returns></returns>
+        public static List<string> GetConnectionsId(string userId)
+        {
+            var list = new List<string>();
+            if (string.IsNullOrEmpty(userId)) return list;
+            foreach (var device in GetConnections(userId).Select(u => u.Device))
+            {
+                if (!ConnectionsMap.TryGetValue(userId + device, out string id)) continue;
+                list.Add(id);
+            }
+            return list;
+        }
 
         /// <summary>
         /// 数据库访问类 SqlSugar Client

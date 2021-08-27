@@ -2168,8 +2168,33 @@
         </member>
         <member name="F:WebFramework.SignalR.ChatHub.Connections">
             <summary>
-            在线用户列表
+            在线用户列表.
             </summary>
+        </member>
+        <member name="F:WebFramework.SignalR.ChatHub.ConnectionsMap">
+            <summary>
+            在线用户连接ID.
+            </summary>
+        </member>
+        <member name="M:WebFramework.SignalR.ChatHub.GetConnections">
+            <summary>
+            获取在线用户连接ID.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.ChatHub.GetConnections(System.String)">
+            <summary>
+            获取在线用户.
+            </summary>
+            <param name="userId">用户Id from JwtRegisteredClaimNames.Sid</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.ChatHub.GetConnectionsId(System.String)">
+            <summary>
+            获取在线用户连接ID.
+            </summary>
+            <param name="userId">用户Id from JwtRegisteredClaimNames.Sid</param>
+            <returns></returns>
         </member>
         <member name="P:WebFramework.SignalR.ChatHub.db">
             <summary>
