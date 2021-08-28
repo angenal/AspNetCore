@@ -113,16 +113,16 @@ namespace WebFramework.Services
                 context.Response.StatusCode = status;
 
                 var url = context.Request.GetDisplayUrl();
-                string detail = e.ToString(), detail0 = detail;
+                string detail = e.ToString(), details = detail;
                 string[] s = detail.Split(Environment.NewLine);
-                if (s.Length > 3) detail = string.Join(" ↓ ", s[0], s[1], s[2]);
+                if (s.Length > 3) detail = string.Join(" ↓", s[0], s[1], s[2]);
                 var error = new { title = e.Message, detail, trace = context.TraceIdentifier, status };
 
                 // Record logs, if exists web logs directory
                 if (StatusDir500Exists)
                 {
                     var contents = new StringBuilder();
-                    contents.Append(Environment.NewLine);
+                    //contents.Append(Environment.NewLine);
                     contents.Append(url);
                     contents.Append(Environment.NewLine);
                     contents.Append(Environment.NewLine);
@@ -153,7 +153,9 @@ namespace WebFramework.Services
                         }
                     }
 
-                    contents.Append(contents);
+                    // Write origin error
+                    contents.Append(Environment.NewLine);
+                    contents.Append(details);
                     contents.Append(Environment.NewLine);
 
                     var path = Path.Combine(StatusDir500, $"{error.trace}.txt");
