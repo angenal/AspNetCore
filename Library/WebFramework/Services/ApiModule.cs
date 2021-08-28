@@ -66,6 +66,8 @@ namespace WebFramework.Services
             services.AddDatabase(config);
 
 
+            // Init Exception Module
+            ExceptionHandlerModule.Init(config, env);
             // Global Exception Handler for Status 404 ~ 500 Internal Server Error
             services.AddExceptionHandler(ExceptionHandlerModule.ExceptionHandler);
             // Global Error Handler for Status 400 BadRequest with Invalid ModelState

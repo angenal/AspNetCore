@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WebFramework.Services
@@ -18,9 +20,22 @@ namespace WebFramework.Services
     public static class ExceptionHandlerModule
     {
         /// <summary>
-        /// Web logs directory
+        /// Web logs root directory
         /// </summary>
-        public const string FilesDirectory = "logs";
+        public const string LogsRootDir = "logs";
+        static string StatusDir500 = StatusCodes.Status500InternalServerError.ToString();
+        static bool StatusDir500Exists = false;
+
+        /// <summary>
+        /// Init Exception Module
+        /// </summary>
+        public static void Init(IConfiguration config, IWebHostEnvironment env)
+        {
+            var path = Path.Combine(env.WebRootPath, LogsRootDir);
+            if (!Directory.Exists(path)) return;
+            StatusDir500 = Path.Combine(path, StatusDir500);
+            StatusDir500Exists = Directory.Exists(StatusDir500);
+        }
 
         /// <summary>
         /// Global Error Handler for Status 400 BadRequest with Invalid ModelState
@@ -88,24 +103,42 @@ namespace WebFramework.Services
                 context.Response.StatusCode = status;
 
                 var url = context.Request.GetDisplayUrl();
-                string detail = e.ToString(), details = detail;
+                string detail = e.ToString(), detail0 = detail;
                 string[] s = detail.Split(Environment.NewLine);
-                if (s.Length > 3) detail = string.Join(" → ", s[0], s[1], s[2]);
+                if (s.Length > 3) detail = string.Join(" ↓ ", s[0], s[1], s[2]);
+                var error = new { title = e.Message, detail, trace = context.TraceIdentifier, status };
 
-                var error = new
+                // Record logs, if exists web logs directory
+                if (StatusDir500Exists)
                 {
-                    title = e.Message,
-                    detail,
-                    trace = context.TraceIdentifier,
-                    status,
-                };
+                    var contents = new StringBuilder();
+                    contents.Append(Environment.NewLine);
+                    contents.Append(url);
+                    contents.Append(Environment.NewLine);
+                    contents.Append(Environment.NewLine);
 
-                // Record logs, if exists Web logs directory
-                var path = Path.Combine(context.Features.Get<IWebHostEnvironment>().WebRootPath, FilesDirectory, status.ToString());
-                if (Directory.Exists(path))
-                {
-                    details = $"{Environment.NewLine}{url}{Environment.NewLine}{Environment.NewLine}{details}";
-                    File.WriteAllTextAsync(Path.Combine(path, $"{error.trace}.txt"), details).Start();
+                    //  Enable seeking
+                    //context.Request.EnableBuffering();
+                    //  Read the stream as text
+                    if (context.Request.Body != null && context.Request.Body.CanRead)
+                    {
+                        var body = new StreamReader(context.Request.Body).ReadToEndAsync().GetAwaiter().GetResult();
+                        if (!string.IsNullOrWhiteSpace(body))
+                        {
+                            contents.Append(body);
+                            contents.Append(Environment.NewLine);
+                            contents.Append(Environment.NewLine);
+                        }
+                    }
+                    //  Set the position of the stream to 0 to enable rereading
+                    //context.Request.Body.Position = 0;
+
+                    contents.Append(contents);
+                    contents.Append(Environment.NewLine);
+
+                    var path = Path.Combine(StatusDir500, $"{error.trace}.txt");
+                    if (File.Exists(path)) File.AppendAllText(path, contents.ToString());
+                    else File.WriteAllText(path, contents.ToString());
                 }
                 else
                 {

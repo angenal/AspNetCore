@@ -74,10 +74,12 @@ namespace WebFramework
         /// <summary></summary>
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            user = context.HttpContext.User.Session();
-            if (user?.Id != null && context.Controller is ApiController controller)
+            if (context.Controller is ApiController controller)
             {
-                controller.user = user;
+                if (context.HttpContext.User != null && context.HttpContext.User.HasClaim(c => c.Type == JwtSettings.NameClaimType))
+                {
+                    controller.user = context.HttpContext.User.Session();
+                }
             }
             await next();
         }
