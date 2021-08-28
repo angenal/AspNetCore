@@ -1,0 +1,1 @@
+The current directory is used to store logs, please ensure its security.

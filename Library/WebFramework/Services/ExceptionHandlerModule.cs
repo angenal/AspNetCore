@@ -18,9 +18,9 @@ namespace WebFramework.Services
     public static class ExceptionHandlerModule
     {
         /// <summary>
-        /// Web logs files directory
+        /// Web logs directory
         /// </summary>
-        public const string FilesDirectory = "files";
+        public const string FilesDirectory = "logs";
 
         /// <summary>
         /// Global Error Handler for Status 400 BadRequest with Invalid ModelState
@@ -100,13 +100,11 @@ namespace WebFramework.Services
                     status,
                 };
 
-                // Record logs, if exists Web logs files directory
-                var path = Path.Combine(context.Features.Get<IWebHostEnvironment>().WebRootPath, FilesDirectory);
+                // Record logs, if exists Web logs directory
+                var path = Path.Combine(context.Features.Get<IWebHostEnvironment>().WebRootPath, FilesDirectory, status.ToString());
                 if (Directory.Exists(path))
                 {
-                    path = Path.Combine(path, status.ToString());
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    details = $"{url}{Environment.NewLine}{Environment.NewLine}{details}";
+                    details = $"{Environment.NewLine}{url}{Environment.NewLine}{Environment.NewLine}{details}";
                     File.WriteAllTextAsync(Path.Combine(path, $"{error.trace}.txt"), details).Start();
                 }
                 else

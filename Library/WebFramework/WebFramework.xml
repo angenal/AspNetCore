@@ -1578,7 +1578,7 @@
         </member>
         <member name="F:WebFramework.Services.ExceptionHandlerModule.FilesDirectory">
             <summary>
-            Web logs files directory
+            Web logs directory
             </summary>
         </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.ApiBehavior(Microsoft.AspNetCore.Mvc.ApiBehaviorOptions)">
