@@ -1581,6 +1581,16 @@
             Web logs root directory
             </summary>
         </member>
+        <member name="F:WebFramework.Services.ExceptionHandlerModule.StatusDir500Exists">
+            <summary>
+            Web logs record status 500
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.ExceptionHandlerModule.CacheEnabled">
+            <summary>
+            Web logs record cache enabled
+            </summary>
+        </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.Init(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
             <summary>
             Init Exception Module

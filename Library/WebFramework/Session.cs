@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using WebCore;
+using WebFramework.Services;
 using WebInterface.Settings;
 
 namespace WebFramework
@@ -76,10 +77,18 @@ namespace WebFramework
         {
             if (context.Controller is ApiController controller)
             {
-                if (context.HttpContext.User != null && context.HttpContext.User.HasClaim(c => c.Type == JwtSettings.NameClaimType))
+                if (controller.user == null && context.HttpContext.User != null && context.HttpContext.User.HasClaim(c => c.Type == JwtSettings.NameClaimType))
                 {
                     controller.user = context.HttpContext.User.Session();
                 }
+                // Web logs record cache enabled
+                if (ExceptionHandlerModule.CacheEnabled && context.HttpContext.TraceIdentifier != null && context.ActionArguments.Count > 0)
+                {
+                    context.HttpContext.Items.TryAdd(context.HttpContext.TraceIdentifier, context.ActionArguments);
+                }
+                //if (context.ActionDescriptor.Parameters.Count > 0 && context.ActionDescriptor.ActionConstraints.Any(t => t is HttpMethodActionConstraint c && c.HttpMethods.Contains(HttpMethods.Post)))
+                //{
+                //}
             }
             await next();
         }

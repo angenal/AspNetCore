@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using WebCore;
 
 namespace WebFramework.Services
 {
@@ -24,7 +26,14 @@ namespace WebFramework.Services
         /// </summary>
         public const string LogsRootDir = "logs";
         static string StatusDir500 = StatusCodes.Status500InternalServerError.ToString();
-        static bool StatusDir500Exists = false;
+        /// <summary>
+        /// Web logs record status 500
+        /// </summary>
+        public static bool StatusDir500Exists = false;
+        /// <summary>
+        /// Web logs record cache enabled
+        /// </summary>
+        public static bool CacheEnabled = false;
 
         /// <summary>
         /// Init Exception Module
@@ -35,6 +44,7 @@ namespace WebFramework.Services
             if (!Directory.Exists(path)) return;
             StatusDir500 = Path.Combine(path, StatusDir500);
             StatusDir500Exists = Directory.Exists(StatusDir500);
+            if (StatusDir500Exists) CacheEnabled = true;
         }
 
         /// <summary>
@@ -120,18 +130,28 @@ namespace WebFramework.Services
                     //  Enable seeking
                     //context.Request.EnableBuffering();
                     //  Read the stream as text
-                    if (context.Request.Body != null && context.Request.Body.CanRead)
+                    //if (context.Request.Body != null && context.Request.Body.CanRead)
+                    //{
+                    //    var body = new StreamReader(context.Request.Body).ReadToEndAsync().GetAwaiter().GetResult();
+                    //    if (!string.IsNullOrWhiteSpace(body))
+                    //    {
+                    //        contents.Append(body);
+                    //        contents.Append(Environment.NewLine);
+                    //        contents.Append(Environment.NewLine);
+                    //    }
+                    //}
+                    //  Set the position of the stream to 0 to enable rereading
+                    //context.Request.Body.Position = 0;
+
+                    if (error.trace != null && context.Items.TryGetValue(error.trace, out object value) && value is IDictionary<string, object> input)
                     {
-                        var body = new StreamReader(context.Request.Body).ReadToEndAsync().GetAwaiter().GetResult();
-                        if (!string.IsNullOrWhiteSpace(body))
+                        foreach (var key in input.Keys)
                         {
-                            contents.Append(body);
-                            contents.Append(Environment.NewLine);
+                            contents.Append($" {key} = ");
+                            contents.Append(input[key]?.ToJson() ?? "null");
                             contents.Append(Environment.NewLine);
                         }
                     }
-                    //  Set the position of the stream to 0 to enable rereading
-                    //context.Request.Body.Position = 0;
 
                     contents.Append(contents);
                     contents.Append(Environment.NewLine);
