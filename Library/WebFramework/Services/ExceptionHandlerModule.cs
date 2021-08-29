@@ -29,7 +29,7 @@ namespace WebFramework.Services
         /// <summary>
         /// Web logs record status 500
         /// </summary>
-        public static bool StatusDir500Exists = false;
+        static bool StatusDir500Exists = false;
         /// <summary>
         /// Web logs record cache enabled
         /// </summary>
@@ -112,52 +112,45 @@ namespace WebFramework.Services
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = status;
 
+                var trace = context.TraceIdentifier;
                 var url = context.Request.GetDisplayUrl();
                 string detail = e.ToString(), details = detail;
                 string[] s = detail.Split(Environment.NewLine);
                 if (s.Length > 3) detail = string.Join(" ↓", s[0], s[1], s[2]);
-                var error = new { title = e.Message, detail, trace = context.TraceIdentifier, status };
+                var error = new { title = e.Message, detail, trace, status };
 
                 // Record logs, if exists web logs directory
                 if (StatusDir500Exists)
                 {
-                    var contents = new StringBuilder();
-                    //contents.Append(Environment.NewLine);
-                    contents.Append(url);
+                    var contents = new StringBuilder(url);
                     contents.Append(Environment.NewLine);
                     contents.Append(Environment.NewLine);
 
-                    //  Enable seeking
-                    //context.Request.EnableBuffering();
-                    //  Read the stream as text
-                    //if (context.Request.Body != null && context.Request.Body.CanRead)
-                    //{
-                    //    var body = new StreamReader(context.Request.Body).ReadToEndAsync().GetAwaiter().GetResult();
-                    //    if (!string.IsNullOrWhiteSpace(body))
-                    //    {
-                    //        contents.Append(body);
-                    //        contents.Append(Environment.NewLine);
-                    //        contents.Append(Environment.NewLine);
-                    //    }
-                    //}
-                    //  Set the position of the stream to 0 to enable rereading
-                    //context.Request.Body.Position = 0;
-
-                    if (error.trace != null && context.Items.TryGetValue(error.trace, out object value) && value is IDictionary<string, object> input)
+                    // Gets trace request contents
+                    if (trace != null && context.Items.TryGetValue(trace, out object value) && value != null)
                     {
-                        foreach (var key in input.Keys)
+                        if (value is string body)
                         {
-                            contents.Append($" {key} = ");
-                            contents.Append(input[key]?.ToJson() ?? "null");
+                            contents.Append($" body => ");
+                            contents.Append(string.IsNullOrWhiteSpace(body) ? "null" : body);
                             contents.Append(Environment.NewLine);
+                        }
+                        else if (value is IDictionary<string, object> input)
+                        {
+                            foreach (var key in input.Keys)
+                            {
+                                contents.Append($" {key} => ");
+                                contents.Append(input[key]?.ToJson() ?? "null");
+                                contents.Append(Environment.NewLine);
+                            }
                         }
                     }
 
-                    // Write origin error
+                    // Write origin error logs
                     contents.Append(Environment.NewLine);
                     contents.Append(details);
-                    contents.Append(Environment.NewLine);
 
+                    // Record logs
                     var path = Path.Combine(StatusDir500, $"{error.trace}.txt");
                     if (File.Exists(path)) File.AppendAllText(path, contents.ToString());
                     else File.WriteAllText(path, contents.ToString());
@@ -171,15 +164,6 @@ namespace WebFramework.Services
 
                 return context.Response.WriteAsync(text);
             };
-        }
-
-        /// <summary>
-        /// Global Exception Filters for MVC
-        /// </summary>
-        /// <param name="options"></param>
-        public static void ApiExceptionsFilters(MvcOptions options)
-        {
-            //options.Filters.Add<HttpResponseExceptionFilter>();
         }
 
         /// <summary>

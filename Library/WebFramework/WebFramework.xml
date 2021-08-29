@@ -1051,6 +1051,28 @@
         <member name="M:WebFramework.EasyCachingDataSource.GetLiteDBDBOptions(System.String)">
             <summary></summary>
         </member>
+        <member name="T:WebFramework.Filters.AsyncSessionFilter">
+            <summary>
+            用户会话处理 by Jwt Token
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.AsyncSessionFilter.user">
+            <summary>
+            当前用户会话
+            </summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncSessionFilter.#ctor(WebFramework.Session)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncSessionFilter.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Filters.AsyncTraceMonitorFilter">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary></summary>
+        </member>
         <member name="T:WebFramework.Filters.HttpResponseExceptionFilter">
             <summary></summary>
         </member>
@@ -1607,12 +1629,6 @@
             </summary>
             <param name="options"></param>
         </member>
-        <member name="M:WebFramework.Services.ExceptionHandlerModule.ApiExceptionsFilters(Microsoft.AspNetCore.Mvc.MvcOptions)">
-            <summary>
-            Global Exception Filters for MVC
-            </summary>
-            <param name="options"></param>
-        </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.UseSentryMonitor(Microsoft.AspNetCore.Hosting.IWebHostBuilder)">
             <summary>
             Global Monitor System
@@ -2145,22 +2161,6 @@
             <summary>
             头像
             </summary>
-        </member>
-        <member name="T:WebFramework.AsyncSessionFilter">
-            <summary>
-            用户会话处理 by Jwt Token
-            </summary>
-        </member>
-        <member name="F:WebFramework.AsyncSessionFilter.user">
-            <summary>
-            当前用户会话
-            </summary>
-        </member>
-        <member name="M:WebFramework.AsyncSessionFilter.#ctor(WebFramework.Session)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.AsyncSessionFilter.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
-            <summary></summary>
         </member>
         <member name="T:WebFramework.SessionExtensions">
             <summary>

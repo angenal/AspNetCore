@@ -10,6 +10,7 @@ using System;
 using System.IO;
 using System.Linq;
 using WebCore.Documents;
+using WebFramework.Filters;
 using WebInterface;
 
 namespace WebFramework.Services
@@ -31,11 +32,11 @@ namespace WebFramework.Services
             return services.AddControllers(options =>
             {
                 // 全局日志记录
-                //options.Filters.Add<GlobalActionMonitor>();
-                // 全局异常处理 error handler
-                //ExceptionHandlerModule.ApiExceptionsFilters(options);
+                options.Filters.Add<AsyncTraceMonitorFilter>();
                 // 用户会话状态 user session
                 options.Filters.Add<AsyncSessionFilter>();
+                // 全局异常输出 output HttpResponseException
+                options.Filters.Add<HttpResponseExceptionFilter>();
             });
         }
 

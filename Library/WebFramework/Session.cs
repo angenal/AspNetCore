@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using WebCore;
-using WebFramework.Services;
 using WebInterface.Settings;
 
 namespace WebFramework
@@ -57,41 +54,6 @@ namespace WebFramework
         /// 头像
         /// </summary>
         public string Avatar { get; set; }
-    }
-
-    /// <summary>
-    /// 用户会话处理 by Jwt Token
-    /// </summary>
-    public class AsyncSessionFilter : IAsyncActionFilter
-    {
-        /// <summary>
-        /// 当前用户会话
-        /// </summary>
-        public Session user;
-
-        /// <summary></summary>
-        public AsyncSessionFilter(Session session) => user = session;
-
-        /// <summary></summary>
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-        {
-            if (context.Controller is ApiController controller)
-            {
-                if (controller.user == null && context.HttpContext.User != null && context.HttpContext.User.HasClaim(c => c.Type == JwtSettings.NameClaimType))
-                {
-                    controller.user = context.HttpContext.User.Session();
-                }
-                // Web logs record cache enabled
-                if (ExceptionHandlerModule.CacheEnabled && context.HttpContext.TraceIdentifier != null && context.ActionArguments.Count > 0)
-                {
-                    context.HttpContext.Items.TryAdd(context.HttpContext.TraceIdentifier, context.ActionArguments);
-                }
-                //if (context.ActionDescriptor.Parameters.Count > 0 && context.ActionDescriptor.ActionConstraints.Any(t => t is HttpMethodActionConstraint c && c.HttpMethods.Contains(HttpMethods.Post)))
-                //{
-                //}
-            }
-            await next();
-        }
     }
 
     /// <summary>
