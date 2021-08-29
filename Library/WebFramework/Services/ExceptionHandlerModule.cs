@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +27,11 @@ namespace WebFramework.Services
         /// Web logs root directory
         /// </summary>
         public const string LogsRootDir = "logs";
+        /// <summary>
+        /// Web logs job tasks
+        /// </summary>
+        //static readonly BackgroundJobServer JobServer = new BackgroundJobServer(new BackgroundJobServerOptions { ServerName = $"{LogsRootDir}-{Environment.ProcessId}" }, new MemoryStorage(new MemoryStorageOptions()));
+        static readonly BackgroundJobClient JobClient = new BackgroundJobClient(new MemoryStorage(new MemoryStorageOptions()));
         static string StatusDir500 = StatusCodes.Status500InternalServerError.ToString();
         /// <summary>
         /// Web logs record status 500
@@ -150,10 +157,9 @@ namespace WebFramework.Services
                     contents.Append(Environment.NewLine);
                     contents.Append(details);
 
-                    // Record logs
+                    // Record log file
                     var path = Path.Combine(StatusDir500, $"{error.trace}.txt");
-                    if (File.Exists(path)) File.AppendAllText(path, contents.ToString());
-                    else File.WriteAllText(path, contents.ToString());
+                    JobClient.Enqueue(() => RecordLog(path, contents.ToString()));
                 }
                 else
                 {
@@ -164,6 +170,15 @@ namespace WebFramework.Services
 
                 return context.Response.WriteAsync(text);
             };
+        }
+
+        /// <summary>
+        /// Record log file
+        /// </summary>
+        static void RecordLog(string path, string contents)
+        {
+            if (File.Exists(path)) File.AppendAllText(path, contents);
+            else File.WriteAllText(path, contents);
         }
 
         /// <summary>
