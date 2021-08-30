@@ -349,18 +349,25 @@ namespace WebFramework.Services
         /// </summary>
         public static async Task DeleteHandler(HttpContext context)
         {
-            string text = "{\"deleted\":0}", id = context.Request.RouteValues["id"].ToString();
-            if (Guid.TryParse(id, out Guid guid))
+            if (!context.Request.Method.Equals(HttpMethods.Delete))
             {
-                using (var db = LogDb.Open())
-                {
-                    var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
-                    var ok = c.Delete(new LiteDB.BsonValue(guid));
-                    text = "{\"deleted\":" + ok.ToString().ToLower() + "}";
-                }
+                context.Response.StatusCode = (int)HttpStatusCode.ServiceUnavailable;
             }
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(text);
+            else
+            {
+                string text = "{\"deleted\":0}", id = context.Request.RouteValues["id"].ToString();
+                if (Guid.TryParse(id, out Guid guid))
+                {
+                    using (var db = LogDb.Open())
+                    {
+                        var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
+                        var ok = c.Delete(new LiteDB.BsonValue(guid));
+                        text = "{\"deleted\":" + ok.ToString().ToLower() + "}";
+                    }
+                }
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(text);
+            }
         }
     }
 
