@@ -15,6 +15,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using WebCore;
 using WebFramework.Data;
 
@@ -308,7 +309,8 @@ namespace WebFramework.Services
         /// </summary>
         public static async Task QueryHandler(HttpContext context)
         {
-            string text = string.Empty, page = context.Request.RouteValues["page"].ToString();
+            var req = context.Request;
+            string text = string.Empty, callback = req.Query["callback"].ToString(), page = req.RouteValues["page"].ToString();
             if (!int.TryParse(page, out int pageIndex)) pageIndex = 0;
             int pageSize = 20;
             using (var db = LogDb.Open())
@@ -331,7 +333,9 @@ namespace WebFramework.Services
                     text = result.ToJson();
                 }
             }
-            context.Response.ContentType = "application/json";
+            bool jsonp = !string.IsNullOrEmpty(callback);
+            context.Response.ContentType = jsonp ? "text/x-json" : "application/json";
+            if (jsonp) text = $"{HttpUtility.UrlEncode(callback)}({text})";
             await context.Response.WriteAsync(text);
         }
 
