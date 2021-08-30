@@ -83,6 +83,10 @@ namespace WebFramework
             // 下载文件 Tus Endpoint Handler
             endpoints.MapGet("/" + TusFileServer.UrlPath.Trim('/') + "/{fileId}", TusFileServer.DownloadHandler);
 
+            // 查询异常日志记录
+            endpoints.MapGet(ExceptionLogService.QueryUrl, ExceptionLogService.QueryHandler);
+            endpoints.MapGet(ExceptionLogService.DeleteUrl, ExceptionLogService.DeleteHandler);
+
             // 默认路由 Default MVC with culture
             endpoints.MapControllerRoute("default", "{culture:culture}/{controller=Home}/{action=Index}/{id?}");
         }

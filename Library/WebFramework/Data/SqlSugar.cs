@@ -39,23 +39,16 @@ namespace WebFramework.Data
         /// </summary>
         public static SqlSugarClient Get(string connectionString, string separatorChars = ":")
         {
-            return string.IsNullOrEmpty(threadLocal.Value) || !cache.ContainsKey(threadLocal.Value)
-                ? Init(connectionString, separatorChars)
-                : cache[threadLocal.Value];
-        }
-        /// <summary></summary>
-        public static SqlSugarClient Init(string connectionString, string separatorChars = ":")
-        {
-            var key = Guid.NewGuid().ToString("N");
-            if (cache.TryAdd(key, connectionString.NewSqlSugarClient(separatorChars))) threadLocal.Value = key;
+            var key = threadLocal.Value;
+            if (!cache.ContainsKey(key)) cache.TryAdd(key, connectionString.NewSqlSugarClient(separatorChars));
             return cache[key];
         }
         /// <summary></summary>
-        static ThreadLocalSqlSugar() => threadLocal = new ThreadLocal<string>();
+        static ThreadLocalSqlSugar() => threadLocal = new ThreadLocal<string>(() => Guid.NewGuid().ToString("N"));
         /// <summary></summary>
-        static ThreadLocal<string> threadLocal;
+        private static readonly ThreadLocal<string> threadLocal;
         /// <summary></summary>
-        static readonly ConcurrentDictionary<string, SqlSugarClient> cache = new ConcurrentDictionary<string, SqlSugarClient>();
+        private static readonly ConcurrentDictionary<string, SqlSugarClient> cache = new ConcurrentDictionary<string, SqlSugarClient>();
     }
     /// <summary>
     /// 数据库访问类 访问上下文 for SqlSugar Client

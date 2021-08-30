@@ -80,7 +80,7 @@ namespace WebFramework.Services
                 x.SerializerSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore;
                 x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 //x.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                x.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                x.SerializerSettings.DateFormatString = WebCore.DefaultFormat.DateTimeFormats;
             });
             //builder.AddJsonOptions(x => x.JsonSerializerOptions.WriteIndented = true); // default System.Text.Json
 

@@ -5,14 +5,20 @@ namespace WebCore
         public const string CommaChars = ",，";
         public static readonly char[] SeparatorChars = CommaChars.ToCharArray();
 
+        /// <summary>
+        /// Sets HTTP request headers["User-Agent"]
+        /// </summary>
         public const string UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.82 Safari/537.36";
 
-        public static readonly string DateTimeFormats = "yyyy-MM-dd HH:mm:ss";
-        public static readonly string DateFormats = "yyyy-MM-dd";
-        public static readonly string TimeFormats = "HH:mm:ss";
+        // Gets or sets how System.DateTime and System.DateTimeOffset values are formatted
+        // when writing JSON text, and the expected date format when reading JSON text.
+        // The default value is "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK".
+        public static string DateTimeFormats = "yyyy-MM-dd HH:mm:ss";
+        public static string DateFormats = "yyyy-MM-dd";
+        public static string TimeFormats = "HH:mm:ss";
 
-        public static readonly string DateTimeOffsetFormatsToWrite = "o";
-        public static readonly string DateTimeFormatsToWrite = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffff";
+        public static string DateTimeFormatsToWrite = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK";
+        public static string DateTimeOffsetFormatsToWrite = "o";
 
         public static readonly string[] OnlyDateTimeFormat = {
             "yyyy'-'MM'-'dd'T'HH':'mm':'ss",

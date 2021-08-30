@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,6 +16,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WebCore;
+using WebFramework.Data;
 
 namespace WebFramework.Services
 {
@@ -23,7 +25,7 @@ namespace WebFramework.Services
     /// </summary>
     public static class ExceptionHandlerModule
     {
-        //static readonly BackgroundJobClient JobClient = new BackgroundJobClient(new MemoryStorage());
+        //static readonly BackgroundJobClient JobClient = new BackgroundJobClient(new MemoryStorage(new MemoryStorageOptions()));
         //static readonly BackgroundJobServer JobServer = new BackgroundJobServer(new BackgroundJobServerOptions { ServerName = $"{LogsRootDir}-{Environment.ProcessId}" }, new MemoryStorage(new MemoryStorageOptions()));
 
         /// <summary>
@@ -31,9 +33,9 @@ namespace WebFramework.Services
         /// </summary>
         public const string LogsRootDir = "logs";
         /// <summary>
-        /// Asynchronous record log file
+        /// Web logs record cache enabled
         /// </summary>
-        static AsyncExceptionHandler<AsyncExceptionLogfileModel> LogsHandler;
+        public static bool CacheEnabled = false;
         /// <summary>
         /// Web logs directory for status 500
         /// </summary>
@@ -43,9 +45,9 @@ namespace WebFramework.Services
         /// </summary>
         static bool StatusDir500Exists = false;
         /// <summary>
-        /// Web logs record cache enabled
+        /// Asynchronous record log file
         /// </summary>
-        public static bool CacheEnabled = false;
+        static AsyncExceptionHandler<ExceptionLog> LogHandler;
 
         /// <summary>
         /// Init Exception Module
@@ -54,10 +56,15 @@ namespace WebFramework.Services
         {
             var path = Path.Combine(env.WebRootPath, LogsRootDir);
             if (!Directory.Exists(path)) return;
-            LogsHandler = AsyncExceptionHandler<AsyncExceptionLogfileModel>.Default;
+            ExceptionLogService.LogDb = new LiteDb(Path.Combine(path, $"{StatusDir500}.db"), false);
             StatusDir500 = Path.Combine(path, StatusDir500);
             StatusDir500Exists = Directory.Exists(StatusDir500);
-            if (StatusDir500Exists) CacheEnabled = true;
+            if (StatusDir500Exists)
+            {
+                CacheEnabled = true;
+                LogHandler = new AsyncExceptionHandler<ExceptionLog>(TimeSpan.Zero, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30), 1).Start();
+                LogHandler.Subscribe(ExceptionLogService.WriteLogStatusDir500);
+            }
         }
 
         /// <summary>
@@ -132,7 +139,7 @@ namespace WebFramework.Services
                 if (s.Length > 3) detail = string.Join(" ↓", s[0], s[1], s[2]);
                 var error = new { title = e.Message, detail, trace, status };
 
-                // Record logs, if exists web logs directory
+                // Record logs, if exists web logs/500 directory
                 if (StatusDir500Exists)
                 {
                     var contents = new StringBuilder(url);
@@ -164,10 +171,13 @@ namespace WebFramework.Services
                     contents.Append(details);
 
                     // Asynchronous record log file
-                    LogsHandler.Publish(new AsyncExceptionLogfileModel
+                    LogHandler.Publish(new ExceptionLog
                     {
-                        Path = Path.Combine(StatusDir500, $"{error.trace}.txt"),
+                        Path = context.Request.Path.Value,
+                        Trace = error.trace,
+                        Message = e.Message,
                         Content = contents.ToString(),
+                        Time = DateTime.Now,
                     });
                 }
                 else
@@ -181,14 +191,6 @@ namespace WebFramework.Services
             };
         }
 
-        /// <summary>
-        /// Record log file
-        /// </summary>
-        static void RecordLog(string path, string contents)
-        {
-            if (File.Exists(path)) File.AppendAllText(path, contents);
-            else File.WriteAllText(path, contents);
-        }
 
         /// <summary>
         /// Global Monitor System
@@ -225,14 +227,111 @@ namespace WebFramework.Services
     }
 
     /// <summary>
-    /// Asynchronous record log file
+    /// Exception log database model
     /// </summary>
-    internal class AsyncExceptionLogfileModel
+    public class ExceptionLog
     {
-        /// <summary></summary>
+        /// <summary>编号</summary>
+        [Display(Name = "编号")]
+        [Key()]
+        public Guid Id { get; set; }
+        /// <summary>跟踪网址</summary>
+        [Display(Name = "跟踪网址")]
         public string Path { get; set; }
-        /// <summary></summary>
+        /// <summary>跟踪编号</summary>
+        [Display(Name = "跟踪编号")]
+        public string Trace { get; set; }
+        /// <summary>异常消息</summary>
+        [Display(Name = "异常消息")]
+        public string Message { get; set; }
+        /// <summary>异常详情</summary>
+        [Display(Name = "异常详情")]
         public string Content { get; set; }
+        /// <summary>产生时间</summary>
+        [Display(Name = "产生时间")]
+        public DateTime Time { get; set; }
+    }
+
+    /// <summary>
+    /// Exception log database service
+    /// </summary>
+    public class ExceptionLogService
+    {
+        /// <summary>
+        /// Use LiteDb
+        /// </summary>
+        internal static LiteDb LogDb;
+
+        /// <summary>
+        /// Record log, if exists web logs/500 directory
+        /// </summary>
+        internal static void WriteLogStatusDir500(ExceptionLog log)
+        {
+            try
+            {
+                //// Record log file
+                //var path = Path.Combine(StatusDir500, $"{log.Trace}.txt");
+                //if (File.Exists(path)) File.AppendAllText(path, log.Content);
+                //else File.WriteAllText(path, log.Content);
+                // Record log database
+                using var db = LogDb.Open();
+                var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
+                c.Insert(log);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        /// <summary>
+        /// Query log records Url
+        /// </summary>
+        public const string QueryUrl = "/log/exception/query/{page}";
+
+        /// <summary>
+        /// Query log records from LiteDb
+        /// </summary>
+        public static async Task QueryHandler(HttpContext context)
+        {
+            string text = string.Empty, page = context.Request.RouteValues["page"].ToString();
+            if (!int.TryParse(page, out int pageIndex)) pageIndex = 0;
+            int pageSize = 20;
+            using (var db = LogDb.Open())
+            {
+                var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
+                var result = pageIndex <= 0
+                    ? c.FindAll()
+                    : c.Query().Skip(pageSize * (pageIndex - 1)).Limit(pageSize).ToList();
+                text = result.ToJson();
+            }
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(text);
+        }
+
+        /// <summary>
+        /// Delete log records Url
+        /// </summary>
+        public const string DeleteUrl = "/log/exception/delete/{id}";
+
+        /// <summary>
+        /// Delete log records from LiteDb
+        /// </summary>
+        public static async Task DeleteHandler(HttpContext context)
+        {
+            string text = "{\"deleted\":0}", id = context.Request.RouteValues["id"].ToString();
+            if (Guid.TryParse(id, out Guid guid))
+            {
+                using (var db = LogDb.Open())
+                {
+                    var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
+                    var ok = c.Delete(new LiteDB.BsonValue(guid));
+                    text = "{\"deleted\":" + ok.ToString().ToLower() + "}";
+                }
+            }
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(text);
+        }
     }
 
     /// <summary>
@@ -384,10 +483,10 @@ namespace WebFramework.Services
                         while (hasValue)
                         {
                             var list = new List<T>();
-                            for (var i = 0; i < _onceConcurrentTasks && items.TryDequeue(out var item); i++)
-                                list.Add(item);
-                            Parallel.ForEach(list, item =>
+                            for (var i = 0; i < _onceConcurrentTasks && items.TryDequeue(out var item); i++) list.Add(item);
+                            if (list.Count == 1)
                             {
+                                var item = list[0];
                                 try
                                 {
                                     foreach (var handler in Handlers)
@@ -407,7 +506,32 @@ namespace WebFramework.Services
                                 {
                                     Publish(item); // rollback after exception
                                 }
-                            });
+                            }
+                            else
+                            {
+                                Parallel.ForEach(list, item =>
+                                {
+                                    try
+                                    {
+                                        foreach (var handler in Handlers)
+                                        {
+                                            switch (handler)
+                                            {
+                                                case Action<T> action:
+                                                    Run(action, item).ConfigureAwait(false).GetAwaiter().GetResult();
+                                                    break;
+                                                case Func<T, Task> func:
+                                                    Run(func, item).ConfigureAwait(false).GetAwaiter().GetResult();
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception)
+                                    {
+                                        Publish(item); // rollback after exception
+                                    }
+                                });
+                            }
                             if (isOnceInterval) Thread.Sleep(_onceInterval); // sleep 1 milliseconds after parallel tasks, for load reduction
                             hasValue = items.TryPeek(out _);
                         }

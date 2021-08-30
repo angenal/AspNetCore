@@ -863,9 +863,6 @@
             获取当前线程的 SqlSugar Client
             </summary>
         </member>
-        <member name="M:WebFramework.Data.ThreadLocalSqlSugar.Init(System.String,System.String)">
-            <summary></summary>
-        </member>
         <member name="M:WebFramework.Data.ThreadLocalSqlSugar.#cctor">
             <summary></summary>
         </member>
@@ -1623,9 +1620,9 @@
             Web logs root directory
             </summary>
         </member>
-        <member name="F:WebFramework.Services.ExceptionHandlerModule.LogsHandler">
+        <member name="F:WebFramework.Services.ExceptionHandlerModule.CacheEnabled">
             <summary>
-            Asynchronous record log file
+            Web logs record cache enabled
             </summary>
         </member>
         <member name="F:WebFramework.Services.ExceptionHandlerModule.StatusDir500">
@@ -1638,9 +1635,9 @@
             Web logs record status 500
             </summary>
         </member>
-        <member name="F:WebFramework.Services.ExceptionHandlerModule.CacheEnabled">
+        <member name="F:WebFramework.Services.ExceptionHandlerModule.LogHandler">
             <summary>
-            Web logs record cache enabled
+            Asynchronous record log file
             </summary>
         </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.Init(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
@@ -1659,11 +1656,6 @@
             </summary>
             <param name="options"></param>
         </member>
-        <member name="M:WebFramework.Services.ExceptionHandlerModule.RecordLog(System.String,System.String)">
-            <summary>
-            Record log file
-            </summary>
-        </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.UseSentryMonitor(Microsoft.AspNetCore.Hosting.IWebHostBuilder)">
             <summary>
             Global Monitor System
@@ -1673,16 +1665,63 @@
             https://github.com/getsentry/onpremise > ./install.sh (docker)
             </summary>
         </member>
-        <member name="T:WebFramework.Services.AsyncExceptionLogfileModel">
+        <member name="T:WebFramework.Services.ExceptionLog">
             <summary>
-            Asynchronous record log file
+            Exception log database model
             </summary>
         </member>
-        <member name="P:WebFramework.Services.AsyncExceptionLogfileModel.Path">
-            <summary></summary>
+        <member name="P:WebFramework.Services.ExceptionLog.Id">
+            <summary>编号</summary>
         </member>
-        <member name="P:WebFramework.Services.AsyncExceptionLogfileModel.Content">
-            <summary></summary>
+        <member name="P:WebFramework.Services.ExceptionLog.Path">
+            <summary>跟踪网址</summary>
+        </member>
+        <member name="P:WebFramework.Services.ExceptionLog.Trace">
+            <summary>跟踪编号</summary>
+        </member>
+        <member name="P:WebFramework.Services.ExceptionLog.Message">
+            <summary>异常消息</summary>
+        </member>
+        <member name="P:WebFramework.Services.ExceptionLog.Content">
+            <summary>异常详情</summary>
+        </member>
+        <member name="P:WebFramework.Services.ExceptionLog.Time">
+            <summary>产生时间</summary>
+        </member>
+        <member name="T:WebFramework.Services.ExceptionLogService">
+            <summary>
+            Exception log database service
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.ExceptionLogService.LogDb">
+            <summary>
+            Use LiteDb
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.ExceptionLogService.WriteLogStatusDir500(WebFramework.Services.ExceptionLog)">
+            <summary>
+            Record log, if exists web logs/500 directory
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.ExceptionLogService.QueryUrl">
+            <summary>
+            Query log records Url
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.ExceptionLogService.QueryHandler(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Query log records from LiteDb
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.ExceptionLogService.DeleteUrl">
+            <summary>
+            Delete log records Url
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.ExceptionLogService.DeleteHandler(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Delete log records from LiteDb
+            </summary>
         </member>
         <member name="T:WebFramework.Services.AsyncExceptionHandler`1">
             <summary>
