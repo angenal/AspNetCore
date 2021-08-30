@@ -251,6 +251,20 @@ namespace WebFramework.Services
         [Display(Name = "产生时间")]
         public DateTime Time { get; set; }
     }
+    /// <summary>
+    /// Exception log output
+    /// </summary>
+    public class ExceptionLogOutputDto
+    {
+        /// <summary></summary>
+        public int Records { get; set; }
+        /// <summary></summary>
+        public int Page { get; set; }
+        /// <summary></summary>
+        public int Total { get; set; }
+        /// <summary></summary>
+        public List<ExceptionLog> Rows { get; set; }
+    }
 
     /// <summary>
     /// Exception log database service
@@ -300,10 +314,22 @@ namespace WebFramework.Services
             using (var db = LogDb.Open())
             {
                 var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
-                var result = pageIndex <= 0
-                    ? c.FindAll()
-                    : c.Query().Skip(pageSize * (pageIndex - 1)).Limit(pageSize).ToList();
-                text = result.ToJson();
+                if (pageIndex <= 0)
+                {
+                    var result = c.FindAll();
+                    text = result.ToJson();
+                }
+                else
+                {
+                    var result = new ExceptionLogOutputDto()
+                    {
+                        Page = pageIndex,
+                        Records = c.Count(),
+                    };
+                    result.Total = (int)Math.Ceiling((double)result.Records / pageSize);
+                    result.Rows = c.Query().Skip(pageSize * (pageIndex - 1)).Limit(pageSize).ToList();
+                    text = result.ToJson();
+                }
             }
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(text);
