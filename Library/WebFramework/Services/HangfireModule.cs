@@ -88,7 +88,6 @@ namespace WebFramework.Services
             {
                 services.AddHangfire(x => x.UseMemoryStorage(new MemoryStorageOptions
                 {
-                    //FetchNextJobTimeout = TimeSpan.FromSeconds(15),       // 作业队列轮询间隔 默认15秒
                     JobExpirationCheckInterval = TimeSpan.FromHours(1),   // 作业到期检查间隔（管理过期记录）默认1小时
                     CountersAggregateInterval = TimeSpan.FromMinutes(5),  // 聚合计数器的间隔 默认5分钟
                 }));
