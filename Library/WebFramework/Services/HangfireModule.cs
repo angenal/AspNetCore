@@ -39,7 +39,9 @@ namespace WebFramework.Services
         public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration config)
         {
             // Differentiate between different applications
-            var appCrc32x8 = Environment.CurrentDirectory.Crc32x8();
+            var prefixSection = config.GetSection("Hangfire:Prefix");
+            var prefix = prefixSection.Exists() ? prefixSection.Value : "hangfire";
+            var serverName = $"{prefix.Replace(":", "-").Replace("/", "-")}-{Environment.CurrentDirectory.Crc32x8()}";
 
             // SqlServer Storage
             if (config.GetSection("Hangfire:DB").Exists())
@@ -70,7 +72,7 @@ namespace WebFramework.Services
             else if (config.GetSection("Hangfire:Redis").Exists())
                 services.AddHangfire(x => x.UseRedisStorage(config.GetSection("Hangfire:Redis").Value, new RedisStorageOptions
                 {
-                    Prefix = config.GetSection("Hangfire:Prefix").Value,
+                    Prefix = prefix,
                     MaxDeletedListLength = 1000,
                     MaxSucceededListLength = 1000,
                     InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
@@ -86,14 +88,14 @@ namespace WebFramework.Services
             {
                 services.AddHangfire(x => x.UseMemoryStorage(new MemoryStorageOptions
                 {
-                    FetchNextJobTimeout = TimeSpan.FromSeconds(15),       // 作业队列轮询间隔 默认15秒
+                    //FetchNextJobTimeout = TimeSpan.FromSeconds(15),       // 作业队列轮询间隔 默认15秒
                     JobExpirationCheckInterval = TimeSpan.FromHours(1),   // 作业到期检查间隔（管理过期记录）默认1小时
                     CountersAggregateInterval = TimeSpan.FromMinutes(5),  // 聚合计数器的间隔 默认5分钟
                 }));
                 services.AddHangfireServer(options =>
                 {
                     options.Queues = new[] { "default" };
-                    options.ServerName = $"HangfireServer-{appCrc32x8}-{Environment.ProcessId}";
+                    options.ServerName = $"{serverName}-{Environment.ProcessId}";
                     options.TimeZoneResolver = new HangfireResolvers();   // 本地时区
                     options.WorkerCount = Environment.ProcessorCount;     // 并发任务数
                 });
@@ -103,7 +105,7 @@ namespace WebFramework.Services
             services.AddHangfireServer(options =>
             {
                 options.Queues = new[] { "default" };
-                options.ServerName = $"HangfireServer-{appCrc32x8}";
+                options.ServerName = serverName;
                 options.TimeZoneResolver = new HangfireResolvers();   // 本地时区
                 options.WorkerCount = Environment.ProcessorCount * 5; // 并发任务数
             });

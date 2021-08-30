@@ -1,10 +1,16 @@
 using Hangfire;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Memory;
+using SqlSugar;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 using WebCore;
+using WebFramework.Data;
+using WebFramework.SignalR;
+using WebInterface;
 
 namespace WebFramework.Controllers
 {
@@ -16,11 +22,17 @@ namespace WebFramework.Controllers
     public class TimeController : ApiController
     {
         private readonly IWebHostEnvironment env;
+        private readonly IMemoryCache cache;
+        private readonly ICrypto crypto;
+        private readonly IHubContext<ChatHub> hubContext;
 
         /// <summary></summary>
-        public TimeController(IWebHostEnvironment env)
+        public TimeController(IWebHostEnvironment env, IMemoryCache cache, ICrypto crypto, IHubContext<ChatHub> hubContext)
         {
             this.env = env;
+            this.cache = cache;
+            this.crypto = crypto;
+            this.hubContext = hubContext;
         }
 
         /// <summary>
@@ -59,18 +71,18 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// Schedule Now() input
+        /// Schedule TimeJob Input
         /// </summary>
         public class ScheduleNowInputDto
         {
             /// <summary>
-            /// Delay time 00:01:00
+            /// Delay time, e.g. 00:01:00
             /// </summary>
             public string Delay { get; set; }
         }
 
         /// <summary>
-        /// Schedule Now() after delay time
+        /// Schedule TimeJob after delay time
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -78,12 +90,58 @@ namespace WebFramework.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<ActionResult> ScheduleNow(ScheduleNowInputDto input)
         {
-            if (!TimeSpan.TryParse(input.Delay, out TimeSpan delay) || delay < TimeSpan.FromSeconds(15))
+            if (!TimeSpanParser.TryParse(input.Delay, out TimeSpan delay) || delay < TimeSpan.FromSeconds(5))
                 return Error("参数错误！");
 
-            var id = BackgroundJob.Schedule(() => Now(), delay);
+            var cacheKey = crypto.Md5(env.ApplicationName + crypto.RandomString(8));
+            cache.Set(cacheKey, DateTime.Now);
+
+            var id = BackgroundJob.Schedule(() => new TimeJob(cache, hubContext).Execute(cacheKey, delay), delay);
 
             return Ok(await Task.FromResult(id));
+        }
+    }
+
+    /// <summary></summary>
+    public class TimeJob
+    {
+        #region constructor
+
+        private readonly IMemoryCache cache;
+        private readonly IHubContext<ChatHub> hubContext;
+
+        /// <summary>
+        /// new SqlSugarClient
+        /// </summary>
+        public SqlSugarClient db => _db ??= SQLServerDb.DefaultConnection.NewSqlSugarClient();
+        private SqlSugarClient _db;
+
+        /// <summary></summary>
+        public TimeJob() { }
+        /// <summary></summary>
+        public TimeJob(SqlSugarClient db) => _db = db;
+        /// <summary></summary>
+        public TimeJob(IMemoryCache cache, IHubContext<ChatHub> hubContext)
+        {
+            this.cache = cache;
+            this.hubContext = hubContext;
+        }
+
+        #endregion
+
+        /// <summary></summary>
+        public void Execute(string cacheKey, TimeSpan schedule)
+        {
+            DateTime now = DateTime.Now, cacheTime = cache.Get<DateTime>(cacheKey), time = cacheTime.Add(schedule);
+            // error is within 5 seconds
+            if (now.ToTimestampSeconds() - time.ToTimestampSeconds() < 5)
+            {
+                System.Diagnostics.Debug.WriteLine($"{nameof(TimeJob)} executes successfully.");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"{nameof(TimeJob)} executes failed.");
+            }
         }
     }
 }

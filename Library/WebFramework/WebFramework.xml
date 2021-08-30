@@ -463,7 +463,7 @@
             系统时间
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.TimeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+        <member name="M:WebFramework.Controllers.TimeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Caching.Memory.IMemoryCache,WebInterface.ICrypto,Microsoft.AspNetCore.SignalR.IHubContext{WebFramework.SignalR.ChatHub})">
             <summary></summary>
         </member>
         <member name="M:WebFramework.Controllers.TimeController.Now">
@@ -473,19 +473,39 @@
         </member>
         <member name="T:WebFramework.Controllers.TimeController.ScheduleNowInputDto">
             <summary>
-            Schedule Now() input
+            Schedule TimeJob Input
             </summary>
         </member>
         <member name="P:WebFramework.Controllers.TimeController.ScheduleNowInputDto.Delay">
             <summary>
-            Delay time 00:01:00
+            Delay time, e.g. 00:01:00
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.TimeController.ScheduleNow(WebFramework.Controllers.TimeController.ScheduleNowInputDto)">
             <summary>
-            Schedule Now() after delay time
+            Schedule TimeJob after delay time
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:WebFramework.Controllers.TimeJob">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Controllers.TimeJob.db">
+            <summary>
+            new SqlSugarClient
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.TimeJob.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Controllers.TimeJob.#ctor(SqlSugar.SqlSugarClient)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Controllers.TimeJob.#ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache,Microsoft.AspNetCore.SignalR.IHubContext{WebFramework.SignalR.ChatHub})">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Controllers.TimeJob.Execute(System.String,System.TimeSpan)">
+            <summary></summary>
         </member>
         <member name="T:WebFramework.Data.LiteDb">
             <summary>
