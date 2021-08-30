@@ -1688,6 +1688,23 @@
         <member name="P:WebFramework.Services.ExceptionLog.Time">
             <summary>产生时间</summary>
         </member>
+        <member name="T:WebFramework.Services.ExceptionLogOutputDto">
+            <summary>
+            Exception log output
+            </summary>
+        </member>
+        <member name="P:WebFramework.Services.ExceptionLogOutputDto.Records">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Services.ExceptionLogOutputDto.Page">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Services.ExceptionLogOutputDto.Total">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Services.ExceptionLogOutputDto.Rows">
+            <summary></summary>
+        </member>
         <member name="T:WebFramework.Services.ExceptionLogService">
             <summary>
             Exception log database service

@@ -1,7 +1,8 @@
-var key = CryptoJS.enc.Utf8.parse('TmIhgugCGFpU7S3v'), iv = CryptoJS.enc.Utf8.parse('jkE49230Tf093b42');
-var keys = { key: key, iv: iv };
+var keys = { key: 'TmIhgugCGFpU7S3v', iv: 'jkE49230Tf093b42' };
+var key = CryptoJS.enc.Utf8.parse(keys.key), iv = CryptoJS.enc.Utf8.parse(keys.iv);
 
 const encryptWithJavascript = () => {
+    $('#decrypt').val('');
     var encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse($('#encrypt').val()), key, {
         keySize: 128 / 8,
         iv: iv,
@@ -17,6 +18,7 @@ const encryptWithJavascript = () => {
 }
 
 const decryptWithJavascript = () => {
+    $('#encrypt').val('');
     var decrypted = CryptoJS.AES.decrypt($('#decrypt').val(), key, {
         keySize: 128 / 8,
         iv: iv,
@@ -30,6 +32,7 @@ const decryptWithJavascript = () => {
 }
 
 const encryptWithCsharp = () => {
+    $('#decrypt').val('');
     $.ajax({
         type: 'POST',
         url: '/api/Data/Encrypt',
@@ -45,6 +48,7 @@ const encryptWithCsharp = () => {
 }
 
 const decryptWithCsharp = () => {
+    $('#encrypt').val('');
     $.ajax({
         type: 'POST',
         url: '/api/Data/Decrypt',
