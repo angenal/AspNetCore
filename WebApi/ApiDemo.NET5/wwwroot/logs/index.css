@@ -1,0 +1,11 @@
+
+.nav>li>a{font-size:17px}
+.navbar-left{border-bottom:1px solid #E7E7E7}
+.navbar-form{margin-top:0;border-top:0}
+.input-group{width:100%}
+.form-control:first-child{border-top-right-radius:3px;border-bottom-right-radius:3px}
+.navbar-shadow{box-shadow:0 0 5px 0 rgba(0,0,0,.3)}
+@media (min-width:768px){
+    .navbar-collapse .navbar-left{border-bottom:0}
+    .navbar-form .input-group{margin-top:10px}
+}
