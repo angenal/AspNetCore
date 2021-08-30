@@ -1,5 +1,3 @@
-using Hangfire;
-using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -8,11 +6,13 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WebCore;
 
@@ -23,15 +23,20 @@ namespace WebFramework.Services
     /// </summary>
     public static class ExceptionHandlerModule
     {
+        //static readonly BackgroundJobClient JobClient = new BackgroundJobClient(new MemoryStorage());
+        //static readonly BackgroundJobServer JobServer = new BackgroundJobServer(new BackgroundJobServerOptions { ServerName = $"{LogsRootDir}-{Environment.ProcessId}" }, new MemoryStorage(new MemoryStorageOptions()));
+
         /// <summary>
         /// Web logs root directory
         /// </summary>
         public const string LogsRootDir = "logs";
         /// <summary>
-        /// Web logs job tasks
+        /// Asynchronous record log file
         /// </summary>
-        //static readonly BackgroundJobServer JobServer = new BackgroundJobServer(new BackgroundJobServerOptions { ServerName = $"{LogsRootDir}-{Environment.ProcessId}" }, new MemoryStorage(new MemoryStorageOptions()));
-        static readonly BackgroundJobClient JobClient = new BackgroundJobClient(new MemoryStorage(new MemoryStorageOptions()));
+        static AsyncExceptionHandler<AsyncExceptionLogfileModel> LogsHandler;
+        /// <summary>
+        /// Web logs directory for status 500
+        /// </summary>
         static string StatusDir500 = StatusCodes.Status500InternalServerError.ToString();
         /// <summary>
         /// Web logs record status 500
@@ -49,6 +54,7 @@ namespace WebFramework.Services
         {
             var path = Path.Combine(env.WebRootPath, LogsRootDir);
             if (!Directory.Exists(path)) return;
+            LogsHandler = AsyncExceptionHandler<AsyncExceptionLogfileModel>.Default;
             StatusDir500 = Path.Combine(path, StatusDir500);
             StatusDir500Exists = Directory.Exists(StatusDir500);
             if (StatusDir500Exists) CacheEnabled = true;
@@ -157,9 +163,12 @@ namespace WebFramework.Services
                     contents.Append(Environment.NewLine);
                     contents.Append(details);
 
-                    // Record log file
-                    var path = Path.Combine(StatusDir500, $"{error.trace}.txt");
-                    JobClient.Enqueue(() => RecordLog(path, contents.ToString()));
+                    // Asynchronous record log file
+                    LogsHandler.Publish(new AsyncExceptionLogfileModel
+                    {
+                        Path = Path.Combine(StatusDir500, $"{error.trace}.txt"),
+                        Content = contents.ToString(),
+                    });
                 }
                 else
                 {
@@ -212,6 +221,234 @@ namespace WebFramework.Services
             //});
 
             return builder;
+        }
+    }
+
+    /// <summary>
+    /// Asynchronous record log file
+    /// </summary>
+    internal class AsyncExceptionLogfileModel
+    {
+        /// <summary></summary>
+        public string Path { get; set; }
+        /// <summary></summary>
+        public string Content { get; set; }
+    }
+
+    /// <summary>
+    /// Asynchronous subscription publication > 3k Requests/sec + The background processing time is about one minute.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    internal class AsyncExceptionHandler<T> : IDisposable
+    {
+        /// <summary>
+        /// Subscribe Tasks
+        /// </summary>
+        internal List<Delegate> Handlers = new List<Delegate>();
+
+        /// <summary>
+        /// data list
+        /// </summary>
+        private readonly Dictionary<long, ConcurrentQueue<T>> _data = new Dictionary<long, ConcurrentQueue<T>>();
+
+        /// <summary>
+        /// parallel tasks number
+        /// </summary>
+        private readonly int _onceConcurrentTasks;
+        /// <summary>
+        /// sleep 1 milliseconds after parallel tasks, for load reduction
+        /// </summary>
+        private readonly TimeSpan _onceInterval;
+        /// <summary>
+        /// sleep 1 seconds before parallel tasks, for load reduction
+        /// </summary>
+        private readonly TimeSpan _interval;
+        /// <summary>
+        /// a task timeout
+        /// </summary>
+        private readonly TimeSpan _timeout;
+        /// <summary>
+        /// a background thread
+        /// </summary>
+        private readonly Thread _thread0;
+        private readonly Thread _thread1;
+        private bool _started;
+        private long _timeStamp;
+        private long _timeStampSeed;
+
+        /// <summary></summary>
+        private static AsyncExceptionHandler<T> _default;
+
+        /// <summary></summary>
+        public static AsyncExceptionHandler<T> Default => _default ??= new AsyncExceptionHandler<T>(TimeSpan.Zero, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30)).Start();
+
+        /// <summary></summary>
+        public AsyncExceptionHandler(TimeSpan onceInterval, TimeSpan interval, TimeSpan timeout, int onceConcurrentTasks = 0)
+        {
+            _onceConcurrentTasks = onceConcurrentTasks <= 0 ? Environment.ProcessorCount : onceConcurrentTasks;
+            _onceInterval = onceInterval;
+            _interval = interval;
+            _timeout = timeout;
+            _timeStamp = _timeStampSeed = DateTimeOffset.Now.ToUnixTimeSeconds();
+            _data.Add(_timeStamp, new ConcurrentQueue<T>());
+            _thread0 = new Thread(RunSubscribeTasks) { IsBackground = true };
+            _thread1 = new Thread(RunPublishTasks) { IsBackground = true };
+        }
+
+        /// <summary>
+        /// Publish Tasks
+        /// </summary>
+        /// <param name="item"></param>
+        public void Publish(T item)
+        {
+            if (!_started) return;
+            _data[_timeStamp].Enqueue(item);
+        }
+
+        /// <summary>
+        /// Subscribe Tasks
+        /// </summary>
+        /// <param name="handler"></param>
+        public void Subscribe(Action<T> handler)
+        {
+            if (!_started) return;
+            Handlers.Add(handler);
+        }
+
+        /// <summary>
+        /// Subscribe Tasks
+        /// </summary>
+        /// <param name="handler"></param>
+        public void Subscribe(Func<T, Task> handler)
+        {
+            if (!_started) return;
+            Handlers.Add(handler);
+        }
+
+        /// <summary></summary>
+        public void Unsubscribe()
+        {
+            Handlers.Clear();
+        }
+
+        /// <summary></summary>
+        public AsyncExceptionHandler<T> Start()
+        {
+            if (_started) return this;
+            try
+            {
+                _thread0.Start();
+                _thread1.Start();
+                _started = true;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return this;
+        }
+
+        /// <summary></summary>
+        public void Dispose()
+        {
+            Unsubscribe();
+        }
+
+        /// <summary></summary>
+        internal void RunPublishTasks()
+        {
+            var isInterval = _interval != TimeSpan.Zero && _interval.TotalMilliseconds > 0;
+            var millisecondsTimeout = isInterval ? (int)_interval.TotalMilliseconds : 1000;
+            while (true)
+            {
+                lock (_data) _data.Add(_timeStamp + 1, new ConcurrentQueue<T>());
+                Thread.Sleep(millisecondsTimeout);
+                Interlocked.Increment(ref _timeStamp);
+            }
+        }
+
+        /// <summary></summary>
+        internal void RunSubscribeTasks()
+        {
+            var isInterval = _interval != TimeSpan.Zero && _interval.TotalMilliseconds > 0;
+            var isOnceInterval = _onceInterval != TimeSpan.Zero && _onceInterval.TotalMilliseconds > 0;
+            while (_started)
+            {
+                if (isInterval) Thread.Sleep(_interval); // sleep 1 seconds before parallel tasks, for load reduction
+                try
+                {
+                    while (Handlers.Count > 0 && _timeStampSeed < _timeStamp)
+                    {
+                        var items = _data[_timeStampSeed];
+                        var hasValue = items.TryPeek(out _);
+                        while (hasValue)
+                        {
+                            var list = new List<T>();
+                            for (var i = 0; i < _onceConcurrentTasks && items.TryDequeue(out var item); i++)
+                                list.Add(item);
+                            Parallel.ForEach(list, item =>
+                            {
+                                try
+                                {
+                                    foreach (var handler in Handlers)
+                                    {
+                                        switch (handler)
+                                        {
+                                            case Action<T> action:
+                                                Run(action, item).ConfigureAwait(false).GetAwaiter().GetResult();
+                                                break;
+                                            case Func<T, Task> func:
+                                                Run(func, item).ConfigureAwait(false).GetAwaiter().GetResult();
+                                                break;
+                                        }
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    Publish(item); // rollback after exception
+                                }
+                            });
+                            if (isOnceInterval) Thread.Sleep(_onceInterval); // sleep 1 milliseconds after parallel tasks, for load reduction
+                            hasValue = items.TryPeek(out _);
+                        }
+                        lock (_data) _data.Remove(_timeStampSeed);
+                        _timeStampSeed++;
+                    }
+                }
+                catch (Exception) { }
+            }
+        }
+
+        /// <summary></summary>
+        internal Task Run(Action<T> action, T data)
+        {
+            var task1 = Task.Delay(_timeout);
+            var task2 = Task.Factory.StartNew(() => action(data));
+            return Task.WhenAny(task1, task2);
+        }
+
+        /// <summary></summary>
+        internal Task Run(Func<T, Task> func, T data)
+        {
+            var task1 = Task.Delay(_timeout);
+            var task2 = func(data);
+            return Task.WhenAny(task1, task2);
+        }
+
+        /// <summary></summary>
+        internal Task Run(Action<T[]> action, T[] data)
+        {
+            var task1 = Task.Delay(_timeout);
+            var task2 = Task.Factory.StartNew(() => action(data));
+            return Task.WhenAny(task1, task2);
+        }
+
+        /// <summary></summary>
+        internal Task Run(Func<T[], Task> func, T[] data)
+        {
+            var task1 = Task.Delay(_timeout);
+            var task2 = func(data);
+            return Task.WhenAny(task1, task2);
         }
     }
 }

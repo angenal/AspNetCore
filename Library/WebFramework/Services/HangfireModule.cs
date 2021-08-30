@@ -2,6 +2,7 @@ using Hangfire;
 using Hangfire.Annotations;
 using Hangfire.Dashboard;
 using Hangfire.LiteDB;
+using Hangfire.MemoryStorage;
 using Hangfire.Pro.Redis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Net.Http.Headers;
+using WebCore;
 
 namespace WebFramework.Services
 {
@@ -36,6 +38,9 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration config)
         {
+            // Differentiate between different applications
+            var appCrc32x8 = Environment.CurrentDirectory.Crc32x8();
+
             // SqlServer Storage
             if (config.GetSection("Hangfire:DB").Exists())
                 services.AddHangfire(x => x.UseSqlServerStorage(config.GetSection("Hangfire:DB").Value, new Hangfire.SqlServer.SqlServerStorageOptions
@@ -47,7 +52,7 @@ namespace WebFramework.Services
                     TransactionTimeout = TimeSpan.FromMinutes(5),        // 交易超时 默认5分钟
                     PrepareSchemaIfNecessary = true,                     // 如果设置为true 则创建数据库表 默认true
                     DashboardJobListLimit = 50000,                       // 仪表板作业列表限制 默认50000
-                    //InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
+                    //InvisibilityTimeout = TimeSpan.FromMinutes(5),     // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
                 }));
             // LiteDb Storage
             else if (config.GetSection("Hangfire:LiteDB").Exists())
@@ -76,14 +81,33 @@ namespace WebFramework.Services
             //    Prefix = config.GetSection("Hangfire:Prefix").Value,
             //    //InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
             //}));
+            // Memory Storage
+            else
+            {
+                services.AddHangfire(x => x.UseMemoryStorage(new MemoryStorageOptions
+                {
+                    FetchNextJobTimeout = TimeSpan.FromSeconds(15),       // 作业队列轮询间隔 默认15秒
+                    JobExpirationCheckInterval = TimeSpan.FromHours(1),   // 作业到期检查间隔（管理过期记录）默认1小时
+                    CountersAggregateInterval = TimeSpan.FromMinutes(5),  // 聚合计数器的间隔 默认5分钟
+                }));
+                services.AddHangfireServer(options =>
+                {
+                    options.Queues = new[] { "default" };
+                    options.ServerName = $"HangfireServer-{appCrc32x8}-{Environment.ProcessId}";
+                    options.TimeZoneResolver = new HangfireResolvers();   // 本地时区
+                    options.WorkerCount = Environment.ProcessorCount;     // 并发任务数
+                });
+                return services;
+            }
 
             services.AddHangfireServer(options =>
             {
                 options.Queues = new[] { "default" };
-                options.ServerName = "HangfireServer";
+                options.ServerName = $"HangfireServer-{appCrc32x8}";
                 options.TimeZoneResolver = new HangfireResolvers();   // 本地时区
                 options.WorkerCount = Environment.ProcessorCount * 5; // 并发任务数
             });
+
 
             return services;
         }
