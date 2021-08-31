@@ -33,9 +33,9 @@
                 <a href="/" target="_blank" class="navbar-brand">首页</a>
             </div>
             <div class="navbar-collapse collapse">
-                <form class="nav navbar-form navbar-right">
+                <form class="nav navbar-form navbar-right" onsubmit="return false">
                     <div class="input-group input-group-sm">
-                        <input class="form-control input-sm" type="search" placeholder="输入关键词">
+                        <input id="logSearchInput" class="form-control input-sm" style="width:248px" type="search" placeholder="输入关键词" onkeyup="logSearch(event)">
                         <span class="form-control-feedback"><i class="icon-search"></i></span>
                     </div>
                 </form>
@@ -64,12 +64,15 @@
                 <div class="panel-body">
                     <table class="table table-bordered table-hover table-striped table-sort">
                         <thead class="head-bg">
-                            <tr class="text-justify"><th width="276">接口</th><th>异常</th><th width="147">时间</th></tr>
+                            <tr class="text-justify"><th width="276">接口</th><th>异常</th><th width="147">时间</th><th width="50">操作</th></tr>
                         </thead>
                         <tbody id="logListTbl"></tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3" align="center"><button id="logMoreBtn" type="button" class="btn btn-success" page="1" onclick="logLoad()">查看更多...</button></td>
+                                <td colspan="4" align="center" valign="middle">
+                                    <span id="logMoreInfo" class="text-muted" style="display:none"></span>
+                                    <button id="logMoreBtn" type="button" class="btn btn-success" page="1" onclick="logLoad()">查看更多...</button>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>

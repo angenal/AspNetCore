@@ -310,15 +310,19 @@ namespace WebFramework.Services
         public static async Task QueryHandler(HttpContext context)
         {
             var req = context.Request;
-            string text = string.Empty, callback = req.Query["callback"].ToString(), page = req.RouteValues["page"].ToString();
+            string text = string.Empty, search = req.Query["search"].ToString(), callback = req.Query["callback"].ToString(), page = req.RouteValues["page"].ToString();
             if (!int.TryParse(page, out int pageIndex)) pageIndex = 0;
             int pageSize = 20;
             using (var db = LogDb.Open())
             {
-                var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
+                var q = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid).Query();
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    q = Guid.TryParse(search, out _) ? q.Where(t => t.Trace == search) : q.Where(t => t.Path.Contains(search));
+                }
                 if (pageIndex <= 0)
                 {
-                    var result = c.FindAll();
+                    var result = q.OrderByDescending(t => t.Time).ToList();
                     text = result.ToJson();
                 }
                 else
@@ -326,10 +330,10 @@ namespace WebFramework.Services
                     var result = new ExceptionLogOutputDto()
                     {
                         Page = pageIndex,
-                        Records = c.Count(),
+                        Records = q.Count(),
                     };
                     result.Total = (int)Math.Ceiling((double)result.Records / pageSize);
-                    result.Rows = c.Query().Skip(pageSize * (pageIndex - 1)).Limit(pageSize).ToList();
+                    result.Rows = q.OrderByDescending(t => t.Time).Skip(pageSize * (pageIndex - 1)).Limit(pageSize).ToList();
                     text = result.ToJson();
                 }
             }
@@ -349,25 +353,18 @@ namespace WebFramework.Services
         /// </summary>
         public static async Task DeleteHandler(HttpContext context)
         {
-            if (!context.Request.Method.Equals(HttpMethods.Delete))
+            string text = "{\"deleted\":0}", id = context.Request.RouteValues["id"].ToString();
+            if (Guid.TryParse(id, out Guid guid))
             {
-                context.Response.StatusCode = (int)HttpStatusCode.ServiceUnavailable;
-            }
-            else
-            {
-                string text = "{\"deleted\":0}", id = context.Request.RouteValues["id"].ToString();
-                if (Guid.TryParse(id, out Guid guid))
+                using (var db = LogDb.Open())
                 {
-                    using (var db = LogDb.Open())
-                    {
-                        var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
-                        var ok = c.Delete(new LiteDB.BsonValue(guid));
-                        text = "{\"deleted\":" + ok.ToString().ToLower() + "}";
-                    }
+                    var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
+                    var ok = c.Delete(new LiteDB.BsonValue(guid));
+                    text = "{\"deleted\":" + ok.ToString().ToLower() + "}";
                 }
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(text);
             }
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(text);
         }
     }
 

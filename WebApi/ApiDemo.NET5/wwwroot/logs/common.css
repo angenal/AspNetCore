@@ -273,11 +273,12 @@ body, input, textarea { -webkit-font-smoothing: antialiased;font-smoothing: anti
 .md60, .form-control.md60, .form-inline .form-control.md60 { width: 60px; }
 .md80, .form-control.md80, .form-inline .form-control.md80 { width: 80px; }
 .fl{float:left;}.fr{float:right;}
+pre{word-wrap: break-word; white-space: pre-wrap; clear: both; border: 0 none;}
 /* Make .svg files in the carousel display properly in older browsers */
 .item img[src$=".svg"] { width: 100%; }
 /* table */
 .table.table-bordered thead.head-bg th { background-color: #f5fafe; }
-pre { overflow: hidden; word-wrap: break-word; }
+.table>tbody>tr>td.vmiddle, .table>tbody>tr>th.vmiddle, .table>tfoot>tr>td.vmiddle, .table>tfoot>tr>th.vmiddle, .table>thead>tr>td.vmiddle, .table>thead>tr>th.vmiddle, table.vmiddle td, tr.vmiddle td, td.vmiddle { vertical-align: middle; }
 /* button */
 .btn-group-sm>.btn.btn-sx, .btn-sm.btn-sx{ padding: 2px 4px;}
 /* 对话框 artDialog */
