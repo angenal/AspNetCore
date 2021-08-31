@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,38 +21,56 @@ namespace WebCore
         /// <summary>
         /// 转换时间
         /// </summary>
-        public static readonly Newtonsoft.Json.JsonConverter[] JsonConverters = new Newtonsoft.Json.JsonConverter[] { new Newtonsoft.Json.Converters.IsoDateTimeConverter { DateTimeFormat = DefaultFormat.DateTimeFormats } };
+        public static readonly JsonConverter[] JsonConverters = new JsonConverter[] { new Newtonsoft.Json.Converters.IsoDateTimeConverter { DateTimeFormat = DefaultFormat.DateTimeFormats } };
+
+        /// <summary>
+        /// 驼峰命名(首字母小写)
+        /// </summary>
+        public static Func<JsonSerializerSettings> CamelCaseJsonSerializerSettings => () => new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+        /// <summary></summary>
+        public static Func<JsonSerializerSettings> DefaultJsonSerializerSettings => () => new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() };
 
         /// <summary>
         /// Javascript: JSON.stringify
         /// </summary>
         /// <param name="obj"></param>
+        /// <param name="camelCasePropertyNames">驼峰命名(首字母小写)</param>
         /// <returns></returns>
-        public static string Stringify<T>(this T obj) => ToJson(obj);
+        public static string Stringify<T>(this T obj, bool camelCasePropertyNames = true) => ToJson(obj, camelCasePropertyNames);
         /// <summary>
         /// Javascript: JSON.parse
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="s"></param>
+        /// <param name="camelCasePropertyNames">驼峰命名(首字母小写)</param>
         /// <returns></returns>
-        public static T Parse<T>(this string s) => ToObject<T>(s);
+        public static T Parse<T>(this string s, bool camelCasePropertyNames = true) => ToObject<T>(s, camelCasePropertyNames);
 
         /// <summary>
         /// 对象转换JSON字符串
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
+        /// <param name="camelCasePropertyNames">驼峰命名(首字母小写)</param>
         /// <returns></returns>
-        public static string ToJson<T>(this T obj) => Newtonsoft.Json.JsonConvert.SerializeObject(obj, JsonConverters);
+        public static string ToJson<T>(this T obj, bool camelCasePropertyNames = true)
+        {
+            JsonConvert.DefaultSettings = camelCasePropertyNames ? CamelCaseJsonSerializerSettings : DefaultJsonSerializerSettings;
+            return JsonConvert.SerializeObject(obj, JsonConverters);
+        }
 
         /// <summary>
         /// JSON字符串转换对象
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="s"></param>
+        /// <param name="camelCasePropertyNames">驼峰命名(首字母小写)</param>
         /// <returns></returns>
-        public static T ToObject<T>(this string s) => Newtonsoft.Json.JsonConvert.DeserializeObject<T>(s);
-
+        public static T ToObject<T>(this string s, bool camelCasePropertyNames = true)
+        {
+            JsonConvert.DefaultSettings = camelCasePropertyNames ? CamelCaseJsonSerializerSettings : DefaultJsonSerializerSettings;
+            return JsonConvert.DeserializeObject<T>(s);
+        }
 
 
         /// <summary>

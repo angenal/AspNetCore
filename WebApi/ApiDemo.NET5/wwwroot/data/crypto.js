@@ -1,7 +1,7 @@
 var keys = { key: 'TmIhgugCGFpU7S3v', iv: 'jkE49230Tf093b42' };
 var key = CryptoJS.enc.Utf8.parse(keys.key), iv = CryptoJS.enc.Utf8.parse(keys.iv);
 
-const encryptWithJavascript = () => {
+function encryptWithJavascript() {
     $('#decrypt').val('');
     var encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse($('#encrypt').val()), key, {
         keySize: 128 / 8,
@@ -10,14 +10,13 @@ const encryptWithJavascript = () => {
         padding: CryptoJS.pad.Pkcs7
     });
     $('#decrypt').val(encrypted);
-
     //console.log('Encrypted :' + encrypted);
     //console.log('Key :' + encrypted.key);
     //console.log('Salt :' + encrypted.salt);
     //console.log('iv :' + encrypted.iv);
 }
 
-const decryptWithJavascript = () => {
+function decryptWithJavascript() {
     $('#encrypt').val('');
     var decrypted = CryptoJS.AES.decrypt($('#decrypt').val(), key, {
         keySize: 128 / 8,
@@ -26,12 +25,11 @@ const decryptWithJavascript = () => {
         padding: CryptoJS.pad.Pkcs7
     });
     $('#encrypt').val(decrypted.toString(CryptoJS.enc.Utf8));
-
     //console.log('Decrypted : ' + decrypted);
     //console.log('utf8 = ' + decrypted.toString(CryptoJS.enc.Utf8));
 }
 
-const encryptWithCsharp = () => {
+function encryptWithCsharp() {
     $('#decrypt').val('');
     $.ajax({
         type: 'POST',
@@ -47,7 +45,7 @@ const encryptWithCsharp = () => {
     });
 }
 
-const decryptWithCsharp = () => {
+function decryptWithCsharp() {
     $('#encrypt').val('');
     $.ajax({
         type: 'POST',

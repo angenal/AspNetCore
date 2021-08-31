@@ -302,7 +302,7 @@ namespace WebFramework.Services
         /// <summary>
         /// Query log records Url
         /// </summary>
-        public const string QueryUrl = "/log/exception/query/{page}";
+        public const string QueryUrl = "/api/log/exception/query/{page}";
 
         /// <summary>
         /// Query log records from LiteDb
@@ -342,7 +342,7 @@ namespace WebFramework.Services
         /// <summary>
         /// Delete log records Url
         /// </summary>
-        public const string DeleteUrl = "/log/exception/delete/{id}";
+        public const string DeleteUrl = "/api/log/exception/delete/{id}";
 
         /// <summary>
         /// Delete log records from LiteDb

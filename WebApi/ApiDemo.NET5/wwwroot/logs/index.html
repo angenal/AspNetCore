@@ -64,17 +64,12 @@
                 <div class="panel-body">
                     <table class="table table-bordered table-hover table-striped table-sort">
                         <thead class="head-bg">
-                            <tr class="text-justify"><th width="110">编号</th><th>网址</th><th>消息</th><th>时间</th></tr>
+                            <tr class="text-justify"><th width="276">接口</th><th>异常</th><th width="147">时间</th></tr>
                         </thead>
-                        <tbody>
-                            <tr class="danger"><td>李明</td><td>40</td><td>13867657632</td><td>-</td></tr>
-                            <tr class="info"><td>李明</td><td>40</td><td>13867657632</td><td>-</td></tr>
-                            <tr><td>李明</td><td>40</td><td>13867657632</td><td>-</td></tr>
-                            <tr class="success"><td>李明</td><td>40</td><td>13867657632</td><td>-</td></tr>
-                        </tbody>
+                        <tbody id="logListTbl"></tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="4" align="center"><button type="button" class="btn btn-primary">查看更多...</button></td>
+                                <td colspan="3" align="center"><button id="logMoreBtn" type="button" class="btn btn-success" page="1" onclick="logLoad()">查看更多...</button></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -82,5 +77,7 @@
             </div>
         </div>
     </div>
+
+    <script src="index.js"></script>
 </body>
 </html>
