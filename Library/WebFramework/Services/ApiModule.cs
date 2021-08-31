@@ -36,7 +36,7 @@ namespace WebFramework.Services
                 // 用户会话状态 user session
                 options.Filters.Add<AsyncSessionFilter>();
                 // 全局异常输出 output HttpResponseException
-                options.Filters.Add<HttpResponseExceptionFilter>();
+                //options.Filters.Add<HttpResponseExceptionFilter>();
             });
         }
 

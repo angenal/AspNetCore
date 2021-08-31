@@ -21,6 +21,22 @@ using WebFramework.Data;
 
 namespace WebFramework.Services
 {
+    /* appsettings.json
+      "Logging": {
+        "LogLevel": {
+          "Default": "Warning",
+          "Microsoft": "Error",
+          "Microsoft.Hosting.Lifetime": "Error",
+          "System": "Error"
+        },
+        "LogManage": {
+          "Path": "logs",
+          "User": "demo",
+          "Pass": "demo"
+        }
+      },
+    */
+
     /// <summary>
     /// Configure Global monitoring and exception handler module
     /// </summary>
@@ -30,9 +46,13 @@ namespace WebFramework.Services
         //static readonly BackgroundJobServer JobServer = new BackgroundJobServer(new BackgroundJobServerOptions { ServerName = $"{LogsRootDir}-{Environment.ProcessId}" }, new MemoryStorage(new MemoryStorageOptions()));
 
         /// <summary>
+        /// Configuration Section in appsettings.json
+        /// </summary>
+        const string AppSettings = "Logging:LogManage";
+        /// <summary>
         /// Web logs root directory
         /// </summary>
-        public const string LogsRootDir = "logs";
+        public static string LogsRootDir = "logs";
         /// <summary>
         /// Web logs record cache enabled
         /// </summary>
@@ -55,17 +75,17 @@ namespace WebFramework.Services
         /// </summary>
         public static void Init(IConfiguration config, IWebHostEnvironment env)
         {
+            var section = config.GetSection(AppSettings);
+            if (!section.Exists()) return;
+            if (section.GetSection("Path").Exists()) LogsRootDir = section.GetSection("Path").Value.Trim('/');
             var path = Path.Combine(env.WebRootPath, LogsRootDir);
             if (!Directory.Exists(path)) return;
-            ExceptionLogService.LogDb = new LiteDb(Path.Combine(path, $"{StatusDir500}.db"), false);
+            ExceptionLogService.Init(path);
+            CacheEnabled = true;
             StatusDir500 = Path.Combine(path, StatusDir500);
             StatusDir500Exists = Directory.Exists(StatusDir500);
-            if (StatusDir500Exists)
-            {
-                CacheEnabled = true;
-                LogHandler = new AsyncExceptionHandler<ExceptionLog>(TimeSpan.Zero, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30), 1).Start();
-                LogHandler.Subscribe(ExceptionLogService.WriteLogStatusDir500);
-            }
+            LogHandler = new AsyncExceptionHandler<ExceptionLog>(TimeSpan.Zero, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30), 1).Start();
+            LogHandler.Subscribe(ExceptionLogService.WriteLog);
         }
 
         /// <summary>
@@ -81,13 +101,14 @@ namespace WebFramework.Services
             options.InvalidModelStateResponseFactory = context =>
             {
                 var s = context.ModelState.Values;
-                if (context.ModelState.IsValid || !s.Any() || !s.First().Errors.Any())
+                if (context.ModelState.IsValid || !s.Any(i => i.Errors.Any()))
                     return new OkObjectResult(context.ModelState);
+                var x = s.Where(i => i.Errors.Any());
                 var result = new BadRequestObjectResult(new
                 {
                     status = 400,
-                    title = s.First().Errors.First().ErrorMessage.Replace("＆", " "),
-                    errors = string.Join("；", s.Select(v => string.Join("；", v.Errors.Select(e => e.ErrorMessage)))).Replace("＆", " ")
+                    title = x.First().Errors.First().ErrorMessage.Replace("＆", " "),
+                    errors = string.Join("；", x.Select(v => string.Join("；", v.Errors.Select(e => e.ErrorMessage)))).Replace("＆", " ")
                 });
                 result.ContentTypes.Add(System.Net.Mime.MediaTypeNames.Application.Json);
                 return result;
@@ -278,9 +299,26 @@ namespace WebFramework.Services
         internal static LiteDb LogDb;
 
         /// <summary>
-        /// Record log, if exists web logs/500 directory
+        /// Init LiteDb
         /// </summary>
-        internal static void WriteLogStatusDir500(ExceptionLog log)
+        /// <param name="path"></param>
+        internal static void Init(string path)
+        {
+            path = Path.Combine(path, "index.db");
+            var exists = File.Exists(path);
+            LogDb = new LiteDb(path, false);
+            if (exists) return;
+            using var db = LogDb.Open();
+            var c = db.GetCollection<ExceptionLog>(LiteDB.BsonAutoId.Guid);
+            c.EnsureIndex(t => t.Path);
+            c.EnsureIndex(t => t.Trace);
+            //c.EnsureIndex(t => t.Time);
+        }
+
+        /// <summary>
+        /// Record log, if exists web logs/500 directory, and write LiteDb
+        /// </summary>
+        internal static void WriteLog(ExceptionLog log)
         {
             try
             {

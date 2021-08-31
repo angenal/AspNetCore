@@ -1615,6 +1615,11 @@
             Configure Global monitoring and exception handler module
             </summary>
         </member>
+        <member name="F:WebFramework.Services.ExceptionHandlerModule.AppSettings">
+            <summary>
+            Configuration Section in appsettings.json
+            </summary>
+        </member>
         <member name="F:WebFramework.Services.ExceptionHandlerModule.LogsRootDir">
             <summary>
             Web logs root directory
@@ -1715,9 +1720,15 @@
             Use LiteDb
             </summary>
         </member>
-        <member name="M:WebFramework.Services.ExceptionLogService.WriteLogStatusDir500(WebFramework.Services.ExceptionLog)">
+        <member name="M:WebFramework.Services.ExceptionLogService.Init(System.String)">
             <summary>
-            Record log, if exists web logs/500 directory
+            Init LiteDb
+            </summary>
+            <param name="path"></param>
+        </member>
+        <member name="M:WebFramework.Services.ExceptionLogService.WriteLog(WebFramework.Services.ExceptionLog)">
+            <summary>
+            Record log, if exists web logs/500 directory, and write LiteDb
             </summary>
         </member>
         <member name="F:WebFramework.Services.ExceptionLogService.QueryUrl">
