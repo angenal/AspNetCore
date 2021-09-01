@@ -23,12 +23,7 @@ namespace WebFramework.Services
 {
     /* appsettings.json
       "Logging": {
-        "LogLevel": {
-          "Default": "Warning",
-          "Microsoft": "Error",
-          "Microsoft.Hosting.Lifetime": "Error",
-          "System": "Error"
-        },
+        "LogLevel": { },
         "LogManage": {
           "Path": "logs",
           "User": "demo",
@@ -77,7 +72,7 @@ namespace WebFramework.Services
         {
             var section = config.GetSection(AppSettings);
             if (!section.Exists()) return;
-            if (section.GetSection("Path").Exists()) LogsRootDir = section.GetSection("Path").Value.Trim('/');
+            if (section.GetSection("Path").Exists()) LogsRootDir = section.GetValue<string>("Path").Trim('/');
             var path = Path.Combine(env.WebRootPath, LogsRootDir);
             if (!Directory.Exists(path)) return;
             ExceptionLogService.Init(path);
@@ -96,7 +91,7 @@ namespace WebFramework.Services
             //options.ClientErrorMapping[StatusCodes.Status404NotFound].Link = "https://*.com/404";
             //options.SuppressConsumesConstraintForFormFileParameters = true;
             //options.SuppressInferBindingSourcesForParameters = true;
-            //options.SuppressModelStateInvalidFilter = true; // 关闭系统自带模型验证(使用第三方库代理)
+            //options.SuppressModelStateInvalidFilter = true; // 关闭系统自带模型验证(使用第三方库FluentValidation)
             //options.SuppressMapClientErrors = true;
             options.InvalidModelStateResponseFactory = context =>
             {
@@ -162,50 +157,44 @@ namespace WebFramework.Services
                 var error = new { title = e.Message, detail, trace, status };
 
                 // Record logs, if exists web logs/500 directory
-                if (StatusDir500Exists)
-                {
-                    var contents = new StringBuilder(url);
-                    contents.Append(Environment.NewLine);
-                    contents.Append(Environment.NewLine);
+                //if (!StatusDir500Exists) Serilog.Log.Logger.Error(e, url);
+                var contents = new StringBuilder(url);
+                contents.Append(Environment.NewLine);
+                contents.Append(Environment.NewLine);
 
-                    // Gets trace request contents
-                    if (trace != null && context.Items.TryGetValue(trace, out object value) && value != null)
+                // Gets trace request contents
+                if (trace != null && context.Items.TryGetValue(trace, out object value) && value != null)
+                {
+                    if (value is string body)
                     {
-                        if (value is string body)
+                        contents.Append($" body => ");
+                        contents.Append(string.IsNullOrWhiteSpace(body) ? "null" : body);
+                        contents.Append(Environment.NewLine);
+                    }
+                    else if (value is IDictionary<string, object> input)
+                    {
+                        foreach (var key in input.Keys)
                         {
-                            contents.Append($" body => ");
-                            contents.Append(string.IsNullOrWhiteSpace(body) ? "null" : body);
+                            contents.Append($" {key} => ");
+                            contents.Append(input[key]?.ToJson() ?? "null");
                             contents.Append(Environment.NewLine);
                         }
-                        else if (value is IDictionary<string, object> input)
-                        {
-                            foreach (var key in input.Keys)
-                            {
-                                contents.Append($" {key} => ");
-                                contents.Append(input[key]?.ToJson() ?? "null");
-                                contents.Append(Environment.NewLine);
-                            }
-                        }
                     }
-
-                    // Write origin error logs
-                    contents.Append(Environment.NewLine);
-                    contents.Append(details);
-
-                    // Asynchronous record log file
-                    LogHandler.Publish(new ExceptionLog
-                    {
-                        Path = context.Request.Path.Value,
-                        Trace = error.trace,
-                        Message = e.Message,
-                        Content = contents.ToString(),
-                        Time = DateTime.Now,
-                    });
                 }
-                else
+
+                // Write origin error logs
+                contents.Append(Environment.NewLine);
+                contents.Append(details);
+
+                // Asynchronous record log file
+                LogHandler.Publish(new ExceptionLog
                 {
-                    Serilog.Log.Logger.Error(e, url);
-                }
+                    Path = context.Request.Path.Value,
+                    Trace = error.trace,
+                    Message = e.Message,
+                    Content = contents.ToString(),
+                    Time = DateTime.Now,
+                });
 
                 text = Newtonsoft.Json.JsonConvert.SerializeObject(error);
 
