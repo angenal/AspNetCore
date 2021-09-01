@@ -1630,16 +1630,6 @@
             Web logs record cache enabled
             </summary>
         </member>
-        <member name="F:WebFramework.Services.ExceptionHandlerModule.StatusDir500">
-            <summary>
-            Web logs directory for status 500
-            </summary>
-        </member>
-        <member name="F:WebFramework.Services.ExceptionHandlerModule.StatusDir500Exists">
-            <summary>
-            Web logs record status 500
-            </summary>
-        </member>
         <member name="F:WebFramework.Services.ExceptionHandlerModule.LogHandler">
             <summary>
             Asynchronous record log file

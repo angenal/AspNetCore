@@ -52,14 +52,14 @@ namespace WebFramework.Services
         /// Web logs record cache enabled
         /// </summary>
         public static bool CacheEnabled = false;
-        /// <summary>
-        /// Web logs directory for status 500
-        /// </summary>
-        static string StatusDir500 = StatusCodes.Status500InternalServerError.ToString();
-        /// <summary>
-        /// Web logs record status 500
-        /// </summary>
-        static bool StatusDir500Exists = false;
+        ///// <summary>
+        ///// Web logs directory for status 500
+        ///// </summary>
+        //static string StatusDir500 = StatusCodes.Status500InternalServerError.ToString();
+        ///// <summary>
+        ///// Web logs record status 500
+        ///// </summary>
+        //static bool StatusDir500Exists = false;
         /// <summary>
         /// Asynchronous record log file
         /// </summary>
@@ -71,14 +71,13 @@ namespace WebFramework.Services
         public static void Init(IConfiguration config, IWebHostEnvironment env)
         {
             var section = config.GetSection(AppSettings);
-            if (!section.Exists()) return;
-            if (section.GetSection("Path").Exists()) LogsRootDir = section.GetValue<string>("Path").Trim('/');
+            if (section.Exists() && section.GetSection("Path").Exists()) LogsRootDir = section.GetValue<string>("Path").Trim('/');
             var path = Path.Combine(env.WebRootPath, LogsRootDir);
             if (!Directory.Exists(path)) return;
             ExceptionLogService.Init(path);
             CacheEnabled = true;
-            StatusDir500 = Path.Combine(path, StatusDir500);
-            StatusDir500Exists = Directory.Exists(StatusDir500);
+            //StatusDir500 = Path.Combine(path, StatusDir500);
+            //StatusDir500Exists = Directory.Exists(StatusDir500);
             LogHandler = new AsyncExceptionHandler<ExceptionLog>(TimeSpan.Zero, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30), 1).Start();
             LogHandler.Subscribe(ExceptionLogService.WriteLog);
         }
