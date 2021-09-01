@@ -1,0 +1,1 @@
+The current directory is used to store history file, please ensure its security.

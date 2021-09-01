@@ -1,5 +1,5 @@
 /* =======通用CSS======== */
-body, input, textarea { -webkit-font-smoothing: antialiased; font-family: "Helvetica Neue", Helvetica, "Microsoft Yahei", "微软雅黑", "Lantinghei SC", STXihei, "WenQuanYi Micro Hei", Arial, sans-serif !important;}
+body, input, textarea { -webkit-font-smoothing: antialiased; font-family: "Microsoft Yahei", "Helvetica Neue", "Lantinghei SC", "WenQuanYi Micro Hei", Verdana, Arial, Helvetica, sans-serif !important;}
 /* 鼠标指针 http://css-cursor.techstream.org */
 .cur-pointer { cursor: pointer;}
 .cur-move { cursor: move;} .cur-grab { cursor: grab; cursor: -webkit-grab;} .cur-grabbing { cursor: grabbing; cursor: -webkit-grabbing;}
@@ -22,6 +22,10 @@ body, input, textarea { -webkit-font-smoothing: antialiased; font-family: "Helve
 .md60, .form-control.md60, .form-inline .form-control.md60 { width: 60px; }
 .md80, .form-control.md80, .form-inline .form-control.md80 { width: 80px; }
 .fl{float:left;}.fr{float:right;}
+fieldset{padding:0 15px 10px 15px;}
+h1{font-size:2.4em;margin:0;color:#FFF;}
+h2{font-size:1.7em;margin:0;color:#CC0000;} 
+h3{font-size:1.2em;margin:10px 0 0 0;color:#000000;} 
 pre{word-wrap: break-word; white-space: pre-wrap; clear: both; border: 0 none;}
 /* Make .svg files in the carousel display properly in older browsers */
 .item img[src$=".svg"] { width: 100%; }
