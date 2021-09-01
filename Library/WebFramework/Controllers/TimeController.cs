@@ -71,32 +71,15 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// Schedule TimeJob Input
+        /// 检测消息推送(每分钟)
         /// </summary>
-        public class ScheduleNowInputDto
-        {
-            /// <summary>
-            /// Delay time, e.g. 00:01:00
-            /// </summary>
-            public string Delay { get; set; }
-        }
-
-        /// <summary>
-        /// Schedule TimeJob after delay time
-        /// </summary>
-        /// <returns></returns>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<ActionResult> ScheduleNow(ScheduleNowInputDto input)
+        public async Task<ActionResult> RecurringPushMessagesEveryMinute()
         {
-            if (!TimeSpanParser.TryParse(input.Delay, out TimeSpan delay) || delay < TimeSpan.FromSeconds(5))
-                return Error("参数错误！");
-
-            var cacheKey = crypto.Md5(env.ApplicationName + crypto.RandomString(8));
-            cache.Set(cacheKey, DateTime.Now);
-
-            var id = BackgroundJob.Schedule(() => new TimeJob(cache, hubContext).Execute(cacheKey, delay), delay);
+            var id = crypto.Md5(env.ApplicationName + nameof(RecurringPushMessagesEveryMinute));
+            RecurringJob.AddOrUpdate(id, () => new TimeJob(hubContext).Execute(), Cron.Minutely());
 
             return Ok(await Task.FromResult(id));
         }
@@ -121,6 +104,10 @@ namespace WebFramework.Controllers
         /// <summary></summary>
         public TimeJob(SqlSugarClient db) => _db = db;
         /// <summary></summary>
+        public TimeJob(IMemoryCache cache) => this.cache = cache;
+        /// <summary></summary>
+        public TimeJob(IHubContext<ChatHub> hubContext) => this.hubContext = hubContext;
+        /// <summary></summary>
         public TimeJob(IMemoryCache cache, IHubContext<ChatHub> hubContext)
         {
             this.cache = cache;
@@ -129,19 +116,10 @@ namespace WebFramework.Controllers
 
         #endregion
 
-        /// <summary></summary>
-        public void Execute(string cacheKey, TimeSpan schedule)
+        /// <summary>执行消息推送</summary>
+        public void Execute()
         {
-            DateTime now = DateTime.Now, cacheTime = cache.Get<DateTime>(cacheKey), time = cacheTime.Add(schedule);
-            // error is within 5 seconds
-            if (now.ToTimestampSeconds() - time.ToTimestampSeconds() < 5)
-            {
-                System.Diagnostics.Debug.WriteLine($"{nameof(TimeJob)} executes successfully.");
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine($"{nameof(TimeJob)} executes failed.");
-            }
+            hubContext.Clients.All.SendAsync("newMessage", DateTime.Now.ToTimeString()).Wait();
         }
     }
 }

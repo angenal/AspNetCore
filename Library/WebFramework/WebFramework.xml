@@ -471,21 +471,10 @@
             当前时间
             </summary>
         </member>
-        <member name="T:WebFramework.Controllers.TimeController.ScheduleNowInputDto">
+        <member name="M:WebFramework.Controllers.TimeController.RecurringPushMessagesEveryMinute">
             <summary>
-            Schedule TimeJob Input
+            检测消息推送(每分钟)
             </summary>
-        </member>
-        <member name="P:WebFramework.Controllers.TimeController.ScheduleNowInputDto.Delay">
-            <summary>
-            Delay time, e.g. 00:01:00
-            </summary>
-        </member>
-        <member name="M:WebFramework.Controllers.TimeController.ScheduleNow(WebFramework.Controllers.TimeController.ScheduleNowInputDto)">
-            <summary>
-            Schedule TimeJob after delay time
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:WebFramework.Controllers.TimeJob">
             <summary></summary>
@@ -501,11 +490,17 @@
         <member name="M:WebFramework.Controllers.TimeJob.#ctor(SqlSugar.SqlSugarClient)">
             <summary></summary>
         </member>
+        <member name="M:WebFramework.Controllers.TimeJob.#ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Controllers.TimeJob.#ctor(Microsoft.AspNetCore.SignalR.IHubContext{WebFramework.SignalR.ChatHub})">
+            <summary></summary>
+        </member>
         <member name="M:WebFramework.Controllers.TimeJob.#ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache,Microsoft.AspNetCore.SignalR.IHubContext{WebFramework.SignalR.ChatHub})">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Controllers.TimeJob.Execute(System.String,System.TimeSpan)">
-            <summary></summary>
+        <member name="M:WebFramework.Controllers.TimeJob.Execute">
+            <summary>执行消息推送</summary>
         </member>
         <member name="T:WebFramework.Data.LiteDb">
             <summary>

@@ -1,0 +1,234 @@
+/* =======通用CSS======== */
+body, input, textarea { -webkit-font-smoothing: antialiased; font-family: "Helvetica Neue", Helvetica, "Microsoft Yahei", "微软雅黑", "Lantinghei SC", STXihei, "WenQuanYi Micro Hei", Arial, sans-serif !important;}
+/* 鼠标指针 http://css-cursor.techstream.org */
+.cur-pointer { cursor: pointer;}
+.cur-move { cursor: move;} .cur-grab { cursor: grab; cursor: -webkit-grab;} .cur-grabbing { cursor: grabbing; cursor: -webkit-grabbing;}
+.cur-zoom-in { cursor: zoom-in; cursor: -webkit-zoom-in; cursor: -moz-zoom-in;}
+.cur-zoom-out { cursor: zoom-out; cursor: -webkit-zoom-out; cursor: -moz-zoom-out;}
+.cur-e-resize { cursor: e-resize;} .cur-col-resize { cursor: col-resize;} .cur-n-resize { cursor: n-resize;} .cur-row-resize { cursor: row-resize;}
+.cur-default { cursor: default;} .cur-none { cursor: none;} .cur-unset { cursor: unset;} .cur-disabled { cursor: not-allowed;}
+.cur-help { cursor: help;} .cur-crosshair { cursor: crosshair;} .cur-wait { cursor: wait;} .cur-progress { cursor: progress;}
+/* 颜色 */
+.bg-blue { background-color: #1976d2;} .bd-blue { border-color: #1976d2;}
+.shadow-bottom-black { box-shadow: 0 2px 5px 0 rgba(0,0,0,.3);}
+/* 图片方向校正 */ img {image-orientation:from-image;}
+/* 距离 margin padding */
+.pl15 { padding-left: 15px; } .pt15 { padding-top: 15px; }
+.pd15 { padding: 15px; } .pd5 { padding: 5px; } .pl0 { padding-left: 0; } .pt0 { padding-top: 0; }
+.pr15 { padding-right: 15px; }.pb15 { padding-bottom: 15px; } .pr0 { padding-right: 0; } .pb0 { padding-bottom: 0; } .pd0 { padding: 0; }
+.mt15 { margin-top: 15px; }.ml15 { margin-left: 15px; }
+.mg15 { margin: 15px; } .mg5 { margin: 5px; } .mt0 { margin-top: 0; } .ml0 { margin-left: 0; }
+.mb15 { margin-bottom: 15px; }.mr15 { margin-right: 15px; } .mb0 { margin-bottom: 0; } .mr0 { margin-right: 0; } .mg0 { margin: 0; }
+.md60, .form-control.md60, .form-inline .form-control.md60 { width: 60px; }
+.md80, .form-control.md80, .form-inline .form-control.md80 { width: 80px; }
+.fl{float:left;}.fr{float:right;}
+pre{word-wrap: break-word; white-space: pre-wrap; clear: both; border: 0 none;}
+/* Make .svg files in the carousel display properly in older browsers */
+.item img[src$=".svg"] { width: 100%; }
+/* table */
+.table.table-bordered thead.head-bg th { background-color: #f5fafe; }
+.table>tbody>tr>td.vmiddle, .table>tbody>tr>th.vmiddle, .table>tfoot>tr>td.vmiddle, .table>tfoot>tr>th.vmiddle, .table>thead>tr>td.vmiddle, .table>thead>tr>th.vmiddle, table.vmiddle td, tr.vmiddle td, td.vmiddle { vertical-align: middle; }
+/* button */
+.btn-group-sm>.btn.btn-sx, .btn-sm.btn-sx{ padding: 2px 4px;}
+/* 对话框 artDialog */
+div.artDialog.Alert .aui-header{
+    border-bottom: solid 1px #EAEAE5;
+}
+div.artDialog .aui-title img{
+    padding-bottom: 5px;
+}
+/* 菜单 menu-underline */
+ul.menu-underline {
+    display: flex;
+    position: absolute;
+    width: 800px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+ul.menu-underline li.menu-item {
+    position: relative;
+    padding: 20px;
+    font-size: 24px;
+    color: #000;
+    line-height: 1;
+    transition: 0.2s all linear;
+    cursor: pointer;
+}
+ul.menu-underline li.menu-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 0;
+    height: 100%;
+    border-bottom: 2px solid #000;
+    transition: 0.2s all linear;
+}
+ul.menu-underline li.menu-item:hover::before {
+    width: 100%;
+    top: 0;
+    left: 0;
+    transition-delay: 0.1s;
+    border-bottom-color: #000;
+}
+ul.menu-underline li.menu-item:hover~li::before {
+    left: 0;
+}
+ul.menu-underline li.menu-item:active {
+    background: #000;
+    color: #fff;
+}
+/* kod ie8 hack*/
+@media \0screen\,screen\9 {
+    .btn{
+        border-radius: 3px;
+    }
+    .topbar .content .share-title-info{
+        -pie-background: rgba(0,0,0,0.2);
+        -pie-border-radius:5px;
+    }
+    .bindary-box .title .ico{
+        background:#eee;
+        -pie-background: rgba(0,0,0,0.8);
+        -pie-border-radius:50%;
+    }
+    /*桌面*/
+    #page-desktop .topbar{
+        -pie-background: rgba(255,255,255,0.25);
+        -pie-box-shadow:0 0 0px rgba(0, 0, 0, 0.1);
+        zoom:1;
+    }
+    #page-desktop .topbar .topbar-menu{
+        -pie-border-color: rgba(255,255,255,0.35);
+        border-color:transparent;
+    }
+    #page-desktop .topbar .topbar-menu.this,#page-desktop .topbar .topbar-menu:hover{
+        -pie-background: rgba(255,255,255,0.3);
+    }
+    #page-desktop .file-continer .file.hover{
+        border-radius:3px;
+        background-image:none;
+        -pie-background: rgba(255,255,255,0.15);
+    }
+    #page-desktop .file-continer .file.select,#page-desktop .file-continer .file.file-select-drag-temp{
+        border-radius:3px;
+        background-image:none;
+        -pie-background: rgba(255,255,255,0.4);
+    }
+    div.background,.desktop{
+        background-size: cover;
+    }
+    .task-tab .tabs .tab{
+        filter:none;
+        background:#def;
+    }
+    .task-tab .tabs .tab.hover,.task-tab .tabs .tab.this{
+        filter:none;
+        background:#eee;
+    }
+    .tasktab-dragging{
+    .gradient(top,rgba(255,255,255,0.8),rgba(255,255,255,0.2));
+    }
+    div.dialog-simple.dialog-copyright .aui-close,
+    div.share-dialog.dialog-simple .aui-close,
+    div.check-version-dialog.dialog-simple .aui-close{
+        background:#333;
+        width:30px;height:30px;line-height:30px;text-align: center;
+        top:0px;right:10px;
+    }
+}
+/*IE滚动条样式*/
+*{
+    scrollbar-face-color:#eee;
+    scrollbar-arrow-color:#aaa;
+    scrollbar-track-color:#fff;
+    scrollbar-3dlight-color:#fff;
+    scrollbar-highlight-color:#eee;
+    scrollbar-shadow-color:#eee;
+    scrollbar-darkshadow-color:#eee;
+    scrollbar-base-color:#eee;
+}
+
+/**
+ * 移动端样式
+ * https://css-tricks.com/snippets/css/browser-specific-hacks/
+ * https://stackoverflow.com/questions/11470337/mobile-safari-on-iphone-ipod-css-hack
+ */
+@media screen and (max-width: 767px) {
+    /* 兼容ios ifram滚动不了的问题 */
+    :root .aui-content {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: scroll;
+    }
+}
+
+/* tips-box style*/
+.tips-box{
+    min-height: 40px;
+    margin-top: 15px;
+    line-height:40px;
+    max-width:600px;min-width: 160px;
+    overflow: hidden;
+    position: fixed;
+    font-size: 14px;
+    text-align: left;
+    z-index: 9999;
+    pointer-events: none;
+    background: #fff;
+    transition: width .6s ease;
+    border:0px solid transparent;
+    box-shadow: 0 2px 4px rgba(0,0,0,.15),0 0 6px rgba(0,0,0,.08);
+    border-radius: 3px;
+    padding: 0;
+}
+.tips-box .tips-msg{
+    color: #8492a6;
+    padding:10px 40px 0px 50px;
+    line-height: 1.6em;
+}
+.tips-box .tips-msg p li{
+    border-left: 4px solid #ddd;
+    list-style: none;
+    padding-left: 10px;
+    margin-bottom: 0;
+}
+.tips-box .tips-close {
+    font-size: 22px;
+    cursor: pointer;
+    width: 40px;height: 40px;line-height:35px;
+    text-align: center;
+    position: absolute;right: 0;top: 0;
+    color: #ddd;
+    pointer-events: all;
+}
+.tips-box .tips-close:hover{color: #f30;border-bottom: none;text-decoration: none;}
+.tips-box .tips-icon{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    font-size: 22px;
+    padding: 0;
+    color: #fff;
+    text-align: center;
+    display: inline-block;
+}
+.tips-box .tips-icon:after{font-family: FontAwesome;font-style: normal;color: inherit;}
+.tips-box.success .tips-icon:after{content:"\f00c";}
+.tips-box.info .tips-icon:after{content:"\f129";}
+.tips-box.warning .tips-icon:after{content:"\f12a";}
+.tips-box.error .tips-icon:after{content:"\f00d";}
+.tips-box.success .tips-icon{background:#13ce66;}
+.tips-box.info .tips-icon{background:#50bfff;}
+.tips-box.warning .tips-icon{background:#f7ba29;}
+.tips-box.error .tips-icon{background:#ff4949;}
+#messageTipsPop{
+    position: fixed;left: 50%;top: 50%;
+    z-index: 99999;
+    opacity: 0.6;
+    background: #000;
+    color: #fff;
+    padding: 30px 40px;
+    font-size: 25px;
+    border-radius: 10px;
+}

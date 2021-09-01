@@ -13,8 +13,11 @@ function logLoad() {
         contentType: 'application/json',
         success: (data) => {
             //console.log(data);
+            if (!data || data.records == 0) {
+                info.html('记录为空!').show();
+                return;
+            }
             info.html('已加载' + (20 * (p > 1 ? p - 1 : 0) + data.rows.length) + '条记录（共' + data.records + '条）').show();
-            if (data.records == 0) return;
             if (data.total > p) btn.attr('page', (p + 1)).show();
             if (searchText) tbl.html('');
             for (var i = 0; i < data.rows.length; i++) {

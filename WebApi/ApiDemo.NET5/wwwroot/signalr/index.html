@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>消息</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0">
+    <!--<meta name="renderer" content="webkit">-->
+    <meta name="keywords" content="" />
+    <meta name="description" itemprop="description" content="">
+    <!--<meta name="generator" content="" />-->
+    <!--<meta name="author" content="" />-->
+    <!--<meta name="copyright" content="" />-->
+    <link rel="icon" type="image/png" href="/swagger/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/swagger/favicon-16x16.png" sizes="16x16" />
+    <!-- https://www.bootcdn.cn -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/3.7.1/animate.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/microsoft-signalr/5.0.8/signalr.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuid.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
+    <link href="/office/css/common.css" rel="stylesheet" />
+</head>
+<body>
+    <!--boby-->
+    <div class="container pl15 pr15">
+        <p><br><br><br></p>
+        <!--contents-->
+        <div class="container">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="padding:1px">
+                    <ul class="breadcrumb" style="margin-bottom:0;background:none">
+                        <li class="active"><span class="label label-info">实时</span></li>
+                        <li><span class="label label-info">消息</span></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover table-striped table-sort">
+                        <thead class="head-bg">
+                            <tr class="text-justify"><th>内容</th></tr>
+                        </thead>
+                        <tbody id="listTbl"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var q = { "sid": "用户id", "pid": "关联id", "name": "名称", "room": 0 };
+            q.sid = uuidv4(); q.pid = uuidv4();
+            var qs = "?device=web" + (+new Date) + "&sid=" + encodeURIComponent(q.sid) + "&pid=" + encodeURIComponent(q.pid) + "&name=" + encodeURIComponent(q.name) + "&room=" + q.room;
+
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chat" + qs, {
+                    //headers: q, // Only for LongPolling.
+                    //accessTokenFactory: function () { return '$token' }, // Get and return the access token.
+                    transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
+                })
+                .withAutomaticReconnect([0, 2000, 3000, 5000, 10000, 15000, 30000, 60000])
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            connection.start().then(function () {
+                console.log('%c signalr started ' + new Date().toTimeString(), 'color:#7e2299;background:#33ff33');
+            }).catch(function (err) {
+                console.log('%c signalr connect: ' + err.toString(), 'color:#333333;background:#ff6633');
+            });
+
+            connection.on("newMessage", function (message) {
+                console.log('%c signalr message: ' + JSON.stringify(message), 'color:#333333;background:#33ff99');
+                newMessage(message);
+            });
+
+            connection.on("onDebug", function (message) {
+                console.log('%c signalr debug: ' + JSON.stringify(message), 'color:#333333;background:#ff9933');
+            });
+
+            connection.on("onError", function (message) {
+                console.log('%c signalr error: ' + JSON.stringify(message), 'color:#333333;background:#ff6633');
+            });
+
+        });
+
+        function newMessage(message) {
+            var tbl = $('#listTbl');
+            var tpl = '<tr><td><span style="color:#333333;background:#33ff99">' + (message) + '</span></td></tr>';
+            tbl.prepend($(tpl));
+        }
+    </script>
+</body>
+</html>
