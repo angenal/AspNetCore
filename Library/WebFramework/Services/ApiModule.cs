@@ -131,8 +131,10 @@ namespace WebFramework.Services
             services.RegisterResources(config);
 
 
-            // SignalR
+            // SignalR  https://docs.microsoft.com/zh-cn/aspnet/core/signalr
             services.AddSignalR();
+            // SignalR 提升传输性能 Microsoft.AspNetCore.SignalR.Protocols.MessagePack
+            //services.AddSignalR().AddMessagePackProtocol();
 
 
             // Upload File

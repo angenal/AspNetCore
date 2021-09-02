@@ -119,7 +119,7 @@ namespace WebFramework.Controllers
         /// <summary>执行消息推送</summary>
         public void Execute()
         {
-            hubContext.Clients.All.SendAsync("newMessage", DateTime.Now.ToTimeString()).Wait();
+            hubContext.Clients.All.SendAsync("newMessage", $"新消息 {DateTime.Now.ToTimeString()}").Wait();
         }
     }
 }
