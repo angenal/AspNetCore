@@ -149,7 +149,7 @@
             function reconnectPolicyObject() { }
             reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) {
                 if (retryContext.elapsedMilliseconds > maxLimitMilliseconds) return null;
-                newDebug('signalr connect error: ' + retryContext.retryReason.message + ' > Reconnect attempt number ' + (1 + retryContext.previousRetryCount) + ' will start in ' + (intervalMilliseconds / 1000) + ' seconds.', 'color:#333333;background:#ff9933');
+                newDebug('signalr connect error: ' + retryContext.retryReason.message + (retryContext.previousRetryCount == 0 ? '' : ' > Reconnect attempt number ' + retryContext.previousRetryCount + ' will start.'), 'color:#333333;background:#ff9933');
                 return intervalMilliseconds;
             };
             return new reconnectPolicyObject();
@@ -161,19 +161,15 @@
         // 展示消息
         function newMessage(message, style) {
             var tbl = $('#listTbl1'), time = new Date().toTimeString().split(' ')[0];
-            var tpl = '<tr><td class="vmiddle"><span style="' + style + '">' + message + '</span></td><td class="text-muted vmiddle">' + time + '</td></tr>';
-            tbl.prepend($(tpl));
-            var tr = tbl.find('tr');
-            if (tr.length > 10) tr.eq(10).remove();
+            tbl.prepend($('<tr><td class="vmiddle"><span style="' + style + '">' + message + '</span></td><td class="text-muted vmiddle">' + time + '</td></tr>'));
+            var tr = tbl.find('tr'); if (tr.length > 10) tr.eq(10).remove();
         }
 
         // 调试跟踪
         function newDebug(message, style) {
             var tbl = $('#listTbl0'), time = new Date().toTimeString().split(' ')[0];
-            var tpl = '<tr><td class="vmiddle"><span style="' + style + '">' + message + '</span></td><td class="text-muted vmiddle">' + time + '</td></tr>';
-            tbl.prepend($(tpl));
-            var tr = tbl.find('tr');
-            if (tr.length > 10) tr.eq(10).remove();
+            tbl.prepend($('<tr><td class="vmiddle"><span style="' + style + '">' + message + '</span></td><td class="text-muted vmiddle">' + time + '</td></tr>'));
+            var tr = tbl.find('tr'); if (tr.length > 10) tr.eq(10).remove();
         }
     </script>
 </body>
