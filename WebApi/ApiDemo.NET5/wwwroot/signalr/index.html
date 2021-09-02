@@ -91,36 +91,36 @@
             connection.onreconnected = function (connectionId) {
                 var msg = 'signalr reconnected successfully. connected id: ' + connectionId, style = 'color:#7e2299;background:#33ff33';
                 console.log('%c ' + msg, style);
-                newDebug(msg, style);
+                if (typeof (newDebug) == 'function') newDebug(msg, style);
             };
             //connection.onreconnecting = function (err) {
             //    var msg = 'signalr reconnecting: ' + err, style = 'color:#333333;background:#ff6633';
             //    console.log('%c ' + msg, style);
-            //    newDebug(msg, style);
+            //    if (typeof (newDebug) == 'function') newDebug(msg, style);
             //};
             //connection.onclose = function (err) {
             //    var msg = 'signalr connected failed: ' + err, style = 'color:#333333;background:#ff6633';
             //    console.log('%c ' + msg, style);
-            //    newDebug(msg, style);
+            //    if (typeof (newDebug) == 'function') newDebug(msg, style);
             //};
 
             // 处理接收到的消息
             connection.on("newMessage", function (message) {
                 var msg = getMessage(message), style = 'color:#333333;background:#33ff99';
                 console.log('%c signalr message: ' + msg, style);
-                newMessage(msg, style);
+                if (typeof (newMessage) == 'function') newMessage(msg, style);
             });
 
             connection.on("onDebug", function (message) {
                 var msg = getMessage(message), style = 'color:#333333;background:#ff9933';
                 console.log('%c signalr debug: ' + msg, style);
-                newDebug(msg, style);
+                if (typeof (newDebug) == 'function') newDebug(msg, style);
             });
 
             connection.on("onError", function (message) {
                 var msg = getMessage(message), style = 'color:#333333;background:#ff6633';
                 console.log('%c signalr error: ' + msg, style);
-                newDebug(msg, style);
+                if (typeof (newDebug) == 'function') newDebug(msg, style);
             });
 
             // 开始连接
@@ -137,12 +137,12 @@
                 if (connection.reconnectedCallbacks.length == 0 && connection.onreconnected) connection.reconnectedCallbacks.push(connection.onreconnected);
                 var msg = 'signalr connected successfully. connected id: ' + connection.connectionId, style = 'color:#7e2299;background:#33ff33';
                 console.log('%c ' + msg, style);
-                newDebug(msg, style);
+                if (typeof (newDebug) == 'function') newDebug(msg, style);
             }).catch(function (err) {
                 if (connection.reconnectedCallbacks.length == 0 && connection.onreconnected) connection.reconnectedCallbacks.push(connection.onreconnected);
                 var msg = 'signalr connected error: ' + err, style = 'color:#333333;background:#ff6633';
                 console.log('%c ' + msg, style);
-                newDebug(msg, style);
+                if (typeof (newDebug) == 'function') newDebug(msg, style);
             });
         }
 
@@ -151,7 +151,7 @@
             function reconnectPolicyObject() { }
             reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) {
                 if (retryContext.elapsedMilliseconds > maxLimitMilliseconds) return null;
-                newDebug('signalr connected error: ' + retryContext.retryReason.message + (retryContext.previousRetryCount == 0 ? '' : ' → reconnect attempt number ' + retryContext.previousRetryCount + ' will start.'), 'color:#333333;background:#ff9933');
+                if (typeof (newDebug) == 'function') newDebug('signalr connected error: ' + retryContext.retryReason.message + (retryContext.previousRetryCount == 0 ? '' : ' → reconnect attempt number ' + retryContext.previousRetryCount + ' will start.'), 'color:#333333;background:#ff9933');
                 return intervalMilliseconds;
             };
             return new reconnectPolicyObject();
