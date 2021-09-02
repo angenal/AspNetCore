@@ -87,7 +87,6 @@
                 .withAutomaticReconnect(getReconnectPolicy(3000, 43200000)) // 推荐3秒后+无限重连半天内
                 .configureLogging(signalR.LogLevel.Warning) // 日志级别
                 .build();
-
             // 初始化连接事件
             connection.onreconnecting = function (err) {
                 var msg = 'signalr reconnecting: ' + err, style = 'color:#333333;background:#ff6633';
@@ -135,7 +134,15 @@
         // 处理消息对象
         function getMessage(message) { return message && typeof (message) == "object" ? JSON.stringify(message) : message; }
         // 获取重连规则
-        function getReconnectPolicy(intervalMilliseconds, maxLimitMilliseconds) { function reconnectPolicyObject() { } reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) { return retryContext.elapsedMilliseconds < maxLimitMilliseconds ? intervalMilliseconds : null; }; return new reconnectPolicyObject(); }
+        function getReconnectPolicy(intervalMilliseconds, maxLimitMilliseconds) {
+            function reconnectPolicyObject() { }
+            reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) {
+                if (retryContext.elapsedMilliseconds > maxLimitMilliseconds) return null;
+                newDebug('signalr connect error: ' + retryContext.retryReason.message + ' Reconnect attempt number ' + (1 + retryContext.previousRetryCount) + ' will start in ' + (intervalMilliseconds / 1000) + ' seconds.', 'color:#333333;background:#ff9933');
+                return intervalMilliseconds;
+            };
+            return new reconnectPolicyObject();
+        }
 
         // 开始连接
         function start(connection) {
