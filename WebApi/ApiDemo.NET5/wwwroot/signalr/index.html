@@ -180,6 +180,7 @@
 
         // 开始连接
         function start(connection) {
+            $('#listTbl0').html(''); $('#listTbl1').html('');
             connection.start().then(function () {
                 setCallbacks(connection);
                 var msg = 'signalr connected successfully. connected id: ' + connection.connectionId, style = 'color:#7e2299;background:#33ff33';
