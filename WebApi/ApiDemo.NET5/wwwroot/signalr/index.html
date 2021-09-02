@@ -151,7 +151,7 @@
             function reconnectPolicyObject() { }
             reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) {
                 if (retryContext.elapsedMilliseconds > maxLimitMilliseconds) return null;
-                newDebug('signalr connected error: ' + retryContext.retryReason.message + (retryContext.previousRetryCount == 0 ? '' : ' > Reconnect attempt number ' + retryContext.previousRetryCount + ' will start.'), 'color:#333333;background:#ff9933');
+                newDebug('signalr connected error: ' + retryContext.retryReason.message + (retryContext.previousRetryCount == 0 ? '' : ' → reconnect attempt number ' + retryContext.previousRetryCount + ' will start.'), 'color:#333333;background:#ff9933');
                 return intervalMilliseconds;
             };
             return new reconnectPolicyObject();
