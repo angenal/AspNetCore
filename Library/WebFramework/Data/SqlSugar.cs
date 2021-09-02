@@ -23,10 +23,11 @@ namespace WebFramework.Data
         /// <param name="context"></param>
         /// <param name="connectionString"></param>
         /// <param name="separatorChars"></param>
-        public DbTable(ISqlSugarClient context = null, ConnectionStrings connectionString = null, string separatorChars = ":") : base(context)
+        /// <param name="action"></param>
+        public DbTable(ISqlSugarClient context = null, ConnectionStrings connectionString = null, string separatorChars = ":", Action<string> action = null) : base(context)
         {
             if (context != null || connectionString == null) return;
-            Context = connectionString.DefaultConnection.NewSqlSugarClient(separatorChars);
+            Context = connectionString.DefaultConnection.NewSqlSugarClient(separatorChars, action);
         }
     }
     /// <summary>
@@ -37,10 +38,10 @@ namespace WebFramework.Data
         /// <summary>
         /// 获取当前线程的 SqlSugar Client
         /// </summary>
-        public static SqlSugarClient Get(string connectionString, string separatorChars = ":")
+        public static SqlSugarClient Get(string connectionString, string separatorChars = ":", Action<string> action = null)
         {
             var key = threadLocal.Value;
-            if (!cache.ContainsKey(key)) cache.TryAdd(key, connectionString.NewSqlSugarClient(separatorChars));
+            if (!cache.ContainsKey(key)) cache.TryAdd(key, connectionString.NewSqlSugarClient(separatorChars, action));
             return cache[key];
         }
         /// <summary></summary>
@@ -140,8 +141,9 @@ namespace WebFramework.Data
         /// </summary>
         /// <param name="connectionString"></param>
         /// <param name="separatorChars"></param>
+        /// <param name="action"></param>
         /// <returns></returns>
-        public static SqlSugarClient NewSqlSugarClient(this string connectionString, string separatorChars = ":")
+        public static SqlSugarClient NewSqlSugarClient(this string connectionString, string separatorChars = ":", Action<string> action = null)
         {
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentNullException(nameof(connectionString));
@@ -191,9 +193,9 @@ namespace WebFramework.Data
                 ConfigureExternalServices = new ConfigureExternalServices() { DataInfoCacheService = new SqlSugarMemoryCache() }
             });
 #if DEBUG
-            //db.Ado.IsEnableLogEvent = true;
-            return db.Debug();
+            return db.Debug(action);
 #else
+            if (action != null) return db.Debug(action);
             db.Ado.IsEnableLogEvent = false;
             return db;
 #endif

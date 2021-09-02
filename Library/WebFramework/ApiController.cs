@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using SqlSugar;
+using System.Collections.Generic;
 using WebFramework.Data;
 
 namespace WebFramework
@@ -18,8 +19,16 @@ namespace WebFramework
         /// <summary>
         /// new SqlSugarClient
         /// </summary>
-        public SqlSugarClient db => _db ??= SQLServerDb.DefaultConnection.NewSqlSugarClient();
+        public SqlSugarClient db => _db ??= SQLServerDb.DefaultConnection.NewSqlSugarClient(":", SqlSugarClientDebug);
         private SqlSugarClient _db;
+        private void SqlSugarClientDebug(string sql)
+        {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(sql);
+#endif
+            var trace = HttpContext.TraceIdentifier;
+            if (trace != null) HttpContext.Items.TryAdd(trace + "sql", sql);
+        }
 
         /// <summary></summary>
         public ApiController() { }

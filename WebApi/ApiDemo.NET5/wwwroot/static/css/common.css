@@ -13,12 +13,14 @@ body, input, textarea { -webkit-font-smoothing: antialiased; font-family: "Micro
 .shadow-bottom-black { box-shadow: 0 2px 5px 0 rgba(0,0,0,.3);}
 /* 图片方向校正 */ img {image-orientation:from-image;}
 /* 距离 margin padding */
+.pl0 { padding-left: 0; } .pl1 { padding-left: 1px; } .pl2 { padding-left: 2px; } .pl3 { padding-left: 3px; } .pl4 { padding-left: 4px; } .pl5 { padding-left: 5px; }
+.pr0 { padding-right: 0; } .pr1 { padding-right: 1px; } .pr2 { padding-right: 2px; } .pr3 { padding-right: 3px; } .pr4 { padding-right: 4px; } .pr5 { padding-right: 5px; }
 .pl15 { padding-left: 15px; } .pt15 { padding-top: 15px; }
 .pd15 { padding: 15px; } .pd5 { padding: 5px; } .pl0 { padding-left: 0; } .pt0 { padding-top: 0; }
 .pr15 { padding-right: 15px; }.pb15 { padding-bottom: 15px; } .pr0 { padding-right: 0; } .pb0 { padding-bottom: 0; } .pd0 { padding: 0; }
 .mt15 { margin-top: 15px; }.ml15 { margin-left: 15px; }
 .mg15 { margin: 15px; } .mg5 { margin: 5px; } .mt0 { margin-top: 0; } .ml0 { margin-left: 0; }
-.mb15 { margin-bottom: 15px; }.mr15 { margin-right: 15px; } .mb0 { margin-bottom: 0; } .mr0 { margin-right: 0; } .mg0 { margin: 0; }
+.mb15 { margin-bottom: 15px; } .mr15 { margin-right: 15px; } .mb0 { margin-bottom: 0; } .mr0 { margin-right: 0; } .mg0 { margin: 0; }
 .md60, .form-control.md60, .form-inline .form-control.md60 { width: 60px; }
 .md80, .form-control.md80, .form-inline .form-control.md80 { width: 80px; }
 .fl{float:left;}.fr{float:right;}

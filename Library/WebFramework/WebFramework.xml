@@ -840,20 +840,21 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:WebFramework.Data.DbTable`1.#ctor(SqlSugar.ISqlSugarClient,WebFramework.ConnectionStrings,System.String)">
+        <member name="M:WebFramework.Data.DbTable`1.#ctor(SqlSugar.ISqlSugarClient,WebFramework.ConnectionStrings,System.String,System.Action{System.String})">
             <summary>
             数据表 基类
             </summary>
             <param name="context"></param>
             <param name="connectionString"></param>
             <param name="separatorChars"></param>
+            <param name="action"></param>
         </member>
         <member name="T:WebFramework.Data.ThreadLocalSqlSugar">
             <summary>
             当前线程的数据库访问类 for SqlSugar Client
             </summary>
         </member>
-        <member name="M:WebFramework.Data.ThreadLocalSqlSugar.Get(System.String,System.String)">
+        <member name="M:WebFramework.Data.ThreadLocalSqlSugar.Get(System.String,System.String,System.Action{System.String})">
             <summary>
             获取当前线程的 SqlSugar Client
             </summary>
@@ -930,12 +931,13 @@
             数据库访问类 扩展方法
             </summary>
         </member>
-        <member name="M:WebFramework.Data.SqlSugarExtensions.NewSqlSugarClient(System.String,System.String)">
+        <member name="M:WebFramework.Data.SqlSugarExtensions.NewSqlSugarClient(System.String,System.String,System.Action{System.String})">
             <summary>
             new SqlSugarClient
             </summary>
             <param name="connectionString"></param>
             <param name="separatorChars"></param>
+            <param name="action"></param>
             <returns></returns>
         </member>
         <member name="M:WebFramework.Data.SqlSugarExtensions.Debug(SqlSugar.SqlSugarClient,System.Action{System.String})">

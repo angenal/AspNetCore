@@ -24,11 +24,44 @@
     <!--<script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuid.min.js"></script>-->
     <!--<script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>-->
     <link href="/static/css/common.css" rel="stylesheet" />
+    <style type="text/css">
+        @media (min-width:768px){.navbar-collapse .navbar-left{border-bottom:0}.navbar-form .input-group{margin-top:10px}}
+        .nav>li>a{font-size:17px}
+        .navbar-left{border-bottom:1px solid #E7E7E7}
+        .navbar-form{margin-top:0;border-top:0}
+        .input-group{width:100%}
+        .form-control:first-child{border-top-right-radius:3px;border-bottom-right-radius:3px}
+        .navbar-shadow{box-shadow:0 0 5px 0 rgba(0,0,0,.3)}
+    </style>
 </head>
 <body>
+    <!--header-->
+    <nav class="navbar navbar-default navbar-fixed-top navbar-shadow">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </button>
+                <a href="/" target="_blank" class="navbar-brand">首页</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-left">
+                    <li><a href="/swagger" target="_blank">接口文档</a> </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-left">
+                    <li><a href="/signalr" target="_blank">消息</a> </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-left">
+                    <li><a href="/logs" target="_blank">日志</a> </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <!--boby-->
-    <div class="container pl15 pr15">
-        <p><br><br></p>
+    <div class="container pl0">
+        <p><br><br><br></p>
         <!--contents-->
         <div class="container">
             <div class="panel panel-primary">
@@ -40,32 +73,32 @@
                 </div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" onsubmit="return false">
-                        <div class="form-group col-sm-3">
+                        <div class="form-group col-sm-3 mb0">
                             <label for="input-sid" class="col-sm-2 control-label">sid：</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="input-sid" placeholder="用户id">
                             </div>
                         </div>
-                        <div class="form-group col-sm-3">
-                            <label for="input-pid" class="col-sm-2 control-label">pid：</label>
-                            <div class="col-sm-10">
+                        <div class="form-group col-sm-3 mb0">
+                            <label for="input-pid" class="col-sm-2 control-label pl2">pid：</label>
+                            <div class="col-sm-10 pl3">
                                 <input type="text" class="form-control" id="input-pid" placeholder="关联id">
                             </div>
                         </div>
-                        <div class="form-group col-sm-3">
-                            <label for="input-room" class="col-sm-3 control-label">room：</label>
-                            <div class="col-sm-9">
+                        <div class="form-group col-sm-3 mb0">
+                            <label for="input-room" class="col-sm-3 control-label pl2">room：</label>
+                            <div class="col-sm-9 pl1">
                                 <input type="text" class="form-control" id="input-room" placeholder="分组id">
                             </div>
                         </div>
-                        <div class="form-group col-sm-2">
-                            <label for="input-name" class="col-sm-4 control-label">name：</label>
+                        <div class="form-group col-sm-3 mb0 pr0">
+                            <label for="input-name" class="col-sm-2 control-label pl2">name：</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" id="input-name" placeholder="用户名">
                             </div>
                         </div>
-                        <div class="form-group col-sm-1">
-                            <div class="col-sm-offset-2 col-sm-10">
+                        <div class="form-group col-sm-1 mb0 pl0">
+                            <div class="col-sm-offset-2 col-sm-8">
                                 <button type="button" class="btn btn-primary" onclick="doStart()">开始</button>
                             </div>
                         </div>
@@ -118,10 +151,10 @@
             // 设置连接参数
             var q = { "sid": "用户id", "pid": "关联id", "name": "用户名", "room": '0' };
             //q.sid = uuidv4(); q.pid = uuidv4();
-            q.sid = $('#input-sid').val(); if (q.sid == '') return alert('参数错误!');
-            q.pid = $('#input-pid').val(); if (q.pid == '') return alert('参数错误!');
-            q.name = $('#input-name').val(); if (q.name == '') return alert('参数错误!');
-            q.room = $('#input-room').val(); if (q.room == '') return alert('参数错误!');
+            q.sid = $('#input-sid').val(); if (q.sid == '') return alert('参数sid错误!');
+            q.pid = $('#input-pid').val(); if (q.pid == '') return alert('参数pid错误!');
+            q.name = $('#input-name').val(); if (q.name == '') return alert('参数name错误!');
+            q.room = $('#input-room').val(); if (q.room == '') return alert('参数room错误!');
             var qs = "?device=web" + (+new Date) + "&sid=" + encodeURIComponent(q.sid) + "&pid=" + encodeURIComponent(q.pid) + "&name=" + encodeURIComponent(q.name) + "&room=" + encodeURIComponent(q.room);
 
             // 初始化连接对象

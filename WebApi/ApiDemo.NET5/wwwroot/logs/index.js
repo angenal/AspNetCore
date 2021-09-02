@@ -14,7 +14,7 @@ function logLoad() {
         success: (data) => {
             //console.log(data);
             if (!data || data.records == 0) {
-                info.html('记录为空!').show();
+                info.html('记录为空').show();
                 return;
             }
             info.html('已加载' + (20 * (p > 1 ? p - 1 : 0) + data.rows.length) + '条记录（共' + data.records + '条）').show();

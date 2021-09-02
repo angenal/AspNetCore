@@ -166,7 +166,7 @@ namespace WebFramework.Services
                 {
                     if (value is string body)
                     {
-                        contents.Append($" body => ");
+                        contents.Append(" body => ");
                         contents.Append(string.IsNullOrWhiteSpace(body) ? "null" : body);
                         contents.Append(Environment.NewLine);
                     }
@@ -178,6 +178,11 @@ namespace WebFramework.Services
                             contents.Append(input[key]?.ToJson() ?? "null");
                             contents.Append(Environment.NewLine);
                         }
+                    }
+                    if (context.Items.TryGetValue(trace + "sql", out object sqlValue))
+                    {
+                        contents.Append(Environment.NewLine);
+                        contents.Append($" sql => {sqlValue}");
                     }
                 }
 
