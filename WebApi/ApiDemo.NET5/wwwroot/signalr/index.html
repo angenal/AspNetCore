@@ -71,30 +71,41 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            // 连接参数
+            // 设置连接参数
             var q = { "sid": "用户id", "pid": "关联id", "name": "新用户", "room": 0 };
             q.sid = uuidv4(); q.pid = uuidv4();
             var qs = "?device=web" + (+new Date) + "&sid=" + encodeURIComponent(q.sid) + "&pid=" + encodeURIComponent(q.pid) + "&name=" + encodeURIComponent(q.name) + "&room=" + q.room;
-            // 初始化连接
+
+            // 初始化连接对象
             var connection = new signalR.HubConnectionBuilder()
                 .withUrl("/chat" + qs, {
                     //headers: q, // Only for LongPolling.
                     //accessTokenFactory: function () { return '$token' }, // Get and return the access token.
                     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
                 })
-                //.withAutomaticReconnect([0, 2000, 3000, 5000, 10000, 15000, 30000]) // 重连规则+次数
-                .withAutomaticReconnect(getReconnectPolicy(3000, 86400000)) // 推荐3秒后+无限重连(最长1天)
+                //.withAutomaticReconnect([0, 2000, 3000, 5000, 10000, 15000, 30000]) // 重连7次
+                .withAutomaticReconnect(getReconnectPolicy(3000, 43200000)) // 推荐3秒后+无限重连半天内
                 .configureLogging(signalR.LogLevel.Information) // 日志级别
                 .build();
-            //// disconnected
-            ////connection.onclose = function () { setTimeout(function () { start(connection); }, 3000); };
-            // start connect
-            start(connection);
-            // trace connect
-            window.connection = connection;
-            // send message
-            // connection.invoke("SendMessage", user, message);
 
+            // 初始化连接事件
+            connection.onreconnecting = function (err) {
+                var msg = 'signalr reconnecting: ' + err, style = 'color:#333333;background:#ff6633';
+                console.log('%c ' + msg, style);
+                newDebug(msg, style);
+            };
+            connection.onreconnected = function (connectionId) {
+                var msg = 'signalr reconnect successfully.', style = 'color:#7e2299;background:#33ff33';
+                console.log('%c ' + msg + ' connected id: ' + connectionId, style);
+                newDebug(msg, style);
+            };
+            connection.onclose = function (err) {
+                var msg = 'signalr connect failed: ' + err, style = 'color:#333333;background:#ff6633';
+                console.log('%c ' + msg, style);
+                newDebug(msg, style);
+            };
+
+            // 处理接收到的消息
             connection.on("newMessage", function (message) {
                 var msg = getMessage(message), style = 'color:#333333;background:#33ff99';
                 console.log('%c signalr message: ' + msg, style);
@@ -112,23 +123,34 @@
                 console.log('%c signalr error: ' + msg, style);
                 newDebug(msg, style);
             });
+
+            // 开始连接
+            start(connection);
+            // 跟踪连接
+            window.connection = connection;
+            // 发送消息
+            // connection.invoke("SendMessage", user, message);
         });
 
+        // 处理消息对象
+        function getMessage(message) { return message && typeof (message) == "object" ? JSON.stringify(message) : message; }
+        // 获取重连规则
+        function getReconnectPolicy(intervalMilliseconds, maxLimitMilliseconds) { function reconnectPolicyObject() { } reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) { return retryContext.elapsedMilliseconds < maxLimitMilliseconds ? intervalMilliseconds : null; }; return new reconnectPolicyObject(); }
+
+        // 开始连接
         function start(connection) {
             connection.start().then(function () {
                 var msg = 'signalr connect successfully.', style = 'color:#7e2299;background:#33ff33';
                 console.log('%c ' + msg, style);
                 newDebug(msg, style);
             }).catch(function (err) {
-                var msg = 'signalr connect error: ' + err.toString(), style = 'color:#333333;background:#ff6633';
+                var msg = 'signalr connect error: ' + err, style = 'color:#333333;background:#ff6633';
                 console.log('%c ' + msg, style);
                 newDebug(msg, style);
             });
         }
 
-        function getMessage(message) { return message && typeof (message) == "object" ? JSON.stringify(message) : message; }
-        function getReconnectPolicy(reconnectMilliseconds, longTime) { function reconnectPolicyObject() { } reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) { return retryContext.elapsedMilliseconds < longTime ? reconnectMilliseconds : null; }; return new reconnectPolicyObject(); }
-
+        // 展示消息
         function newMessage(message, style) {
             var tbl = $('#listTbl1'), time = new Date().toTimeString().split(' ')[0];
             var tpl = '<tr><td class="vmiddle"><span style="' + style + '">' + message + '</span></td><td class="text-muted vmiddle">' + time + '</td></tr>';
@@ -136,7 +158,7 @@
             var tr = tbl.find('tr');
             if (tr.length >= 20) tr.eq(tr.length - 1).remove();
         }
-
+        // 调试跟踪
         function newDebug(message, style) {
             var tbl = $('#listTbl0'), time = new Date().toTimeString().split(' ')[0];
             var tpl = '<tr><td class="vmiddle"><span style="' + style + '">' + message + '</span></td><td class="text-muted vmiddle">' + time + '</td></tr>';
