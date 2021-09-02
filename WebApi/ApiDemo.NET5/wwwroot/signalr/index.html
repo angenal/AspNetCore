@@ -88,21 +88,21 @@
                 .configureLogging(signalR.LogLevel.Warning) // 日志级别
                 .build();
             // 初始化连接事件
-            connection.onreconnecting = function (err) {
-                var msg = 'signalr reconnecting: ' + err, style = 'color:#333333;background:#ff6633';
-                console.log('%c ' + msg, style);
-                newDebug(msg, style);
-            };
             connection.onreconnected = function (connectionId) {
                 var msg = 'signalr reconnect successfully.', style = 'color:#7e2299;background:#33ff33';
                 console.log('%c ' + msg + ' connected id: ' + connectionId, style);
                 newDebug(msg, style);
             };
-            connection.onclose = function (err) {
-                var msg = 'signalr connect failed: ' + err, style = 'color:#333333;background:#ff6633';
-                console.log('%c ' + msg, style);
-                newDebug(msg, style);
-            };
+            //connection.onreconnecting = function (err) {
+            //    var msg = 'signalr reconnecting: ' + err, style = 'color:#333333;background:#ff6633';
+            //    console.log('%c ' + msg, style);
+            //    newDebug(msg, style);
+            //};
+            //connection.onclose = function (err) {
+            //    var msg = 'signalr connect failed: ' + err, style = 'color:#333333;background:#ff6633';
+            //    console.log('%c ' + msg, style);
+            //    newDebug(msg, style);
+            //};
 
             // 处理接收到的消息
             connection.on("newMessage", function (message) {
@@ -131,23 +131,10 @@
             // connection.invoke("SendMessage", user, message);
         });
 
-        // 处理消息对象
-        function getMessage(message) { return message && typeof (message) == "object" ? JSON.stringify(message) : message; }
-        // 获取重连规则
-        function getReconnectPolicy(intervalMilliseconds, maxLimitMilliseconds) {
-            function reconnectPolicyObject() { }
-            reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) {
-                if (retryContext.elapsedMilliseconds > maxLimitMilliseconds) return null;
-                newDebug('signalr connect error: ' + retryContext.retryReason.message + ' Reconnect attempt number ' + (1 + retryContext.previousRetryCount) + ' will start in ' + (intervalMilliseconds / 1000) + ' seconds.', 'color:#333333;background:#ff9933');
-                return intervalMilliseconds;
-            };
-            return new reconnectPolicyObject();
-        }
-
         // 开始连接
         function start(connection) {
             connection.start().then(function () {
-                var msg = 'signalr connect successfully.', style = 'color:#7e2299;background:#33ff33';
+                var msg = 'signalr connect successfully. connected id: ' + connection.connectionId, style = 'color:#7e2299;background:#33ff33';
                 console.log('%c ' + msg, style);
                 newDebug(msg, style);
             }).catch(function (err) {
@@ -157,21 +144,36 @@
             });
         }
 
+        // 重连规则
+        function getReconnectPolicy(intervalMilliseconds, maxLimitMilliseconds) {
+            function reconnectPolicyObject() { }
+            reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) {
+                if (retryContext.elapsedMilliseconds > maxLimitMilliseconds) return null;
+                newDebug('signalr connect error: ' + retryContext.retryReason.message + ' > Reconnect attempt number ' + (1 + retryContext.previousRetryCount) + ' will start in ' + (intervalMilliseconds / 1000) + ' seconds.', 'color:#333333;background:#ff9933');
+                return intervalMilliseconds;
+            };
+            return new reconnectPolicyObject();
+        }
+
+        // 处理消息
+        function getMessage(message) { return message && typeof (message) == "object" ? JSON.stringify(message) : message; }
+
         // 展示消息
         function newMessage(message, style) {
             var tbl = $('#listTbl1'), time = new Date().toTimeString().split(' ')[0];
             var tpl = '<tr><td class="vmiddle"><span style="' + style + '">' + message + '</span></td><td class="text-muted vmiddle">' + time + '</td></tr>';
             tbl.prepend($(tpl));
             var tr = tbl.find('tr');
-            if (tr.length >= 20) tr.eq(tr.length - 1).remove();
+            if (tr.length > 10) tr.eq(10).remove();
         }
+
         // 调试跟踪
         function newDebug(message, style) {
             var tbl = $('#listTbl0'), time = new Date().toTimeString().split(' ')[0];
             var tpl = '<tr><td class="vmiddle"><span style="' + style + '">' + message + '</span></td><td class="text-muted vmiddle">' + time + '</td></tr>';
             tbl.prepend($(tpl));
             var tr = tbl.find('tr');
-            if (tr.length >= 20) tr.eq(tr.length - 1).remove();
+            if (tr.length > 10) tr.eq(10).remove();
         }
     </script>
 </body>
