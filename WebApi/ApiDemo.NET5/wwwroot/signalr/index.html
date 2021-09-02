@@ -75,7 +75,7 @@
             var q = { "sid": "用户id", "pid": "关联id", "name": "新用户", "room": 0 };
             q.sid = uuidv4(); q.pid = uuidv4();
             var qs = "?device=web" + (+new Date) + "&sid=" + encodeURIComponent(q.sid) + "&pid=" + encodeURIComponent(q.pid) + "&name=" + encodeURIComponent(q.name) + "&room=" + q.room;
-            // 初始化
+            // 初始化连接
             var connection = new signalR.HubConnectionBuilder()
                 .withUrl("/chat" + qs, {
                     //headers: q, // Only for LongPolling.
