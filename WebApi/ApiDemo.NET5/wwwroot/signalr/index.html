@@ -89,8 +89,8 @@
                 .build();
             // 初始化连接事件
             connection.onreconnected = function (connectionId) {
-                var msg = 'signalr reconnect successfully.', style = 'color:#7e2299;background:#33ff33';
-                console.log('%c ' + msg + ' connected id: ' + connectionId, style);
+                var msg = 'signalr reconnected successfully. connected id: ' + connectionId, style = 'color:#7e2299;background:#33ff33';
+                console.log('%c ' + msg, style);
                 newDebug(msg, style);
             };
             //connection.onreconnecting = function (err) {
@@ -99,7 +99,7 @@
             //    newDebug(msg, style);
             //};
             //connection.onclose = function (err) {
-            //    var msg = 'signalr connect failed: ' + err, style = 'color:#333333;background:#ff6633';
+            //    var msg = 'signalr connected failed: ' + err, style = 'color:#333333;background:#ff6633';
             //    console.log('%c ' + msg, style);
             //    newDebug(msg, style);
             //};
@@ -134,11 +134,13 @@
         // 开始连接
         function start(connection) {
             connection.start().then(function () {
-                var msg = 'signalr connect successfully. connected id: ' + connection.connectionId, style = 'color:#7e2299;background:#33ff33';
+                if (connection.reconnectedCallbacks.length == 0 && connection.onreconnected) connection.reconnectedCallbacks.push(connection.onreconnected);
+                var msg = 'signalr connected successfully. connected id: ' + connection.connectionId, style = 'color:#7e2299;background:#33ff33';
                 console.log('%c ' + msg, style);
                 newDebug(msg, style);
             }).catch(function (err) {
-                var msg = 'signalr connect error: ' + err, style = 'color:#333333;background:#ff6633';
+                if (connection.reconnectedCallbacks.length == 0 && connection.onreconnected) connection.reconnectedCallbacks.push(connection.onreconnected);
+                var msg = 'signalr connected error: ' + err, style = 'color:#333333;background:#ff6633';
                 console.log('%c ' + msg, style);
                 newDebug(msg, style);
             });
@@ -149,7 +151,7 @@
             function reconnectPolicyObject() { }
             reconnectPolicyObject.prototype.nextRetryDelayInMilliseconds = function (retryContext) {
                 if (retryContext.elapsedMilliseconds > maxLimitMilliseconds) return null;
-                newDebug('signalr connect error: ' + retryContext.retryReason.message + (retryContext.previousRetryCount == 0 ? '' : ' > Reconnect attempt number ' + retryContext.previousRetryCount + ' will start.'), 'color:#333333;background:#ff9933');
+                newDebug('signalr connected error: ' + retryContext.retryReason.message + (retryContext.previousRetryCount == 0 ? '' : ' > Reconnect attempt number ' + retryContext.previousRetryCount + ' will start.'), 'color:#333333;background:#ff9933');
                 return intervalMilliseconds;
             };
             return new reconnectPolicyObject();
