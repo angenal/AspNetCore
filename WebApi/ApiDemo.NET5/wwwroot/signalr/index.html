@@ -18,11 +18,11 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/3.7.1/animate.min.css" rel="stylesheet">
+    <!--<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">-->
+    <!--<link href="https://cdn.bootcdn.net/ajax/libs/animate.css/3.7.1/animate.min.css" rel="stylesheet">-->
     <script src="https://cdn.bootcdn.net/ajax/libs/microsoft-signalr/5.0.8/signalr.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuid.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
+    <!--<script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuid.min.js"></script>-->
+    <!--<script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>-->
     <link href="/static/css/common.css" rel="stylesheet" />
 </head>
 <body>
@@ -30,6 +30,50 @@
     <div class="container pl15 pr15">
         <p><br><br></p>
         <!--contents-->
+        <div class="container">
+            <div class="panel panel-primary">
+                <div class="panel-heading" style="padding:1px">
+                    <ul class="breadcrumb" style="margin-bottom:0;background:none">
+                        <li class="active"><span class="label label-primary">设置</span></li>
+                        <li><span class="label label-info">signalr</span></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="form" onsubmit="return false">
+                        <div class="form-group col-sm-3">
+                            <label for="input-sid" class="col-sm-2 control-label">sid：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="input-sid" placeholder="用户id">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <label for="input-pid" class="col-sm-2 control-label">pid：</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="input-pid" placeholder="关联id">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <label for="input-room" class="col-sm-3 control-label">room：</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="input-room" placeholder="分组id">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <label for="input-name" class="col-sm-4 control-label">name：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="input-name" placeholder="用户名">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-1">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="button" class="btn btn-primary" onclick="doStart()">开始</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <p><br></p>
         <div class="container">
             <div class="panel panel-info">
                 <div class="panel-heading" style="padding:1px">
@@ -70,13 +114,18 @@
     </div>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        function doStart() {
             // 设置连接参数
-            var q = { "sid": "用户id", "pid": "关联id", "name": "新用户", "room": 0 };
-            q.sid = uuidv4(); q.pid = uuidv4();
-            var qs = "?device=web" + (+new Date) + "&sid=" + encodeURIComponent(q.sid) + "&pid=" + encodeURIComponent(q.pid) + "&name=" + encodeURIComponent(q.name) + "&room=" + q.room;
+            var q = { "sid": "用户id", "pid": "关联id", "name": "用户名", "room": 0 };
+            //q.sid = uuidv4(); q.pid = uuidv4();
+            q.sid = $('#input-sid').val();
+            q.pid = $('#input-pid').val();
+            q.name = $('#input-name').val();
+            q.room = $('#input-room').val();
+            var qs = "?device=web" + (+new Date) + "&sid=" + encodeURIComponent(q.sid) + "&pid=" + encodeURIComponent(q.pid) + "&name=" + encodeURIComponent(q.name) + "&room=" + encodeURIComponent(q.room);
 
             // 初始化连接对象
+            if (window.connection) window.connection = null;
             var connection = new signalR.HubConnectionBuilder()
                 .withUrl("/chat" + qs, {
                     //headers: q, // Only for LongPolling.
@@ -125,25 +174,28 @@
 
             // 开始连接
             start(connection);
-            // 跟踪连接
-            window.connection = connection;
             // 发送消息
             // connection.invoke("SendMessage", user, message);
-        });
+        }
 
         // 开始连接
         function start(connection) {
             connection.start().then(function () {
-                if (connection.reconnectedCallbacks.length == 0 && connection.onreconnected) connection.reconnectedCallbacks.push(connection.onreconnected);
+                setCallbacks(connection);
                 var msg = 'signalr connected successfully. connected id: ' + connection.connectionId, style = 'color:#7e2299;background:#33ff33';
                 console.log('%c ' + msg, style);
                 if (typeof (newDebug) == 'function') newDebug(msg, style);
             }).catch(function (err) {
-                if (connection.reconnectedCallbacks.length == 0 && connection.onreconnected) connection.reconnectedCallbacks.push(connection.onreconnected);
+                setCallbacks(connection);
                 var msg = 'signalr connected error: ' + err, style = 'color:#333333;background:#ff6633';
                 console.log('%c ' + msg, style);
                 if (typeof (newDebug) == 'function') newDebug(msg, style);
             });
+        }
+        function setCallbacks(c) {
+            if (c.closedCallbacks.length == 0 && c.onclose) c.closedCallbacks.push(c.onclose);
+            if (c.reconnectedCallbacks.length == 0 && c.onreconnected) c.reconnectedCallbacks.push(c.onreconnected);
+            window.connection = c;
         }
 
         // 重连规则
