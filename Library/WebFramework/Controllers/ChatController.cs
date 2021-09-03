@@ -42,7 +42,22 @@ namespace WebFramework.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<ChatUser>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public ActionResult GetUser([FromQuery] MessageUserListInputDto input)
+        public ActionResult GetUser([FromQuery] MessageUserSelectInputDto input)
+        {
+            var result = ChatHub.GetUsers(input.UserId);
+            return Ok(result ?? new List<ChatUser>());
+        }
+
+        /// <summary>
+        /// 获取某些在线用户.
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<ChatUser>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public ActionResult GetUsers([FromQuery] MessageUsersSelectInputDto input)
         {
             var result = ChatHub.GetUsers(input.UserId);
             return Ok(result ?? new List<ChatUser>());

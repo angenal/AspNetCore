@@ -214,6 +214,7 @@
 
             // 初始化连接对象
             if (window.connection) window.connection = null;
+            if (window.connectedUser) window.connectedUser = null;
             var connection = new signalR.HubConnectionBuilder()
                 .withUrl("/chat" + qs, {
                     //headers: q, // Only for LongPolling.
@@ -261,30 +262,30 @@
             });
 
             // 开始连接
-            start(connection);
+            start(connection, q);
             // 发送消息
             // connection.invoke("SendMessage", user, message);
         }
 
         // 开始连接
-        function start(connection) {
+        function start(c, q) {
             $('#listTbl0').html(''); $('#listTbl1').html('');
-            connection.start().then(function () {
-                setCallbacks(connection);
-                var msg = 'signalr connected successfully. connected id: ' + connection.connectionId, style = 'color:#7e2299;background:#33ff33';
+            c.start().then(function () {
+                setCallbacks(c, q);
+                var msg = 'signalr connected successfully. connected id: ' + c.connectionId, style = 'color:#7e2299;background:#33ff33';
                 console.log('%c ' + msg, style);
                 if (typeof (newDebug) == 'function') newDebug(msg, style);
             }).catch(function (err) {
-                setCallbacks(connection);
+                setCallbacks(c, q);
                 var msg = 'signalr connected error: ' + err, style = 'color:#333333;background:#ff6633';
                 console.log('%c ' + msg, style);
                 if (typeof (newDebug) == 'function') newDebug(msg, style);
             });
         }
-        function setCallbacks(c) {
+        function setCallbacks(c, q) {
             if (c.closedCallbacks.length == 0 && c.onclose) c.closedCallbacks.push(c.onclose);
             if (c.reconnectedCallbacks.length == 0 && c.onreconnected) c.reconnectedCallbacks.push(c.onreconnected);
-            window.connection = c;
+            window.connection = c; window.connectedUser = q;
         }
 
         // 重连规则
@@ -318,7 +319,7 @@
 
     <script type="text/javascript">
         //在线用户
-        var selectedUserList = [], userList = [];
+        var selectedUserList = [], allUserList = [];
         function doGetAllUsers() {
             var tbl = $('#userListTbl1');
             tbl.html('<tr><td align="center" class="text-muted vmiddle">努力加载中...</td></tr>');
@@ -329,13 +330,12 @@
                 success: (data) => {
                     //console.log(data);
                     if (!data || data.length == 0) {
-                        tbl.html('<tr><td align="center" class="text-muted vmiddle">记录为空</td></tr>');
-                        return;
+                        return tbl.html('<tr><td align="center" class="text-muted vmiddle">记录为空</td></tr>');
                     }
-                    userList = data;
+                    selectedUserList = []; allUserList = data;
                     for (var i = 0; i < data.length; i++) {
                         var item = data[i];
-                        var tpl = '<tr><td style="cursor:pointer" onclick="selectUser(\'' + item.id + '\')"><span class="text-danger bg-warning">' + (item.room) + '</span><span class="text-muted bg-info">' + (item.name) + '</span><br><span class="text-danger bg-warning">' + (item.device) + '</span></td></tr>';
+                        var tpl = '<tr><td style="cursor:pointer" onclick="onSelectedUser(this,\'' + item.id + '\')"><span class="text-danger bg-warning">' + (item.room) + '</span><span class="text-muted">' + (item.name) + '</span><br><span class="text-danger">' + (item.device) + '</span></td></tr>';
                         //console.log(tpl);
                         tbl.append($(tpl));
                     }
@@ -347,20 +347,25 @@
         }
 
         //选择用户
-        function selectUser(id) {
+        function onSelectedUser(td, id) {
             var i = selectedUserList.indexOf(id);
             if (i == -1) {
                 selectedUserList.push(id);
+                $(td).addClass('bg-success');
             } else {
-                selectedUserList.remove(i);
+                selectedUserList.splice(i, 1);
+                $(td).removeClass('bg-success');
             }
         }
 
         //发送消息
         function doSendMessage() {
-            var msg = $('#input-message').val();
-            if (msg == '') return alert('消息不能为空!');
-
+            var content = $('#input-message').val();
+            if (content == '') return alert('消息不能为空!');
+            if (!window.connectedUser) return alert('请先开始连接!');
+            if (selectedUserList.length == 0) return alert('请先选择用户!');
+            var input = { toUser: selectedUserList, content: content, from: $('#input-name').val() };
+            console.log(input);
         }
     </script>
 </body>

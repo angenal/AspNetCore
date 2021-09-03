@@ -36,6 +36,12 @@ namespace WebFramework.SignalR
         /// <returns></returns>
         public static List<ChatUser> GetUsers(string userId) => Connections.Where(u => u.Id == userId).ToList();
         /// <summary>
+        /// 获取某些在线用户.
+        /// </summary>
+        /// <param name="userIdList">用户Id from JwtRegisteredClaimNames.Sid</param>
+        /// <returns></returns>
+        public static List<ChatUser> GetUsers(IEnumerable<string> userIdList) => Connections.Where(u => userIdList.Contains(u.Id)).ToList();
+        /// <summary>
         /// 获取聊天室(群)在线用户.
         /// </summary>
         /// <param name="room">聊天室(群) from Query["room"]</param>
@@ -50,9 +56,25 @@ namespace WebFramework.SignalR
         {
             var list = new List<string>();
             if (string.IsNullOrEmpty(userId)) return list;
-            foreach (var device in GetUsers(userId).Select(u => u.Device))
+            foreach (var item in GetUsers(userId))
             {
-                if (!ConnectionsMap.TryGetValue(userId + device, out string id)) continue;
+                if (!ConnectionsMap.TryGetValue(item.Id + item.Device, out string id)) continue;
+                list.Add(id);
+            }
+            return list;
+        }
+        /// <summary>
+        /// 获取在线用户连接ID.
+        /// </summary>
+        /// <param name="userIdList">用户Id from JwtRegisteredClaimNames.Sid</param>
+        /// <returns></returns>
+        public static List<string> GetConnectionsId(IEnumerable<string> userIdList)
+        {
+            var list = new List<string>();
+            if (userIdList == null || !userIdList.Any()) return list;
+            foreach (var item in GetUsers(userIdList))
+            {
+                if (!ConnectionsMap.TryGetValue(item.Id + item.Device, out string id)) continue;
                 list.Add(id);
             }
             return list;

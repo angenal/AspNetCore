@@ -385,9 +385,14 @@
         <member name="M:WebFramework.Controllers.ChatController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.AspNetCore.SignalR.IHubContext{WebFramework.SignalR.ChatHub},EasyCaching.Core.IEasyCachingProviderFactory)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Controllers.ChatController.GetUser(WebFramework.Models.DTO.MessageUserListInputDto)">
+        <member name="M:WebFramework.Controllers.ChatController.GetUser(WebFramework.Models.DTO.MessageUserSelectInputDto)">
             <summary>
             获取某个在线用户.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.ChatController.GetUsers(WebFramework.Models.DTO.MessageUsersSelectInputDto)">
+            <summary>
+            获取某些在线用户.
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.ChatController.GetRoomUsers(WebFramework.Models.DTO.MessageUsersListInputDto)">
@@ -1217,12 +1222,22 @@
             Chinese
             </summary>
         </member>
-        <member name="T:WebFramework.Models.DTO.MessageUserListInputDto">
+        <member name="T:WebFramework.Models.DTO.MessageUserSelectInputDto">
              <summary>
             
              </summary>
         </member>
-        <member name="P:WebFramework.Models.DTO.MessageUserListInputDto.UserId">
+        <member name="P:WebFramework.Models.DTO.MessageUserSelectInputDto.UserId">
+            <summary>
+            用户Id from Sid
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.MessageUsersSelectInputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.MessageUsersSelectInputDto.UserId">
             <summary>
             用户Id from Sid
             </summary>
@@ -2522,6 +2537,13 @@
             <param name="userId">用户Id from JwtRegisteredClaimNames.Sid</param>
             <returns></returns>
         </member>
+        <member name="M:WebFramework.SignalR.ChatHub.GetUsers(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            获取某些在线用户.
+            </summary>
+            <param name="userIdList">用户Id from JwtRegisteredClaimNames.Sid</param>
+            <returns></returns>
+        </member>
         <member name="M:WebFramework.SignalR.ChatHub.GetRoomUsers(System.String)">
             <summary>
             获取聊天室(群)在线用户.
@@ -2534,6 +2556,13 @@
             获取在线用户连接ID.
             </summary>
             <param name="userId">用户Id from JwtRegisteredClaimNames.Sid</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.ChatHub.GetConnectionsId(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            获取在线用户连接ID.
+            </summary>
+            <param name="userIdList">用户Id from JwtRegisteredClaimNames.Sid</param>
             <returns></returns>
         </member>
         <member name="P:WebFramework.SignalR.ChatHub.db">

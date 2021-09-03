@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebFramework.Models.DTO
@@ -5,7 +6,7 @@ namespace WebFramework.Models.DTO
     /// <summary>
     ///
     /// </summary>
-    public class MessageUserListInputDto
+    public class MessageUserSelectInputDto
     {
         /// <summary>
         /// 用户Id from Sid
@@ -14,6 +15,18 @@ namespace WebFramework.Models.DTO
         [RegularExpression(@"^[\w\-\.]{3,36}$", ErrorMessage = "wrong user id format")]
         public string UserId { get; set; }
     }
+    /// <summary>
+    ///
+    /// </summary>
+    public class MessageUsersSelectInputDto
+    {
+        /// <summary>
+        /// 用户Id from Sid
+        /// </summary>
+        [Required]
+        public List<string> UserId { get; set; }
+    }
+
     /// <summary>
     ///
     /// </summary>
@@ -55,8 +68,7 @@ namespace WebFramework.Models.DTO
         /// 用户Id from Sid
         /// </summary>
         [Required]
-        [RegularExpression(@"^[\w\-\.]{3,36}$", ErrorMessage = "wrong user id format")]
-        public string ToUser { get; set; }
+        public List<string> ToUser { get; set; }
 
         /// <summary>
         /// 消息内容
