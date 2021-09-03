@@ -25,16 +25,22 @@ namespace WebFramework.SignalR
         private readonly static ConcurrentDictionary<string, string> ConnectionsMap = new ConcurrentDictionary<string, string>();
 
         /// <summary>
-        /// 获取在线用户连接ID.
+        /// 获取全部在线用户.
         /// </summary>
         /// <returns></returns>
-        public static List<ChatUser> GetConnections() => Connections.ToList();
+        public static List<ChatUser> GetUsers() => Connections.ToList();
         /// <summary>
-        /// 获取在线用户.
+        /// 获取某个在线用户.
         /// </summary>
         /// <param name="userId">用户Id from JwtRegisteredClaimNames.Sid</param>
         /// <returns></returns>
-        public static List<ChatUser> GetConnections(string userId) => Connections.Where(u => u.Id == userId).ToList();
+        public static List<ChatUser> GetUsers(string userId) => Connections.Where(u => u.Id == userId).ToList();
+        /// <summary>
+        /// 获取聊天室(群)在线用户.
+        /// </summary>
+        /// <param name="room">聊天室(群) from Query["room"]</param>
+        /// <returns></returns>
+        public static List<ChatUser> GetRoomUsers(string room) => Connections.Where(u => u.Room == room).ToList();
         /// <summary>
         /// 获取在线用户连接ID.
         /// </summary>
@@ -44,7 +50,7 @@ namespace WebFramework.SignalR
         {
             var list = new List<string>();
             if (string.IsNullOrEmpty(userId)) return list;
-            foreach (var device in GetConnections(userId).Select(u => u.Device))
+            foreach (var device in GetUsers(userId).Select(u => u.Device))
             {
                 if (!ConnectionsMap.TryGetValue(userId + device, out string id)) continue;
                 list.Add(id);
@@ -64,29 +70,31 @@ namespace WebFramework.SignalR
         /// <summary>
         /// 加入聊天室
         /// </summary>
-        /// <param name="room"></param>
+        /// <param name="room">聊天室(群)</param>
+        /// <param name="method">加入+事件方法</param>
+        /// <param name="leaveOwnRoom">离开当前聊天室-事件方法</param>
         /// <returns>throw Clients "onError"</returns>
-        public async Task Join(string room)
+        public async Task Join(string room, string method = "addUser", string leaveOwnRoom = "removeUser")
         {
             try
             {
                 var user = Context.GetChatUser();
+                if (string.IsNullOrEmpty(user.Id)) return;
 
-                var item = Connections.Where(u => u.Id == user.Id).FirstOrDefault();
-                if (item != null && item.Room != room)
-                {
-                    // Remove user from others list
-                    if (!string.IsNullOrEmpty(user.Room))
-                        await Clients.OthersInGroup(user.Room).SendAsync("removeUser", user);
+                var item = Connections.FirstOrDefault(u => u.Id == user.Id);
+                if (item == null || item.Room == room) return;
 
-                    // Join to new chat room
-                    await Leave(user.Room);
-                    await Groups.AddToGroupAsync(Context.ConnectionId, room);
-                    user.Room = room;
+                // Remove user from others list
+                if (!string.IsNullOrEmpty(leaveOwnRoom) && !string.IsNullOrEmpty(user.Room))
+                    await Clients.OthersInGroup(user.Room).SendAsync(leaveOwnRoom, user);
 
-                    // Tell others to update their list of users
-                    await Clients.OthersInGroup(room).SendAsync("addUser", user);
-                }
+                // Join to new chat room
+                await Leave(user.Room);
+                await Groups.AddToGroupAsync(Context.ConnectionId, room);
+                user.Room = room;
+
+                // Tell others to update their list of users
+                await Clients.OthersInGroup(room).SendAsync(method, user);
             }
             catch (Exception ex)
             {
@@ -95,22 +103,12 @@ namespace WebFramework.SignalR
         }
 
         /// <summary>
-        /// 获取聊天室的用户列表
-        /// </summary>
-        /// <param name="room"></param>
-        /// <returns></returns>
-        public IEnumerable<ChatUser> GetUsers(string room)
-        {
-            return Connections.Where(u => u.Room == room).ToList();
-        }
-
-        /// <summary>
         /// 发送消息给聊天室的用户
         /// </summary>
-        /// <param name="room"></param>
-        /// <param name="userId"></param>
-        /// <param name="message"></param>
-        /// <param name="method"></param>
+        /// <param name="room">聊天室(群)</param>
+        /// <param name="userId">用户Id from JwtRegisteredClaimNames.Sid</param>
+        /// <param name="message">发送的消息</param>
+        /// <param name="method">发送消息+事件方法</param>
         /// <returns></returns>
         public async Task Send(string room, string userId, string message, string method = "newMessage")
         {
@@ -118,31 +116,27 @@ namespace WebFramework.SignalR
             {
                 var clients = new List<IClientProxy>();
                 if (!string.IsNullOrEmpty(room)) clients.Add(Clients.Group(room));
-                if (!string.IsNullOrEmpty(userId) && ConnectionsMap.TryGetValue(userId, out string connectionId)) clients.Add(Clients.Client(connectionId));
+                if (!string.IsNullOrEmpty(userId)) foreach (var connectionId in GetConnectionsId(userId)) clients.Add(Clients.Client(connectionId));
 
-                var id = Context.GetId();
-                foreach (var sender in Connections.Where(u => u.Id == id))
+                // Build the message
+                var item = new Message
                 {
-                    // Build the message
-                    var item = new Message
-                    {
-                        Id = Guid.NewGuid().ToString("N"),
-                        Content = Regex.Replace(message, @"(?i)<(?!img|a|/a|/img).*?>", string.Empty),
-                        From = sender.Name,
-                        Time = DateTime.Now,
-                    };
+                    Id = Guid.NewGuid().ToString("N"),
+                    Content = Regex.Replace(message, @"(?i)<(?!img|a|/a|/img).*?>", string.Empty),
+                    From = Context.GetName(),
+                    Time = DateTime.Now,
+                };
 
-                    // Send the message
-                    foreach (IClientProxy client in clients) await client.SendAsync(method, item);
-                    //await Clients.Caller.SendAsync("newMessage", item);
-                }
+                // Send the message
+                foreach (IClientProxy client in clients) await client.SendAsync(method, item);
+                await Clients.Caller.SendAsync(method, item);
             }
         }
 
         /// <summary>
         /// 离开聊天室
         /// </summary>
-        /// <param name="room"></param>
+        /// <param name="room">聊天室(群)</param>
         /// <returns></returns>
         public async Task Leave(string room)
         {
