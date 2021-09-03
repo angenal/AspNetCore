@@ -338,21 +338,25 @@
                 dataType: 'json',
                 success: function (data) {
                     //console.log(data);
-                    if (!data || data.length == 0) {
-                        return tbl.html('<tr><td align="center" class="text-muted vmiddle">记录为空</td></tr>');
-                    }
-                    selectedUserList = []; allUserList = data;
-                    tbl.html('');
-                    for (var i = 0; i < data.length; i++) {
-                        var item = data[i];
-                        var tpl = '<tr><td style="cursor:pointer" onclick="onSelectedUser(this,\'' + item.id + '\')"><span class="text-danger bg-warning">' + (item.room) + '</span><span class="text-muted">' + (item.name) + '</span><br><span class="text-danger">' + (item.device) + '</span></td></tr>';
-                        //console.log(tpl);
-                        tbl.append($(tpl));
-                    }
+                    if (!data || data.length == 0) return tbl.html('<tr><td align="center" class="text-muted vmiddle">记录为空</td></tr>');
+                    tbl.html(''); selectedUserList = []; allUserList = data;
+                    // 用户分组展示
+                    var rooms = data.reduce(function (a1, v0) { if (!a1.find(function (x) { return x.room === v0.room; })) a1.push(v0.room); return a1; });
+                    var users = data.reduce(function (a1, v0) { if (!a1.find(function (x) { return x.room === v0.room && x.id === v0.id; })) a1.push({ id: v0.id, room: v0.room }); return a1; });
+                    rooms.forEach(function (room) {
+                        users.filter(function (x) { return x.room === room; }).forEach(function (roomUser) {
+                            for (var i = 0; i < data.length; i++) {
+                                var item = data[i];
+                                if (item.id === roomUser.id && item.room === room) {
+                                    var tpl = '<tr><td style="cursor:pointer" onclick="onSelectedUser(this,\'' + item.id + '\')"><span class="text-danger bg-warning">' + (item.room) + '</span><span class="text-muted pl5">' + (item.name) + '</span><br>';
+                                    tpl += '<span class="text-danger">' + (item.device) + '</span></td></tr>';
+                                    tbl.append($(tpl));
+                                }
+                            }
+                        });
+                    });
                 },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
+                error: function (errMsg) { console.log(errMsg); }
             });
         }
 
@@ -381,9 +385,7 @@
                 dataType: 'json',
                 data: JSON.stringify({ toUser: selectedUserList, content: content, from: connectedUser.name }),
                 success: function (data) { },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
+                error: function (errMsg) { console.log(errMsg); }
             });
         }
     </script>
