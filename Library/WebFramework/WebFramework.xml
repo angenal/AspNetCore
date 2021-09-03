@@ -501,6 +501,27 @@
             随机文字字体
             </summary>
         </member>
+        <member name="T:WebFramework.Controllers.OfficeController">
+            <summary>
+            办公文档
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.OfficeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,WebInterface.IExcelTools,WebInterface.IWordTools,WebInterface.IPptTools,WebInterface.IPdfTools)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Controllers.OfficeController.ExcelExport(WebFramework.Models.DTO.ExcelExportDataInputDto)">
+            <summary>
+            Excel Export with template.xlsx
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.OfficeController.PreviewS(System.String,System.String)">
+            <summary>
+            Generate HTML Preview
+            </summary>
+            <param name="filename">test.doc,xls,pptx,pdf</param>
+            <param name="format">html,png,pdf</param>
+            <returns></returns>
+        </member>
         <member name="T:WebFramework.Controllers.TimeController">
             <summary>
             系统时间
@@ -1500,6 +1521,66 @@
         <member name="P:WebFramework.Models.DTO.IdListInputDto.Id">
             <summary>
             编号列表
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.ExcelExportDataInputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataInputDto.Data">
+            <summary>
+            数据列表
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataInputDto.Filename">
+            <summary>
+            导出文件名
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataInputDto.Template">
+            <summary>
+            是否使用模板 template.xlsx
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.ExcelExportDataItemDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataItemDto.NO">
+            <summary>
+            编号
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataItemDto.Name">
+            <summary>
+            名字
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataItemDto.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataItemDto.Nation">
+            <summary>
+            民族
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataItemDto.Phone">
+            <summary>
+            电话
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataItemDto.IdCard">
+            <summary>
+            身份证
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.ExcelExportDataItemDto.Memo">
+            <summary>
+            备注
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.SqlSugarExtensions">

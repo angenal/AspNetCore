@@ -4,29 +4,6 @@
         <name>ApiDemo.NET5</name>
     </assembly>
     <members>
-        <member name="T:ApiDemo.NET5.Controllers.OfficeController">
-            <summary>
-            办公文档
-            </summary>
-        </member>
-        <member name="M:ApiDemo.NET5.Controllers.OfficeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,WebInterface.IExcelTools,WebInterface.IWordTools,WebInterface.IPptTools,WebInterface.IPdfTools)">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="M:ApiDemo.NET5.Controllers.OfficeController.ExcelExport(ApiDemo.NET5.Models.DTO.Office.ExcelExportDataInputDto)">
-            <summary>
-            Excel Export with template.xlsx
-            </summary>
-        </member>
-        <member name="M:ApiDemo.NET5.Controllers.OfficeController.PreviewS(System.String,System.String)">
-            <summary>
-            Generate HTML Preview
-            </summary>
-            <param name="filename">test.doc,xls,pptx,pdf</param>
-            <param name="format">html,png,pdf</param>
-            <returns></returns>
-        </member>
         <member name="T:ApiDemo.NET5.Controllers.PersonalAnswerController">
             <summary>
             演示
@@ -237,66 +214,6 @@
         <member name="P:ApiDemo.NET5.Models.DTO.Auth.LoginInputDto.Password">
             <summary>
             密码
-            </summary>
-        </member>
-        <member name="T:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataInputDto">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataInputDto.Data">
-            <summary>
-            数据列表
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataInputDto.Filename">
-            <summary>
-            导出文件名
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataInputDto.Template">
-            <summary>
-            是否使用模板 template.xlsx
-            </summary>
-        </member>
-        <member name="T:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.NO">
-            <summary>
-            编号
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Name">
-            <summary>
-            名字
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Sex">
-            <summary>
-            性别
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Nation">
-            <summary>
-            民族
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Phone">
-            <summary>
-            电话
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.IdCard">
-            <summary>
-            身份证
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataItemDto.Memo">
-            <summary>
-            备注
             </summary>
         </member>
         <member name="T:ApiDemo.NET5.Models.DTO.User.RegisterInputDto">

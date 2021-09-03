@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiDemo.NET5.Models.DTO.Office
+namespace WebFramework.Models.DTO
 {
     /// <summary>
     ///

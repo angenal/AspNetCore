@@ -1,4 +1,3 @@
-using ApiDemo.NET5.Models.DTO.Office;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,17 +6,17 @@ using System.Data;
 using System.IO;
 using System.Net;
 using WebCore;
-using WebFramework;
+using WebFramework.Models.DTO;
 using WebInterface;
 
-namespace ApiDemo.NET5.Controllers
+namespace WebFramework.Controllers
 {
     /// <summary>
     /// 办公文档
     /// </summary>
     [ApiController]
     //[ApiExplorerSettings(GroupName = "demo"), Display(Name = "演示系统", Description = "演示系统描述文字")]
-    [ApiVersion("1.0")]
+    //[ApiVersion("1.0")]
     [Route("api/[controller]/[action]")]
     //[Route("{culture:culture}/[controller]/[action]")]
     public class OfficeController : ApiController
@@ -28,9 +27,7 @@ namespace ApiDemo.NET5.Controllers
         private readonly IPptTools ppt;
         private readonly IPdfTools pdf;
 
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         public OfficeController(IWebHostEnvironment env, IExcelTools excel, IWordTools word, IPptTools ppt, IPdfTools pdf)
         {
             this.env = env;
