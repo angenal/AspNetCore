@@ -247,7 +247,7 @@
 
             // 处理接收到的消息
             connection.on("newMessage", function (message) {
-                var msg = getMessage(message), style = 'color:#333333;background:#33ff99';
+                var msg = getMessage(message, 'time'), style = 'color:#333333;background:#33ff99';
                 console.log('%c signalr message: ' + msg, style);
                 if (typeof (newMessage) == 'function') newMessage(msg, style);
             });
@@ -303,7 +303,12 @@
         }
 
         // 处理消息
-        function getMessage(message) { return message && typeof (message) == "object" ? JSON.stringify(message) : message; }
+        function getMessage(message, deleted) {
+            if (!message) return '';
+            if (typeof (message) != "object") return message;
+            if (deleted && typeof (deleted) == "string" && message.hasOwnProperty(deleted)) delete message[deleted];
+            return JSON.stringify(message);
+        }
 
         // 展示消息
         function newMessage(message, style) {
@@ -330,6 +335,7 @@
                 type: 'GET',
                 url: '/api/Chat/GetAllUsers',
                 contentType: 'application/json',
+                dataType: 'json',
                 success: function (data) {
                     //console.log(data);
                     if (!data || data.length == 0) {
@@ -372,7 +378,8 @@
                 type: 'POST',
                 url: '/api/Chat/SendMessage',
                 contentType: 'application/json',
-                data: { toUser: selectedUserList, content: content, from: connectedUser.name },
+                dataType: 'json',
+                data: JSON.stringify({ toUser: selectedUserList, content: content, from: connectedUser.name }),
                 success: function (data) { },
                 error: function (errMsg) {
                     console.log(errMsg);

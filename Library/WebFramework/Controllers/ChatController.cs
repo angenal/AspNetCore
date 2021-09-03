@@ -116,7 +116,7 @@ namespace WebFramework.Controllers
         [AllowAnonymous]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Message), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> SendMessage([FromBody] MessageInputDto input)
         {
@@ -134,7 +134,7 @@ namespace WebFramework.Controllers
             // Send the message
             foreach (IClientProxy client in clients) await client.SendAsync("newMessage", message);
 
-            return Ok();
+            return Ok(message);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace WebFramework.Controllers
         [AllowAnonymous]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Message), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> SendMessages([FromBody] MessagesInputDto input)
         {
@@ -162,7 +162,7 @@ namespace WebFramework.Controllers
             // Store the message
             ChatMessage.Add(input.GroupName, message);
 
-            return Ok();
+            return Ok(message);
         }
 
     }
