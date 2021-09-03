@@ -224,7 +224,7 @@
                     //accessTokenFactory: function () { return '$token' }, // Get and return the access token.
                     transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
                 })
-                //.withAutomaticReconnect([0, 2000, 3000, 5000, 10000, 15000, 30000]) // 重连7次
+                //.withAutomaticReconnect([0, 2000, 3000, 5000, 10000, 15000, 30000]) // 重连7次(默认不传参数只会连接4次)
                 .withAutomaticReconnect(getReconnectPolicy(3000, 43200000)) // 推荐3秒后+无限重连半天内
                 .configureLogging(signalR.LogLevel.Warning) // 日志级别
                 .build();
