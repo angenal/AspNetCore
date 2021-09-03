@@ -25,13 +25,41 @@
     <!--<script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>-->
     <link href="/static/css/common.css" rel="stylesheet" />
     <style type="text/css">
-        @media (min-width:768px){.navbar-collapse .navbar-left{border-bottom:0}.navbar-form .input-group{margin-top:10px}}
-        .nav>li>a{font-size:17px}
-        .navbar-left{border-bottom:1px solid #E7E7E7}
-        .navbar-form{margin-top:0;border-top:0}
-        .input-group{width:100%}
-        .form-control:first-child{border-top-right-radius:3px;border-bottom-right-radius:3px}
-        .navbar-shadow{box-shadow:0 0 5px 0 rgba(0,0,0,.3)}
+        @media (min-width:768px) {
+            .navbar-collapse .navbar-left {
+                border-bottom: 0
+            }
+
+            .navbar-form .input-group {
+                margin-top: 10px
+            }
+        }
+
+        .nav > li > a {
+            font-size: 17px
+        }
+
+        .navbar-left {
+            border-bottom: 1px solid #E7E7E7
+        }
+
+        .navbar-form {
+            margin-top: 0;
+            border-top: 0
+        }
+
+        .input-group {
+            width: 100%
+        }
+
+        .form-control:first-child {
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px
+        }
+
+        .navbar-shadow {
+            box-shadow: 0 0 5px 0 rgba(0,0,0,.3)
+        }
     </style>
 </head>
 <body>
@@ -103,6 +131,33 @@
                             </div>
                         </div>
                     </form>
+                    <table class="table table-bordered table-striped">
+                        <thead class="head-bg">
+                            <tr class="text-justify">
+                                <th>
+                                    <form class="form-horizontal" role="form" onsubmit="return false">
+                                        <div class="form-group col-sm-5 mb0">
+                                            <div class="col-sm-offset-2 col-sm-8">
+                                                <button type="button" class="btn btn-info" onclick="doGetAllUsers()">在线用户</button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-4 mb0">
+                                            <label for="input-message" class="col-sm-3 control-label pr2">消息：</label>
+                                            <div class="col-sm-9 pl1">
+                                                <input type="text" class="form-control" id="input-message" placeholder="消息内容">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-3 mb0">
+                                            <div class="col-sm-offset-2 col-sm-8">
+                                                <button type="button" class="btn btn-primary" onclick="doSendMessage()">发送</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="userListTbl1"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -151,10 +206,10 @@
             // 设置连接参数
             var q = { "sid": "用户id", "pid": "关联id", "name": "用户名", "room": '0' };
             //q.sid = uuidv4(); q.pid = uuidv4();
-            q.sid = $('#input-sid').val(); if (q.sid == '') return alert('参数sid错误!');
-            q.pid = $('#input-pid').val(); if (q.pid == '') return alert('参数pid错误!');
-            q.name = $('#input-name').val(); if (q.name == '') return alert('参数name错误!');
-            q.room = $('#input-room').val(); if (q.room == '') return alert('参数room错误!');
+            q.sid = $('#input-sid').val(); if (q.sid == '') return alert('参数sid不能为空!');
+            q.pid = $('#input-pid').val(); if (q.pid == '') return alert('参数pid不能为空!');
+            q.name = $('#input-name').val(); if (q.name == '') return alert('参数name不能为空!');
+            q.room = $('#input-room').val(); if (q.room == '') return alert('参数room不能为空!');
             var qs = "?device=web" + (+new Date) + "&sid=" + encodeURIComponent(q.sid) + "&pid=" + encodeURIComponent(q.pid) + "&name=" + encodeURIComponent(q.name) + "&room=" + encodeURIComponent(q.room);
 
             // 初始化连接对象
@@ -258,6 +313,54 @@
             var tbl = $('#listTbl0'), time = new Date().toTimeString().split(' ')[0];
             tbl.prepend($('<tr><td class="vmiddle"><span style="' + style + '">' + message + '</span></td><td class="text-muted vmiddle">' + time + '</td></tr>'));
             var tr = tbl.find('tr'); if (tr.length > 10) tr.eq(10).remove();
+        }
+    </script>
+
+    <script type="text/javascript">
+        //在线用户
+        var selectedUserList = [], userList = [];
+        function doGetAllUsers() {
+            var tbl = $('#userListTbl1');
+            tbl.html('<tr><td align="center" class="text-muted vmiddle">努力加载中...</td></tr>');
+            $.ajax({
+                type: 'GET',
+                url: '/api/Chat/GetAllUsers',
+                contentType: 'application/json',
+                success: (data) => {
+                    //console.log(data);
+                    if (!data || data.length == 0) {
+                        tbl.html('<tr><td align="center" class="text-muted vmiddle">记录为空</td></tr>');
+                        return;
+                    }
+                    userList = data;
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        var tpl = '<tr><td style="cursor:pointer" onclick="selectUser(\'' + item.id + '\')"><span class="text-danger bg-warning">' + (item.room) + '</span><span class="text-muted bg-info">' + (item.name) + '</span><br><span class="text-danger bg-warning">' + (item.device) + '</span></td></tr>';
+                        //console.log(tpl);
+                        tbl.append($(tpl));
+                    }
+                },
+                error: (errMsg) => {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        //选择用户
+        function selectUser(id) {
+            var i = selectedUserList.indexOf(id);
+            if (i == -1) {
+                selectedUserList.push(id);
+            } else {
+                selectedUserList.remove(i);
+            }
+        }
+
+        //发送消息
+        function doSendMessage() {
+            var msg = $('#input-message').val();
+            if (msg == '') return alert('消息不能为空!');
+
         }
     </script>
 </body>

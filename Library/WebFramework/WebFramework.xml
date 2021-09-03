@@ -390,9 +390,14 @@
             获取某个在线用户.
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.ChatController.GetUsers(WebFramework.Models.DTO.MessageUsersListInputDto)">
+        <member name="M:WebFramework.Controllers.ChatController.GetRoomUsers(WebFramework.Models.DTO.MessageUsersListInputDto)">
             <summary>
             获取聊天室(群)在线用户.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.ChatController.GetAllUsers">
+            <summary>
+            获取全部在线用户.
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.ChatController.GetMessages(WebFramework.Models.DTO.MessageListInputDto)">

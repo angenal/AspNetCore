@@ -32,6 +32,7 @@ namespace WebFramework.Controllers
             redis = cacheFactory.GetRedisProvider(EasyCachingConstValue.DefaultRedisName);
         }
 
+
         /// <summary>
         /// 获取某个在线用户.
         /// </summary>
@@ -56,9 +57,24 @@ namespace WebFramework.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<ChatUser>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public ActionResult GetUsers([FromQuery] MessageUsersListInputDto input)
+        public ActionResult GetRoomUsers([FromQuery] MessageUsersListInputDto input)
         {
             var result = ChatHub.GetRoomUsers(input.GroupName);
+            return Ok(result ?? new List<ChatUser>());
+        }
+
+        /// <summary>
+        /// 获取全部在线用户.
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<ChatUser>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public ActionResult GetAllUsers()
+        {
+            var result = ChatHub.GetUsers();
             return Ok(result ?? new List<ChatUser>());
         }
 
