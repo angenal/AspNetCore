@@ -4,26 +4,6 @@
         <name>ApiDemo.NET5</name>
     </assembly>
     <members>
-        <member name="T:ApiDemo.NET5.Controllers.ChatController">
-            <summary>
-            聊天消息
-            </summary>
-        </member>
-        <member name="M:ApiDemo.NET5.Controllers.ChatController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.AspNetCore.SignalR.IHubContext{WebFramework.SignalR.ChatHub},Microsoft.Extensions.Caching.Memory.IMemoryCache,EasyCaching.Core.IEasyCachingProviderFactory)">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="M:ApiDemo.NET5.Controllers.ChatController.GetMessage(ApiDemo.NET5.Models.DTO.Chat.MessageListInputDto)">
-            <summary>
-            Gets some message.
-            </summary>
-        </member>
-        <member name="M:ApiDemo.NET5.Controllers.ChatController.AddMessage(ApiDemo.NET5.Models.DTO.Chat.MessageInputDto)">
-            <summary>
-            Add a message.
-            </summary>
-        </member>
         <member name="T:ApiDemo.NET5.Controllers.OfficeController">
             <summary>
             办公文档
@@ -257,41 +237,6 @@
         <member name="P:ApiDemo.NET5.Models.DTO.Auth.LoginInputDto.Password">
             <summary>
             密码
-            </summary>
-        </member>
-        <member name="T:ApiDemo.NET5.Models.DTO.Chat.MessageListInputDto">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Chat.MessageListInputDto.GroupName">
-            <summary>
-            消息群
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Chat.MessageListInputDto.Size">
-            <summary>
-            获取数量
-            </summary>
-        </member>
-        <member name="T:ApiDemo.NET5.Models.DTO.Chat.MessageInputDto">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Chat.MessageInputDto.GroupName">
-            <summary>
-            消息群
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Chat.MessageInputDto.Content">
-            <summary>
-            消息内容
-            </summary>
-        </member>
-        <member name="P:ApiDemo.NET5.Models.DTO.Chat.MessageInputDto.From">
-            <summary>
-            消息来源
             </summary>
         </member>
         <member name="T:ApiDemo.NET5.Models.DTO.Office.ExcelExportDataInputDto">

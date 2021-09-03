@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ApiDemo.NET5.Models.DTO.Chat
+namespace WebFramework.Models.DTO
 {
     /// <summary>
     ///

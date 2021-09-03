@@ -377,6 +377,24 @@
             Loads (or reloads) the data for this provider.
             </summary>
         </member>
+        <member name="T:WebFramework.Controllers.ChatController">
+            <summary>
+            聊天消息
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.ChatController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.AspNetCore.SignalR.IHubContext{WebFramework.SignalR.ChatHub},Microsoft.Extensions.Caching.Memory.IMemoryCache,EasyCaching.Core.IEasyCachingProviderFactory)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Controllers.ChatController.GetMessage(WebFramework.Models.DTO.MessageListInputDto)">
+            <summary>
+            Get messages from the group.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.ChatController.AddMessage(WebFramework.Models.DTO.MessageInputDto)">
+            <summary>
+            Send a message to the group.
+            </summary>
+        </member>
         <member name="T:WebFramework.Controllers.DataController">
             <summary>
             数据
@@ -1177,6 +1195,41 @@
         <member name="F:WebFramework.AvaliableLocalizations.Chinese">
             <summary>
             Chinese
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.MessageListInputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.MessageListInputDto.GroupName">
+            <summary>
+            消息群
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.MessageListInputDto.Size">
+            <summary>
+            获取数量
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.MessageInputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.MessageInputDto.GroupName">
+            <summary>
+            消息群
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.MessageInputDto.Content">
+            <summary>
+            消息内容
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.MessageInputDto.From">
+            <summary>
+            消息来源
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.EncodeTextInputDto">
