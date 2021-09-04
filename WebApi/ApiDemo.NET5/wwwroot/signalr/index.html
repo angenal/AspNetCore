@@ -25,41 +25,13 @@
     <!--<script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>-->
     <link href="/static/css/common.css" rel="stylesheet" />
     <style type="text/css">
-        @media (min-width:768px) {
-            .navbar-collapse .navbar-left {
-                border-bottom: 0
-            }
-
-            .navbar-form .input-group {
-                margin-top: 10px
-            }
-        }
-
-        .nav > li > a {
-            font-size: 17px
-        }
-
-        .navbar-left {
-            border-bottom: 1px solid #E7E7E7
-        }
-
-        .navbar-form {
-            margin-top: 0;
-            border-top: 0
-        }
-
-        .input-group {
-            width: 100%
-        }
-
-        .form-control:first-child {
-            border-top-right-radius: 3px;
-            border-bottom-right-radius: 3px
-        }
-
-        .navbar-shadow {
-            box-shadow: 0 0 5px 0 rgba(0,0,0,.3)
-        }
+        @media (min-width:768px){.navbar-collapse .navbar-left{border-bottom:0}.navbar-form .input-group{margin-top:10px}}
+        .nav>li>a{font-size:17px}
+        .navbar-left{border-bottom:1px solid #E7E7E7}
+        .navbar-form{margin-top:0;border-top:0}
+        .input-group{width:100%}
+        .form-control:first-child{border-top-right-radius:3px;border-bottom-right-radius:3px}
+        .navbar-shadow{box-shadow:0 0 5px 0 rgba(0,0,0,.3)}
     </style>
 </head>
 <body>
@@ -108,7 +80,7 @@
                                         <div class="form-group col-sm-3 mb0">
                                             <label for="input-sid" class="col-sm-2 control-label">sid：</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="input-sid" placeholder="用户id">
+                                                <input type="text" class="form-control" id="input-sid" placeholder="唯一用户id">
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-3 mb0">
@@ -340,13 +312,13 @@
                     //console.log(data);
                     if (!data || data.length == 0) return tbl.html('<tr><td align="center" class="text-muted vmiddle">记录为空</td></tr>');
                     tbl.html(''); selectedUserList = []; allUserList = data;
-                    // 用户分组展示
-                    var rooms = data.reduce(function (prev, cur, idx, arr) { if (!prev.find(function (x) { return x.room === cur.room; })) prev.push(cur.room); return prev; }, []);
-                    var users = data.reduce(function (prev, cur, ide, arr) { if (!prev.find(function (x) { return x.room === cur.room && x.id === cur.id; })) prev.push({ room: cur.room, id: cur.id }); return prev; }, []);
+                    // 分组展示: 每个用户(唯一用户id) 在不同分组中可以有不同的用户名
+                    var rooms = data.reduce(function (prev, cur, idx, arr) { if (prev.indexOf(cur.room) == -1) prev.push(cur.room); return prev; }, []);
+                    var users = data.reduce(function (prev, cur, ide, arr) { if (prev.findIndex(function (x) { return x.room === cur.room && x.id === cur.id; }) == -1) prev.push({ room: cur.room, id: cur.id }); return prev; }, []);
                     rooms.forEach(function (room) {
-                        users.filter(function (x) { return x.room === room; }).forEach(function (user) {
-                            var tpl = '<tr><td style="cursor:pointer" onclick="onSelectedUser(this,\'' + user.id + '\')"><span class="text-danger bg-warning">' + room + '</span>';
-                            data.filter(function (y) { return y.id === user.id && y.room === room; }).forEach(function (item) { tpl += '<span class="bg-success pl5"><span class="text-muted">' + item.name + '</span><span class="text-danger pl2">' + item.device + '</span></span>'; });
+                        users.filter(function (x) { return x.room === room; }).forEach(function (x) {
+                            var tpl = '<tr><td style="cursor:pointer" onclick="onSelectedUser(this)" x-id="' + x.id + '" x-room="' + room + '"><span class="text-danger bg-warning border1 plr3">' + room + '</span>';
+                            data.filter(function (y) { return y.id === x.id && y.room === room; }).forEach(function (z) { tpl += '<span class="bg-success ml5"><span class="text-muted border2 plr3">' + z.name + '</span><span class="text-danger border2 plr3">' + z.device + '</span></span>'; });
                             tpl += '</td></tr>';
                             tbl.append($(tpl));
                         });
@@ -357,14 +329,17 @@
         }
 
         //选择用户
-        function onSelectedUser(td, id) {
-            var i = selectedUserList.indexOf(id);
+        function onSelectedUser(td) {
+            td = $(td);
+            var cls = 'bg-success', selected = td.hasClass(cls);
+            var id = td.attr('x-id'), room = td.attr('x-room');
+            var i = selectedUserList.findIndex(function (x) { return x.room === room && x.id === id; });
             if (i == -1) {
-                selectedUserList.push(id);
-                $(td).addClass('bg-success');
+                selectedUserList.push({ id: id, room: room });
+                if (!selected) td.addClass(cls);
             } else {
                 selectedUserList.splice(i, 1);
-                $(td).removeClass('bg-success');
+                if (selected) td.removeClass(cls);
             }
         }
 

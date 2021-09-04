@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WebFramework.SignalR;
 
 namespace WebFramework.Models.DTO
 {
-    /// <summary>
-    ///
-    /// </summary>
+    /// <summary></summary>
     public class MessageUserSelectInputDto
     {
         /// <summary>
@@ -15,9 +14,7 @@ namespace WebFramework.Models.DTO
         [RegularExpression(@"^[\w\-\.]{3,36}$", ErrorMessage = "wrong user id format")]
         public string UserId { get; set; }
     }
-    /// <summary>
-    ///
-    /// </summary>
+    /// <summary></summary>
     public class MessageUsersSelectInputDto
     {
         /// <summary>
@@ -26,10 +23,7 @@ namespace WebFramework.Models.DTO
         [Required]
         public List<string> UserId { get; set; }
     }
-
-    /// <summary>
-    ///
-    /// </summary>
+    /// <summary></summary>
     public class MessageUsersListInputDto
     {
         /// <summary>
@@ -43,9 +37,7 @@ namespace WebFramework.Models.DTO
         /// </summary>
         public int Size { get; set; } = 20;
     }
-    /// <summary>
-    ///
-    /// </summary>
+    /// <summary></summary>
     public class MessageListInputDto
     {
         /// <summary>
@@ -59,16 +51,14 @@ namespace WebFramework.Models.DTO
         /// </summary>
         public int Size { get; set; } = 20;
     }
-    /// <summary>
-    ///
-    /// </summary>
+    /// <summary></summary>
     public class MessageInputDto
     {
         /// <summary>
-        /// 用户Id from Sid
+        /// 消息群用户
         /// </summary>
         [Required]
-        public List<string> ToUser { get; set; }
+        public List<RoomUser> ToUser { get; set; }
 
         /// <summary>
         /// 消息内容
@@ -83,9 +73,7 @@ namespace WebFramework.Models.DTO
         [StringLength(20, MinimumLength = 1)]
         public string From { get; set; }
     }
-    /// <summary>
-    ///
-    /// </summary>
+    /// <summary></summary>
     public class MessagesInputDto
     {
         /// <summary>

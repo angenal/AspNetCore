@@ -15,12 +15,12 @@ body, input, textarea { -webkit-font-smoothing: antialiased; font-family: "Micro
 /* 距离 margin padding */
 .pl0 { padding-left: 0; } .pl1 { padding-left: 1px; } .pl2 { padding-left: 2px; } .pl3 { padding-left: 3px; } .pl4 { padding-left: 4px; } .pl5 { padding-left: 5px; }
 .pr0 { padding-right: 0; } .pr1 { padding-right: 1px; } .pr2 { padding-right: 2px; } .pr3 { padding-right: 3px; } .pr4 { padding-right: 4px; } .pr5 { padding-right: 5px; }
-.pl15 { padding-left: 15px; } .pt15 { padding-top: 15px; }
+.pl15 { padding-left: 15px; } .pt15 { padding-top: 15px; } .plr3 { padding-left: 3px; padding-right: 3px; } .plr5 { padding-left: 5px; padding-right: 5px; }
 .pd15 { padding: 15px; } .pd5 { padding: 5px; } .pl0 { padding-left: 0; } .pt0 { padding-top: 0; }
-.pr15 { padding-right: 15px; }.pb15 { padding-bottom: 15px; } .pr0 { padding-right: 0; } .pb0 { padding-bottom: 0; } .pd0 { padding: 0; }
-.mt15 { margin-top: 15px; }.ml15 { margin-left: 15px; }
-.mg15 { margin: 15px; } .mg5 { margin: 5px; } .mt0 { margin-top: 0; } .ml0 { margin-left: 0; }
-.mb15 { margin-bottom: 15px; } .mr15 { margin-right: 15px; } .mb0 { margin-bottom: 0; } .mr0 { margin-right: 0; } .mg0 { margin: 0; }
+.pr15 { padding-right: 15px; } .pb15 { padding-bottom: 15px; } .pr0 { padding-right: 0; } .pb0 { padding-bottom: 0; } .pd0 { padding: 0; }
+.mt15 { margin-top: 15px; } .ml15 { margin-left: 15px; } .mlr3 { margin-left: 3px; margin-right: 3px; } .mlr5 { margin-left: 5px; margin-right: 5px; }
+.mg15 { margin: 15px; } .mg5 { margin: 5px; } .mt0 { margin-top: 0; } .ml0 { margin-left: 0; } .ml1 { margin-left: 1px; } .ml2 { margin-left: 2px; } .ml3 { margin-left: 3px; } .ml4 { margin-left: 4px; } .ml5 { margin-left: 5px; }
+.mb15 { margin-bottom: 15px; } .mr15 { margin-right: 15px; } .mb0 { margin-bottom: 0; } .mr0 { margin-right: 0; } .mr1 { margin-right: 1px; } .mr2 { margin-right: 2px; } .mr3 { margin-right: 3px; } .mr4 { margin-right: 4px; } .mr5 { margin-right: 5px; } .mg0 { margin: 0; }
 .md60, .form-control.md60, .form-inline .form-control.md60 { width: 60px; }
 .md80, .form-control.md80, .form-inline .form-control.md80 { width: 80px; }
 .fl{float:left;}.fr{float:right;}
@@ -36,8 +36,13 @@ pre{word-wrap: break-word; white-space: pre-wrap; clear: both; border: 0 none;}
 .table>tbody>tr>td.vmiddle, .table>tbody>tr>th.vmiddle, .table>tfoot>tr>td.vmiddle, .table>tfoot>tr>th.vmiddle, .table>thead>tr>td.vmiddle, .table>thead>tr>th.vmiddle, table.vmiddle td, tr.vmiddle td, td.vmiddle { vertical-align: middle; }
 /* button */
 .btn-group-sm>.btn.btn-sx, .btn-sm.btn-sx{ padding: 2px 4px;}
+/* border */
+.border0 { border-radius: 7px; border: 1px solid;}
+.border1 { border-radius: 7px; border: 1px solid #ae8923;}
+.border2 { border-radius: 7px; border: 1px solid #89ae23;}
+.border3 { border-radius: 7px; border: 1px solid #8923ae;}
 /* 对话框 artDialog */
-div.artDialog.Alert .aui-header{
+div.artDialog.Alert .aui-header {
     border-bottom: solid 1px #EAEAE5;
 }
 div.artDialog .aui-title img{

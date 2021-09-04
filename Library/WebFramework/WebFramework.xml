@@ -1244,9 +1244,7 @@
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.MessageUserSelectInputDto">
-             <summary>
-            
-             </summary>
+            <summary></summary>
         </member>
         <member name="P:WebFramework.Models.DTO.MessageUserSelectInputDto.UserId">
             <summary>
@@ -1254,9 +1252,7 @@
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.MessageUsersSelectInputDto">
-             <summary>
-            
-             </summary>
+            <summary></summary>
         </member>
         <member name="P:WebFramework.Models.DTO.MessageUsersSelectInputDto.UserId">
             <summary>
@@ -1264,9 +1260,7 @@
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.MessageUsersListInputDto">
-             <summary>
-            
-             </summary>
+            <summary></summary>
         </member>
         <member name="P:WebFramework.Models.DTO.MessageUsersListInputDto.GroupName">
             <summary>
@@ -1279,9 +1273,7 @@
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.MessageListInputDto">
-             <summary>
-            
-             </summary>
+            <summary></summary>
         </member>
         <member name="P:WebFramework.Models.DTO.MessageListInputDto.GroupName">
             <summary>
@@ -1294,13 +1286,11 @@
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.MessageInputDto">
-             <summary>
-            
-             </summary>
+            <summary></summary>
         </member>
         <member name="P:WebFramework.Models.DTO.MessageInputDto.ToUser">
             <summary>
-            用户Id from Sid
+            消息群用户
             </summary>
         </member>
         <member name="P:WebFramework.Models.DTO.MessageInputDto.Content">
@@ -1314,9 +1304,7 @@
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.MessagesInputDto">
-             <summary>
-            
-             </summary>
+            <summary></summary>
         </member>
         <member name="P:WebFramework.Models.DTO.MessagesInputDto.GroupName">
             <summary>
@@ -2625,6 +2613,13 @@
             <param name="userIdList">用户Id from JwtRegisteredClaimNames.Sid</param>
             <returns></returns>
         </member>
+        <member name="M:WebFramework.SignalR.ChatHub.GetUsers(System.Collections.Generic.IEnumerable{WebFramework.SignalR.RoomUser})">
+            <summary>
+            获取聊天室(群)在线用户.
+            </summary>
+            <param name="userIdList">消息群用户</param>
+            <returns></returns>
+        </member>
         <member name="M:WebFramework.SignalR.ChatHub.GetRoomUsers(System.String)">
             <summary>
             获取聊天室(群)在线用户.
@@ -2640,6 +2635,13 @@
             <returns></returns>
         </member>
         <member name="M:WebFramework.SignalR.ChatHub.GetConnectionsId(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            获取在线用户连接ID.
+            </summary>
+            <param name="userIdList">用户Id from JwtRegisteredClaimNames.Sid</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.SignalR.ChatHub.GetConnectionsId(System.Collections.Generic.IEnumerable{WebFramework.SignalR.RoomUser})">
             <summary>
             获取在线用户连接ID.
             </summary>
@@ -2735,6 +2737,22 @@
             </summary>
         </member>
         <member name="P:WebFramework.SignalR.ChatUser.Room">
+            <summary>
+            聊天室(群)
+            from Query["room"]
+            </summary>
+        </member>
+        <member name="T:WebFramework.SignalR.RoomUser">
+            <summary>
+            消息群用户
+            </summary>
+        </member>
+        <member name="P:WebFramework.SignalR.RoomUser.Id">
+            <summary>
+            用户Id from Sid
+            </summary>
+        </member>
+        <member name="P:WebFramework.SignalR.RoomUser.Room">
             <summary>
             聊天室(群)
             from Query["room"]

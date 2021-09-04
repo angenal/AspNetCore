@@ -44,6 +44,12 @@ namespace WebFramework.SignalR
         /// <summary>
         /// 获取聊天室(群)在线用户.
         /// </summary>
+        /// <param name="userIdList">消息群用户</param>
+        /// <returns></returns>
+        public static List<ChatUser> GetUsers(IEnumerable<RoomUser> userIdList) => Connections.Where(u => userIdList.Any(r => r.Id == u.Id && r.Room == u.Room)).ToList();
+        /// <summary>
+        /// 获取聊天室(群)在线用户.
+        /// </summary>
         /// <param name="room">聊天室(群) from Query["room"]</param>
         /// <returns></returns>
         public static List<ChatUser> GetRoomUsers(string room) => Connections.Where(u => u.Room == room).ToList();
@@ -69,6 +75,22 @@ namespace WebFramework.SignalR
         /// <param name="userIdList">用户Id from JwtRegisteredClaimNames.Sid</param>
         /// <returns></returns>
         public static List<string> GetConnectionsId(IEnumerable<string> userIdList)
+        {
+            var list = new List<string>();
+            if (userIdList == null || !userIdList.Any()) return list;
+            foreach (var item in GetUsers(userIdList))
+            {
+                if (!ConnectionsMap.TryGetValue(item.Id + item.Device, out string id)) continue;
+                list.Add(id);
+            }
+            return list;
+        }
+        /// <summary>
+        /// 获取在线用户连接ID.
+        /// </summary>
+        /// <param name="userIdList">用户Id from JwtRegisteredClaimNames.Sid</param>
+        /// <returns></returns>
+        public static List<string> GetConnectionsId(IEnumerable<RoomUser> userIdList)
         {
             var list = new List<string>();
             if (userIdList == null || !userIdList.Any()) return list;

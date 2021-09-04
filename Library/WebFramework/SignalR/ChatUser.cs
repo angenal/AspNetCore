@@ -58,6 +58,22 @@ namespace WebFramework.SignalR
     }
 
     /// <summary>
+    /// 消息群用户
+    /// </summary>
+    public class RoomUser
+    {
+        /// <summary>
+        /// 用户Id from Sid
+        /// </summary>
+        public string Id { get; set; }
+        /// <summary>
+        /// 聊天室(群)
+        /// from Query["room"]
+        /// </summary>
+        public string Room { get; set; }
+    }
+
+    /// <summary>
     /// 用户信息
     /// </summary>
     public class User
