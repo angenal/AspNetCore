@@ -344,9 +344,9 @@
                     var rooms = data.reduce(function (prev, cur, idx, arr) { if (!prev.find(function (x) { return x.room === cur.room; })) prev.push(cur.room); return prev; }, []);
                     var users = data.reduce(function (prev, cur, ide, arr) { if (!prev.find(function (x) { return x.room === cur.room && x.id === cur.id; })) prev.push({ room: cur.room, id: cur.id }); return prev; }, []);
                     rooms.forEach(function (room) {
-                        users.filter(function (x) { return x.room === room; }).forEach(function (roomUser) {
-                            var tpl = '<tr><td style="cursor:pointer" onclick="onSelectedUser(this,\'' + roomUser.id + '\')"><span class="text-danger bg-warning">' + room + '</span>';
-                            data.filter(function (y) { return y.id === roomUser.id && y.room === room; }).forEach(function (item) { tpl += '<span class="bg-success pl5"><span class="text-muted">' + item.name + '</span><span class="text-danger pl2">' + item.device + '</span></span>'; });
+                        users.filter(function (x) { return x.room === room; }).forEach(function (user) {
+                            var tpl = '<tr><td style="cursor:pointer" onclick="onSelectedUser(this,\'' + user.id + '\')"><span class="text-danger bg-warning">' + room + '</span>';
+                            data.filter(function (y) { return y.id === user.id && y.room === room; }).forEach(function (item) { tpl += '<span class="bg-success pl5"><span class="text-muted">' + item.name + '</span><span class="text-danger pl2">' + item.device + '</span></span>'; });
                             tpl += '</td></tr>';
                             tbl.append($(tpl));
                         });
