@@ -230,18 +230,34 @@ namespace WebCore
             var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
             return member != null ? member.ToDescription() : value.ToString();
         }
+        /// <summary>
+        /// 获取枚举项上的<see cref="DescriptionAttribute" />特性的文字描述
+        /// </summary>
+        public static Dictionary<int, string> ToDescriptions(this Enum value)
+        {
+            var type = value.GetType();
+            var members = type.GetMembers();
+            var values = Enum.GetValues(type);
+            var names = Enum.GetNames(type);
+            var dictionary = new Dictionary<int, string>();
+            for (int i = 0; i < names.Length; i++)
+            {
+                var name = names[i];
+                var member = members.FirstOrDefault(t => t.Name == name);
+                if (member == null) continue;
+                dictionary.Add(Convert.ToInt32(values.GetValue(i)), member.ToDescription());
+            }
+            return dictionary;
+        }
 
         public static Type GetMemberType(this MemberInfo memberInfo)
         {
-            PropertyInfo propertyInfo = memberInfo as PropertyInfo;
             Type result;
-            if ((result = ((propertyInfo != null) ? propertyInfo.PropertyType : null)) == null)
+            PropertyInfo propertyInfo = memberInfo as PropertyInfo;
+            if ((result = (propertyInfo?.PropertyType)) == null)
             {
                 FieldInfo fieldInfo = (FieldInfo)memberInfo;
-                if (fieldInfo == null)
-                {
-                    return null;
-                }
+                if (fieldInfo == null) return null;
                 result = fieldInfo.FieldType;
             }
             return result;
@@ -249,11 +265,8 @@ namespace WebCore
 
         public static bool IsSameAs(this MemberInfo propertyInfo, MemberInfo otherPropertyInfo)
         {
-            if (propertyInfo == null)
-            {
-                return otherPropertyInfo == null;
-            }
-            return !(otherPropertyInfo == null) && (object.Equals(propertyInfo, otherPropertyInfo) || (propertyInfo.Name == otherPropertyInfo.Name && (propertyInfo.DeclaringType == otherPropertyInfo.DeclaringType || propertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(otherPropertyInfo.DeclaringType) || otherPropertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(propertyInfo.DeclaringType) || propertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(otherPropertyInfo.DeclaringType) || otherPropertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(propertyInfo.DeclaringType))));
+            if (propertyInfo == null) return otherPropertyInfo == null;
+            return !(otherPropertyInfo == null) && (Equals(propertyInfo, otherPropertyInfo) || (propertyInfo.Name == otherPropertyInfo.Name && (propertyInfo.DeclaringType == otherPropertyInfo.DeclaringType || propertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(otherPropertyInfo.DeclaringType) || otherPropertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(propertyInfo.DeclaringType) || propertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(otherPropertyInfo.DeclaringType) || otherPropertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(propertyInfo.DeclaringType))));
         }
         #endregion
 
