@@ -11,7 +11,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -84,6 +83,8 @@ namespace WebFramework.Services
 
             // Global Error Handler for Status 400 BadRequest with Invalid ModelState
             builder.ConfigureApiBehaviorOptions(BadRequestHandler);
+            // Global Error Handler using Fluent Validation
+            //services.AddMvc(options => options.EnableEndpointRouting = false).AddFluentValidation(c => c.RegisterValidatorsFromAssemblyContaining<Startup>());
             // Global Exception Handler for Status 404 ～ 500 Internal Server Error
             services.AddExceptionHandler(ExceptionHandler);
         }
@@ -93,7 +94,7 @@ namespace WebFramework.Services
         /// </summary>
         public static void BadRequestHandler(ApiBehaviorOptions options)
         {
-            options.InvalidModelStateResponseFactory = BadRequestResponse;
+            options.InvalidModelStateResponseFactory = Filters.AsyncRequestValidationFilter.BadRequestResponse;
             //options.ClientErrorMapping[StatusCodes.Status404NotFound].Link = "https://*.com/404";
             //options.SuppressConsumesConstraintForFormFileParameters = true;
             //options.SuppressInferBindingSourcesForParameters = true;
@@ -101,24 +102,6 @@ namespace WebFramework.Services
             //options.SuppressMapClientErrors = true;
         }
 
-        /// <summary>
-        /// Global Output Status 400 BadRequest
-        /// </summary>
-        static IActionResult BadRequestResponse(ActionContext context)
-        {
-            var s = context.ModelState.Values;
-            if (context.ModelState.IsValid || !s.Any(i => i.Errors.Any()))
-                return new OkObjectResult(context.ModelState);
-            var x = s.Where(i => i.Errors.Any());
-            var result = new BadRequestObjectResult(new
-            {
-                status = 400,
-                title = x.First().Errors.First().ErrorMessage.Replace("＆", " "),
-                errors = string.Join("；", x.Select(v => string.Join("；", v.Errors.Select(e => e.ErrorMessage)))).Replace("＆", " ")
-            });
-            result.ContentTypes.Add(System.Net.Mime.MediaTypeNames.Application.Json);
-            return result;
-        }
 
         /// <summary>
         /// Global Exception Handler for Status 404 ~ 500 Internal Server Error

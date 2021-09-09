@@ -37,6 +37,8 @@ namespace WebFramework.Services
                 options.Filters.Add<AsyncTraceMonitorFilter>();
                 // 用户会话状态 user session
                 options.Filters.Add<AsyncSessionFilter>();
+                // 请求参数验证 if using Fluent Validation
+                //options.Filters.Add<AsyncRequestValidationFilter>();
                 // 全局异常输出 output HttpResponseException
                 //options.Filters.Add<HttpResponseExceptionFilter>();
             });
