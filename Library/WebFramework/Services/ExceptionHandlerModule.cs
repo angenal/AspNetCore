@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -66,9 +67,9 @@ namespace WebFramework.Services
         static AsyncExceptionHandler<ExceptionLog> LogHandler;
 
         /// <summary>
-        /// Init Exception Module
+        /// Init Exception Handler services
         /// </summary>
-        public static void Init(IConfiguration config, IWebHostEnvironment env)
+        public static void AddExceptionHandler(this IServiceCollection services, IMvcBuilder builder, IConfiguration config, IWebHostEnvironment env)
         {
             var section = config.GetSection(AppSettings);
             if (section.Exists() && section.GetSection("Path").Exists()) LogsRootDir = section.GetValue<string>("Path").Trim('/');
@@ -80,6 +81,11 @@ namespace WebFramework.Services
             //StatusDir500Exists = Directory.Exists(StatusDir500);
             LogHandler = new AsyncExceptionHandler<ExceptionLog>(TimeSpan.Zero, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30), 1).Start();
             LogHandler.Subscribe(ExceptionLogService.WriteLog);
+
+            // Global Error Handler for Status 400 BadRequest with Invalid ModelState
+            builder.ConfigureApiBehaviorOptions(ApiBehavior);
+            // Global Exception Handler for Status 404 ～ 500 Internal Server Error
+            services.AddExceptionHandler(ExceptionHandler);
         }
 
         /// <summary>

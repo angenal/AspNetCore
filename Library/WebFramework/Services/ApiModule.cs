@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.IO;
 using System.Linq;
@@ -49,8 +51,11 @@ namespace WebFramework.Services
             services.ConfigureServer(config, env);
 
 
-            // App_Data Directory
-            var dataDirectory = new DirectoryInfo(Path.Combine(env.ContentRootPath, "App_Data"));
+            // App Data Directory
+            var dataPath = Path.Combine(env.ContentRootPath, "data"); // Linux system file directories are case sensitive
+            if (!Directory.Exists(dataPath)) dataPath = Path.Combine(env.ContentRootPath, "Data");
+            if (!Directory.Exists(dataPath)) dataPath = Path.Combine(env.ContentRootPath, "App_Data");
+            var dataDirectory = new DirectoryInfo(dataPath);
             if (!dataDirectory.Exists) dataDirectory.Create();
             // Adds services required for using options
             services.AddOptions();
@@ -67,27 +72,25 @@ namespace WebFramework.Services
             services.AddDatabase(config);
 
 
-            // Init Exception Module
-            ExceptionHandlerModule.Init(config, env);
-            // Global Exception Handler for Status 404 ~ 500 Internal Server Error
-            services.AddExceptionHandler(ExceptionHandlerModule.ExceptionHandler);
-            // Global Error Handler for Status 400 BadRequest with Invalid ModelState
-            builder.ConfigureApiBehaviorOptions(ExceptionHandlerModule.ApiBehavior);
+            // Exception Handler services
+            services.AddExceptionHandler(builder, config, env);
+
+
             // Newtonsoft.Json override the default System.Text.Json of .NET Library
             builder.AddNewtonsoftJson(x =>
             {
-                //x.SerializerSettings.ContractResolver = new DefaultContractResolver();
-                x.SerializerSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore;
-                x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                //x.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                x.SerializerSettings.DateFormatString = WebCore.DefaultFormat.DateTimeFormats;
+                //x.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; // 不输出值为空的对象属性
+                x.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); // 驼峰命名(首字母小写)
+                x.SerializerSettings.DateFormatString = WebCore.DefaultFormat.DateTimeFormats; // 输出时间格式为"yyyy-MM-dd HH:mm:ss"
+                x.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
             //builder.AddJsonOptions(x => x.JsonSerializerOptions.WriteIndented = true); // default System.Text.Json
 
             // Adds Controller's Attributes Injection for Mvc application
             //builder.AddControllersAsServices().AddViewComponentsAsServices().AddTagHelpersAsServices();
 
-            // Data protection services to encrypt the stored user login information
+            // Data protection services to encrypt the stored user information
             //services.AddDataProtection()
             //    .DisableAutomaticKeyGeneration()
             //    .PersistKeysToFileSystem(dataDirectory)
@@ -108,7 +111,7 @@ namespace WebFramework.Services
                 if (allowedHosts.Any(c => c == "*")) policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                 else policy.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
             }));
-            //services.AddCors(options => options.AddDefaultPolicy(policy => (allowedHosts.Any(c => c == "*") ? policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader() : policy.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials()).Build()));
+            // Adds HttpContext for Controllers
             services.AddHttpContextAccessor();
 
 

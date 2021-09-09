@@ -1834,9 +1834,9 @@
             Asynchronous record log file
             </summary>
         </member>
-        <member name="M:WebFramework.Services.ExceptionHandlerModule.Init(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+        <member name="M:WebFramework.Services.ExceptionHandlerModule.AddExceptionHandler(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.IMvcBuilder,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
             <summary>
-            Init Exception Module
+            Init Exception Handler services
             </summary>
         </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.ApiBehavior(Microsoft.AspNetCore.Mvc.ApiBehaviorOptions)">
