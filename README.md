@@ -4,6 +4,10 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
 #### CLI命令行
 
 ```shell
+#! 安装工具
+   dotnet tool install -g csharprepl  # csharp playground
+   dotnet tool install -g dotnet-ef   # dotnet ef migrations tool
+
 #! 安装模板，创建项目
    dotnet new console                # Common/Console
    dotnet new classlib               # Common/Library
@@ -121,7 +125,9 @@ $ dotnet ef migrations -h  # 使用命令行
     - [科学计算 MathNet](https://github.com/mathnet/mathnet-numerics)
     - [定时任务 Quartz.Net](https://www.quartz-scheduler.net)
     - [权限 Asp.Net Core Identity](https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/identity?tabs=visual-studio%2Caspnetcore2x)、[Identity Server 4](https://identityserver4.readthedocs.io/en/latest/)
-    - [基准/压测 Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
+    - [单元测试/库 Verify](https://github.com/VerifyTests/Verify)
+    - [基准/压测/库 Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
+    - [基准/压测/工具 NBomber](https://github.com/PragmaticFlow/NBomber)
 
  * 开源的 Sql ORM
     - [EntityFrameworkCore](https://docs.microsoft.com/zh-cn/ef/core)
