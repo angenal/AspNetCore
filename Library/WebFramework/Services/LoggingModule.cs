@@ -7,6 +7,7 @@ using Serilog;
 using Serilog.Events;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using WebFramework.Data;
 
@@ -19,6 +20,11 @@ namespace WebFramework.Services
           "Microsoft": "Error",
           "Microsoft.Hosting.Lifetime": "Error",
           "System": "Error"
+        },
+        "LogManage": {
+          "Path": "logs",
+          "User": "demo",
+          "Pass": "demo"
         }
       },
       "Serilog": {
@@ -46,24 +52,71 @@ namespace WebFramework.Services
       },
     */
 
+    /// <summary></summary>
+    public sealed class Logs
+    {
+        /// <summary>
+        /// Use Default Logging for Development Environment
+        /// </summary>
+        internal static bool Enabled = false;
+        /// <summary>
+        /// Use Serilog Logging for Production Environment, Output Directory: /logs
+        /// </summary>
+        internal static bool EnabledSerilog = false;
+        /// <summary>
+        /// Use Serilog Logging Configuration with appsettings.json
+        /// </summary>
+        internal static bool EnabledSerilogConfiguration = false;
+        /// <summary>
+        /// Configuration Section in appsettings.json
+        /// </summary>
+        public const string AppSettings = "Logging";
+        /// <summary>
+        /// Configuration Exception Log Manage in appsettings.json
+        /// </summary>
+        public const string AppSettingsLogManage = "Logging:LogManage";
+        /// <summary>
+        /// Configuration Serilog in appsettings.json
+        /// </summary>
+        public const string AppSettingSerilog = "Serilog";
+        /// <summary>
+        /// Log files root directory
+        /// </summary>
+        public static string RootPath = "logs";
+        /// <summary>
+        /// Log Manage Configuration
+        /// </summary>
+        public static LogManage WebManage = new LogManage { Path = RootPath };
+        /// <summary>
+        /// Asynchronous record log file
+        /// </summary>
+        public static AsyncExceptionHandler<ExceptionLog> ExceptionHandler;
+        ///// <summary>
+        ///// Web logs directory for status 500
+        ///// </summary>
+        //static string StatusDir500 = StatusCodes.Status500InternalServerError.ToString();
+        ///// <summary>
+        ///// Web logs record status 500
+        ///// </summary>
+        //static bool StatusDir500Exists = false;
+        /// <summary>
+        /// Log Init
+        /// </summary>
+        internal static void Init()
+        {
+            // 启用Logging for any environment
+            Enabled = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+
+            // 启用Serilog 请提前创建日志目录logs
+            EnabledSerilog = Directory.Exists(RootPath);
+        }
+    }
+
     /// <summary>
     /// Logging Module
     /// </summary>
     public static class LoggingModule
     {
-        /// <summary>
-        /// Use Default Logging for Development Environment
-        /// </summary>
-        static bool Enabled = false;
-        /// <summary>
-        /// Use Serilog Logging for Production Environment, Output Directory: /logs
-        /// </summary>
-        static bool EnabledSerilog = false;
-        /// <summary>
-        /// Use Serilog Logging Configuration with appsettings.json
-        /// </summary>
-        static bool EnabledSerilogConfiguration = false;
-
         /// <summary>
         /// Create default logger, it can be replace with UseSerilog() in IHostBuilder
         /// </summary>
@@ -92,15 +145,8 @@ namespace WebFramework.Services
         /// <returns></returns>
         public static IHostBuilder ConfigureLogging(this IHostBuilder builder)
         {
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            if (string.IsNullOrEmpty(environment)) environment = "Production";
-
-            // Use Default Logging for Development Environment
-            Enabled = "Development".Equals(environment, StringComparison.OrdinalIgnoreCase);
-
-            // 启用Serilog 请提前创建日志目录logs
-            EnabledSerilog = Directory.Exists("logs");
-            if (!Enabled && !EnabledSerilog)
+            Logs.Init();
+            if (!Logs.Enabled && !Logs.EnabledSerilog)
             {
                 CreateBootstrapLogger(); // If not enabled, Use default console logging for development
                 return builder;
@@ -110,7 +156,7 @@ namespace WebFramework.Services
             builder.ConfigureLogging((context, builder) =>
             {
                 builder.ClearProviders();
-                var configuration = context.Configuration.GetSection("Logging");
+                var configuration = context.Configuration.GetSection(Logs.AppSettings);
                 if (configuration.Exists())
                 {
                     builder.AddConfiguration(configuration).AddConsole(); // using Microsoft.Extensions.Logging;
@@ -122,14 +168,14 @@ namespace WebFramework.Services
             });
 
             // If Not Use Serilog
-            if (!EnabledSerilog) return builder;
+            if (!Logs.EnabledSerilog) return builder;
 
             // If Not Use Serilog Logging Configuration with appsettings.json
-            if (!EnabledSerilogConfiguration) return builder.UseSerilog();
+            if (!Logs.EnabledSerilogConfiguration) return builder.UseSerilog();
 
             // Use Serilog appsettings.json (replace default logger) https://github.com/serilog/serilog-settings-configuration
             return builder.UseSerilog((context, services, configuration) => configuration
-                  .ReadFrom.Configuration(context.Configuration, "Serilog")
+                  .ReadFrom.Configuration(context.Configuration, Logs.AppSettingSerilog)
                   .ReadFrom.Services(services)//.Enrich.WithThreadId() // using Serilog.Enrichers.Thread
                   .Enrich.FromLogContext());
         }
@@ -139,7 +185,7 @@ namespace WebFramework.Services
         /// </summary>
         public static IApplicationBuilder UseSerilogLogging(this IApplicationBuilder app, IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            if (!EnabledSerilog) return app;
+            if (!Logs.EnabledSerilog) return app;
 
             // Add Serilog to the logging pipeline.
             loggerFactory.AddSerilog();
@@ -154,10 +200,10 @@ namespace WebFramework.Services
             });
 
             // If Use Serilog Logging Configuration with appsettings.json
-            if (EnabledSerilogConfiguration) return app;
+            if (Logs.EnabledSerilogConfiguration) return app;
 
             // Output to File
-            var dir = new DirectoryInfo("logs/file");
+            var dir = new DirectoryInfo(Path.Combine(Logs.RootPath, "file"));
             if (!dir.Exists) dir.Create();
 
             // Output Template
@@ -183,5 +229,16 @@ namespace WebFramework.Services
 
             return app;
         }
+    }
+
+    /// <summary></summary>
+    public partial class LogManage
+    {
+        /// <summary>the directory in web root path</summary>
+        public string Path { get; set; }
+        /// <summary></summary>
+        public string User { get; set; }
+        /// <summary></summary>
+        public string Pass { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace WebFramework.Filters
             if (trace != null)
             {
                 // Web logs record cache enabled
-                if (ExceptionHandlerModule.CacheEnabled && context.ActionArguments.Count > 0)
+                if (Logs.Enabled && context.ActionArguments.Count > 0)
                 {
                     context.HttpContext.Items.TryAdd(trace, context.ActionArguments);
                 }

@@ -26,13 +26,13 @@ namespace WebFramework
         }
 
         /// <summary></summary>
-        public static void Run<TStartup>(string[] args) where TStartup : class
+        public static void Run<TStartup>(string[] args) where TStartup : Startup
         {
             // 系统入口:初始化
             Main.Init();
             // 系统应用:初始化
             var host = Host.CreateDefaultBuilder(args)
-                //.ConfigureAppConfiguration((context, builder) =>
+                //.ConfigureAppConfiguration((context, builder) => // Host.CreateDefaultBuilder:
                 //{
                 //    //The following configuration has been loaded automatically by default
                 //    builder.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true);

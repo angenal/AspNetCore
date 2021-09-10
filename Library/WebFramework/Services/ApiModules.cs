@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,25 +24,36 @@ namespace WebFramework.Services
     public static class ServicesModule
     {
         /// <summary>
+        /// Provides programmatic configuration for the MVC framework.
+        /// </summary>
+        public sealed class Options
+        {
+            /// <summary>
+            /// 注册全局过滤器 https://docs.microsoft.com/zh-cn/aspnet/core/mvc/controllers/filters
+            /// </summary>
+            internal static void MvcOptions(MvcOptions options)
+            {
+                // 全局日志记录
+                options.Filters.Add<AsyncTraceMonitorFilter>();
+                // 用户会话状态 user session
+                options.Filters.Add<AsyncSessionFilter>();
+                // 请求参数验证 启用 FluentValidation
+                if (AsyncRequestValidationFilter.FluentValidation) options.Filters.Add<AsyncRequestValidationFilter>();
+                // 全局异常输出 output HttpResponseException
+                //options.Filters.Add<HttpResponseExceptionFilter>();
+                options.EnableEndpointRouting = false;
+            }
+        }
+
+        /// <summary>
         /// Adds services for api controllers
         /// </summary>
         public static IMvcBuilder AddApiControllers(this IServiceCollection services)
         {
             // 注册用户会话
             services.AddScoped<Session>();
-
-            // 注册全局过滤器
-            return services.AddControllers(options =>
-            {
-                // 全局日志记录
-                options.Filters.Add<AsyncTraceMonitorFilter>();
-                // 用户会话状态 user session
-                options.Filters.Add<AsyncSessionFilter>();
-                // 请求参数验证 if using Fluent Validation
-                //options.Filters.Add<AsyncRequestValidationFilter>();
-                // 全局异常输出 output HttpResponseException
-                //options.Filters.Add<HttpResponseExceptionFilter>();
-            });
+            // 注册控制器
+            return services.AddControllers(Options.MvcOptions);
         }
 
         /// <summary>

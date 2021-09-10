@@ -10,10 +10,16 @@ namespace WebFramework.Filters
     /// </summary>
     public class AsyncRequestValidationFilter : IAsyncActionFilter
     {
+        /// <summary>
+        /// 启用 FluentValidation
+        /// </summary>
+        public static bool FluentValidation = true;
+
         /// <summary></summary>
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (!context.ModelState.IsValid && context.Controller is ApiController)
+            // 启用 FluentValidation 才处理输出
+            if (FluentValidation && !context.ModelState.IsValid && context.Controller is ApiController)
             {
                 context.Result = BadRequestResponse(context);
                 return;

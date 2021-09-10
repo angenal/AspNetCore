@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -12,26 +13,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using WebCore;
 using WebFramework.Data;
+using WebFramework.Filters;
 
 namespace WebFramework.Services
 {
-    /* appsettings.json
-      "Logging": {
-        "LogLevel": { },
-        "LogManage": {
-          "Path": "logs",
-          "User": "demo",
-          "Pass": "demo"
-        }
-      },
-    */
-
     /// <summary>
     /// Configure Global monitoring and exception handler module
     /// </summary>
@@ -41,50 +33,38 @@ namespace WebFramework.Services
         //static readonly BackgroundJobServer JobServer = new BackgroundJobServer(new BackgroundJobServerOptions { ServerName = $"{LogsRootDir}-{Environment.ProcessId}" }, new MemoryStorage(new MemoryStorageOptions()));
 
         /// <summary>
-        /// Configuration Section in appsettings.json
-        /// </summary>
-        const string AppSettings = "Logging:LogManage";
-        /// <summary>
-        /// Web logs root directory
-        /// </summary>
-        public static string LogsRootDir = "logs";
-        /// <summary>
-        /// Web logs record cache enabled
-        /// </summary>
-        public static bool CacheEnabled = false;
-        ///// <summary>
-        ///// Web logs directory for status 500
-        ///// </summary>
-        //static string StatusDir500 = StatusCodes.Status500InternalServerError.ToString();
-        ///// <summary>
-        ///// Web logs record status 500
-        ///// </summary>
-        //static bool StatusDir500Exists = false;
-        /// <summary>
-        /// Asynchronous record log file
-        /// </summary>
-        static AsyncExceptionHandler<ExceptionLog> LogHandler;
-
-        /// <summary>
         /// Init Exception Handler services
         /// </summary>
         public static void AddExceptionHandler(this IServiceCollection services, IMvcBuilder builder, IConfiguration config, IWebHostEnvironment env)
         {
-            var section = config.GetSection(AppSettings);
-            if (section.Exists() && section.GetSection("Path").Exists()) LogsRootDir = section.GetValue<string>("Path").Trim('/');
-            var path = Path.Combine(env.WebRootPath, LogsRootDir);
+            // Global Error Handler using FluentValidation for Status 400 BadRequest
+            if (AsyncRequestValidationFilter.FluentValidation)
+            {
+                builder.ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
+                services.AddFluentValidation(c => c.RegisterValidatorsFromAssemblies(new[] { Assembly.GetEntryAssembly(), Assembly.GetExecutingAssembly() }));
+            }
+            // Global Error Handler for Status 400 BadRequest with Invalid ModelState
+            else builder.ConfigureApiBehaviorOptions(BadRequestHandler);
+            if (!Logs.Enabled) return;
+
+            // Global Exception Log Manage with a URL: /logs <=> the directory in web root path
+            var section = config.GetSection(Logs.AppSettingsLogManage);
+            if (section.Exists())
+            {
+                if (section.GetSection("Path").Exists()) Logs.WebManage.Path = section.GetValue<string>("Path").Trim('/');
+                if (section.GetSection("User").Exists()) Logs.WebManage.User = section.GetValue<string>("User").Trim();
+                if (section.GetSection("Pass").Exists()) Logs.WebManage.Pass = section.GetValue<string>("Pass").Trim();
+            }
+            var path = Path.Combine(env.WebRootPath, Logs.WebManage.Path);
             if (!Directory.Exists(path)) return;
-            ExceptionLogService.Init(path);
-            CacheEnabled = true;
+
             //StatusDir500 = Path.Combine(path, StatusDir500);
             //StatusDir500Exists = Directory.Exists(StatusDir500);
-            LogHandler = new AsyncExceptionHandler<ExceptionLog>(TimeSpan.Zero, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30), 1).Start();
-            LogHandler.Subscribe(ExceptionLogService.WriteLog);
 
-            // Global Error Handler for Status 400 BadRequest with Invalid ModelState
-            builder.ConfigureApiBehaviorOptions(BadRequestHandler);
-            // Global Error Handler using Fluent Validation
-            //services.AddMvc(options => options.EnableEndpointRouting = false).AddFluentValidation(c => c.RegisterValidatorsFromAssemblyContaining<Startup>());
+            ExceptionLogService.Init(path);
+            Logs.ExceptionHandler = new AsyncExceptionHandler<ExceptionLog>(TimeSpan.Zero, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30), 1).Start();
+            Logs.ExceptionHandler.Subscribe(ExceptionLogService.WriteLog);
+
             // Global Exception Handler for Status 404 ～ 500 Internal Server Error
             services.AddExceptionHandler(ExceptionHandler);
         }
@@ -94,7 +74,7 @@ namespace WebFramework.Services
         /// </summary>
         public static void BadRequestHandler(ApiBehaviorOptions options)
         {
-            options.InvalidModelStateResponseFactory = Filters.AsyncRequestValidationFilter.BadRequestResponse;
+            options.InvalidModelStateResponseFactory = AsyncRequestValidationFilter.BadRequestResponse;
             //options.ClientErrorMapping[StatusCodes.Status404NotFound].Link = "https://*.com/404";
             //options.SuppressConsumesConstraintForFormFileParameters = true;
             //options.SuppressInferBindingSourcesForParameters = true;
@@ -185,7 +165,7 @@ namespace WebFramework.Services
                 contents.Append(details);
 
                 // Asynchronous record log file
-                LogHandler.Publish(new ExceptionLog
+                Logs.ExceptionHandler.Publish(new ExceptionLog
                 {
                     Path = context.Request.Path.Value,
                     Trace = error.trace,
@@ -397,7 +377,7 @@ namespace WebFramework.Services
     /// Asynchronous subscription publication > 3k Requests/sec + The background processing time is about one minute.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class AsyncExceptionHandler<T> : IDisposable
+    public class AsyncExceptionHandler<T> : IDisposable
     {
         /// <summary>
         /// Subscribe Tasks

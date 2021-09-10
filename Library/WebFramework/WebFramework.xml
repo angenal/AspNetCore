@@ -1159,6 +1159,11 @@
             请求参数验证
             </summary>
         </member>
+        <member name="F:WebFramework.Filters.AsyncRequestValidationFilter.FluentValidation">
+            <summary>
+            启用 FluentValidation
+            </summary>
+        </member>
         <member name="M:WebFramework.Filters.AsyncRequestValidationFilter.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
             <summary></summary>
         </member>
@@ -1698,6 +1703,16 @@
             Services: Crypto,Database,Compression,Caching,CORS,Authentication,Authorization,Swagger,i18n...
             </summary>
         </member>
+        <member name="T:WebFramework.Services.ServicesModule.Options">
+            <summary>
+            Provides programmatic configuration for the MVC framework.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.ServicesModule.Options.MvcOptions(Microsoft.AspNetCore.Mvc.MvcOptions)">
+            <summary>
+            注册全局过滤器 https://docs.microsoft.com/zh-cn/aspnet/core/mvc/controllers/filters
+            </summary>
+        </member>
         <member name="M:WebFramework.Services.ServicesModule.AddApiControllers(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Adds services for api controllers
@@ -1835,26 +1850,6 @@
         <member name="T:WebFramework.Services.ExceptionHandlerModule">
             <summary>
             Configure Global monitoring and exception handler module
-            </summary>
-        </member>
-        <member name="F:WebFramework.Services.ExceptionHandlerModule.AppSettings">
-            <summary>
-            Configuration Section in appsettings.json
-            </summary>
-        </member>
-        <member name="F:WebFramework.Services.ExceptionHandlerModule.LogsRootDir">
-            <summary>
-            Web logs root directory
-            </summary>
-        </member>
-        <member name="F:WebFramework.Services.ExceptionHandlerModule.CacheEnabled">
-            <summary>
-            Web logs record cache enabled
-            </summary>
-        </member>
-        <member name="F:WebFramework.Services.ExceptionHandlerModule.LogHandler">
-            <summary>
-            Asynchronous record log file
             </summary>
         </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.AddExceptionHandler(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.IMvcBuilder,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
@@ -2186,24 +2181,62 @@
             Configure services
             </summary>
         </member>
-        <member name="T:WebFramework.Services.LoggingModule">
-            <summary>
-            Logging Module
-            </summary>
+        <member name="T:WebFramework.Services.Logs">
+            <summary></summary>
         </member>
-        <member name="F:WebFramework.Services.LoggingModule.Enabled">
+        <member name="F:WebFramework.Services.Logs.Enabled">
             <summary>
             Use Default Logging for Development Environment
             </summary>
         </member>
-        <member name="F:WebFramework.Services.LoggingModule.EnabledSerilog">
+        <member name="F:WebFramework.Services.Logs.EnabledSerilog">
             <summary>
             Use Serilog Logging for Production Environment, Output Directory: /logs
             </summary>
         </member>
-        <member name="F:WebFramework.Services.LoggingModule.EnabledSerilogConfiguration">
+        <member name="F:WebFramework.Services.Logs.EnabledSerilogConfiguration">
             <summary>
             Use Serilog Logging Configuration with appsettings.json
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.Logs.AppSettings">
+            <summary>
+            Configuration Section in appsettings.json
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.Logs.AppSettingsLogManage">
+            <summary>
+            Configuration Exception Log Manage in appsettings.json
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.Logs.AppSettingSerilog">
+            <summary>
+            Configuration Serilog in appsettings.json
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.Logs.RootPath">
+            <summary>
+            Log files root directory
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.Logs.WebManage">
+            <summary>
+            Log Manage Configuration
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.Logs.ExceptionHandler">
+            <summary>
+            Asynchronous record log file
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.Logs.Init">
+            <summary>
+            Log Init
+            </summary>
+        </member>
+        <member name="T:WebFramework.Services.LoggingModule">
+            <summary>
+            Logging Module
             </summary>
         </member>
         <member name="M:WebFramework.Services.LoggingModule.CreateBootstrapLogger">
@@ -2230,6 +2263,18 @@
             <summary>
             Configure Serilog Logging Module
             </summary>
+        </member>
+        <member name="T:WebFramework.Services.LogManage">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Services.LogManage.Path">
+            <summary>the directory in web root path</summary>
+        </member>
+        <member name="P:WebFramework.Services.LogManage.User">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Services.LogManage.Pass">
+            <summary></summary>
         </member>
         <member name="T:WebFramework.Services.RegisterResourcesModule">
             <summary>
