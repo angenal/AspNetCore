@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using WebInterface;
 
 namespace WebFramework
 {
@@ -14,7 +15,7 @@ namespace WebFramework
         /// <summary>
         /// Default Localizations
         /// </summary>
-        public static AvaliableLocalizations Default = AvaliableLocalizations.Chinese;
+        public static Language Default = Language.Chinese;
         /// <summary>
         /// Set Default ResourceManager use SetDefaultCulture()
         /// </summary>
@@ -31,7 +32,7 @@ namespace WebFramework
         public static IList<CultureInfo> SupportedCultures()
         {
             var cultures = new List<CultureInfo>();
-            Type type = typeof(AvaliableLocalizations);
+            Type type = typeof(Language);
             foreach (string name in Enum.GetNames(type))
             {
                 var field = type.GetField(name);
@@ -47,7 +48,7 @@ namespace WebFramework
         /// <returns></returns>
         public static CultureInfo GetDefaultCulture()
         {
-            Type type = typeof(AvaliableLocalizations);
+            Type type = typeof(Language);
             var field = type.GetField(Default.ToString());
             var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
             return new CultureInfo(attribute.Description);
@@ -57,16 +58,16 @@ namespace WebFramework
         /// Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
         /// </summary>
         /// <param name="newLocalization"></param>
-        public static void SetDefaultCulture(AvaliableLocalizations newLocalization)
+        public static void SetDefaultCulture(Language newLocalization)
         {
             Default = newLocalization;
             Culture = GetDefaultCulture();
             Thread.CurrentThread.CurrentCulture = Culture;
             Thread.CurrentThread.CurrentUICulture = Culture;
-            Type type = typeof(AvaliableLocalizations);
+            Type type = typeof(Language);
             foreach (string name in Enum.GetNames(type))
             {
-                if (newLocalization != (AvaliableLocalizations)Enum.Parse(type, name)) continue;
+                if (newLocalization != (Language)Enum.Parse(type, name)) continue;
                 var field = type.GetField(name);
                 var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
                 var assembly = Assembly.GetEntryAssembly();
@@ -75,22 +76,5 @@ namespace WebFramework
                 break;
             }
         }
-    }
-
-    /// <summary>
-    /// Avaliable Localizations
-    /// </summary>
-    public enum AvaliableLocalizations
-    {
-        /// <summary>
-        /// English
-        /// </summary>
-        [Description("en-US")]
-        English,
-        /// <summary>
-        /// Chinese
-        /// </summary>
-        [Description("zh-CN")]
-        Chinese
     }
 }

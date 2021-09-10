@@ -184,18 +184,6 @@ namespace WebCore
         }
 
         /// <summary>
-        /// 获取成员元数据的Description特性描述信息
-        /// </summary>
-        /// <param name="member">成员元数据对象</param>
-        /// <param name="inherit">是否搜索成员的继承链以查找描述特性</param>
-        /// <returns>返回Description特性描述信息，如不存在则返回成员的名称</returns>
-        public static string ToDescription(this MemberInfo member, bool inherit = false)
-        {
-            var desc = member.GetAttribute<DescriptionAttribute>(inherit);
-            return desc == null ? member.Name : desc.Description;
-        }
-
-        /// <summary>
         /// 从类型成员获取指定Attribute特性
         /// </summary>
         /// <typeparam name="T">Attribute特性类型</typeparam>
@@ -221,35 +209,91 @@ namespace WebCore
         }
 
         /// <summary>
+        /// 获取成员元数据的Description特性描述信息
+        /// </summary>
+        /// <param name="field">成员元数据对象</param>
+        /// <param name="inherit">是否搜索成员的继承链以查找描述特性</param>
+        /// <returns>返回Description特性描述信息，如不存在则返回成员的名称</returns>
+        public static string ToDescription(this FieldInfo field, bool inherit = false)
+        {
+            var desc = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute), inherit) as DescriptionAttribute;
+            return desc == null ? field.Name : desc.Description;
+        }
+
+        /// <summary>
+        /// 获取成员元数据的Description特性描述信息
+        /// </summary>
+        /// <param name="member">成员元数据对象</param>
+        /// <param name="inherit">是否搜索成员的继承链以查找描述特性</param>
+        /// <returns>返回Description特性描述信息，如不存在则返回成员的名称</returns>
+        public static string ToDescription(this MemberInfo member, bool inherit = false)
+        {
+            var desc = member.GetAttribute<DescriptionAttribute>(inherit);
+            return desc == null ? member.Name : desc.Description;
+        }
+
+        /// <summary>
         /// 获取枚举项上的<see cref="DescriptionAttribute" />特性的文字描述
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string ToDescription(this Enum value)
+        public static string ToDescription(this Enum value, bool nameInstead = true, bool inherit = false)
         {
-            var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
-            return member != null ? member.ToDescription() : value.ToString();
+            Type type = value.GetType();
+            string name = Enum.GetName(type, value);
+            if (name == null) return null;
+            FieldInfo field = type.GetField(name);
+            var desc = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute), inherit) as DescriptionAttribute;
+            if (desc == null && nameInstead == true) return name;
+            return desc?.Description;
+            //var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+            //return member != null ? member.ToDescription() : value.ToString();
         }
         /// <summary>
         /// 获取枚举项上的<see cref="DescriptionAttribute" />特性的文字描述
         /// </summary>
-        public static Dictionary<int, string> ToDescriptions(this Enum value)
+        public static Dictionary<int, string> ToDescriptions(this Enum value, bool nameInstead = true, bool inherit = false)
         {
-            var type = value.GetType();
-            var members = type.GetMembers();
-            var values = Enum.GetValues(type);
-            var names = Enum.GetNames(type);
+            return value.GetType().ToDescriptions(nameInstead, inherit);
+        }
+        /// <summary>
+        /// 获取枚举类型的<see cref="DescriptionAttribute" />特性的文字描述
+        /// </summary>
+        public static Dictionary<int, string> ToDescriptions(this Type enumType, bool nameInstead = true, bool inherit = false)
+        {
+            var fields = enumType.GetFields();
+            var values = Enum.GetValues(enumType);
+            var names = Enum.GetNames(enumType);
             var dictionary = new Dictionary<int, string>();
             for (int i = 0; i < names.Length; i++)
             {
                 var name = names[i];
-                var member = members.FirstOrDefault(t => t.Name == name);
-                if (member == null) continue;
-                dictionary.Add(Convert.ToInt32(values.GetValue(i)), member.ToDescription());
+                var field = fields.FirstOrDefault(t => t.Name == name);
+                if (field == null) continue;
+                var desc = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute), inherit) as DescriptionAttribute;
+                if (desc == null && nameInstead == false) continue;
+                dictionary.Add(Convert.ToInt32(values.GetValue(i)), desc == null ? name : desc.Description);
             }
             return dictionary;
         }
-
+        /// <summary>
+        /// 获取枚举类型的<see cref="DescriptionAttribute" />特性的文字描述
+        /// </summary>
+        public static Dictionary<string, string> ToDescriptionsFieldAsKey(this Type enumType, bool nameInstead = true, bool inherit = false)
+        {
+            var fields = enumType.GetFields();
+            var names = Enum.GetNames(enumType);
+            var dictionary = new Dictionary<string, string>();
+            for (int i = 0; i < names.Length; i++)
+            {
+                var name = names[i];
+                var field = fields.FirstOrDefault(t => t.Name == name);
+                if (field == null) continue;
+                var desc = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute), inherit) as DescriptionAttribute;
+                if (desc == null && nameInstead == false) continue;
+                dictionary.Add(name, desc == null ? name : desc.Description);
+            }
+            return dictionary;
+        }
+        /// <summary></summary>
         public static Type GetMemberType(this MemberInfo memberInfo)
         {
             Type result;
@@ -262,7 +306,7 @@ namespace WebCore
             }
             return result;
         }
-
+        /// <summary></summary>
         public static bool IsSameAs(this MemberInfo propertyInfo, MemberInfo otherPropertyInfo)
         {
             if (propertyInfo == null) return otherPropertyInfo == null;
@@ -563,43 +607,47 @@ namespace WebCore
 
         #endregion
 
+        #region LEGACY
 
 #if !LEGACY
+        /// <summary></summary>
         public static IEnumerable<PropertyInfo> GetProperties(Type type)
         {
             return type.GetRuntimeProperties();
         }
-
+        /// <summary></summary>
         public static PropertyInfo GetProperty(Type type, string name)
         {
             return type.GetRuntimeProperty(name);
         }
-
+        /// <summary></summary>
         public static MethodInfo GetMethod(Type type, string name)
         {
             return type.GetRuntimeMethod(name, null);
         }
-
+        /// <summary></summary>
         public static Type GetBaseType(Type type)
         {
             return type.GetTypeInfo().BaseType;
         }
-
+        /// <summary></summary>
         public static IList<Type> GetGenericArguments(Type type)
         {
             return type.GenericTypeArguments;
         }
-
+        /// <summary></summary>
         public static IEnumerable<Type> GetInterfaces(Type type)
         {
             return type.GetTypeInfo().ImplementedInterfaces;
         }
 #else
+        /// <summary></summary>
         public static Type GetBaseType(Type type)
         {
             return type.BaseType;
         }
 #endif
+        #endregion
 
     }
 }

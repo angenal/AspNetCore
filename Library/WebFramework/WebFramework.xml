@@ -512,6 +512,20 @@
             随机文字字体
             </summary>
         </member>
+        <member name="T:WebFramework.Controllers.LanguageController">
+            <summary>
+            语言
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.LanguageController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Caching.Memory.IMemoryCache)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Controllers.LanguageController.Locales(System.String)">
+            <summary>
+            代码列表
+            </summary>
+            <param name="fieldAsKey">"零":由值作为返回对象属性; "非零":由名称作为对象属性</param>
+        </member>
         <member name="T:WebFramework.Controllers.OfficeController">
             <summary>
             办公文档
@@ -1246,26 +1260,11 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Localizations.SetDefaultCulture(WebFramework.AvaliableLocalizations)">
+        <member name="M:WebFramework.Localizations.SetDefaultCulture(WebInterface.Language)">
             <summary>
             Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
             </summary>
             <param name="newLocalization"></param>
-        </member>
-        <member name="T:WebFramework.AvaliableLocalizations">
-            <summary>
-            Avaliable Localizations
-            </summary>
-        </member>
-        <member name="F:WebFramework.AvaliableLocalizations.English">
-            <summary>
-            English
-            </summary>
-        </member>
-        <member name="F:WebFramework.AvaliableLocalizations.Chinese">
-            <summary>
-            Chinese
-            </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.MessageUserSelectInputDto">
             <summary></summary>
@@ -2289,6 +2288,7 @@
         <member name="T:WebFramework.Services.SwaggerDocService">
             <summary>
             Swagger Doc service.
+            https://docs.microsoft.com/zh-cn/aspnet/core/tutorials/getting-started-with-swashbuckle
             </summary>
         </member>
         <member name="F:WebFramework.Services.SwaggerDocService.apiKeyQueryOrCookieParameterName">

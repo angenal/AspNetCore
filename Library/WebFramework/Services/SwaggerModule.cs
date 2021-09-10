@@ -18,6 +18,7 @@ namespace WebFramework.Services
 {
     /// <summary>
     /// Swagger Doc service.
+    /// https://docs.microsoft.com/zh-cn/aspnet/core/tutorials/getting-started-with-swashbuckle
     /// </summary>
     public static class SwaggerDocService
     {
