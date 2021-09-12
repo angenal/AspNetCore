@@ -38,10 +38,13 @@ namespace WebFramework.Services
                 // 用户会话状态 user session
                 options.Filters.Add<AsyncSessionFilter>();
                 // 请求参数验证 启用 FluentValidation
-                if (AsyncRequestValidationFilter.FluentValidation) options.Filters.Add<AsyncRequestValidationFilter>();
+                if (AsyncRequestValidationFilter.FluentValidation)
+                {
+                    options.Filters.Add<AsyncRequestValidationFilter>();
+                    options.EnableEndpointRouting = false;
+                }
                 // 全局异常输出 output HttpResponseException
                 //options.Filters.Add<HttpResponseExceptionFilter>();
-                options.EnableEndpointRouting = false;
             }
         }
 

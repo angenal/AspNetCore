@@ -13,7 +13,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebCore;
 using WebCore.Annotations;
-using WebCore.Data.DTO;
 
 namespace WebFramework.Authorization
 {
@@ -110,15 +109,15 @@ namespace WebFramework.Authorization
         /// </summary>
         /// <param name="action"></param>
         /// <param name="_async"></param>
-        public static void ConfigAppAsync(Func<List<IAppInfo>> action, bool _async = false)
+        public static void ConfigAppAsync(Func<List<WebCore.Data.DTO.IAppInfo>> action, bool _async = false)
         {
             if (_async)
             {
-                action.BeginInvoke(iar => App.Infos = action.EndInvoke(iar), null);
+                action.BeginInvoke(iar => WebCore.Data.DTO.App.Infos = action.EndInvoke(iar), null);
             }
             else
             {
-                App.Infos = action.Invoke();
+                WebCore.Data.DTO.App.Infos = action.Invoke();
             }
         }
         /// <summary>
@@ -126,15 +125,15 @@ namespace WebFramework.Authorization
         /// </summary>
         /// <param name="action"></param>
         /// <param name="_async"></param>
-        public static void ConfigUserAsync(Func<List<IUserInfo>> action, bool _async = false)
+        public static void ConfigUserAsync(Func<List<WebCore.Data.DTO.IUserInfo>> action, bool _async = false)
         {
             if (_async)
             {
-                action.BeginInvoke(iar => User.Infos = action.EndInvoke(iar), null);
+                action.BeginInvoke(iar => WebCore.Data.DTO.User.Infos = action.EndInvoke(iar), null);
             }
             else
             {
-                User.Infos = action.Invoke();
+                WebCore.Data.DTO.User.Infos = action.Invoke();
             }
         }
 
@@ -222,7 +221,7 @@ namespace WebFramework.Authorization
         private async Task ReturnNoAuthorized(HttpContext context)
         {
             context.Response.StatusCode = 401;
-            var response = Results.Res(401, "not authorized");
+            var response = WebCore.Data.DTO.Results.Res(401, "not authorized");
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
         /// <summary>
@@ -233,7 +232,7 @@ namespace WebFramework.Authorization
         private async Task ReturnTimeOut(HttpContext context)
         {
             context.Response.StatusCode = 408;
-            var response = Results.Res(408, "timeout");
+            var response = WebCore.Data.DTO.Results.Res(408, "timeout");
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
 
@@ -246,7 +245,7 @@ namespace WebFramework.Authorization
         /// <returns></returns>
         private async Task CheckApp(HttpContext context, string appid, string secret)
         {
-            bool exists = App.Infos.Exists(x => x.appid == appid && x.secret == secret);
+            bool exists = WebCore.Data.DTO.App.Infos.Exists(x => x.appid == appid && x.secret == secret);
             if (!exists) await ReturnNoAuthorized(context);
         }
         /// <summary>
@@ -258,7 +257,7 @@ namespace WebFramework.Authorization
         /// <returns></returns>
         private async Task CheckUser(HttpContext context, string userid, string secret)
         {
-            bool exists = User.Infos.Exists(x => x.userid == userid && x.secret == secret);
+            bool exists = WebCore.Data.DTO.User.Infos.Exists(x => x.userid == userid && x.secret == secret);
             if (!exists) await ReturnNoAuthorized(context);
         }
 
@@ -270,7 +269,7 @@ namespace WebFramework.Authorization
         /// <returns></returns>
         private bool CheckExpiredTime(long timestamp, long expiresIn)
         {
-            double now_timestamp = Req.Timestamp();
+            double now_timestamp = WebCore.Data.DTO.Req.Timestamp();
             return (now_timestamp - timestamp) > expiresIn;
         }
 
@@ -290,7 +289,7 @@ namespace WebFramework.Authorization
             {
                 if (pairs.ContainsKey("appid"))
                 {
-                    var requestInfo = new ReqAppInfo
+                    var requestInfo = new WebCore.Data.DTO.ReqAppInfo
                     {
                         timestamp = pairs["timestamp"].ToString(),
                         nonce = pairs["nonce"].ToString(),
@@ -302,7 +301,7 @@ namespace WebFramework.Authorization
                 }
                 else if (pairs.ContainsKey("userid"))
                 {
-                    var requestInfo = new ReqUserInfo
+                    var requestInfo = new WebCore.Data.DTO.ReqUserInfo
                     {
                         timestamp = pairs["timestamp"].ToString(),
                         nonce = pairs["nonce"].ToString(),
@@ -336,7 +335,7 @@ namespace WebFramework.Authorization
             {
                 if (pairs.ContainsKey("appid"))
                 {
-                    var requestInfo = new ReqAppInfo
+                    var requestInfo = new WebCore.Data.DTO.ReqAppInfo
                     {
                         timestamp = pairs["timestamp"].ToString(),
                         nonce = pairs["nonce"].ToString(),
@@ -348,7 +347,7 @@ namespace WebFramework.Authorization
                 }
                 else if (pairs.ContainsKey("userid"))
                 {
-                    var requestInfo = new ReqUserInfo
+                    var requestInfo = new WebCore.Data.DTO.ReqUserInfo
                     {
                         timestamp = pairs["timestamp"].ToString(),
                         nonce = pairs["nonce"].ToString(),
@@ -375,9 +374,9 @@ namespace WebFramework.Authorization
         /// <param name="context"></param>
         /// <param name="req"></param>
         /// <returns></returns>
-        private async Task CheckApp(HttpContext context, ReqAppInfo req)
+        private async Task CheckApp(HttpContext context, WebCore.Data.DTO.ReqAppInfo req)
         {
-            string computeSinature = Req.Sinature_HMACMD5(req.appid, req.timestamp, req.nonce, options.Secret);
+            string computeSinature = WebCore.Data.DTO.Req.Sinature_HMACMD5(req.appid, req.timestamp, req.nonce, options.Secret);
             if (computeSinature.Equals(req.sinature) && long.TryParse(req.timestamp, out long tmpTimestamp))
             {
                 if (CheckExpiredTime(tmpTimestamp, options.ExpiresIn))
@@ -400,9 +399,9 @@ namespace WebFramework.Authorization
         /// <param name="context"></param>
         /// <param name="req"></param>
         /// <returns></returns>
-        private async Task CheckUser(HttpContext context, ReqUserInfo req)
+        private async Task CheckUser(HttpContext context, WebCore.Data.DTO.ReqUserInfo req)
         {
-            string computeSinature = Req.Sinature_HMACMD5(req.userid, req.timestamp, req.nonce, options.Secret);
+            string computeSinature = WebCore.Data.DTO.Req.Sinature_HMACMD5(req.userid, req.timestamp, req.nonce, options.Secret);
             if (computeSinature.Equals(req.sinature) && long.TryParse(req.timestamp, out long tmpTimestamp))
             {
                 if (CheckExpiredTime(tmpTimestamp, options.ExpiresIn))

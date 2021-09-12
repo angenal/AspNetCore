@@ -30,22 +30,26 @@ namespace WebFramework.Services
                 config.Bind(ApiSettings.AppSettings, ApiSettings.Instance);
             }
 
+            // Configures Limit Options
             int maxLengthLimit = ApiSettings.Instance.MaxLengthLimit; // 提交元素个数限制
             int maxRequestBodySize = ApiSettings.Instance.MaxRequestBodySize; // 提交数据文本字节数量限制
             int maxMultipartBodySize = ApiSettings.Instance.MaxMultipartBodySize; // 上传文件大小限制
 
             //services.Configure<IISOptions>(opt => { }); // Configure IIS Out-Of-Process.
 
-            services.Configure<IISServerOptions>(options => options.MaxRequestBodySize = maxRequestBodySize);
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.MaxRequestBodySize = maxRequestBodySize;
+                options.AllowSynchronousIO = true; // 启用同步IO
+            });
             services.Configure<KestrelServerOptions>(options =>
             {
                 options.Limits.MaxRequestBodySize = maxRequestBodySize;
-                options.AllowSynchronousIO = true; //启用同步 IO
+                options.AllowSynchronousIO = true; // 启用同步IO
             });
 
             services.Configure<FormOptions>(options =>
             {
-
                 options.KeyLengthLimit = maxLengthLimit;
                 options.ValueCountLimit = maxLengthLimit;
                 options.ValueLengthLimit = maxMultipartBodySize;
@@ -56,6 +60,9 @@ namespace WebFramework.Services
                 options.MultipartBoundaryLengthLimit = maxLengthLimit;
                 options.MultipartBodyLengthLimit = maxMultipartBodySize;
             });
+
+            // 系统性能指标的跟踪监控 App.Metrics.AspNetCore  https://www.youtube.com/watch?v=sM7D8biBf4k
+            services.AddMetrics();
 
             return services;
         }

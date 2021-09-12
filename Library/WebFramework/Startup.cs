@@ -1,3 +1,5 @@
+using App.Metrics.AspNetCore;
+using App.Metrics.Formatters.Prometheus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
@@ -39,6 +41,17 @@ namespace WebFramework
                 //    builder.AddEnvironmentVariables();//builder.AddEnvironmentVariables("ASPNETCORE_");
                 //    builder.AddCommandLine(args);
                 //})
+                // 系统性能指标的跟踪监控  https://prometheus.io/download  https://grafana.com/grafana/download
+                .UseMetricsWebTracking() // Tracking URL: /metrics, /metrics-text
+                .UseMetrics(options =>
+                {
+                    options.EndpointOptions = x =>
+                    {
+                        x.EnvironmentInfoEndpointEnabled = true;
+                        x.MetricsEndpointOutputFormatter = new MetricsPrometheusProtobufOutputFormatter();
+                        x.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
+                    };
+                })
                 .ConfigureLogging()
                 .ConfigureWebHostDefaults(builder => builder.UseStartup<TStartup>().UseSentryMonitor())
                 .Build();
