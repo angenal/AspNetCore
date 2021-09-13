@@ -13,7 +13,7 @@ nssm install InfluxDB_V1 influxd -config influxdb.conf
 nssm set InfluxDB_V1 AppDirectory "A:\database\influxdb"
 nssm set InfluxDB_V1 Description "InfluxDB v1.8"
 nssm set InfluxDB_V1 Start SERVICE_AUTO_START
-nssm start InfluxDB_V1 & start http://127.0.0.1:8086/
+nssm start InfluxDB_V1 & start http://127.0.0.1:8086
 nssm status InfluxDB_V1
 
 # 初始化DB

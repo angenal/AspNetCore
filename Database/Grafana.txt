@@ -6,20 +6,28 @@ start https://grafana.com/grafana/download
 wget https://dl.grafana.com/oss/release/grafana-7.2.1.windows-amd64.msi
 # 安装软件 grafana-7.2.1.windows-amd64.msi
 # 中文汉化 https://github.com/zhucj1028/Grafana-Chinese
+# 安装插件 https://grafana.com/grafana/plugins
+cd C:\Program Files\GrafanaLabs\grafana\bin
+grafana-cli plugins install grafana-piechart-panel
 
 # 初始化 (自定义配置：http_port = 8030 ) [默认端口3000]
 # 复制 grafana\conf\sample.ini 为 custom.ini
 copy custom.ini "C:\Program Files\GrafanaLabs\grafana\conf"
-# 重启服务Grafana
-# 访问：http://localhost:8030/
+# 重启服务Grafana <service grafana-server restart>
+# 访问：http://localhost:8030
 # 登录：账号密码默认为 admin
 
 # 新增数据源 New Data Sources  http://localhost:8030/datasources
-# Name: ApiDemo.NET5
-# URL: http://127.0.0.1:8086
-# Database: ApiDemo_NET5_Metrics
-# User & Password
+  # Name: Prometheus
+  # URL: http://localhost:9090
+
+  # Name: InfluxDB-ApiDemo.NET5
+  # URL: http://127.0.0.1:8086
+  # Database: ApiDemo_NET5_Metrics
+  # User & Password
 
 # 导入模板源 Import Dashboard  http://localhost:8030/dashboard/import
-# App Metrics - Web Monitoring - InfluxDB  https://grafana.com/grafana/dashboards/2125
 # App Metrics - Web Monitoring - Prometheus  https://grafana.com/grafana/dashboards/2204
+  # 先填写 2204 然后选择上面创建好的两个数据源
+# App Metrics - Web Monitoring - InfluxDB  https://grafana.com/grafana/dashboards/2125
+  # 先填写 2125 然后保存

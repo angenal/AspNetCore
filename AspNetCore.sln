@@ -34,6 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{8F
 		Database\Chat.Web.MSSQL.sql = Database\Chat.Web.MSSQL.sql
 		Database\Grafana.txt = Database\Grafana.txt
 		Database\InfluxDB.txt = Database\InfluxDB.txt
+		Database\Prometheus.txt = Database\Prometheus.txt
 		Database\WebDotnetCoreLocalDB.ldf = Database\WebDotnetCoreLocalDB.ldf
 		Database\WebDotnetCoreLocalDB.mdf = Database\WebDotnetCoreLocalDB.mdf
 	EndProjectSection

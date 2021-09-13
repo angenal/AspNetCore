@@ -1,0 +1,27 @@
+# 官网 https://prometheus.io
+
+# 安装目录
+cd A:\database\prometheus
+start https://prometheus.io/download
+wget https://github.com/prometheus/prometheus/releases/download/v2.29.2/prometheus-2.29.2.windows-amd64.zip
+# 解压后修改配置文件prometheus.yml
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+  ... ...
+  # The Project ApiDemo.NET5
+  - job_name: "ApiDemo_NET5_Metrics"
+    metrics_path: '/metrics-text'
+    static_configs:
+      - targets: ["localhost:35000"]
+
+# 安装Prometheus
+prometheus --config.file="prometheus.yml" --web.listen-address="0.0.0.0:9090" --web.cors.origin=".*" --storage.tsdb.path="data/" --log.level=error
+
+# 推荐安装Windows服务
+nssm install Prometheus_V2 A:\database\prometheus\prometheus.exe --config.file="prometheus.yml" --log.level=error
+nssm set Prometheus_V2 AppDirectory "A:\database\prometheus"
+nssm set Prometheus_V2 Description "Prometheus v2.29.2"
+nssm set Prometheus_V2 Start SERVICE_AUTO_START
+nssm start Prometheus_V2 & start http://localhost:9090
+nssm status Prometheus_V2
