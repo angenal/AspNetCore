@@ -42,7 +42,7 @@ namespace WebFramework
                 //    builder.AddCommandLine(args);
                 //})
                 // 系统性能指标的跟踪监控  https://prometheus.io/download  https://grafana.com/grafana/download
-                .UseMetricsWebTracking() // Tracking URL: /metrics, /metrics-text
+                .UseMetricsWebTracking() // Tracking URL: /metrics /metrics-text
                 .UseMetrics(options =>
                 {
                     options.EndpointOptions = x =>

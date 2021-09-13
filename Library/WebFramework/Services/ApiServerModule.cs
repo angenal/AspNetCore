@@ -30,10 +30,10 @@ namespace WebFramework.Services
                 config.Bind(ApiSettings.AppSettings, ApiSettings.Instance);
             }
 
-            // Configures Limit Options
-            int maxLengthLimit = ApiSettings.Instance.MaxLengthLimit; // 提交元素个数限制
-            int maxRequestBodySize = ApiSettings.Instance.MaxRequestBodySize; // 提交数据文本字节数量限制
-            int maxMultipartBodySize = ApiSettings.Instance.MaxMultipartBodySize; // 上传文件大小限制
+            // Configures Limit on Request
+            int maxLengthLimit = ApiSettings.Instance.MaxLengthLimit; // 提交元素个数限制 (默认 8000)
+            int maxRequestBodySize = ApiSettings.Instance.MaxRequestBodySize; // 提交数据文本字节数量限制 (默认 28.6 MB)
+            int maxMultipartBodySize = ApiSettings.Instance.MaxMultipartBodySize; // 上传文件大小限制 (默认 128 MB)
 
             //services.Configure<IISOptions>(opt => { }); // Configure IIS Out-Of-Process.
 
@@ -47,17 +47,16 @@ namespace WebFramework.Services
                 options.Limits.MaxRequestBodySize = maxRequestBodySize;
                 options.AllowSynchronousIO = true; // 启用同步IO
             });
-
             services.Configure<FormOptions>(options =>
             {
                 options.KeyLengthLimit = maxLengthLimit;
                 options.ValueCountLimit = maxLengthLimit;
-                options.ValueLengthLimit = maxMultipartBodySize;
+                options.ValueLengthLimit = maxRequestBodySize;
                 options.BufferBodyLengthLimit = FormOptions.DefaultBufferBodyLengthLimit;
                 options.MemoryBufferThreshold = FormOptions.DefaultMemoryBufferThreshold;
                 options.MultipartHeadersCountLimit = maxLengthLimit;
                 options.MultipartHeadersLengthLimit = maxRequestBodySize;
-                options.MultipartBoundaryLengthLimit = maxLengthLimit;
+                options.MultipartBoundaryLengthLimit = maxRequestBodySize;
                 options.MultipartBodyLengthLimit = maxMultipartBodySize;
             });
 
