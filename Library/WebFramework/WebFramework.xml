@@ -1733,9 +1733,14 @@
             Api Server(Kestrel,IIS) Module
             </summary>
         </member>
-        <member name="M:WebFramework.Services.ApiServerModule.ConfigureServer(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+        <member name="M:WebFramework.Services.ApiServerModule.AddApiServer(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
             <summary>
             Register all services
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.ApiServerModule.UseApiServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Configure services
             </summary>
         </member>
         <member name="T:WebFramework.Services.AuthModule">

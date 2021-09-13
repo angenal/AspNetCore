@@ -1,9 +1,11 @@
+using App.Metrics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using WebInterface.Settings;
 
 namespace WebFramework.Services
@@ -16,7 +18,7 @@ namespace WebFramework.Services
         /// <summary>
         /// Register all services
         /// </summary>
-        public static IServiceCollection ConfigureServer(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
+        public static IServiceCollection AddApiServer(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
         {
             var section = config.GetSection(ApiSettings.AppSettings);
             if (!section.Exists()) return services;
@@ -60,10 +62,67 @@ namespace WebFramework.Services
                 options.MultipartBodyLengthLimit = maxMultipartBodySize;
             });
 
-            // 系统性能指标的跟踪监控 App.Metrics.AspNetCore  https://www.youtube.com/watch?v=sM7D8biBf4k
-            services.AddMetrics();
+            // 系统性能指标的跟踪监控 App.Metrics.AspNetCore
+            // 参考Grafana 数据源  http://localhost:3000/datasources
+            /* appsettings.json
+              "AppMetrics": {
+                "Open": true,
+                "Name": "ApiDemo.NET5",
+                "BaseUri": "http://127.0.0.1:8086",
+                "Database": "ApiDemo_NET5_Metrics",
+                "UserName": "admin",
+                "Password": "edisonchou"
+              }
+            */
+
+            section = config.GetSection("AppMetrics");
+            if (!section.Exists() || !section.GetSection("BaseUri").Exists() || !section.GetSection("Database").Exists() || !section.GetSection("UserName").Exists() || !section.GetSection("Password").Exists()) return services;
+            if (section.GetSection("Open").Exists() && !section.GetSection("Open").Get<bool>()) return services;
+            string appName = section.GetSection("Name").Exists() ? section.GetSection("Name").Value : env.ApplicationName, envName = section.GetSection("Env").Exists() ? section.GetSection("Env").Value : env.EnvironmentName;
+            services.AddMetrics(AppMetrics.CreateDefaultBuilder().Configuration.Configure(options =>
+            {
+                options.AddAppTag(appName);
+                options.AddEnvTag(envName);
+            }).Report.ToInfluxDb(options =>
+            {
+                options.InfluxDb.BaseUri = new Uri(section.GetSection("BaseUri").Value);
+                options.InfluxDb.Database = section.GetSection("Database").Value;
+                options.InfluxDb.UserName = section.GetSection("UserName").Value;
+                options.InfluxDb.Password = section.GetSection("Password").Value;
+                options.FlushInterval = TimeSpan.FromSeconds(5);
+                options.HttpPolicy.BackoffPeriod = TimeSpan.FromSeconds(30);
+                options.HttpPolicy.Timeout = TimeSpan.FromSeconds(10);
+                options.HttpPolicy.FailuresBeforeBackoff = 5;
+            }).Build());
+            services.AddMetricsEndpoints();
+            services.AddMetricsTrackingMiddleware();
+            services.AddMetricsReportingHostedService();
 
             return services;
+        }
+
+        /// <summary>
+        /// Configure services
+        /// </summary>
+        public static IApplicationBuilder UseApiServer(this IApplicationBuilder app, IConfiguration config)
+        {
+            if (config.GetSection("AppMetrics").Exists() && app.ApplicationServices.GetService<IMetricsRoot>() != null)
+            {
+                // 参考Grafana Import Dashboard - App Metrics - Web Monitoring - InfluxDB https://grafana.com/grafana/dashboards/2125
+                app.UseMetricsAllEndpoints();
+                app.UseMetricsAllMiddleware();
+
+                //app.UseMetricsEndpoint();
+                //app.UseMetricsTextEndpoint();
+                //app.UseMetricsActiveRequestMiddleware();
+                //app.UseMetricsApdexTrackingMiddleware();
+                //app.UseMetricsErrorTrackingMiddleware();
+                //app.UseMetricsOAuth2TrackingMiddleware();
+                //app.UseMetricsPostAndPutSizeTrackingMiddleware();
+                //app.UseMetricsRequestTrackingMiddleware();
+            }
+
+            return app;
         }
     }
 }

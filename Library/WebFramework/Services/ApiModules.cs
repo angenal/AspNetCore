@@ -64,8 +64,8 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env, IMvcBuilder builder)
         {
-            // ApiServer (Kestrel,IIS) Module
-            services.ConfigureServer(config, env);
+            // ApiServer (Kestrel,IIS)
+            services.AddApiServer(config, env);
 
 
             // App Data Directory
@@ -206,6 +206,9 @@ namespace WebFramework.Services
             }
 
             app.UseHttpsRedirection();
+
+            // Use ApiServer (Kestrel,IIS)
+            app.UseApiServer(config);
 
             //app.UseFileServer(enableDirectoryBrowsing: true);
             app.UseDefaultFiles();

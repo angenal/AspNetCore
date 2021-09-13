@@ -1,0 +1,24 @@
+# 官网 https://docs.influxdata.com
+
+# 安装目录
+cd A:\database\influxdb
+start https://docs.influxdata.com/influxdb/v1.8/introduction/install/
+wget https://dl.influxdata.com/influxdb/releases/influxdb-1.8.9_windows_amd64.zip
+# 解压后修改配置文件influxdb.conf
+# 安装InfluxDB
+influxd -config influxdb.conf
+
+# 推荐安装Windows服务
+nssm install InfluxDB_V1 influxd -config influxdb.conf
+nssm set InfluxDB_V1 AppDirectory "A:\database\influxdb"
+nssm set InfluxDB_V1 Description "InfluxDB v1.8"
+nssm set InfluxDB_V1 Start SERVICE_AUTO_START
+nssm start InfluxDB_V1 & start http://127.0.0.1:8086/
+nssm status InfluxDB_V1
+
+# 初始化DB
+cd A:\database\influxdb
+influx -host 0.0.0.0 -port 8086 -username "admin" -password "HGJ766GR767FKJU0"
+CREATE DATABASE "ApiDemo_NET5_Metrics"
+SHOW DATABASES
+EXIT
