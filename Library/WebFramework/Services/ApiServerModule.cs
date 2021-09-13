@@ -71,18 +71,17 @@ namespace WebFramework.Services
                 "BaseUri": "http://127.0.0.1:8086",
                 "Database": "ApiDemo_NET5_Metrics",
                 "UserName": "admin",
-                "Password": "edisonchou"
+                "Password": "HGJ766GR767FKJU0"
               }
             */
 
             section = config.GetSection("AppMetrics");
             if (!section.Exists() || !section.GetSection("BaseUri").Exists() || !section.GetSection("Database").Exists() || !section.GetSection("UserName").Exists() || !section.GetSection("Password").Exists()) return services;
             if (section.GetSection("Open").Exists() && !section.GetSection("Open").Get<bool>()) return services;
-            string appName = section.GetSection("Name").Exists() ? section.GetSection("Name").Value : env.ApplicationName, envName = section.GetSection("Env").Exists() ? section.GetSection("Env").Value : env.EnvironmentName;
             services.AddMetrics(AppMetrics.CreateDefaultBuilder().Configuration.Configure(options =>
             {
-                options.AddAppTag(appName);
-                options.AddEnvTag(envName);
+                options.AddAppTag(section.GetSection("Name").Exists() ? section.GetSection("Name").Value : env.ApplicationName);
+                options.AddEnvTag(section.GetSection("Env").Exists() ? section.GetSection("Env").Value : env.EnvironmentName);
             }).Report.ToInfluxDb(options =>
             {
                 options.InfluxDb.BaseUri = new Uri(section.GetSection("BaseUri").Value);
