@@ -4,6 +4,7 @@
   先打开网址>> https://dotnet.microsoft.com/download/dotnet/5.0
   下载运行时>> ASP.NET Core Runtime & IIS runtime support (ASP.NET Core Module v2)
             >> Windows "Hosting Bundle"
+            >> https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-aspnetcore-5.0.9-windows-hosting-bundle-installer
   安装运行时>> dotnet-hosting-5.x.x-win.exe
   发布该项目>> 新建:发布 >> 目标：文件夹 >> 设置文件夹位置>完成
             >> 包含发布文件*修改：web.config 文件属性(复制到输出目录) <system.webServer><handlers>..modules="AspNetCoreModuleV2"..
@@ -46,26 +47,4 @@ dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true -f ne
 ASP.NET Core SignalR JavaScript 客户端 https://docs.microsoft.com/zh-cn/aspnet/core/signalr/javascript-client?view=aspnetcore-5.0
 配置文档参考 https://docs.microsoft.com/en-us/aspnet/core/signalr/configuration?view=aspnetcore-5.0&tabs=javascript#configure-additional-options
 --------------------------
-// javascript
-let connection = new signalR.HubConnectionBuilder()
-    .withUrl("/chat", {
-        // accessTokenFactory: () => { return '$token' }, // Get and return the access token.
-        headers: { "id": '$id', "name": '$name', "room": '$room' }, // Get and return the user info
-        transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
-    })
-    .configureLogging(signalR.LogLevel.Information)
-    .build();
-// start connect...
-connection.start().then(function () {
-    console.log('SignalR Started...')
-}).catch(function (err) {
-    return console.error(err);
-});
-// receive messages...
-connection.on("onError", function (message) {
-    //viewModel.serverInfoMessage(message);
-    $("#errorAlert").removeClass("d-none").show().delay(5000).fadeOut(500);
-});
-connection.on("newMessage", function (messageView) {
-    // logic is here.
-});
+// javascript 参考 WebApi/ApiDemo.NET5/wwwroot/signalr/index.html
