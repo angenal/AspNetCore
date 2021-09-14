@@ -10,8 +10,18 @@ wget https://dl.grafana.com/oss/release/grafana-7.2.1.windows-amd64.msi
 cd C:\Program Files\GrafanaLabs\grafana\bin
 grafana-cli plugins install grafana-piechart-panel
 
-# 初始化 (自定义配置：http_port = 8030 ) [默认端口3000]
+# 初始化 (自定义配置custom.ini)
 # 复制 grafana\conf\sample.ini 为 custom.ini
+; app_mode = production
+; http_port = 8030 # 默认端口3000
+; database;
+; type =	sqlite3
+; path =	grafana.db
+; paths;
+; data =	A:/database/grafana/data
+; logs =	A:/database/grafana/data/log
+; plugins =	A:/database/grafana/data/plugins
+; temp_data_lifetime = 48h
 copy custom.ini "C:\Program Files\GrafanaLabs\grafana\conf"
 # 重启服务Grafana <service grafana-server restart>
 # 访问：http://localhost:8030
@@ -28,6 +38,6 @@ copy custom.ini "C:\Program Files\GrafanaLabs\grafana\conf"
 
 # 导入仪表模板 Import Dashboard  http://localhost:8030/dashboard/import
 # App Metrics - Web Monitoring - Prometheus  https://grafana.com/grafana/dashboards/2204
-  # 先填写 2204 然后选择已创建好的两个数据源(Prometheus,InfluxDB)
+  # 先填写 2204 然后点击加载、选择已创建好的两个数据源(Prometheus,InfluxDB)、导入。
 # App Metrics - Web Monitoring - InfluxDB  https://grafana.com/grafana/dashboards/2125
   # 先填写 2125 然后点击加载、导入。
