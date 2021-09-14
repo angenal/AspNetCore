@@ -5,11 +5,22 @@ cd A:\database\influxdb
 start https://docs.influxdata.com/influxdb/v1.8/introduction/install/
 wget https://dl.influxdata.com/influxdb/releases/influxdb-1.8.9_windows_amd64.zip
 # 解压后修改配置文件influxdb.conf
+reporting-disabled = true
+[meta]
+  dir = "A:/database/influxdb/meta"
+[data]
+  dir = "A:/database/influxdb/data"
+  wal-dir = "A:/database/influxdb/wal"
+[http]
+  # enabled = true
+  # flux-enabled = false
+  # flux-log-enabled = false
+  # bind-address = ":8086"
+
 # 安装InfluxDB
 influxd -config influxdb.conf
-
 # 推荐安装Windows服务
-nssm install InfluxDB_V1 influxd -config influxdb.conf
+nssm install InfluxDB_V1 A:\database\influxdb\influxd.exe -config influxdb.conf
 nssm set InfluxDB_V1 AppDirectory "A:\database\influxdb"
 nssm set InfluxDB_V1 Description "InfluxDB v1.8"
 nssm set InfluxDB_V1 Start SERVICE_AUTO_START

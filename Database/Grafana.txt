@@ -12,17 +12,20 @@ grafana-cli plugins install grafana-piechart-panel
 
 # 初始化 (自定义配置custom.ini)
 # 复制 grafana\conf\sample.ini 为 custom.ini
-; app_mode = production
-; http_port = 8030 # 默认端口3000
-; database;
-; type =	sqlite3
-; path =	grafana.db
-; paths;
-; data =	A:/database/grafana/data
-; logs =	A:/database/grafana/data/log
-; plugins =	A:/database/grafana/data/plugins
-; temp_data_lifetime = 48h
-copy custom.ini "C:\Program Files\GrafanaLabs\grafana\conf"
+app_mode = production
+http_port = 8030 # 默认端口3000
+database;
+type =	sqlite3
+path =	grafana.db
+paths;
+data =	A:/database/grafana/data
+logs =	A:/database/grafana/data/log
+plugins =	A:/database/grafana/data/plugins
+
+# 复制操作
+copy custom.ini "C:/Program Files/GrafanaLabs/grafana/conf"
+xcopy "C:/Program Files/GrafanaLabs/grafana/data/plugins" "A:/database/grafana/data/plugins" /E /H /K /X /Y
+
 # 重启服务Grafana <service grafana-server restart>
 # 访问：http://localhost:8030
 # 登录：账号密码默认为 admin
