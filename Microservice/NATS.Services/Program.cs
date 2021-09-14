@@ -14,33 +14,32 @@ namespace NATS.Services
     {
         public static void Main(string[] args)
         {
-            // Must be modified, default C:\WINDOWS\system32
-            Directory.SetCurrentDirectory(AppContext.BaseDirectory);
-            var basePath = Directory.GetCurrentDirectory();
+            // Init
+            WebCore.Main.Init();
 
-            // Gets environment name
+            // Create default logger, reference https://github.com/serilog/serilog-settings-configuration/blob/dev/sample/Sample
+            string basePath = Directory.GetCurrentDirectory(), serilogAppsettings = "appsettings.serilog.json";
             var environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production";
-
-            var builder = new ConfigurationBuilder().SetBasePath(basePath)
-                .AddEnvironmentVariables("DOTNET_")
-                .AddCommandLine(args)
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{environmentName}.json", true, true);
-
-            if ("Development".Equals(environmentName, StringComparison.OrdinalIgnoreCase))
-                builder.AddUserSecrets(Assembly.GetExecutingAssembly());
-
-            var configuration = builder.Build();
-
-            // Create default logger
-            // Use config file https://github.com/serilog/serilog-settings-configuration/blob/dev/sample/Sample
-            if (File.Exists(Path.Join(basePath, "appsettings.serilog.json")))
+            if (File.Exists(Path.Join(basePath, serilogAppsettings)))
             {
-                Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(new ConfigurationBuilder().SetBasePath(basePath)
-                    .AddJsonFile("appsettings.serilog.json", optional: false, reloadOnChange: true).Build()).CreateLogger();
+                var configuration = new ConfigurationBuilder().SetBasePath(basePath)
+                    .AddJsonFile(serilogAppsettings, optional: false, reloadOnChange: true)
+                    .Build();
+                Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration)
+                    .CreateLogger();
             }
             else
             {
+                var builder = new ConfigurationBuilder().SetBasePath(basePath)
+                    .AddEnvironmentVariables("DOTNET_")
+                    .AddCommandLine(args)
+                    .AddJsonFile("appsettings.json")
+                    .AddJsonFile($"appsettings.{environmentName}.json", true, true);
+
+                if ("Development".Equals(environmentName, StringComparison.OrdinalIgnoreCase))
+                    builder.AddUserSecrets(Assembly.GetExecutingAssembly());
+
+                var configuration = builder.Build();
                 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration)
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                     .Enrich.FromLogContext()
@@ -48,6 +47,7 @@ namespace NATS.Services
                     .CreateBootstrapLogger();
             }
 
+            // Performance mark [start]
             var watch = Stopwatch.StartNew();
             var separator = new string('-', 20);
 
@@ -57,6 +57,7 @@ namespace NATS.Services
 
                 CreateHostBuilder(args).Build().Run();
 
+                // Performance mark [stop]
                 watch.Stop();
                 Log.Information($"{separator} Normal exit host {watch.Elapsed} elapsed {separator} ");
             }
@@ -74,7 +75,8 @@ namespace NATS.Services
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseWindowsService() // Sets the host lifetime to WindowsServiceLifetime
+                // Sets the host lifetime to WindowsServiceLifetime
+                .UseWindowsService(options => options.ServiceName = typeof(Program).Namespace)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
