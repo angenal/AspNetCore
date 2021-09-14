@@ -1,10 +1,8 @@
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -13,14 +11,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using WebCore;
 using WebFramework.Data;
-using WebFramework.Filters;
 
 namespace WebFramework.Services
 {
@@ -35,18 +31,8 @@ namespace WebFramework.Services
         /// <summary>
         /// Init Exception Handler services
         /// </summary>
-        public static void AddExceptionHandler(this IServiceCollection services, IMvcBuilder builder, IConfiguration config, IWebHostEnvironment env)
+        public static void AddExceptionHandler(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
         {
-            // Global Error Handler using FluentValidation for Status 400 BadRequest
-            if (AsyncRequestValidationFilter.FluentValidation)
-            {
-                builder.ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
-                services.AddFluentValidation(c => c.RegisterValidatorsFromAssemblies(new[] { Assembly.GetEntryAssembly(), Assembly.GetExecutingAssembly() }));
-            }
-            // Global Error Handler for Status 400 BadRequest with Invalid ModelState
-            else builder.ConfigureApiBehaviorOptions(BadRequestHandler);
-            if (!Logs.Enabled) return;
-
             // Global Exception Log Manage with a URL: /logs <=> the directory in web root path
             var section = config.GetSection(Logs.AppSettingsLogManage);
             if (section.Exists())
@@ -56,7 +42,8 @@ namespace WebFramework.Services
                 if (section.GetSection("Pass").Exists()) Logs.WebManage.Pass = section.GetValue<string>("Pass").Trim();
             }
             var path = Path.Combine(env.WebRootPath, Logs.WebManage.Path);
-            if (!Directory.Exists(path)) return;
+            Logs.Enabled = Directory.Exists(path) && File.Exists(Path.Combine(path, "index.html"));
+            if (!Logs.Enabled) return;
 
             //StatusDir500 = Path.Combine(path, StatusDir500);
             //StatusDir500Exists = Directory.Exists(StatusDir500);
@@ -68,20 +55,6 @@ namespace WebFramework.Services
             // Global Exception Handler for Status 404 ～ 500 Internal Server Error
             services.AddExceptionHandler(ExceptionHandler);
         }
-
-        /// <summary>
-        /// Global Error Handler for Status 400 BadRequest with Invalid ModelState
-        /// </summary>
-        public static void BadRequestHandler(ApiBehaviorOptions options)
-        {
-            options.InvalidModelStateResponseFactory = AsyncRequestValidationFilter.BadRequestResponse;
-            //options.ClientErrorMapping[StatusCodes.Status404NotFound].Link = "https://*.com/404";
-            //options.SuppressConsumesConstraintForFormFileParameters = true;
-            //options.SuppressInferBindingSourcesForParameters = true;
-            //options.SuppressModelStateInvalidFilter = true; // 关闭系统自带模型验证(使用第三方库FluentValidation)
-            //options.SuppressMapClientErrors = true;
-        }
-
 
         /// <summary>
         /// Global Exception Handler for Status 404 ~ 500 Internal Server Error

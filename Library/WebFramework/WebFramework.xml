@@ -1857,14 +1857,9 @@
             Configure Global monitoring and exception handler module
             </summary>
         </member>
-        <member name="M:WebFramework.Services.ExceptionHandlerModule.AddExceptionHandler(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.IMvcBuilder,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+        <member name="M:WebFramework.Services.ExceptionHandlerModule.AddExceptionHandler(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
             <summary>
             Init Exception Handler services
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.ExceptionHandlerModule.BadRequestHandler(Microsoft.AspNetCore.Mvc.ApiBehaviorOptions)">
-            <summary>
-            Global Error Handler for Status 400 BadRequest with Invalid ModelState
             </summary>
         </member>
         <member name="M:WebFramework.Services.ExceptionHandlerModule.ExceptionHandler(Microsoft.AspNetCore.Builder.ExceptionHandlerOptions)">
@@ -2437,6 +2432,21 @@
         <member name="M:WebFramework.Services.TusFileServer.DownloadHandler(Microsoft.AspNetCore.Http.HttpContext)">
             <summary>
             下载文件 Tus Endpoint Handler
+            </summary>
+        </member>
+        <member name="T:WebFramework.Services.ValidationModule">
+            <summary>
+            Configure Global Input Validation module
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.ValidationModule.AddValidation(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.DependencyInjection.IMvcBuilder)">
+            <summary>
+            Init Exception Handler services
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.ValidationModule.BadRequestHandler(Microsoft.AspNetCore.Mvc.ApiBehaviorOptions)">
+            <summary>
+            Global Error Handler for Status 400 BadRequest with Invalid ModelState
             </summary>
         </member>
         <member name="T:WebFramework.Services.ApiVersionService">

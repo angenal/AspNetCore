@@ -19,7 +19,7 @@ namespace WebFramework.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             // 启用 FluentValidation 才处理输出
-            if (FluentValidation && !context.ModelState.IsValid && context.Controller is ApiController)
+            if (!context.ModelState.IsValid && context.Controller is ApiController)
             {
                 context.Result = BadRequestResponse(context);
                 return;

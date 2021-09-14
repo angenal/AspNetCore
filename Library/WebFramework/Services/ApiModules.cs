@@ -90,7 +90,10 @@ namespace WebFramework.Services
 
 
             // Exception Handler services
-            services.AddExceptionHandler(builder, config, env);
+            services.AddExceptionHandler(config, env);
+
+            // Input Validation services
+            services.AddValidation(builder);
 
 
             // Newtonsoft.Json override the default System.Text.Json of .NET Library
