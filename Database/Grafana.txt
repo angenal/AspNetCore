@@ -17,7 +17,7 @@ copy custom.ini "C:\Program Files\GrafanaLabs\grafana\conf"
 # 访问：http://localhost:8030
 # 登录：账号密码默认为 admin
 
-# 新增数据源 New Data Sources  http://localhost:8030/datasources
+# 添加数据源 New Data Sources  http://localhost:8030/datasources
   # Name: Prometheus
   # URL: http://localhost:9090
 
@@ -26,8 +26,8 @@ copy custom.ini "C:\Program Files\GrafanaLabs\grafana\conf"
   # Database: ApiDemo_NET5_Metrics
   # User & Password
 
-# 导入模板源 Import Dashboard  http://localhost:8030/dashboard/import
+# 导入仪表模板 Import Dashboard  http://localhost:8030/dashboard/import
 # App Metrics - Web Monitoring - Prometheus  https://grafana.com/grafana/dashboards/2204
-  # 先填写 2204 然后选择上面创建好的两个数据源
+  # 先填写 2204 然后选择已创建好的两个数据源(Prometheus,InfluxDB)
 # App Metrics - Web Monitoring - InfluxDB  https://grafana.com/grafana/dashboards/2125
-  # 先填写 2125 然后保存
+  # 先填写 2125 然后点击加载、导入。
