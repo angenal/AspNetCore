@@ -180,6 +180,8 @@ namespace WebFramework.Services
 
             // Hangfire: Background jobs and workers
             services.AddHangfire(config);
+            // FluentScheduler: TaskManager
+            //services.AddSingleton<ITaskManager, TaskManager>();
             // BackgroundService: Worker
             //services.AddHostedService<Worker>();
 
