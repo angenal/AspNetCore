@@ -5,8 +5,8 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
 
 ```shell
 #! 安装工具
-   dotnet tool install -g csharprepl  # csharp playground
-   dotnet tool install -g dotnet-ef   # dotnet ef migrations tool
+   dotnet tool install -g csharprepl # csharp console playground
+   dotnet tool install -g dotnet-ef  # dotnet ef database-migrations tool
 
 #! 安装模板，创建项目
    dotnet new console                # Common/Console
@@ -33,35 +33,41 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
 ```
 ~~~shell
 # <PM> 从数据库至代码MODEL / DbFirst
-> Install-Package Microsoft.EntityFrameworkCore.SqlServer
-> Install-Package Microsoft.EntityFrameworkCore.Tools
-> Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=DbName;Trusted_Connection=True;" \
-    Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models  # 脚手架工具Scaffold 用于生成模板代码
+PM> Install-Package Microsoft.EntityFrameworkCore.SqlServer
+PM> Install-Package Microsoft.EntityFrameworkCore.Tools
+# 脚手架工具Scaffold 用于生成模板代码
+# Scaffold-DbContext {ConnectionString} Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/Entities -Context {DbName}DbContext -ContextDir Models -DataAnnotations -Force
+PM> Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=DbName;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
 
 # <PM> 从代码MODEL至数据库，名称“Initial”是任意的，用于对迁移文件进行命名  / CodeFirst
-> Add-Migration Initial
-> Update-Database
-$ dotnet ef migrations -h  # 使用命令行
+PM> Add-Migration Initial    # 添加迁移版本的名称
+PM> Update-Database          # 迁移至数据库
+PS> dotnet ef migrations -h  # 使用命令行CMD或PowerShell
+PS> dotnet ef migrations add Initial
+PS> dotnet ef database update
 
 # <PM> WEB页面与代码生成器
-> Install-Package Microsoft.VisualStudio.Web.CodeGeneration.Design -Version 2.0.3
-> dotnet aspnet-codegenerator razorpage -m Movie -dc MovieContext -udl -outDir Pages\Movies --referenceScriptLibraries
+PM> Install-Package Microsoft.VisualStudio.Web.CodeGeneration.Design -Version 2.0.3
+PM> dotnet aspnet-codegenerator razorpage -m Movie -dc MovieContext -udl -outDir Pages\Movies --referenceScriptLibraries
 
 # <PM> Desktop桌面跨平台应用
-> Install-Package Avalonia            # ui/xaml from https://github.com/AvaloniaUI/Avalonia
-> Install-Package Avalonia.Desktop
+PM> Install-Package Avalonia            # ui/xaml from https://github.com/AvaloniaUI/Avalonia
+PM> Install-Package Avalonia.Desktop
 ~~~
 
 ~~~shell
 # 查看在线.NET Core项目依赖包
-> dotnet nuget locals all --list  
+PS> dotnet nuget locals all --list  
   # 复制 http-cache: C:\Users\Administrator\AppData\Local\NuGet\v3-cache
   # 复制 global-packages: C:\Users\Administrator\.nuget\packages\
 # 离线还原.NET Core项目依赖包
-> dotnet restore --source C:\Users\Administrator\.nuget\packages\
-> dotnet build --no-restore   # 生成项目
-> dotnet run --no-restore     # 运行项目
-
+PS> dotnet restore --source C:\Users\Administrator\.nuget\packages\ # 离线还原NuGet依赖包
+PS> dotnet run --no-restore             # 运行项目(不还原NuGet依赖包)
+PS> dotnet build --no-restore           # 生成项目(不还原NuGet依赖包)
+PS> dotnet build ./*.csproj -c Release  # 生成项目(要还原NuGet依赖包) 接下来，发布项目。
+PS> dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true -f net5.0 -r linux-x64 -o "./bin/Release/net5.0/publish/linux-x64"
+PS> dotnet publish -c Release /p:PublishSingleFile=false /p:PublishTrimmed=false -f net5.0 -r win-x64 -o "./bin/Release/net5.0/publish/win-x64"
+PS> dotnet publish ./*.csproj -c Release -r win-x64 -o "./bin/Release/net5.0/publish/win-x64"
 ~~~
 
 
