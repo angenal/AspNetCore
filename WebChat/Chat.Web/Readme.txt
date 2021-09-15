@@ -21,7 +21,8 @@
 --------------------------
 set output=./bin/Release/net5.0/publish
 if exist "%output%" rd /S /Q "%output%"
-dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=false -f net5.0 -r win-x64 -o "%output%/win-x64"
+dotnet publish -c Release /p:PublishSingleFile=false /p:PublishTrimmed=false -f net5.0 -r win-x64 -o "%output%/win-x64"
+# dotnet build ./Chat.Web.csproj -c Release && dotnet publish ./Chat.Web.csproj -c Release -f net5.0 -r win-x64 -o "%output%/win-x64"
 --------------------------
 >> 点击:发布 >> 配置：Release; 部署模式：独立
 cd /publish
@@ -33,7 +34,7 @@ Chat.Web.exe
 >> 结束: Press Ctrl+C to shut down.
 
 --------------------------
-3.部署Linux
+3.部署Linux https://docs.microsoft.com/zh-cn/dotnet/core/install/linux-ubuntu
 --------------------------
 set output=./bin/Release/net5.0/publish
 if exist "%output%" rd /S /Q "%output%"
