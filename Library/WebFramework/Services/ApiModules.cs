@@ -128,8 +128,8 @@ namespace WebFramework.Services
             var allowedHosts = config.GetSection("AllowedHosts").Exists() ? config.GetSection("AllowedHosts").Value.Split(',') : new[] { "*" };
             services.AddCors(options => options.AddDefaultPolicy(policy =>
             {
-                if (allowedHosts.Any(c => c == "*")) policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                else policy.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+                if (allowedHosts.Any(c => c == "*")) policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(_ => true);
+                else policy.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(_ => true);
             }));
             // Adds HttpContext for Controllers
             services.AddHttpContextAccessor();
