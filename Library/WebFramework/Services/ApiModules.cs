@@ -117,6 +117,8 @@ namespace WebFramework.Services
             //    .SetDefaultKeyLifetime(TimeSpan.FromDays(30))
             //    .SetApplicationName(env.ApplicationName);
 
+            // Adds health checks services
+            services.AddHealthChecks();
 
             // Compression: response compression services
             services.AddCompression(config);
@@ -146,7 +148,7 @@ namespace WebFramework.Services
 
 
 
-            // configure ip rate limiting middleware
+            // Configure ip rate limiting middleware
             services.AddLimiting(config);
 
 
@@ -178,6 +180,8 @@ namespace WebFramework.Services
 
             // Hangfire: Background jobs and workers
             services.AddHangfire(config);
+            // BackgroundService: Worker
+            //services.AddHostedService<Worker>();
 
 
             // other services

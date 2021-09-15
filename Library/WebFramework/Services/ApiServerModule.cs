@@ -36,6 +36,7 @@ namespace WebFramework.Services
             int maxLengthLimit = ApiSettings.Instance.MaxLengthLimit; // 提交元素个数限制 (默认 8000)
             int maxRequestBodySize = ApiSettings.Instance.MaxRequestBodySize; // 提交数据文本字节数量限制 (默认 28.6 MB)
             int maxMultipartBodySize = ApiSettings.Instance.MaxMultipartBodySize; // 上传文件大小限制 (默认 128 MB)
+            //maxMultipartBodySize = 524288000; // 500MB
 
             //services.Configure<IISOptions>(opt => { }); // Configure IIS Out-Of-Process.
 
