@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using WebInterface.Settings;
 
@@ -47,15 +46,20 @@ namespace WebFramework.Services
             // Configures the Swagger generation options.
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerGenConfigureOptions>();
 
+            // Adds the Swagger Generator.
             services.AddSwaggerGen(c =>
             {
                 // add operation filter which sets default values.
                 if (ApiVersionService.UseVersionedApiExplorer) c.OperationFilter<SwaggerDefaultValues>();
                 // integrate xml comments, set project properties to generate XML file.
-                if (File.Exists($"{Assembly.GetEntryAssembly().GetName().Name}.xml"))
-                    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetEntryAssembly().GetName().Name}.xml"), true);
-                if (File.Exists($"{Assembly.GetExecutingAssembly().GetName().Name}.xml"))
-                    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"), true);
+                var assemblies = WebCore.Main.Assemblies;
+                var basePath = AppDomain.CurrentDomain.BaseDirectory;
+                foreach (var assembly in assemblies)
+                {
+                    var filePath = Path.Combine(basePath, $"{assembly.GetName().Name}.xml");
+                    if (!File.Exists(filePath)) continue;
+                    c.IncludeXmlComments(filePath, true);
+                }
                 // add authentication security scheme.
                 string name = "Authorization", scheme = JwtBearerDefaults.AuthenticationScheme;
                 var securityScheme = new OpenApiSecurityScheme
@@ -84,6 +88,7 @@ namespace WebFramework.Services
                 });
             });
 
+            // Adds the Swagger Generator opt-in component to support Newtonsoft.Json serializer behaviors.
             services.AddSwaggerGenNewtonsoftSupport();
 
             return services;

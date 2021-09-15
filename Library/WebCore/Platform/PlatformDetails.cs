@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
+using Voron.Platform.Posix;
 using WebCore.Platform.Posix;
 using WebCore.Platform.Posix.macOS;
-using Voron.Platform.Posix;
 
 namespace WebCore.Platform
 {
@@ -20,7 +20,8 @@ namespace WebCore.Platform
 
         public static readonly bool CanPrefetch = IsWindows8OrNewer() || RunningOnPosix;
 
-        public static bool RunningOnDocker => string.Equals(Environment.GetEnvironmentVariable("IN_DOCKER"), "true", StringComparison.OrdinalIgnoreCase);
+        public static bool RunningOnDocker => string.Equals(Environment.GetEnvironmentVariable("IN_DOCKER"), "true", StringComparison.OrdinalIgnoreCase) ||
+            Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") != null;
 
         public static ulong GetCurrentThreadId()
         {

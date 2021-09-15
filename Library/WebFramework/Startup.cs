@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
 using WebCore;
 using WebFramework.Services;
 using WebFramework.SignalR;
@@ -39,6 +41,12 @@ namespace WebFramework
                 //    builder.AddEnvironmentVariables();//builder.AddEnvironmentVariables("ASPNETCORE_");
                 //    builder.AddCommandLine(args);
                 //})
+                .ConfigureAppConfiguration((context, builder) =>
+                {
+                    var basePath = AppDomain.CurrentDomain.BaseDirectory;
+                    builder.SetBasePath(basePath);
+                    foreach (string path in Directory.GetFiles(basePath, "appsettings-*.json")) builder.AddJsonFile(path, true, true);
+                })
                 // 系统性能指标的跟踪监控  https://grafana.com/grafana/download + https://prometheus.io/download or https://influxdata.com/downloads
                 //.UseMetricsWebTracking() // Tracking URL: /metrics /metrics-text
                 //.UseMetrics(options =>

@@ -41,12 +41,12 @@ namespace WebFramework.Services
 
             services.Configure<IISServerOptions>(options =>
             {
-                options.MaxRequestBodySize = maxRequestBodySize;
+                options.MaxRequestBodySize = Math.Max(maxRequestBodySize, maxMultipartBodySize);
                 options.AllowSynchronousIO = true; // 启用同步IO
             });
             services.Configure<KestrelServerOptions>(options =>
             {
-                options.Limits.MaxRequestBodySize = maxRequestBodySize;
+                options.Limits.MaxRequestBodySize = Math.Max(maxRequestBodySize, maxMultipartBodySize);
                 options.AllowSynchronousIO = true; // 启用同步IO
             });
             services.Configure<FormOptions>(options =>

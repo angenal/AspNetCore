@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace WebCore
@@ -25,5 +28,10 @@ namespace WebCore
             // Date Init
             Date.Init();
         }
+
+        /// <summary>
+        /// 获取加载的DLL
+        /// </summary>
+        public static IEnumerable<Assembly> Assemblies => new List<Assembly> { Assembly.GetEntryAssembly() }.Concat(Assembly.GetEntryAssembly().GetReferencedAssemblies().Select(Assembly.Load));
     }
 }

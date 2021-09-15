@@ -42,5 +42,17 @@ namespace WebCore
             var c = ToInt(guid, shift);
             return c == 0 ? string.Empty : c.ToString("X8");
         }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="toUppercase"></param>
+        /// <returns></returns>
+        public static string ToShortString(bool toUppercase = false)
+        {
+            long i = 1;
+            foreach (var b in Guid.NewGuid().ToByteArray()) i *= b + 1;
+            string retVal = (i - DateTime.Now.Ticks).ToString("x");
+            return toUppercase ? retVal.ToUpper() : retVal.ToLower();
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using WebCore.Annotations;
+using WebCore.Annotations;
 using WebCore.Properties;
 
 namespace WebCore
@@ -10,10 +10,7 @@ namespace WebCore
         /// </summary>
         public static string ArgumentIsEmpty([CanBeNull] object argumentName)
         {
-            return string.Format(AbstractionsStrings.GetString("ArgumentIsEmpty", new string[]
-            {
-                "argumentName"
-            }), argumentName);
+            return string.Format(GetString("ArgumentIsEmpty", new string[] { "argumentName" }), argumentName);
         }
 
         /// <summary>
@@ -21,19 +18,13 @@ namespace WebCore
         /// </summary>
         public static string CollectionArgumentIsEmpty([CanBeNull] object argumentName)
         {
-            return string.Format(AbstractionsStrings.GetString("CollectionArgumentIsEmpty", new string[]
-            {
-                "argumentName"
-            }), argumentName);
+            return string.Format(GetString("CollectionArgumentIsEmpty", new string[] { "argumentName" }), argumentName);
         }
 
         private static string GetString(string name, params string[] formatterNames)
         {
             string text = Resources.ResourceManager.GetString(name, Resources.Culture);
-            for (int i = 0; i < formatterNames.Length; i++)
-            {
-                text = text.Replace("{" + formatterNames[i] + "}", "{" + i + "}");
-            }
+            for (int i = 0; i < formatterNames.Length; i++) text = text.Replace("{" + formatterNames[i] + "}", "{" + i + "}");
             return text;
         }
     }

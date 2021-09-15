@@ -110,7 +110,7 @@ namespace WebFramework.Services
             // Adds Controller's Attributes Injection for Mvc application
             //builder.AddControllersAsServices().AddViewComponentsAsServices().AddTagHelpersAsServices();
 
-            // Data protection services to encrypt the stored user information
+            // Adds Microsoft.EntityFrameworkCore Data protection services to encrypt the stored user information
             //services.AddDataProtection()
             //    .DisableAutomaticKeyGeneration()
             //    .PersistKeysToFileSystem(dataDirectory)
