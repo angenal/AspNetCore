@@ -12,6 +12,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.IO;
 using System.Linq;
+using WebCore;
 using WebCore.Documents;
 using WebFramework.Filters;
 using WebInterface;
@@ -178,12 +179,12 @@ namespace WebFramework.Services
             services.AddSingleton<IPdfTools, PdfTools>();
 
 
+            // BackgroundService: TaskService
+            services.AddHostedService<TaskService>();
+            // FluentScheduler: TaskManager
+            services.AddSingleton<ITaskManager, TaskManager>(_ => TaskManager.Default);
             // Hangfire: Background jobs and workers
             services.AddHangfire(config);
-            // FluentScheduler: TaskManager
-            //services.AddSingleton<ITaskManager, TaskManager>();
-            // BackgroundService: Worker
-            //services.AddHostedService<Worker>();
 
 
             // other services
