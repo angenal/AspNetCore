@@ -114,6 +114,7 @@ PS> dotnet publish ./*.csproj -c Release -r win-x64 -o "./bin/Release/net5.0/pub
          - [`访问控制(casbin)`](https://casbin.org/)→[`资源命名(upspin)`](https://github.com/upspin/upspin)→[`准入控制(AdmissionControl)`](https://juejin.cn/book/6844733753063915533/section/6844733753131008007)
        - [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
        - [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
+       - [应用程序容器化](https://docs.microsoft.com/zh-cn/dotnet/core/docker/build-container)
     - [服务注入Ioc Autofac](https://autofaccn.readthedocs.io/zh/latest/)
     - [切面编程Aop AspectCore-Framework](https://github.com/dotnetcore/AspectCore-Framework)
     - [序列化Json Json.Net](https://www.newtonsoft.com/json)
