@@ -31,6 +31,7 @@ namespace ApiDemo.NET5
             {
                 UseEndpointsMaps(endpoints);
                 endpoints.MapControllers();
+                //endpoints.MapRazorPages();
             });
         }
     }

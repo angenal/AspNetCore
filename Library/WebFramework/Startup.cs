@@ -96,6 +96,9 @@ namespace WebFramework
         /// <summary>ApiController Endpoints Maps</summary>
         public void UseEndpointsMaps(IEndpointRouteBuilder endpoints)
         {
+            // 健康检查
+            endpoints.MapHealthChecks("/health");
+
             // 聊天系统 ChatHub
             endpoints.MapHub<ChatHub>("/chat", options => options.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling);
 

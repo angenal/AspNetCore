@@ -69,6 +69,7 @@ namespace WebFramework.Services
             // Handle the exception
             options.ExceptionHandler = context =>
             {
+                //var pathError = context.Features.Get<IExceptionHandlerPathFeature>().Error; // No Passing by 404
                 var e = context.Features.Get<IExceptionHandlerFeature>().Error;
                 if (e is WebException)
                 {

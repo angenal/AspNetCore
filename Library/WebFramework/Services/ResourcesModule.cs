@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using WebCore;
@@ -30,7 +32,9 @@ namespace WebFramework.Services
             var section = config.GetSection(LanguageRouteConstraint.AppSettings);
             var culture = section.Exists() ? section.Value : Localizations.Default.ToDescription(false);
             var cultures = Localizations.SupportedCultures();
-            LanguageRouteConstraint.Cultures = cultures.Select(c => c.Name);
+            LanguageRouteConstraint.Culture = culture;
+            LanguageRouteConstraint.Cultures = cultures.Select(c => c.Name).ToArray();
+            LanguageRouteConstraint.SupportedCultures = cultures;
             services.AddLocalization(options => options.ResourcesPath = ResourcesPath);
             builder.AddDataAnnotationsLocalization();
             //builder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, options => { options.ResourcesPath = ResourcesPath; }); // Microsoft.AspNetCore.Mvc.Razor
@@ -44,6 +48,19 @@ namespace WebFramework.Services
             services.Configure<RouteOptions>(options => options.ConstraintMap.Add(LanguageRouteConstraint.Key, typeof(LanguageRouteConstraint)));
 
             return services;
+        }
+
+        /// <summary></summary>
+        public static IApplicationBuilder UseResources(this IApplicationBuilder app)
+        {
+            app.UseRequestLocalization(app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>()?.Value ?? new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(LanguageRouteConstraint.Culture),
+                SupportedCultures = LanguageRouteConstraint.SupportedCultures,
+                SupportedUICultures = LanguageRouteConstraint.SupportedCultures
+            });
+
+            return app;
         }
     }
 
@@ -59,7 +76,11 @@ namespace WebFramework.Services
         public const string Key = "culture";
 
         /// <summary></summary>
+        internal static string Culture = "zh-CN";
+        /// <summary></summary>
         internal static IEnumerable<string> Cultures = Array.Empty<string>();
+        /// <summary></summary>
+        internal static IList<CultureInfo> SupportedCultures = new List<CultureInfo>();
 
         /// <summary></summary>
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)

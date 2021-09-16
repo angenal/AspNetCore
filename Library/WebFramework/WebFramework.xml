@@ -2291,6 +2291,9 @@
         <member name="M:WebFramework.Services.RegisterResourcesModule.AddResources(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.DependencyInjection.IMvcBuilder)">
             <summary></summary>
         </member>
+        <member name="M:WebFramework.Services.RegisterResourcesModule.UseResources(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary></summary>
+        </member>
         <member name="T:WebFramework.Services.LanguageRouteConstraint">
             <summary></summary>
         </member>
@@ -2302,7 +2305,13 @@
         <member name="F:WebFramework.Services.LanguageRouteConstraint.Key">
             <summary></summary>
         </member>
+        <member name="F:WebFramework.Services.LanguageRouteConstraint.Culture">
+            <summary></summary>
+        </member>
         <member name="F:WebFramework.Services.LanguageRouteConstraint.Cultures">
+            <summary></summary>
+        </member>
+        <member name="F:WebFramework.Services.LanguageRouteConstraint.SupportedCultures">
             <summary></summary>
         </member>
         <member name="M:WebFramework.Services.LanguageRouteConstraint.Match(Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Routing.IRouter,System.String,Microsoft.AspNetCore.Routing.RouteValueDictionary,Microsoft.AspNetCore.Routing.RouteDirection)">
@@ -2344,6 +2353,8 @@
         <member name="M:WebFramework.Services.SwaggerDocService.AddSwaggerGen(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Register Swagger Doc service.
+            http://localhost:5000/swagger/index.html
+            http://localhost:5000/swagger/v1/swagger.json
             </summary>
         </member>
         <member name="M:WebFramework.Services.SwaggerDocService.UseSwaggerGen(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.Extensions.Configuration.IConfiguration)">

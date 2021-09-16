@@ -28,6 +28,8 @@ namespace WebFramework.Services
 
         /// <summary>
         /// Register Swagger Doc service.
+        /// http://localhost:5000/swagger/index.html
+        /// http://localhost:5000/swagger/v1/swagger.json
         /// </summary>
         public static IServiceCollection AddSwaggerGen(this IServiceCollection services, IConfiguration config)
         {

@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -184,12 +184,12 @@ namespace WebFramework.Services
             services.AddSingleton<IPdfTools, PdfTools>();
 
 
+            // Hangfire: Background jobs and workers
+            services.AddHangfire(config);
             // BackgroundService: TaskService
             services.AddHostedService<TaskService>();
             // FluentScheduler: TaskManager
             services.AddSingleton<ITaskManager, TaskManager>(_ => TaskManager.Default);
-            // Hangfire: Background jobs and workers
-            services.AddHangfire(config);
 
 
             // other services
@@ -225,11 +225,12 @@ namespace WebFramework.Services
             // Use ApiServer (Kestrel,IIS)
             app.UseApiServer(config);
 
-            //app.UseFileServer(enableDirectoryBrowsing: true);
-            app.UseDefaultFiles();
-            app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800") });
             //var ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
-            app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All });
+            app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto });
+            //app.UseFileServer(enableDirectoryBrowsing: true);
+            app.UseDefaultFiles(new DefaultFilesOptions() { DefaultFileNames = new[] { "index.html" } });
+            app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800") });
+            //app.Map("/assets", x => x.UseStaticFiles(new StaticFileOptions { FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "assets")) }));
 
             // Use Compression
             app.UseCompression();
@@ -242,7 +243,7 @@ namespace WebFramework.Services
             app.UseLimiting();
 
             // Use i18n supports multi language
-            app.UseRequestLocalization(app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>().Value);
+            app.UseResources();
 
             // Use the given route template
             app.UseRouting();
