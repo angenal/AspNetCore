@@ -2288,13 +2288,13 @@
             /Resources/Controllers/{controller}.zh-CN.resx ...
             </summary>
         </member>
-        <member name="M:WebFramework.Services.RegisterResourcesModule.RegisterResources(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+        <member name="M:WebFramework.Services.RegisterResourcesModule.AddResources(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.DependencyInjection.IMvcBuilder)">
             <summary></summary>
         </member>
         <member name="T:WebFramework.Services.LanguageRouteConstraint">
             <summary></summary>
         </member>
-        <member name="P:WebFramework.Services.LanguageRouteConstraint.AppSettings">
+        <member name="F:WebFramework.Services.LanguageRouteConstraint.AppSettings">
             <summary>
             Configuration "Culture" in appsettings.json
             </summary>

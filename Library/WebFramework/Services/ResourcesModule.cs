@@ -7,8 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using WebCore;
 
 namespace WebFramework.Services
 {
@@ -25,21 +25,21 @@ namespace WebFramework.Services
         public const string ResourcesPath = "Resources";
 
         /// <summary></summary>
-        public static IServiceCollection RegisterResources(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddResources(this IServiceCollection services, IConfiguration config, IMvcBuilder builder)
         {
             var section = config.GetSection(LanguageRouteConstraint.AppSettings);
-            if (!section.Exists()) return services;
-
-            var culture = section.Value;
+            var culture = section.Exists() ? section.Value : Localizations.Default.ToDescription(false);
             var cultures = Localizations.SupportedCultures();
             LanguageRouteConstraint.Cultures = cultures.Select(c => c.Name);
             services.AddLocalization(options => options.ResourcesPath = ResourcesPath);
+            builder.AddDataAnnotationsLocalization();
+            //builder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, options => { options.ResourcesPath = ResourcesPath; }); // Microsoft.AspNetCore.Mvc.Razor
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 options.DefaultRequestCulture = new RequestCulture(culture: culture, uiCulture: culture);
-                options.SupportedCultures = cultures;
-                options.SupportedUICultures = options.SupportedCultures;
                 options.RequestCultureProviders = new IRequestCultureProvider[] { new RouteDataRequestCultureProvider() };
+                options.SupportedCultures = cultures;
+                options.SupportedUICultures = cultures;
             });
             services.Configure<RouteOptions>(options => options.ConstraintMap.Add(LanguageRouteConstraint.Key, typeof(LanguageRouteConstraint)));
 
@@ -53,7 +53,7 @@ namespace WebFramework.Services
         /// <summary>
         /// Configuration "Culture" in appsettings.json
         /// </summary>
-        public static string AppSettings => Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(Key);
+        public const string AppSettings = "Culture"; // Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(Key);
 
         /// <summary></summary>
         public const string Key = "culture";
@@ -64,9 +64,8 @@ namespace WebFramework.Services
         /// <summary></summary>
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
         {
-            if (!values.ContainsKey(Key)) return false;
-            var culture = values[Key].ToString();
-            return Cultures.Contains(culture);
+            if (values.ContainsKey(Key)) return Cultures.Contains(values[Key].ToString());
+            return httpContext.Request.Query.TryGetValue(Key, out var value) && Cultures.Contains(value.ToString());
         }
     }
 

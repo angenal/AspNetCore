@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.IO;
@@ -78,6 +79,11 @@ namespace WebFramework.Services
             // Adds services required for using options
             services.AddOptions();
 
+
+            // Adds i18n supports multi language
+            services.AddResources(config, builder);
+
+
             // AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -100,11 +106,14 @@ namespace WebFramework.Services
             // Newtonsoft.Json override the default System.Text.Json of .NET Library
             builder.AddNewtonsoftJson(x =>
             {
-                //x.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; // 不输出值为空的对象属性
                 x.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); // 驼峰命名(首字母小写)
-                x.SerializerSettings.DateFormatString = WebCore.DefaultFormat.DateTimeFormats; // 输出时间格式为"yyyy-MM-dd HH:mm:ss"
+                x.SerializerSettings.DateFormatString = DefaultFormat.DateTimeFormats; // 输出时间格式为"yyyy-MM-dd HH:mm:ss"
                 x.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
                 x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                x.SerializerSettings.Converters.Add(new StringEnumConverter());
+                //x.SerializerSettings.Converters.Add(new IsoDateTimeConverter());
+                //x.SerializerSettings.Converters.Add(new JavaScriptDateTimeConverter());
+                //x.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; // 不输出值为空的对象属性
             });
             //builder.AddJsonOptions(x => x.JsonSerializerOptions.WriteIndented = true); // default System.Text.Json
 
@@ -138,6 +147,10 @@ namespace WebFramework.Services
             services.AddHttpContextAccessor();
 
 
+            // Configure ip rate limiting middleware
+            services.AddLimiting(config);
+
+
             // Authentication + Authorization
             services.AddAuth(config, env);
 
@@ -147,14 +160,6 @@ namespace WebFramework.Services
             // Swagger Document Generator For Development Environment
             if (env.IsDevelopment()) services.AddSwaggerGen(config);
 
-
-
-            // Configure ip rate limiting middleware
-            services.AddLimiting(config);
-
-
-            // Register i18n supports multi language
-            services.RegisterResources(config);
 
 
             // SignalR  https://docs.microsoft.com/zh-cn/aspnet/core/signalr
