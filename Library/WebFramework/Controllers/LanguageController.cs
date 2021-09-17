@@ -31,7 +31,7 @@ namespace WebFramework.Controllers
         /// <summary>
         /// 默认值
         /// </summary>
-        [HttpGet("{fieldAsKey=0}")]
+        [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public IActionResult Default()

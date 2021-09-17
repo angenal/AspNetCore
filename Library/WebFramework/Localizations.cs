@@ -62,34 +62,58 @@ namespace WebFramework
         /// Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
         /// </summary>
         /// <param name="newLocalization"></param>
-        public static bool SetDefaultCulture(string newLocalization)
+        public static bool SetDefaultCulture(Language newLocalization)
         {
-            return Enum.TryParse(newLocalization, out Language result) && SetDefaultCulture(result);
+            return SetDefaultCulture(newLocalization.ToString());
         }
 
         /// <summary>
         /// Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
         /// </summary>
         /// <param name="newLocalization"></param>
-        public static bool SetDefaultCulture(Language newLocalization)
+        public static bool SetDefaultCulture(string newLocalization)
         {
-            Default = newLocalization;
-            Culture = GetDefaultCulture();
-            Thread.CurrentThread.CurrentCulture = Culture;
-            Thread.CurrentThread.CurrentUICulture = Culture;
+            Language value = Default;
             Type type = typeof(Language);
-            foreach (string name in Enum.GetNames(type))
+            var assembly = Assembly.GetEntryAssembly();
+            string baseName = null, culture = null;
+            bool ok = false, parsed = Enum.TryParse(type, newLocalization, out var result);
+            if (parsed)
             {
-                if (newLocalization != (Language)Enum.Parse(type, name)) continue;
+                value = (Language)result;
+                var name = value.ToString();
                 var field = type.GetField(name);
                 var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-                var assembly = Assembly.GetEntryAssembly();
-                var baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
-                DefaultCulture = attribute.Description;
-                ResourceManager = new ResourceManager(baseName, assembly);
-                return true;
+                baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
+                culture = attribute.Description;
+                ok = true;
             }
-            return false;
+            if (!ok)
+            {
+                foreach (string name in Enum.GetNames(type))
+                {
+                    value = (Language)Enum.Parse(type, name);
+                    var field = type.GetField(name);
+                    var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+                    baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
+                    culture = attribute.Description;
+                    if (newLocalization == name || newLocalization == culture)
+                    {
+                        ok = true;
+                        break;
+                    }
+                }
+            }
+            if (ok)
+            {
+                Default = value;
+                DefaultCulture = culture;
+                Culture = GetDefaultCulture();
+                ResourceManager = new ResourceManager(baseName, assembly);
+                Thread.CurrentThread.CurrentCulture = Culture;
+                Thread.CurrentThread.CurrentUICulture = Culture;
+            }
+            return ok;
         }
     }
 }

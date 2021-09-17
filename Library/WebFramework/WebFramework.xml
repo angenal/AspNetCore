@@ -1280,13 +1280,13 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Localizations.SetDefaultCulture(System.String)">
+        <member name="M:WebFramework.Localizations.SetDefaultCulture(WebInterface.Language)">
             <summary>
             Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
             </summary>
             <param name="newLocalization"></param>
         </member>
-        <member name="M:WebFramework.Localizations.SetDefaultCulture(WebInterface.Language)">
+        <member name="M:WebFramework.Localizations.SetDefaultCulture(System.String)">
             <summary>
             Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
             </summary>
