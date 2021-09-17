@@ -26,18 +26,7 @@ namespace WebCore.Platform
 
         public static string MachineName => Environment.MachineName;
 
-        public static string RunningOn()
-        {
-            string system = Is64Bit ? " x64" : " x32";
-
-            string onDocker = RunningOnDocker ? " on docker" : "";
-
-            if (RunningOnLinux) return $"linux{system}{onDocker}";
-
-            if (RunningOnMacOsx) return $"macOS{system}{onDocker}";
-
-            return $"windows{system}{onDocker}";
-        }
+        public static string OS => RunningOnLinux ? $"linux{(Is64Bit ? " x64" : " x32")}{(RunningOnDocker ? " on docker" : "")}" : RunningOnMacOsx ? $"macOS{(Is64Bit ? " x64" : " x32")}{(RunningOnDocker ? " on docker" : "")}" : $"windows{(Is64Bit ? " x64" : " x32")}{(RunningOnDocker ? " on docker" : "")}";
 
         public static ulong GetCurrentThreadId()
         {

@@ -205,13 +205,9 @@ namespace WebFramework.Controllers
         [ProducesResponseType(typeof(CaptchaCodeOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult CaptchaCode()
         {
-            var result = new CaptchaCodeOutputDto
-            {
-                Value = 4.RandomString(),
-                ExpireAt = DateTime.Now.AddMinutes(1),
-            };
-            byte[] json = Encodings.Utf8.GetBytes(result.ToJson()), key = Encodings.Utf8.GetBytes(AesSettings.Instance.Key), iv = Encodings.Utf8.GetBytes(AesSettings.Instance.IV);
-            result.Value = Encodings.Utf8.GetString(crypto.AESEncrypt(json, key, iv));
+            var result = new CaptchaCodeOutputDto { Value = 4.RandomString(), ExpireAt = DateTime.Now.AddMinutes(1) };
+            byte[] data = Encodings.Utf8.GetBytes($"{result.Value}:{result.ExpireAt.Unix()}"), key = Encodings.Utf8.GetBytes(AesSettings.Instance.Key), iv = Encodings.Utf8.GetBytes(AesSettings.Instance.IV);
+            result.Value = crypto.ToBase64String(Encodings.Utf8.GetString(crypto.AESEncrypt(data, key, iv)));
             return Ok(result);
         }
 
@@ -223,8 +219,23 @@ namespace WebFramework.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public IActionResult CaptchaCode([FromQuery] string lastCode, int width = 90, int height = 36, int fontSize = 20, int length = 4, int lines = 4)
         {
-            var captchaCode = (length > 1 ? length : 1).RandomString();
-            if (!string.IsNullOrWhiteSpace(lastCode)) cache.Set(lastCode, captchaCode, TimeSpan.FromMinutes(1));
+            string captchaCode;
+            var isEmptyCode = string.IsNullOrWhiteSpace(lastCode);
+            if (!isEmptyCode && lastCode.Length > 36 && lastCode.IsBase64())
+            {
+                byte[] data = Encodings.Utf8.GetBytes(crypto.FromBase64String(lastCode)), key = Encodings.Utf8.GetBytes(AesSettings.Instance.Key), iv = Encodings.Utf8.GetBytes(AesSettings.Instance.IV);
+                var s = Encodings.Utf8.GetString(crypto.AESDecrypt(data, key, iv)).Split(':');
+                if (s.Length != 2 || long.TryParse(s[1], out long t)) return NotFound();
+                DateTime now = DateTime.Now, expireAt = t.ToDateTime();
+                if (now >= expireAt) return NotFound();
+                captchaCode = s[0];
+            }
+            else
+            {
+                captchaCode = (length > 1 ? length : 1).RandomString();
+            }
+            // 缓存验证码
+            if (!isEmptyCode) cache.Set(lastCode, captchaCode, TimeSpan.FromMinutes(1));
 
             var stream = new MemoryStream();
             using var image = new Bitmap(width, height, PixelFormat.Format64bppArgb);

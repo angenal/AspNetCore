@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Web;
 using WebCore.Security;
 
 namespace WebCore
@@ -72,6 +73,46 @@ namespace WebCore
         {
             for (var i = 0; i < data.Length; i++) data[i] = (byte)(data[i] ^ keys[i]);
             return data;
+        }
+
+
+        /// <summary>
+        /// 文本Base64编码 = btoa(encodeURIComponent(text))
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string ToBase64String(this string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return text;
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(HttpUtility.UrlEncode(text)));
+        }
+        /// <summary>
+        /// 文本Base64解码 = decodeURIComponent(atob(text))
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string FromBase64String(this string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return text;
+            return HttpUtility.UrlDecode(Encoding.UTF8.GetString(Convert.FromBase64String(text)));
+        }
+        /// <summary>
+        /// 判断文本为Base64编码
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static bool IsBase64(this string text)
+        {
+            if (string.IsNullOrEmpty(text) || text.Length % 4 != 0) return false;
+            int length = text.Length;
+            if (text[length - 1] == 61) --length;
+            if (text[length - 1] == 61) --length;
+            for (int i = 0; i < length; ++i)
+            {
+                int c = text[i];
+                if (c < 43 || c > 43 && c < 47 || c > 57 && c < 65 || c > 122) return false;
+            }
+            return true;
         }
 
 

@@ -25,6 +25,7 @@ namespace WebInterface
         /// <returns>An encrypted array.</returns>
         byte[] Xor(byte[] data, IReadOnlyList<byte> keys);
 
+
         /// <summary>
         /// 文本Base64编码 = btoa(encodeURIComponent(text))
         /// </summary>
@@ -37,6 +38,12 @@ namespace WebInterface
         /// <param name="text"></param>
         /// <returns></returns>
         string FromBase64String(string text);
+        /// <summary>
+        /// 判断文本为Base64编码
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        bool IsBase64(string text);
 
 
         /// <summary>

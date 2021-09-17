@@ -92,21 +92,19 @@ namespace WebCore.Security
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public string ToBase64String(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return text;
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(HttpUtility.UrlEncode(text)));
-        }
+        public string ToBase64String(string text) => text.ToBase64String();
         /// <summary>
         /// 文本Base64解码 = decodeURIComponent(atob(text))
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public string FromBase64String(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return text;
-            return HttpUtility.UrlDecode(Encoding.UTF8.GetString(Convert.FromBase64String(text)));
-        }
+        public string FromBase64String(string text) => text.FromBase64String();
+        /// <summary>
+        /// 判断文本为Base64编码
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public bool IsBase64(string text) => text.IsBase64();
 
 
         /// <summary>
