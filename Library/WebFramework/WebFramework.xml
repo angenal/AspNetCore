@@ -520,11 +520,21 @@
         <member name="M:WebFramework.Controllers.LanguageController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Caching.Memory.IMemoryCache)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Controllers.LanguageController.Locales(System.String)">
+        <member name="M:WebFramework.Controllers.LanguageController.Default">
             <summary>
-            代码列表
+            默认值
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.LanguageController.Options(System.String)">
+            <summary>
+            可选项
             </summary>
             <param name="fieldAsKey">"零":由值作为返回对象属性; "非零":由名称作为对象属性</param>
+        </member>
+        <member name="M:WebFramework.Controllers.LanguageController.Update(System.String)">
+            <summary>
+            修改默认值
+            </summary>
         </member>
         <member name="T:WebFramework.Controllers.OfficeController">
             <summary>
@@ -1269,6 +1279,12 @@
             Get Default Culture
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:WebFramework.Localizations.SetDefaultCulture(System.String)">
+            <summary>
+            Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
+            </summary>
+            <param name="newLocalization"></param>
         </member>
         <member name="M:WebFramework.Localizations.SetDefaultCulture(WebInterface.Language)">
             <summary>

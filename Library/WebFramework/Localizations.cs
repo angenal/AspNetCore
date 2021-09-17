@@ -62,7 +62,16 @@ namespace WebFramework
         /// Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
         /// </summary>
         /// <param name="newLocalization"></param>
-        public static void SetDefaultCulture(Language newLocalization)
+        public static bool SetDefaultCulture(string newLocalization)
+        {
+            return Enum.TryParse(newLocalization, out Language result) && SetDefaultCulture(result);
+        }
+
+        /// <summary>
+        /// Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
+        /// </summary>
+        /// <param name="newLocalization"></param>
+        public static bool SetDefaultCulture(Language newLocalization)
         {
             Default = newLocalization;
             Culture = GetDefaultCulture();
@@ -78,8 +87,9 @@ namespace WebFramework
                 var baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
                 DefaultCulture = attribute.Description;
                 ResourceManager = new ResourceManager(baseName, assembly);
-                break;
+                return true;
             }
+            return false;
         }
     }
 }
