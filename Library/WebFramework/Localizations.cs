@@ -73,10 +73,10 @@ namespace WebFramework
         /// <param name="newLocalization"></param>
         public static bool SetDefaultCulture(string newLocalization)
         {
+            var assembly = Assembly.GetEntryAssembly();
+            string culture = null, baseName = null;
             Language value = Default;
             Type type = typeof(Language);
-            var assembly = Assembly.GetEntryAssembly();
-            string baseName = null, culture = null;
             bool ok = false, parsed = Enum.TryParse(type, newLocalization, out var result);
             if (parsed)
             {
@@ -84,24 +84,22 @@ namespace WebFramework
                 var name = value.ToString();
                 var field = type.GetField(name);
                 var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-                baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
                 culture = attribute.Description;
+                baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
                 ok = true;
             }
             if (!ok)
             {
                 foreach (string name in Enum.GetNames(type))
                 {
-                    value = (Language)Enum.Parse(type, name);
                     var field = type.GetField(name);
                     var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-                    baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
+                    if (attribute == null || !attribute.Description.Equals(newLocalization, StringComparison.OrdinalIgnoreCase)) continue;
                     culture = attribute.Description;
-                    if (newLocalization == name || newLocalization == culture)
-                    {
-                        ok = true;
-                        break;
-                    }
+                    baseName = $"{assembly.GetName().Name}.Resources-{culture}";
+                    value = (Language)Enum.Parse(type, name);
+                    ok = true;
+                    break;
                 }
             }
             if (ok)

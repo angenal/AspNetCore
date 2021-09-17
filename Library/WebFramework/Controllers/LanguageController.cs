@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Linq;
 using System.Net;
 using WebCore;
@@ -60,7 +61,7 @@ namespace WebFramework.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public IActionResult Update(string option)
         {
-            if (!Services.LanguageRouteConstraint.Cultures.Contains(option))
+            if (!Services.LanguageRouteConstraint.Cultures.Contains(option) && !Enum.TryParse(typeof(Language), option, out _))
                 return Error("It's not an supported option.");
 
             var result = Localizations.SetDefaultCulture(option);
