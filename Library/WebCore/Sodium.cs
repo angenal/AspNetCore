@@ -651,7 +651,7 @@ namespace WebCore
                     return;
                 }
 
-                _is32bits = PlatformDetails.Is32Bits;
+                _is32bits = PlatformDetails.Is32Bit;
                 _isArm = RuntimeInformation.OSArchitecture == Architecture.Arm;
                 _isMac64 = PlatformDetails.RunningOnMacOsx;
 
@@ -2806,7 +2806,7 @@ namespace WebCore
                     return;
                 }
 
-                _is32bits = PlatformDetails.Is32Bits;
+                _is32bits = PlatformDetails.Is32Bit;
                 if (_is32bits)
                 {
                     X86.Initialize();

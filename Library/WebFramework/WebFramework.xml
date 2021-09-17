@@ -554,6 +554,19 @@
             <param name="format">html,png,pdf</param>
             <returns></returns>
         </member>
+        <member name="T:WebFramework.Controllers.PingController">
+            <summary>
+            系统检查
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.PingController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Controllers.PingController.Status">
+            <summary>
+            当前状态
+            </summary>
+        </member>
         <member name="T:WebFramework.Controllers.TimeController">
             <summary>
             系统时间

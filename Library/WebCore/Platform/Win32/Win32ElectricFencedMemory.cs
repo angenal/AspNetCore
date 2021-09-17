@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using WebCore.Platform.Win32;
 
 namespace WebCore.Platform
 {

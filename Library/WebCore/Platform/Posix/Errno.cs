@@ -1,4 +1,4 @@
-﻿namespace WebCore
+namespace WebCore
 {
     public enum Errno
     {
@@ -161,5 +161,4 @@
         ENOATTR = 1093, // Attribute not found
         ENOPOLICY = 1103,   // No such policy registered
     }
-
 }

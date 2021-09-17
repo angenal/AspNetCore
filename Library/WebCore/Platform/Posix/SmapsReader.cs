@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using WebCore.Json.Parsing;
-using WebCore.Utils;
 
 namespace WebCore.Platform.Posix
 {

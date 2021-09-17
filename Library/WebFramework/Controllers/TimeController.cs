@@ -48,6 +48,9 @@ namespace WebFramework.Controllers
 
             return Ok(new
             {
+                WebCore.Platform.PlatformDetails.HostName,
+                WebCore.Platform.PlatformDetails.MachineName,
+                RunningOn = WebCore.Platform.PlatformDetails.RunningOn(),
                 env.ApplicationName,
                 env.EnvironmentName,
                 Startup = Date.Startup.ToDateTimeString(),

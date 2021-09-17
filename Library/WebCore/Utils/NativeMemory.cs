@@ -1,14 +1,12 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using WebCore.Collections.LockFree;
 using WebCore.LowMemory;
 using WebCore.Platform;
 using WebCore.Platform.Posix;
-using WebCore.Platform.Win32;
 
 namespace WebCore.Utils
 {

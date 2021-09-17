@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace WebCore
+namespace WebCore.Platform
 {
     public static unsafe class Win32UnmanagedMemory
     {

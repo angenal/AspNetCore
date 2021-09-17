@@ -1,6 +1,6 @@
 using System;
+using System.Net;
 using System.Runtime.InteropServices;
-using Voron.Platform.Posix;
 using WebCore.Platform.Posix;
 using WebCore.Platform.Posix.macOS;
 
@@ -8,28 +8,42 @@ namespace WebCore.Platform
 {
     public static class PlatformDetails
     {
-        public static readonly bool Is32Bits = IntPtr.Size == sizeof(int);
+        public static readonly bool Is32Bit = IntPtr.Size == sizeof(int);
 
+        public static readonly bool Is64Bit = Environment.Is64BitOperatingSystem;
 
-        public static readonly bool RunningOnPosix = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
-                                                     RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+        public static readonly bool CanPrefetch = IsWindows8OrNewer() || RunningOnPosix;
+
+        public static readonly bool RunningOnPosix = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
         public static readonly bool RunningOnMacOsx = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
         public static readonly bool RunningOnLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
-        public static readonly bool CanPrefetch = IsWindows8OrNewer() || RunningOnPosix;
+        public static readonly bool RunningOnDocker = string.Equals(Environment.GetEnvironmentVariable("IN_DOCKER"), "true", StringComparison.OrdinalIgnoreCase) || Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") != null;
 
-        public static bool RunningOnDocker => string.Equals(Environment.GetEnvironmentVariable("IN_DOCKER"), "true", StringComparison.OrdinalIgnoreCase) ||
-            Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") != null;
+        public static readonly string HostName = Environment.GetEnvironmentVariable("CUMPUTERNAME") ?? Environment.GetEnvironmentVariable("HOSTNAME") ?? Dns.GetHostName();
+
+        public static string MachineName => Environment.MachineName;
+
+        public static string RunningOn()
+        {
+            string system = Is64Bit ? " x64" : " x32";
+
+            string onDocker = RunningOnDocker ? " on docker" : "";
+
+            if (RunningOnLinux) return $"linux{system}{onDocker}";
+
+            if (RunningOnMacOsx) return $"macOS{system}{onDocker}";
+
+            return $"windows{system}{onDocker}";
+        }
 
         public static ulong GetCurrentThreadId()
         {
-            if (RunningOnPosix == false)
-                return Win32ThreadsMethods.GetCurrentThreadId();
+            if (RunningOnPosix == false) return Win32ThreadsMethods.GetCurrentThreadId();
 
-            if (RunningOnLinux)
-                return (ulong)Syscall.syscall0(PerPlatformValues.SyscallNumbers.SYS_gettid);
+            if (RunningOnLinux) return (ulong)Syscall.syscall0(PerPlatformValues.SyscallNumbers.SYS_gettid);
 
             // OSX
             return macSyscall.pthread_self();

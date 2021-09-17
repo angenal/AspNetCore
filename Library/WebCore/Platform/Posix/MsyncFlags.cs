@@ -1,4 +1,4 @@
-﻿namespace Voron.Platform.Posix
+namespace WebCore.Platform.Posix
 {
     public enum MsyncFlags : int
     {

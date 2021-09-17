@@ -1,10 +1,8 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
-using WebCore.Platform.Posix;
-using Voron.Platform.Posix;
 using System.Threading;
 
-namespace WebCore.Platform
+namespace WebCore.Platform.Posix
 {
     public unsafe class PosixElectricFencedMemory
     {

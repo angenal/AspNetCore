@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -6,11 +6,10 @@ using System.Text;
 using WebCore.Exceptions;
 using WebCore.Json;
 using WebCore.Json.Parsing;
-using WebCore.Utils;
-using static WebCore.Platform.Win32.Win32MemoryProtectMethods;
-// ReSharper disable InconsistentNaming
+using static WebCore.Platform.Win32MemoryProtectMethods;
 
-namespace WebCore.Platform.Win32
+// ReSharper disable InconsistentNaming
+namespace WebCore.Platform
 {
     public static unsafe class Win32MemoryQueryMethods
     {

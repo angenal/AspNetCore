@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Threading;
 using WebCore.Collections;
 using WebCore.Json;
+using WebCore.Platform.Posix;
 
 namespace WebCore.Platform
 {

@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
-namespace WebCore.Platform.Win32
+namespace WebCore.Platform
 {
     public static unsafe class Win32MemoryProtectMethods
     {

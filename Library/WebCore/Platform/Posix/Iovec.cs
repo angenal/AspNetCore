@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Voron.Platform.Posix
+namespace WebCore.Platform.Posix
 {
     public struct Iovec
     {
@@ -8,7 +8,4 @@ namespace Voron.Platform.Posix
         
         public UIntPtr iov_len;  // Number of bytes to transfer
     }
-
-
-    // mode_t
 }

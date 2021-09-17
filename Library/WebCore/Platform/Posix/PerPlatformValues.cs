@@ -1,7 +1,7 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using static WebCore.Platform.PlatformDetails;
 
-namespace Voron.Platform.Posix
+namespace WebCore.Platform
 {
     public class PerPlatformValues
     {

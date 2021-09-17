@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Voron.Platform.Posix
+namespace WebCore.Platform.Posix
 {
     [Flags]
     

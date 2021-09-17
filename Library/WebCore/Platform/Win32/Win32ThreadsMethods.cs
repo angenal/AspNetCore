@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
-namespace WebCore
+namespace WebCore.Platform
 {
     public static class Win32ThreadsMethods
     {

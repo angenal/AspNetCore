@@ -7,7 +7,6 @@ using WebCore.Logging;
 using WebCore.Platform;
 using WebCore.Platform.Posix;
 using WebCore.Platform.Posix.macOS;
-using WebCore.Platform.Win32;
 using WebCore.Utils;
 
 namespace WebCore.LowMemory

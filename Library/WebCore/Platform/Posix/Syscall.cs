@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
-using Voron.Platform.Posix;
 
 namespace WebCore.Platform.Posix
 {

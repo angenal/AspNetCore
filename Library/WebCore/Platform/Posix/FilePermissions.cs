@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 
-namespace Voron.Platform.Posix
+namespace WebCore.Platform.Posix
 {
     [Flags]
-    
     public enum FilePermissions : ushort
     {
         S_ISUID = 0x0800, // Set user ID on execution
