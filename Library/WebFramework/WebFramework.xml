@@ -474,7 +474,7 @@
             文件
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.FileController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Caching.Memory.IMemoryCache,WebInterface.IPdfTools)">
+        <member name="M:WebFramework.Controllers.FileController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,WebInterface.ICrypto,Microsoft.Extensions.Caching.Memory.IMemoryCache,WebInterface.IPdfTools)">
             <summary></summary>
         </member>
         <member name="M:WebFramework.Controllers.FileController.Upload">
@@ -497,9 +497,14 @@
             文件签名 by Minisign
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.FileController.CaptchaCode(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:WebFramework.Controllers.FileController.CaptchaCode">
             <summary>
             图片验证码
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.FileController.CaptchaCode(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            验证码图片
             </summary>
         </member>
         <member name="F:WebFramework.Controllers.FileController.TextColors">
@@ -1301,6 +1306,21 @@
             Set Default Culture and ResourceManager:{AssemblyName}.Resources-en-US.resources
             </summary>
             <param name="newLocalization"></param>
+        </member>
+        <member name="T:WebFramework.Models.DTO.CaptchaCodeOutputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.CaptchaCodeOutputDto.Value">
+            <summary>
+            验证码
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.CaptchaCodeOutputDto.ExpireAt">
+            <summary>
+            过期时间
+            </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.MessageUserSelectInputDto">
             <summary></summary>

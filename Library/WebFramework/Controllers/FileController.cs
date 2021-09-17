@@ -15,6 +15,7 @@ using WebCore;
 using WebCore.Security;
 using WebFramework.Models.DTO;
 using WebInterface;
+using WebInterface.Settings;
 
 namespace WebFramework.Controllers
 {
@@ -27,14 +28,16 @@ namespace WebFramework.Controllers
     {
         private readonly IWebHostEnvironment env;
         private readonly IConfiguration config;
+        private readonly ICrypto crypto;
         private readonly IMemoryCache cache;
         private readonly IPdfTools pdf;
 
         /// <summary></summary>
-        public FileController(IWebHostEnvironment env, IConfiguration config, IMemoryCache cache, IPdfTools pdf)
+        public FileController(IWebHostEnvironment env, IConfiguration config, ICrypto crypto, IMemoryCache cache, IPdfTools pdf)
         {
             this.env = env;
             this.config = config;
+            this.crypto = crypto;
             this.cache = cache;
             this.pdf = pdf;
         }
@@ -197,20 +200,38 @@ namespace WebFramework.Controllers
         /// <summary>
         /// 图片验证码
         /// </summary>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(CaptchaCodeOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult CaptchaCode()
+        {
+            var result = new CaptchaCodeOutputDto
+            {
+                Value = 4.RandomString(),
+                ExpireAt = DateTime.Now.AddMinutes(1),
+            };
+            byte[] json = Encodings.Utf8.GetBytes(result.ToJson()), key = Encodings.Utf8.GetBytes(AesSettings.Instance.Key), iv = Encodings.Utf8.GetBytes(AesSettings.Instance.IV);
+            result.Value = Encodings.Utf8.GetString(crypto.AESEncrypt(json, key, iv));
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 验证码图片
+        /// </summary>
         [HttpGet]
         [Produces("image/jpeg")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public IActionResult CaptchaCode([FromQuery] string lastCode, int imageWidth = 90, int imageHeight = 36, int fontSize = 20, int length = 4, int lines = 4)
+        public IActionResult CaptchaCode([FromQuery] string lastCode, int width = 90, int height = 36, int fontSize = 20, int length = 4, int lines = 4)
         {
             var captchaCode = (length > 1 ? length : 1).RandomString();
             if (!string.IsNullOrWhiteSpace(lastCode)) cache.Set(lastCode, captchaCode, TimeSpan.FromMinutes(1));
 
             var stream = new MemoryStream();
-            using var image = new Bitmap(imageWidth, imageHeight, PixelFormat.Format64bppArgb);
+            using var image = new Bitmap(width, height, PixelFormat.Format64bppArgb);
             using var graphics = Graphics.FromImage(image);
 
             //清空图片背景色
-            graphics.Clear(Color.White);
+            graphics.Clear(Color.FromArgb(240, 243, 248));
 
             //画图片的背景噪音线
             var random = new Random(Guid.NewGuid().GetHashCode());
@@ -229,10 +250,21 @@ namespace WebFramework.Controllers
             graphics.DrawString(captchaCode, f[c], brush, 2, 2);
 
             //画图片的前景噪音点
+            var r = new Random();
             for (int i = 0; i < 80; i++)
             {
-                int x = random.Next(image.Width), y = random.Next(image.Height);
-                image.SetPixel(x, y, Color.FromArgb(random.Next()));
+                int x = r.Next(width), y = r.Next(height);
+                image.SetPixel(x, y, Color.FromArgb(r.Next()));
+            }
+            for (var i = 0; i < 25; i++)
+            {
+                int x1 = r.Next(width), x2 = r.Next(width), y1 = r.Next(height), y2 = r.Next(height);
+                graphics.DrawLine(new Pen(Colors[r.Next(0, 5)], 1), new PointF(x1, y1), new PointF(x2, y2));
+            }
+            for (var i = 0; i < 80; i++)
+            {
+                int x = r.Next(width), y = r.Next(height);
+                graphics.DrawLine(new Pen(Colors[r.Next(0, 5)], 1), new PointF(x, y), new PointF(x + 1, y + 1));
             }
 
             //画图片的边框线
@@ -253,6 +285,7 @@ namespace WebFramework.Controllers
             new Tuple<Color, Color>(Color.FromArgb(200, 68, 235), Color.FromArgb(61, 53, 235)),
             new Tuple<Color, Color>(Color.FromArgb(255, 95, 89), Color.FromArgb(95, 13, 255)),
         };
+        static readonly Color[] Colors = { Color.FromArgb(37, 72, 91), Color.FromArgb(68, 24, 25), Color.FromArgb(17, 46, 2), Color.FromArgb(70, 16, 100), Color.FromArgb(24, 88, 74) };
         /// <summary>
         /// 随机文字字体
         /// </summary>
