@@ -1,3 +1,4 @@
+using FluentScheduler;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -47,7 +48,7 @@ namespace WebCore
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred executing task service[0]", nameof(task));
+                    _logger.LogError(ex, "Error occurred executing task service.", nameof(task));
                 }
             }
         }
@@ -64,20 +65,24 @@ namespace WebCore
             var cancellationToken = (CancellationToken)state;
             if (!cancellationToken.IsCancellationRequested) return;
 
-            var task = _taskManager.Dequeue(CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
+            TimeSpan delay = TimeSpan.FromSeconds(1), timeout = TimeSpan.FromSeconds(10);
+            var token = new CancellationTokenSource(delay).Token;
+            var task = _taskManager.Dequeue(token).ConfigureAwait(false).GetAwaiter().GetResult();
             while (task != null && status == 1)
             {
                 try
                 {
-                    task(CancellationToken.None).Wait();
+                    token = new CancellationTokenSource(timeout).Token;
+                    task(token).Wait(timeout);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred executing task service[1]", nameof(task));
+                    _logger.LogError(ex, "Error occurred stopping task service.", nameof(task));
                 }
                 finally
                 {
-                    task = _taskManager.Dequeue(CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
+                    token = new CancellationTokenSource(delay).Token;
+                    task = _taskManager.Dequeue(token).ConfigureAwait(false).GetAwaiter().GetResult();
                 }
             }
         }
@@ -92,6 +97,11 @@ namespace WebCore
             status = 2;
 
             //_logger.LogInformation("正在停止");
+
+            // Stops the job manager.
+            JobManager.Stop();
+            // Stops the job manager and blocks until all running schedules finishes.
+            //JobManager.StopAndBlock();
 
             await base.StopAsync(cancellationToken);
         }

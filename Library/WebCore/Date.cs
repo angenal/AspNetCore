@@ -68,7 +68,7 @@ namespace WebCore
         }
 
         /// <summary>
-        /// 初始化
+        /// Initializes the Date.
         /// </summary>
         internal static void Init()
         {

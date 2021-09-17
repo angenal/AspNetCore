@@ -1,3 +1,4 @@
+using FluentScheduler;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,8 +26,14 @@ namespace WebCore
             // https://www.nuget.org/packages/System.Text.Encoding.CodePages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            // Date Init
+            // Initializes the Date.
             Date.Init();
+
+            // Initializes the job manager with the jobs to run and starts it.
+            JobManager.Initialize();
+            // Use UTC time rather than local time. It's recommended to call this method before
+            // any other library interaction to avoid mixed dates.
+            JobManager.UseUtcTime();
         }
 
         /// <summary>
