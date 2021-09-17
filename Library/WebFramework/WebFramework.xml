@@ -517,9 +517,6 @@
             语言
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.LanguageController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Caching.Memory.IMemoryCache)">
-            <summary></summary>
-        </member>
         <member name="M:WebFramework.Controllers.LanguageController.Default">
             <summary>
             默认值

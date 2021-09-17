@@ -74,8 +74,7 @@ namespace WebFramework
         /// <param name="newLocalization"></param>
         public static bool SetDefaultCulture(string newLocalization)
         {
-            string culture = null, baseName = null;
-            var newValue = newLocalization.Length <= 5 ? newLocalization : newLocalization.ToTitleCase();
+            string newValue = newLocalization.Length <= 5 ? newLocalization : newLocalization.ToTitleCase(), culture = null;
             Language value = Default;
             Type type = typeof(Language);
             var assembly = Assembly.GetEntryAssembly();
@@ -86,8 +85,8 @@ namespace WebFramework
                 var name = value.ToString();
                 var field = type.GetField(name);
                 var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+                if (attribute == null) return ok;
                 culture = attribute.Description;
-                baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
                 ok = true;
             }
             if (!ok)
@@ -98,7 +97,6 @@ namespace WebFramework
                     var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
                     if (attribute == null || !attribute.Description.Equals(newValue, StringComparison.OrdinalIgnoreCase)) continue;
                     culture = attribute.Description;
-                    baseName = $"{assembly.GetName().Name}.Resources-{culture}";
                     value = (Language)Enum.Parse(type, name);
                     ok = true;
                     break;
@@ -109,6 +107,8 @@ namespace WebFramework
                 Default = value;
                 DefaultCulture = culture;
                 Culture = GetDefaultCulture();
+                var baseName = $"{assembly.GetName().Name}.{culture}";
+                //var baseName = $"{assembly.GetName().Name}.Resources-{culture}";
                 ResourceManager = new ResourceManager(baseName, assembly);
                 Thread.CurrentThread.CurrentCulture = Culture;
                 Thread.CurrentThread.CurrentUICulture = Culture;

@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
 using System.Net;
@@ -17,17 +14,17 @@ namespace WebFramework.Controllers
     [Route("api/[controller]/[action]")]
     public class LanguageController : ApiController
     {
-        private readonly IWebHostEnvironment env;
-        private readonly IConfiguration config;
-        private readonly IMemoryCache cache;
+        //private readonly IWebHostEnvironment env;
+        //private readonly IConfiguration config;
+        //private readonly IMemoryCache cache;
 
-        /// <summary></summary>
-        public LanguageController(IWebHostEnvironment env, IConfiguration config, IMemoryCache cache)
-        {
-            this.env = env;
-            this.config = config;
-            this.cache = cache;
-        }
+        ///// <summary></summary>
+        //public LanguageController(IWebHostEnvironment env, IConfiguration config, IMemoryCache cache)
+        //{
+        //    this.env = env;
+        //    this.config = config;
+        //    this.cache = cache;
+        //}
 
         /// <summary>
         /// 默认值
