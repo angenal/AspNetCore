@@ -32,12 +32,16 @@ namespace WebFramework.Services
             var section = config.GetSection(LanguageRouteConstraint.AppSettings);
             var culture = section.Exists() ? section.Value : Localizations.Default.ToDescription(false);
             var cultures = Localizations.SupportedCultures();
-            LanguageRouteConstraint.Culture = culture;
+            Localizations.DefaultCulture = culture;
             LanguageRouteConstraint.Cultures = cultures.Select(c => c.Name).ToArray();
             LanguageRouteConstraint.SupportedCultures = cultures;
+            // 注册本地化服务
             services.AddLocalization(options => options.ResourcesPath = ResourcesPath);
+            // 注册视图本地化服务 Microsoft.AspNetCore.Mvc.Razor
+            //builder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, options => { options.ResourcesPath = ResourcesPath; });
+            // 注册数据注解本地化服务
             builder.AddDataAnnotationsLocalization();
-            //builder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, options => { options.ResourcesPath = ResourcesPath; }); // Microsoft.AspNetCore.Mvc.Razor
+            // 配置本地化服务
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 options.DefaultRequestCulture = new RequestCulture(culture: culture, uiCulture: culture);
@@ -45,6 +49,7 @@ namespace WebFramework.Services
                 options.SupportedCultures = cultures;
                 options.SupportedUICultures = cultures;
             });
+            // 配置请求路由服务
             services.Configure<RouteOptions>(options => options.ConstraintMap.Add(LanguageRouteConstraint.Key, typeof(LanguageRouteConstraint)));
 
             return services;
@@ -55,7 +60,7 @@ namespace WebFramework.Services
         {
             app.UseRequestLocalization(app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>()?.Value ?? new RequestLocalizationOptions
             {
-                DefaultRequestCulture = new RequestCulture(LanguageRouteConstraint.Culture),
+                DefaultRequestCulture = new RequestCulture(Localizations.DefaultCulture),
                 SupportedCultures = LanguageRouteConstraint.SupportedCultures,
                 SupportedUICultures = LanguageRouteConstraint.SupportedCultures
             });
@@ -75,8 +80,6 @@ namespace WebFramework.Services
         /// <summary></summary>
         public const string Key = "culture";
 
-        /// <summary></summary>
-        internal static string Culture = "zh-CN";
         /// <summary></summary>
         internal static IEnumerable<string> Cultures = Array.Empty<string>();
         /// <summary></summary>

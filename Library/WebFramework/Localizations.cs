@@ -17,6 +17,10 @@ namespace WebFramework
         /// </summary>
         public static Language Default = Language.Chinese;
         /// <summary>
+        /// Default Culture String
+        /// </summary>
+        public static string DefaultCulture = "zh-CN";
+        /// <summary>
         /// Set Default ResourceManager use SetDefaultCulture()
         /// </summary>
         public static ResourceManager ResourceManager;
@@ -72,6 +76,7 @@ namespace WebFramework
                 var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
                 var assembly = Assembly.GetEntryAssembly();
                 var baseName = $"{assembly.GetName().Name}.Resources-{attribute.Description}";
+                DefaultCulture = attribute.Description;
                 ResourceManager = new ResourceManager(baseName, assembly);
                 break;
             }

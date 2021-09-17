@@ -1243,6 +1243,11 @@
             Default Localizations
             </summary>
         </member>
+        <member name="F:WebFramework.Localizations.DefaultCulture">
+            <summary>
+            Default Culture String
+            </summary>
+        </member>
         <member name="F:WebFramework.Localizations.ResourceManager">
             <summary>
             Set Default ResourceManager use SetDefaultCulture()
@@ -2303,9 +2308,6 @@
             </summary>
         </member>
         <member name="F:WebFramework.Services.LanguageRouteConstraint.Key">
-            <summary></summary>
-        </member>
-        <member name="F:WebFramework.Services.LanguageRouteConstraint.Culture">
             <summary></summary>
         </member>
         <member name="F:WebFramework.Services.LanguageRouteConstraint.Cultures">
