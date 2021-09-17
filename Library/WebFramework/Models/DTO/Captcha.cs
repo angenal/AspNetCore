@@ -8,9 +8,9 @@ namespace WebFramework.Models.DTO
     public class CaptchaCodeOutputDto
     {
         /// <summary>
-        /// 验证码
+        /// 验证码参数
         /// </summary>
-        public string Value { get; set; }
+        public string LastCode { get; set; }
         /// <summary>
         /// 过期时间
         /// </summary>

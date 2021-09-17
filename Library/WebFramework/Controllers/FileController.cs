@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -197,6 +198,10 @@ namespace WebFramework.Controllers
 
         #region 图片验证码 api/File/CaptchaCode
 
+        static readonly int CaptchaCodeLength = 4;
+        static readonly ConcurrentDictionary<ulong, byte[]> CaptchaCodeData = new ConcurrentDictionary<ulong, byte[]>();
+        static readonly Tuple<byte[], byte[]> CaptchaCodeKeys = new Tuple<byte[], byte[]>(CryptoFunctions.GenerateNonceBytes(24), CryptoFunctions.GenerateNonceBytes(32));
+
         /// <summary>
         /// 图片验证码
         /// </summary>
@@ -205,34 +210,43 @@ namespace WebFramework.Controllers
         [ProducesResponseType(typeof(CaptchaCodeOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult CaptchaCode()
         {
-            var result = new CaptchaCodeOutputDto { Value = 4.RandomString(), ExpireAt = DateTime.Now.AddMinutes(1) };
-            byte[] data = Encodings.Utf8.GetBytes($"{result.Value}:{result.ExpireAt.Unix()}"), key = Encodings.Utf8.GetBytes(AesSettings.Instance.Key), iv = Encodings.Utf8.GetBytes(AesSettings.Instance.IV);
-            result.Value = crypto.ToBase64String(Encodings.Utf8.GetString(crypto.AESEncrypt(data, key, iv)));
+            var result = new CaptchaCodeOutputDto { LastCode = CaptchaCodeLength.RandomString(), ExpireAt = DateTime.Now.AddMinutes(2) };
+            byte[] data = Encodings.Utf8.GetBytes($"{result.LastCode}:{result.ExpireAt.Unix()}"), nonce = CaptchaCodeKeys.Item1, key = CaptchaCodeKeys.Item2;
+            data = crypto.Encrypt(data, nonce, key);
+            var l = data.XXH64();
+            if (!CaptchaCodeData.TryAdd(l, data)) return Error("系统异常!");
+            result.LastCode = l.ToString();
             return Ok(result);
         }
 
         /// <summary>
         /// 验证码图片
         /// </summary>
+        /// <param name="lastCode">验证码参数</param>
+        /// <param name="width">图片宽度</param>
+        /// <param name="height">图片高度</param>
+        /// <param name="fontSize">字体大小</param>
+        /// <param name="degree">难度系数 1.低 2.高</param>
         [HttpGet]
         [Produces("image/jpeg")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public IActionResult CaptchaCode([FromQuery] string lastCode, int width = 90, int height = 36, int fontSize = 20, int length = 4, int lines = 4)
+        public IActionResult CaptchaCode([FromQuery] string lastCode, int width = 90, int height = 36, int fontSize = 20, int degree = 1)
         {
+            ulong l = 0;
             string captchaCode;
-            var isEmptyCode = string.IsNullOrWhiteSpace(lastCode);
-            if (!isEmptyCode && lastCode.Length > 36 && lastCode.IsBase64())
+            bool isEmptyCode = string.IsNullOrWhiteSpace(lastCode), isNum = !isEmptyCode && ulong.TryParse(lastCode, out l);
+            if (isNum)
             {
-                byte[] data = Encodings.Utf8.GetBytes(crypto.FromBase64String(lastCode)), key = Encodings.Utf8.GetBytes(AesSettings.Instance.Key), iv = Encodings.Utf8.GetBytes(AesSettings.Instance.IV);
-                var s = Encodings.Utf8.GetString(crypto.AESDecrypt(data, key, iv)).Split(':');
-                if (s.Length != 2 || long.TryParse(s[1], out long t)) return NotFound();
-                DateTime now = DateTime.Now, expireAt = t.ToDateTime();
-                if (now >= expireAt) return NotFound();
+                if (!CaptchaCodeData.TryRemove(l, out byte[] data)) return NotFound();
+                byte[] nonce = CaptchaCodeKeys.Item1, key = CaptchaCodeKeys.Item2;
+                var s = Encodings.Utf8.GetString(crypto.Decrypt(data, nonce, key)).Split(':');
+                if (s.Length != 2 || !long.TryParse(s[1], out long expireAt)) return NotFound();
+                var now = DateTime.Now.Unix(); if (now >= expireAt) return NotFound();
                 captchaCode = s[0];
             }
             else
             {
-                captchaCode = (length > 1 ? length : 1).RandomString();
+                captchaCode = CaptchaCodeLength.RandomString();
             }
             // 缓存验证码
             if (!isEmptyCode) cache.Set(lastCode, captchaCode, TimeSpan.FromMinutes(1));
@@ -246,10 +260,13 @@ namespace WebFramework.Controllers
 
             //画图片的背景噪音线
             var random = new Random(Guid.NewGuid().GetHashCode());
-            for (int i = 0; i <= lines; i++)
+            if (degree <= 1)
             {
-                int x1 = random.Next(image.Width), x2 = random.Next(image.Width), y1 = random.Next(image.Height), y2 = random.Next(image.Height);
-                graphics.DrawLine(new Pen(Color.FromArgb(random.Next(255), random.Next(255), random.Next(255))), x1, y1, x2, y2);
+                for (int i = 0; i <= CaptchaCodeLength; i++)
+                {
+                    int x1 = random.Next(image.Width), x2 = random.Next(image.Width), y1 = random.Next(image.Height), y2 = random.Next(image.Height);
+                    graphics.DrawLine(new Pen(Color.FromArgb(random.Next(255), random.Next(255), random.Next(255))), x1, y1, x2, y2);
+                }
             }
 
             //随机文字颜色
@@ -267,15 +284,18 @@ namespace WebFramework.Controllers
                 int x = r.Next(width), y = r.Next(height);
                 image.SetPixel(x, y, Color.FromArgb(r.Next()));
             }
-            for (var i = 0; i < 25; i++)
+            if (degree > 1)
             {
-                int x1 = r.Next(width), x2 = r.Next(width), y1 = r.Next(height), y2 = r.Next(height);
-                graphics.DrawLine(new Pen(Colors[r.Next(0, 5)], 1), new PointF(x1, y1), new PointF(x2, y2));
-            }
-            for (var i = 0; i < 80; i++)
-            {
-                int x = r.Next(width), y = r.Next(height);
-                graphics.DrawLine(new Pen(Colors[r.Next(0, 5)], 1), new PointF(x, y), new PointF(x + 1, y + 1));
+                for (var i = 0; i < 25; i++)
+                {
+                    int x1 = r.Next(width), x2 = r.Next(width), y1 = r.Next(height), y2 = r.Next(height);
+                    graphics.DrawLine(new Pen(Colors[r.Next(0, 5)], 1), new PointF(x1, y1), new PointF(x2, y2));
+                }
+                for (var i = 0; i < 80; i++)
+                {
+                    int x = r.Next(width), y = r.Next(height);
+                    graphics.DrawLine(new Pen(Colors[r.Next(0, 5)], 1), new PointF(x, y), new PointF(x + 1, y + 1));
+                }
             }
 
             //画图片的边框线

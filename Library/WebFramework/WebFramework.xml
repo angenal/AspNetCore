@@ -502,10 +502,15 @@
             图片验证码
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.FileController.CaptchaCode(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:WebFramework.Controllers.FileController.CaptchaCode(System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             验证码图片
             </summary>
+            <param name="lastCode">验证码参数</param>
+            <param name="width">图片宽度</param>
+            <param name="height">图片高度</param>
+            <param name="fontSize">字体大小</param>
+            <param name="degree">难度系数 1.低 2.高</param>
         </member>
         <member name="F:WebFramework.Controllers.FileController.TextColors">
             <summary>
@@ -1312,9 +1317,9 @@
             
              </summary>
         </member>
-        <member name="P:WebFramework.Models.DTO.CaptchaCodeOutputDto.Value">
+        <member name="P:WebFramework.Models.DTO.CaptchaCodeOutputDto.LastCode">
             <summary>
-            验证码
+            验证码参数
             </summary>
         </member>
         <member name="P:WebFramework.Models.DTO.CaptchaCodeOutputDto.ExpireAt">
