@@ -2326,10 +2326,13 @@
         <member name="F:WebFramework.Services.LanguageRouteConstraint.Key">
             <summary></summary>
         </member>
+        <member name="F:WebFramework.Services.LanguageRouteConstraint.SupportedCultures">
+            <summary></summary>
+        </member>
         <member name="F:WebFramework.Services.LanguageRouteConstraint.Cultures">
             <summary></summary>
         </member>
-        <member name="F:WebFramework.Services.LanguageRouteConstraint.SupportedCultures">
+        <member name="F:WebFramework.Services.LanguageRouteConstraint.Languages">
             <summary></summary>
         </member>
         <member name="M:WebFramework.Services.LanguageRouteConstraint.Match(Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Routing.IRouter,System.String,Microsoft.AspNetCore.Routing.RouteValueDictionary,Microsoft.AspNetCore.Routing.RouteDirection)">

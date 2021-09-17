@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using WebCore;
 using WebInterface;
 
 namespace WebFramework
@@ -73,11 +74,12 @@ namespace WebFramework
         /// <param name="newLocalization"></param>
         public static bool SetDefaultCulture(string newLocalization)
         {
-            var assembly = Assembly.GetEntryAssembly();
             string culture = null, baseName = null;
+            var newValue = newLocalization.Length <= 5 ? newLocalization : newLocalization.ToTitleCase();
             Language value = Default;
             Type type = typeof(Language);
-            bool ok = false, parsed = Enum.TryParse(type, newLocalization, out var result);
+            var assembly = Assembly.GetEntryAssembly();
+            bool ok = false, parsed = Enum.TryParse(type, newValue, out var result);
             if (parsed)
             {
                 value = (Language)result;
@@ -94,7 +96,7 @@ namespace WebFramework
                 {
                     var field = type.GetField(name);
                     var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-                    if (attribute == null || !attribute.Description.Equals(newLocalization, StringComparison.OrdinalIgnoreCase)) continue;
+                    if (attribute == null || !attribute.Description.Equals(newValue, StringComparison.OrdinalIgnoreCase)) continue;
                     culture = attribute.Description;
                     baseName = $"{assembly.GetName().Name}.Resources-{culture}";
                     value = (Language)Enum.Parse(type, name);

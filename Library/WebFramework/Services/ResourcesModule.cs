@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using WebCore;
+using WebInterface;
 
 namespace WebFramework.Services
 {
@@ -33,8 +34,9 @@ namespace WebFramework.Services
             var culture = section.Exists() ? section.Value : Localizations.Default.ToDescription(false);
             var cultures = Localizations.SupportedCultures();
             Localizations.DefaultCulture = culture;
-            LanguageRouteConstraint.Cultures = cultures.Select(c => c.Name).ToArray();
             LanguageRouteConstraint.SupportedCultures = cultures;
+            LanguageRouteConstraint.Cultures = cultures.Select(c => c.Name).ToArray();
+            LanguageRouteConstraint.Languages = Enum.GetNames(typeof(Language));
             // 注册本地化服务
             services.AddLocalization(options => options.ResourcesPath = ResourcesPath);
             // 注册视图本地化服务 Microsoft.AspNetCore.Mvc.Razor
@@ -75,15 +77,17 @@ namespace WebFramework.Services
         /// <summary>
         /// Configuration "Culture" in appsettings.json
         /// </summary>
-        public const string AppSettings = "Culture"; // Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(Key);
+        public const string AppSettings = "Culture"; // Key.ToTitleCase();
 
         /// <summary></summary>
         public const string Key = "culture";
 
         /// <summary></summary>
+        internal static IList<CultureInfo> SupportedCultures = new List<CultureInfo>();
+        /// <summary></summary>
         internal static IEnumerable<string> Cultures = Array.Empty<string>();
         /// <summary></summary>
-        internal static IList<CultureInfo> SupportedCultures = new List<CultureInfo>();
+        internal static IEnumerable<string> Languages = Array.Empty<string>();
 
         /// <summary></summary>
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)

@@ -267,6 +267,12 @@ namespace WebCore
         /// <returns></returns>
         public static string ToTraditionalChinese(this string text, int srcType = 0) => WordsHelper.ToTraditionalChinese(text, srcType);
 
+        /// <summary>
+        /// 首字母大写
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string ToTitleCase(this string text) => System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(text.ToLower());
 
         /// <summary>
         /// Sql拼接 Id In()

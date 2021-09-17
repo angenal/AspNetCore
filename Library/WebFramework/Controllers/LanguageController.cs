@@ -61,7 +61,8 @@ namespace WebFramework.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public IActionResult Update(string option)
         {
-            if (!Services.LanguageRouteConstraint.Cultures.Contains(option) && !Enum.TryParse(typeof(Language), option, out _))
+            if (!Services.LanguageRouteConstraint.Cultures.Any(x => x.Equals(option, StringComparison.OrdinalIgnoreCase))
+                && !Services.LanguageRouteConstraint.Languages.Any(x => x.Equals(option, StringComparison.OrdinalIgnoreCase)))
                 return Error("It's not an supported option.");
 
             var result = Localizations.SetDefaultCulture(option);
