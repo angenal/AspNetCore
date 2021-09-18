@@ -211,7 +211,6 @@ namespace WebFramework.Controllers
             var lastCode = image.NewCaptchaCode(time);
             if (lastCode == 0) return CaptchaCode(expireSeconds);
             var result = new CaptchaCodeOutputDto { ExpireAt = time, LastCode = lastCode.ToString() };
-
             return Ok(result);
         }
 
@@ -229,10 +228,9 @@ namespace WebFramework.Controllers
         public IActionResult CaptchaCode([FromQuery] string lastCode, int width = 90, int height = 36, int fontSize = 20, int degree = 1)
         {
             if (!ulong.TryParse(lastCode, out ulong key)) return NotFound();
-
             var captchaCode = image.GetCaptchaCode(key);
+            if (captchaCode == null) return NotFound();
             var stream = image.NewCaptchaCode(captchaCode, width, height, fontSize, degree);
-
             return File(stream, "image/jpeg");
         }
 
@@ -246,11 +244,9 @@ namespace WebFramework.Controllers
         {
             var result = new CaptchaCodeComfirmOutputDto { LastCode = input.LastCode, CaptchaCode = input.CaptchaCode };
             if (!ulong.TryParse(input.LastCode, out ulong key)) return Ok(result);
-
-            var value = image.GetCaptchaCode(key);
-            result.Expired = value == null;
-            if (!result.Expired) result.Correct = value.Equals(input.CaptchaCode, StringComparison.OrdinalIgnoreCase);
-
+            var captchaCode = image.GetCaptchaCode(key);
+            result.Expired = captchaCode == null;
+            if (!result.Expired) result.Correct = captchaCode.Equals(input.CaptchaCode, StringComparison.OrdinalIgnoreCase);
             return Ok(result);
         }
 
