@@ -4,7 +4,7 @@ using System.Drawing;
 namespace WebInterface.Settings
 {
     /// <summary>
-    /// 常量数据
+    /// 常量
     /// </summary>
     public static class Constants
     {
@@ -17,7 +17,7 @@ namespace WebInterface.Settings
             public const int MB = 1024 * KB;
             public const int GB = 1024 * MB;
             public const long TB = 1024 * (long)GB;
-            public const long PB = 1024 * (long)TB;
+            public const long PB = 1024 * TB;
         }
 
         /// <summary>
@@ -28,7 +28,9 @@ namespace WebInterface.Settings
             new Tuple<Color, Color>(Color.FromArgb(65, 133, 235), Color.FromArgb(142, 24, 232)),
             new Tuple<Color, Color>(Color.FromArgb(52, 116, 235), Color.FromArgb(251, 40, 40)),
             new Tuple<Color, Color>(Color.FromArgb(200, 68, 235), Color.FromArgb(61, 53, 235)),
-            new Tuple<Color, Color>(Color.FromArgb(255, 95, 89), Color.FromArgb(95, 13, 255))
+            new Tuple<Color, Color>(Color.FromArgb(255, 95, 89), Color.FromArgb(95, 13, 255)),
+            new Tuple<Color, Color>(Color.FromArgb(42, 156, 245), Color.FromArgb(185, 86, 56)),
+            new Tuple<Color, Color>(Color.FromArgb(16, 194, 42), Color.FromArgb(215, 46, 105))
         };
 
         /// <summary>
@@ -40,7 +42,8 @@ namespace WebInterface.Settings
             Color.FromArgb(68, 24, 25),
             Color.FromArgb(17, 46, 2),
             Color.FromArgb(70, 16, 100),
-            Color.FromArgb(24, 88, 74)
+            Color.FromArgb(24, 88, 74),
+            Color.FromArgb(94, 16, 200)
         };
 
         /// <summary>

@@ -61,26 +61,24 @@ namespace WebCore.Documents
                         graphics.Clear(Color.FromArgb(240, 243, 248));
 
                         //画图片的背景噪音线
-                        var random = new Random(Guid.NewGuid().GetHashCode());
+                        var r = new Random(Guid.NewGuid().GetHashCode());
                         if (degree <= 1)
                         {
                             for (int i = 0; i <= 5; i++)
                             {
-                                int x1 = random.Next(image.Width), x2 = random.Next(image.Width), y1 = random.Next(image.Height), y2 = random.Next(image.Height);
-                                graphics.DrawLine(new Pen(Color.FromArgb(random.Next(255), random.Next(255), random.Next(255))), x1, y1, x2, y2);
+                                int x1 = r.Next(image.Width), x2 = r.Next(image.Width), y1 = r.Next(image.Height), y2 = r.Next(image.Height);
+                                graphics.DrawLine(new Pen(Color.FromArgb(r.Next(255), r.Next(255), r.Next(255))), x1, y1, x2, y2);
                             }
                         }
 
                         //随机文字颜色
-                        int c = random.Next(100) % Constants.TextColors.Length;
-                        Color imageTextColor1 = Constants.TextColors[c].Item1, imageTextColor2 = Constants.TextColors[c].Item2;
-                        var f = Constants.TextFonts(fontSize);
-                        c = random.Next(100) % f.Length;
+                        int c = Constants.TextColors.Length;
+                        Color imageTextColor1 = Constants.TextColors[r.Next(0, c)].Item1, imageTextColor2 = Constants.TextColors[r.Next(0, c)].Item2;
                         var brush = new LinearGradientBrush(new Rectangle(0, 0, image.Width, image.Height), imageTextColor1, imageTextColor2, 1.2f, true);
-                        graphics.DrawString(captchaCode, f[c], brush, 0.2f, 0.2f);
+                        var f = Constants.TextFonts(fontSize); c = f.Length;
+                        graphics.DrawString(captchaCode, f[r.Next(0, c)], brush, 0, 0);
 
                         //画图片的前景噪音点
-                        var r = new Random();
                         for (int i = 0; i < 80; i++)
                         {
                             int x = r.Next(width), y = r.Next(height);
@@ -88,15 +86,16 @@ namespace WebCore.Documents
                         }
                         if (degree > 1)
                         {
+                            c = Constants.PenColors.Length;
                             for (var i = 0; i < 25; i++)
                             {
                                 int x1 = r.Next(width), x2 = r.Next(width), y1 = r.Next(height), y2 = r.Next(height);
-                                graphics.DrawLine(new Pen(Constants.PenColors[r.Next(0, 5)], 1), new PointF(x1, y1), new PointF(x2, y2));
+                                graphics.DrawLine(new Pen(Constants.PenColors[r.Next(0, c)], 1), new PointF(x1, y1), new PointF(x2, y2));
                             }
                             for (var i = 0; i < 25; i++)
                             {
                                 int x = r.Next(width), y = r.Next(height);
-                                graphics.DrawLine(new Pen(Constants.PenColors[r.Next(0, 5)], 1), new PointF(x, y), new PointF(x + 1, y + 1));
+                                graphics.DrawLine(new Pen(Constants.PenColors[r.Next(0, c)], 1), new PointF(x, y), new PointF(x + 1, y + 1));
                             }
                         }
 
