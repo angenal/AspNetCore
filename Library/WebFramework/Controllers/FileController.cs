@@ -198,17 +198,19 @@ namespace WebFramework.Controllers
         /// <summary>
         /// 创建验证码
         /// </summary>
-        [HttpPost]
+        /// <param name="expireSeconds">过期时间(单位/秒):默认60秒,最多10分钟</param>
+        [HttpPost("{expireSeconds=60}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(CaptchaCodeOutputDto), (int)HttpStatusCode.OK)]
-        public IActionResult CaptchaCode()
+        public IActionResult CaptchaCode(string expireSeconds)
         {
-            var time = DateTime.Now.AddMinutes(1);
-            var result = new CaptchaCodeOutputDto
-            {
-                ExpireAt = time,
-                LastCode = image.NewCaptchaCode(time).ToString()
-            };
+            if (!int.TryParse(expireSeconds, out int value)) value = 60;
+            if (value < 10) return Error("参数错误:过期时间不能少于10秒!");
+            if (value > 600) value = 600;
+            var time = DateTime.Now.AddSeconds(value);
+            var lastCode = image.NewCaptchaCode(time);
+            if (lastCode == 0) return CaptchaCode(expireSeconds);
+            var result = new CaptchaCodeOutputDto { ExpireAt = time, LastCode = lastCode.ToString() };
 
             return Ok(result);
         }
@@ -240,14 +242,9 @@ namespace WebFramework.Controllers
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(CaptchaCodeComfirmOutputDto), (int)HttpStatusCode.OK)]
-        public IActionResult CaptchaCodeComfirm([FromBody] CaptchaCodeComfirmInputDto input)
+        public IActionResult CaptchaComfirm([FromBody] CaptchaCodeComfirmInputDto input)
         {
-            var result = new CaptchaCodeComfirmOutputDto
-            {
-                LastCode = input.LastCode,
-                CaptchaCode = input.CaptchaCode
-            };
-
+            var result = new CaptchaCodeComfirmOutputDto { LastCode = input.LastCode, CaptchaCode = input.CaptchaCode };
             if (!ulong.TryParse(input.LastCode, out ulong key)) return Ok(result);
 
             var value = image.GetCaptchaCode(key);

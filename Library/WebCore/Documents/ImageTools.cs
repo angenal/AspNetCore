@@ -32,11 +32,11 @@ namespace WebCore.Documents
         /// <returns></returns>
         public ulong NewCaptchaCode(DateTime time)
         {
-            if (time < DateTime.Now.AddSeconds(5)) return 0;
+            if (time < DateTime.Now.AddSeconds(10)) return 0;
             var v = new Tuple<string, DateTime>(CaptchaCodeLength.RandomString(), time);
             var k = $"{v.Item1}:{v.Item2.Unix()}:{v.GetHashCode()}".XXH64();
             if (!CaptchaCodeData.TryAdd(k, v.Item1)) return 0;
-            JobManager.AddJob(() => CaptchaCodeData.TryRemove(k, out _), s => s.ToRunOnceAt(time));
+            JobManager.AddJob(() => CaptchaCodeData.TryRemove(k, out _), s => s.ToRunOnceAt(time.ToUniversalTime()));
             return k;
         }
 

@@ -497,10 +497,11 @@
             文件签名 by Minisign
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.FileController.CaptchaCode">
+        <member name="M:WebFramework.Controllers.FileController.CaptchaCode(System.String)">
             <summary>
             创建验证码
             </summary>
+            <param name="expireSeconds">过期时间(单位/秒):默认60秒,最多10分钟</param>
         </member>
         <member name="M:WebFramework.Controllers.FileController.CaptchaCode(System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
@@ -512,7 +513,7 @@
             <param name="fontSize">字体大小</param>
             <param name="degree">难度系数 1.低 2.高</param>
         </member>
-        <member name="M:WebFramework.Controllers.FileController.CaptchaCodeComfirm(WebFramework.Models.DTO.CaptchaCodeComfirmInputDto)">
+        <member name="M:WebFramework.Controllers.FileController.CaptchaComfirm(WebFramework.Models.DTO.CaptchaCodeComfirmInputDto)">
             <summary>
             确认验证码输入
             </summary>
