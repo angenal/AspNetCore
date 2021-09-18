@@ -4,11 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -16,7 +12,6 @@ using WebCore;
 using WebCore.Security;
 using WebFramework.Models.DTO;
 using WebInterface;
-using WebInterface.Settings;
 
 namespace WebFramework.Controllers
 {
@@ -31,15 +26,17 @@ namespace WebFramework.Controllers
         private readonly IConfiguration config;
         private readonly ICrypto crypto;
         private readonly IMemoryCache cache;
+        private readonly IImageTools image;
         private readonly IPdfTools pdf;
 
         /// <summary></summary>
-        public FileController(IWebHostEnvironment env, IConfiguration config, ICrypto crypto, IMemoryCache cache, IPdfTools pdf)
+        public FileController(IWebHostEnvironment env, IConfiguration config, ICrypto crypto, IMemoryCache cache, IImageTools image, IPdfTools pdf)
         {
             this.env = env;
             this.config = config;
             this.crypto = crypto;
             this.cache = cache;
+            this.image = image;
             this.pdf = pdf;
         }
 
@@ -198,29 +195,26 @@ namespace WebFramework.Controllers
 
         #region 图片验证码 api/File/CaptchaCode
 
-        static readonly int CaptchaCodeLength = 4;
-        static readonly ConcurrentDictionary<ulong, byte[]> CaptchaCodeData = new ConcurrentDictionary<ulong, byte[]>();
-        static readonly Tuple<byte[], byte[]> CaptchaCodeKeys = new Tuple<byte[], byte[]>(CryptoFunctions.GenerateNonceBytes(24), CryptoFunctions.GenerateNonceBytes(32));
-
         /// <summary>
-        /// 图片验证码
+        /// 创建验证码
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(CaptchaCodeOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult CaptchaCode()
         {
-            var result = new CaptchaCodeOutputDto { LastCode = CaptchaCodeLength.RandomString(), ExpireAt = DateTime.Now.AddMinutes(2) };
-            byte[] data = Encodings.Utf8.GetBytes($"{result.LastCode}:{result.ExpireAt.Unix()}"), nonce = CaptchaCodeKeys.Item1, key = CaptchaCodeKeys.Item2;
-            data = crypto.Encrypt(data, nonce, key);
-            var l = data.XXH64();
-            if (!CaptchaCodeData.TryAdd(l, data)) return Error("系统异常!");
-            result.LastCode = l.ToString();
+            var time = DateTime.Now.AddMinutes(1);
+            var result = new CaptchaCodeOutputDto
+            {
+                ExpireAt = time,
+                LastCode = image.NewCaptchaCode(time).ToString()
+            };
+
             return Ok(result);
         }
 
         /// <summary>
-        /// 验证码图片
+        /// 生成验证码图片
         /// </summary>
         /// <param name="lastCode">验证码参数</param>
         /// <param name="width">图片宽度</param>
@@ -232,100 +226,36 @@ namespace WebFramework.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public IActionResult CaptchaCode([FromQuery] string lastCode, int width = 90, int height = 36, int fontSize = 20, int degree = 1)
         {
-            ulong l = 0;
-            string captchaCode;
-            bool isEmptyCode = string.IsNullOrWhiteSpace(lastCode), isNum = !isEmptyCode && ulong.TryParse(lastCode, out l);
-            if (isNum)
-            {
-                if (!CaptchaCodeData.TryRemove(l, out byte[] data)) return NotFound();
-                byte[] nonce = CaptchaCodeKeys.Item1, key = CaptchaCodeKeys.Item2;
-                var s = Encodings.Utf8.GetString(crypto.Decrypt(data, nonce, key)).Split(':');
-                if (s.Length != 2 || !long.TryParse(s[1], out long expireAt)) return NotFound();
-                var now = DateTime.Now.Unix(); if (now >= expireAt) return NotFound();
-                captchaCode = s[0];
-            }
-            else
-            {
-                captchaCode = CaptchaCodeLength.RandomString();
-            }
-            // 缓存验证码
-            if (!isEmptyCode) cache.Set(lastCode, captchaCode, TimeSpan.FromMinutes(1));
+            if (!ulong.TryParse(lastCode, out ulong key)) return NotFound();
 
-            var stream = new MemoryStream();
-            using var image = new Bitmap(width, height, PixelFormat.Format64bppArgb);
-            using var graphics = Graphics.FromImage(image);
-
-            //清空图片背景色
-            graphics.Clear(Color.FromArgb(240, 243, 248));
-
-            //画图片的背景噪音线
-            var random = new Random(Guid.NewGuid().GetHashCode());
-            if (degree <= 1)
-            {
-                for (int i = 0; i <= CaptchaCodeLength; i++)
-                {
-                    int x1 = random.Next(image.Width), x2 = random.Next(image.Width), y1 = random.Next(image.Height), y2 = random.Next(image.Height);
-                    graphics.DrawLine(new Pen(Color.FromArgb(random.Next(255), random.Next(255), random.Next(255))), x1, y1, x2, y2);
-                }
-            }
-
-            //随机文字颜色
-            int c = random.Next(100) % TextColors.Length;
-            Color imageTextColor1 = TextColors[c].Item1, imageTextColor2 = TextColors[c].Item2;
-            var f = TextFonts(fontSize);
-            c = random.Next(100) % f.Length;
-            var brush = new LinearGradientBrush(new Rectangle(0, 0, image.Width, image.Height), imageTextColor1, imageTextColor2, 1.2f, true);
-            graphics.DrawString(captchaCode, f[c], brush, 2, 2);
-
-            //画图片的前景噪音点
-            var r = new Random();
-            for (int i = 0; i < 80; i++)
-            {
-                int x = r.Next(width), y = r.Next(height);
-                image.SetPixel(x, y, Color.FromArgb(r.Next()));
-            }
-            if (degree > 1)
-            {
-                for (var i = 0; i < 25; i++)
-                {
-                    int x1 = r.Next(width), x2 = r.Next(width), y1 = r.Next(height), y2 = r.Next(height);
-                    graphics.DrawLine(new Pen(Colors[r.Next(0, 5)], 1), new PointF(x1, y1), new PointF(x2, y2));
-                }
-                for (var i = 0; i < 80; i++)
-                {
-                    int x = r.Next(width), y = r.Next(height);
-                    graphics.DrawLine(new Pen(Colors[r.Next(0, 5)], 1), new PointF(x, y), new PointF(x + 1, y + 1));
-                }
-            }
-
-            //画图片的边框线
-            graphics.DrawRectangle(new Pen(Color.Silver), 0, 0, image.Width - 1, image.Height - 1);
-
-            image.Save(stream, ImageFormat.Jpeg);
-            stream.Position = 0;
+            var captchaCode = image.GetCaptchaCode(key);
+            var stream = image.NewCaptchaCode(captchaCode, width, height, fontSize, degree);
 
             return File(stream, "image/jpeg");
         }
+
         /// <summary>
-        /// 随机文字颜色
+        /// 确认验证码输入
         /// </summary>
-        static readonly Tuple<Color, Color>[] TextColors =
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(CaptchaCodeComfirmOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult CaptchaCodeComfirm([FromBody] CaptchaCodeComfirmInputDto input)
         {
-            new Tuple<Color, Color>(Color.FromArgb(65, 133, 235), Color.FromArgb(142, 24, 232)),
-            new Tuple<Color, Color>(Color.FromArgb(52, 116, 235), Color.FromArgb(251, 40, 40)),
-            new Tuple<Color, Color>(Color.FromArgb(200, 68, 235), Color.FromArgb(61, 53, 235)),
-            new Tuple<Color, Color>(Color.FromArgb(255, 95, 89), Color.FromArgb(95, 13, 255)),
-        };
-        static readonly Color[] Colors = { Color.FromArgb(37, 72, 91), Color.FromArgb(68, 24, 25), Color.FromArgb(17, 46, 2), Color.FromArgb(70, 16, 100), Color.FromArgb(24, 88, 74) };
-        /// <summary>
-        /// 随机文字字体
-        /// </summary>
-        static Font[] TextFonts(int fontSize) => new Font[]{
-           new Font(new FontFamily("Arial"), fontSize, FontStyle.Bold | FontStyle.Italic),
-           new Font(new FontFamily("Georgia"), fontSize, FontStyle.Bold | FontStyle.Italic),
-           new Font(new FontFamily("Times New Roman"), fontSize, FontStyle.Bold | FontStyle.Italic),
-           new Font(new FontFamily("Comic Sans MS"), fontSize, FontStyle.Bold | FontStyle.Italic)
-        };
+            var result = new CaptchaCodeComfirmOutputDto
+            {
+                LastCode = input.LastCode,
+                CaptchaCode = input.CaptchaCode
+            };
+
+            if (!ulong.TryParse(input.LastCode, out ulong key)) return Ok(result);
+
+            var value = image.GetCaptchaCode(key);
+            result.Expired = value == null;
+            if (!result.Expired) result.Correct = value.Equals(input.CaptchaCode, StringComparison.OrdinalIgnoreCase);
+
+            return Ok(result);
+        }
 
         #endregion
 

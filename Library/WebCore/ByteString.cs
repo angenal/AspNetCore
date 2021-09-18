@@ -11,6 +11,7 @@ using WebCore.Json;
 using WebCore.LowMemory;
 using WebCore.Threading;
 using WebCore.Utils;
+using WebInterface.Settings;
 
 namespace WebCore
 {
@@ -761,7 +762,7 @@ namespace WebCore
             {
                 if (_externalCurrentLeft == 0)
                 {
-                    var tmp = Math.Min(16 * Constants.Size.Megabyte, _allocationBlockSize * 2);
+                    var tmp = Math.Min(16 * Constants.Size.MB, _allocationBlockSize * 2);
                     AllocateExternalSegment(tmp);
                     _allocationBlockSize = tmp;
                 }
@@ -891,7 +892,7 @@ namespace WebCore
             }
             else
             {
-                _allocationBlockSize = Math.Min(16 * Constants.Size.Megabyte, _allocationBlockSize * 2);
+                _allocationBlockSize = Math.Min(16 * Constants.Size.MB, _allocationBlockSize * 2);
                 _internalCurrent = AllocateSegment(_allocationBlockSize);
             }
 

@@ -474,7 +474,7 @@
             文件
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.FileController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,WebInterface.ICrypto,Microsoft.Extensions.Caching.Memory.IMemoryCache,WebInterface.IPdfTools)">
+        <member name="M:WebFramework.Controllers.FileController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,WebInterface.ICrypto,Microsoft.Extensions.Caching.Memory.IMemoryCache,WebInterface.IImageTools,WebInterface.IPdfTools)">
             <summary></summary>
         </member>
         <member name="M:WebFramework.Controllers.FileController.Upload">
@@ -499,12 +499,12 @@
         </member>
         <member name="M:WebFramework.Controllers.FileController.CaptchaCode">
             <summary>
-            图片验证码
+            创建验证码
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.FileController.CaptchaCode(System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
-            验证码图片
+            生成验证码图片
             </summary>
             <param name="lastCode">验证码参数</param>
             <param name="width">图片宽度</param>
@@ -512,14 +512,9 @@
             <param name="fontSize">字体大小</param>
             <param name="degree">难度系数 1.低 2.高</param>
         </member>
-        <member name="F:WebFramework.Controllers.FileController.TextColors">
+        <member name="M:WebFramework.Controllers.FileController.CaptchaCodeComfirm(WebFramework.Models.DTO.CaptchaCodeComfirmInputDto)">
             <summary>
-            随机文字颜色
-            </summary>
-        </member>
-        <member name="M:WebFramework.Controllers.FileController.TextFonts(System.Int32)">
-            <summary>
-            随机文字字体
+            确认验证码输入
             </summary>
         </member>
         <member name="T:WebFramework.Controllers.LanguageController">
@@ -1319,12 +1314,52 @@
         </member>
         <member name="P:WebFramework.Models.DTO.CaptchaCodeOutputDto.LastCode">
             <summary>
-            验证码参数
+            验证码生成参数
             </summary>
         </member>
         <member name="P:WebFramework.Models.DTO.CaptchaCodeOutputDto.ExpireAt">
             <summary>
             过期时间
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.CaptchaCodeComfirmInputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.CaptchaCodeComfirmInputDto.LastCode">
+            <summary>
+            验证码生成参数
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.CaptchaCodeComfirmInputDto.CaptchaCode">
+            <summary>
+            验证码输入值
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.CaptchaCodeComfirmOutputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.CaptchaCodeComfirmOutputDto.LastCode">
+            <summary>
+            验证码生成参数
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.CaptchaCodeComfirmOutputDto.CaptchaCode">
+            <summary>
+            验证码输入值
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.CaptchaCodeComfirmOutputDto.Correct">
+            <summary>
+            是否正确
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.CaptchaCodeComfirmOutputDto.Expired">
+            <summary>
+            是否已过期
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.MessageUserSelectInputDto">

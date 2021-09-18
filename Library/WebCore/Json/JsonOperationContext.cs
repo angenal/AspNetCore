@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +13,7 @@ using WebCore.Collections;
 using WebCore.Json.Parsing;
 using WebCore.Threading;
 using WebCore.Utils;
+using WebInterface.Settings;
 
 #if VALIDATE
 using WebCore.Platform;
@@ -110,8 +111,8 @@ namespace WebCore.Json
 
         public unsafe class ManagedPinnedBuffer : IDisposable
         {
-            public const int LargeBufferSize = 128 * Constants.Size.Kilobyte;
-            public const int Size =  32 * Constants.Size.Kilobyte;
+            public const int LargeBufferSize = 128 * Constants.Size.KB;
+            public const int Size =  32 * Constants.Size.KB;
 
             internal BufferSegment BufferInstance;
             public ArraySegment<byte> Buffer;

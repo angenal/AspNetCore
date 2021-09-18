@@ -174,6 +174,9 @@ namespace WebFramework.Services
             // Email
             services.AddEmail(config);
 
+            // Image
+            services.AddSingleton<IImageTools, ImageTools>();
+
             // Excel
             services.AddSingleton<IExcelTools, ExcelTools>();
             // Word

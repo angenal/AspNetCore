@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using WebCore.Binary;
+using WebInterface.Settings;
 
 namespace WebCore.Compression
 {
@@ -18,7 +19,7 @@ namespace WebCore.Compression
         private const int MAXD_LOG = 16;
         private const int MAX_DISTANCE = ((1 << MAXD_LOG) - 1);
 
-        private const int LZ4_64Klimit = (64 * Constants.Size.Kilobyte) + (MFLIMIT - 1);
+        private const int LZ4_64Klimit = (64 * Constants.Size.KB) + (MFLIMIT - 1);
         private const int LZ4_skipTrigger = 6;  // Increase this value ==> compression run slower on incompressible data
 
         private const byte ML_BITS = 4;
@@ -583,7 +584,7 @@ namespace WebCore.Compression
             }
             else
             {
-                var length = LZ4_decompress_generic<EndOnOutputSize, Full, WithPrefix64K>(input, output, inputLength, outputLength, 0, output - (64 * Constants.Size.Kilobyte), null, 64 * Constants.Size.Kilobyte);
+                var length = LZ4_decompress_generic<EndOnOutputSize, Full, WithPrefix64K>(input, output, inputLength, outputLength, 0, output - (64 * Constants.Size.KB), null, 64 * Constants.Size.KB);
                 if (length < 0)
                     ThrowException(new ArgumentException("LZ4 block is corrupted, or invalid length has been given."));
 
@@ -611,7 +612,7 @@ namespace WebCore.Compression
 
             byte* dictEnd = dictStart + dictSize;
 
-            bool checkOffset = ((typeof(TEndCondition) == typeof(EndOnInputSize)) && (dictSize < 64 * Constants.Size.Kilobyte));
+            bool checkOffset = ((typeof(TEndCondition) == typeof(EndOnInputSize)) && (dictSize < 64 * Constants.Size.KB));
 
             // Special Cases
             if ((typeof(TEarlyEnd) == typeof(Partial)) && (oexit > oend - MFLIMIT)) oexit = oend - MFLIMIT;                          // targetOutputSize too high => decode everything
