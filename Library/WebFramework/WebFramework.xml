@@ -148,6 +148,107 @@
         <member name="P:WebFramework.ConnectionStrings.DefaultConnection">
             <summary></summary>
         </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginEvents">
+            <summary>
+            微信小程序身份验证的生命周期事件
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginEvents.OnWeixinServerCompleted">
+            <summary>
+            微信服务端验证完成后触发,注册该方法获取用户信息.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginEvents.WeixinServerCompleted(WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext)">
+            <summary>
+            微信服务端验证完成后将会调用该方法.
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions.AppId">
+            <summary>
+            微信小程序 appId【请注意该信息的安全性,避免下发至客户端】
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions.Secret">
+            <summary>
+            微信小程序 appSecret【请注意该信息的安全性,避免下发至客户端】
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions.GrantType">
+            <summary>
+            微信授权类型, 默认: authorization_code
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions.JsQuery">
+            <summary>
+            从微信服务器换取用户信息, 携带小程序客户端获取到的参数, 默认: code
+            
+            <para>
+                该值需要配合参数 CallbackPath, 默认: SigninWeixinMiniProgram
+                则"https://localhost/SigninWeixinMiniProgram?code={code}"为验证地址,而{code}则会被传递至微信服务器进行验证.
+            </para>
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions.CustomerLoginState">
+            <summary>
+            根据微信服务器返回的会话密匙执行登录操作, 比如颁发JWT, 缓存OpenId, 重定向Action等.
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions.CacheExpiration">
+            <summary>
+            缓存过期时间, 默认：1天
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions.Events">
+            <summary>
+            Gets or sets the <see cref="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginEvents"/> used to handle authentication events.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions.Validate">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginStateContext">
+            <summary>
+            用户进行登录操作时所需要的上下文信息
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginStateContext.SessionInfoKey">
+            <summary>
+            微信服务端返回的密匙保存在缓存中关联的Key
+            </summary>
+        </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext">
+            <summary>
+            微信服务器返回的信息以及当前验证处理的上下文信息【会话密钥】
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext.OpenId">
+            <summary>
+            用户唯一标识【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext.UnionId">
+            <summary>
+            用户在开放平台的唯一标识符，在满足UnionId下发条件的情况下会返回【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext.ErrCode">
+            <summary>
+            错误码
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext.ErrMsg">
+            <summary>
+            错误信息
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext.SessionKey">
+            <summary>
+            会话密钥【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
         <member name="T:WebFramework.Authorization.ApiAuthorizationServicesExtensions">
             <summary>
             依赖注入 services.AddApiAuthorization 服务
