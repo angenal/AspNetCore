@@ -5,6 +5,7 @@
     <AssemblyName>WebCore</AssemblyName>
     <PackageId>WebDotnetCore.Core</PackageId>
     <Configurations>Debug;Release;Validate</Configurations>
+	<DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
     <RootNamespace>WebCore</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
@@ -48,6 +49,7 @@
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.1.11" />
     <PackageReference Include="K4os.Hash.xxHash" Version="1.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
