@@ -14,45 +14,55 @@ using WebFramework.Services;
 namespace WebFramework.Filters
 {
     /// <summary></summary>
-    public class AsyncTraceMonitorFilter : IAsyncActionFilter
+    public class AsyncTraceMonitorFilter : IActionFilter, IOrderedFilter
     {
+        /// <summary>
+        /// A filter that specifies the relative order it should run.
+        /// </summary>
+        public int Order { get; } = int.MaxValue - 11;
+
         /// <summary></summary>
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public bool Enabled { get; set; }
+        /// <summary></summary>
+        public string Trace { get; set; }
+
+        /// <summary></summary>
+        public void OnActionExecuting(ActionExecutingContext context)
         {
             // Gets a unique identifier to represent this request in trace logs.
-            var trace = context.HttpContext.TraceIdentifier;
+            Trace = context.HttpContext.TraceIdentifier;
             // Trace limit request byte size, less than 1MB
-            var enabled = trace != null && context.HttpContext.Request.Body?.Length < Logs.Manage.Limit;
-            if (enabled && (Logs.Enabled || Logs.Manage.Trace))
+            Enabled = Trace != null;
+            if (Enabled && (Logs.Enabled || Logs.Manage.Trace))
             {
                 // Record input arguments
                 if (context.ActionArguments.Count > 0)
                 {
-                    context.HttpContext.Items.TryAdd(trace, context.ActionArguments);
+                    context.HttpContext.Items.TryAdd(Trace, context.ActionArguments);
                 }
                 // Record post request body
-                else if (context.HttpContext.Request.Method.Equals(HttpMethods.Post) && context.ActionDescriptor.ActionConstraints.Any(t => t is HttpMethodActionConstraint c && c.HttpMethods.Contains(HttpMethods.Post)))
+                else if (context.HttpContext.Request.Method.Equals(HttpMethods.Post)
+                    && context.ActionDescriptor.ActionConstraints.Any(t => t is HttpMethodActionConstraint c && c.HttpMethods.Contains(HttpMethods.Post))
+                    && context.HttpContext.Request.Body?.Length < Logs.Manage.Limit)
                 {
                     switch (context.HttpContext.Request.ContentType.ToLower())
                     {
                         case "application/json":
                         case "application/x-www-form-urlencoded":
-                            await OnPostRequestAsync(context, trace);
+                            OnPostRequestAsync(context, Trace).Wait();
                             break;
                         case "multipart/form-data":
                             var hasUpload = context.HttpContext.Request.Headers.TryGetValue("Content-Disposition", out var contentDisposition) && contentDisposition.Any(c => c.Contains("filename", StringComparison.OrdinalIgnoreCase));
-                            if (!hasUpload) await OnPostRequestAsync(context, trace);
+                            if (!hasUpload) OnPostRequestAsync(context, Trace).Wait();
                             break;
                     }
                 }
             }
-            // Before request
-            await next();
-            // After request
-            if (enabled && Logs.Manage.Trace)
-            {
-                TraceRecord(context.HttpContext, trace);
-            }
+        }
+        /// <summary></summary>
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
+            if (Enabled && Logs.Manage.Trace && context.Exception == null) TraceRecord(context.HttpContext, Trace);
         }
         /// <summary>Record post request body</summary>
         private static async Task OnPostRequestAsync(ActionExecutingContext context, string trace)
@@ -71,7 +81,6 @@ namespace WebFramework.Filters
         /// <summary>Trace request</summary>
         private static void TraceRecord(HttpContext context, string trace)
         {
-            if (!context.Response.HasStarted) return;
             string url = context.Request.GetDisplayUrl();
             var contents = new StringBuilder(url);
             if (context.Items.TryGetValue(trace, out object value) && value != null)
@@ -100,11 +109,11 @@ namespace WebFramework.Filters
                 contents.Append(Environment.NewLine);
             }
             var res = new StringBuilder();
-            res.AppendLine($"ContentType: {context.Response.ContentType}");
+            res.AppendLine($"ContentType: {(context.Response.ContentType ?? "application/json")}");
             res.AppendLine($"StatusCode: {context.Response.StatusCode}");
-            res.Append(Environment.NewLine);
-            if (context.Response.Body?.Length > 0 && context.Response.ContentType.Equals("application/json", StringComparison.OrdinalIgnoreCase))
-                res.Append(context.Response.Body);
+            //res.Append(Environment.NewLine);
+            //if (context.Response.Body?.Length > 0 && context.Response.ContentType.Equals("application/json", StringComparison.OrdinalIgnoreCase))
+            //    res.Append(context.Response.Body);
             // Asynchronous record log file
             Logs.RequestHandler.Publish(new RequestLog
             {

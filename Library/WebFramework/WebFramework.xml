@@ -1286,6 +1286,11 @@
             请求参数验证
             </summary>
         </member>
+        <member name="P:WebFramework.Filters.AsyncRequestValidationFilter.Order">
+            <summary>
+            A filter that specifies the relative order it should run.
+            </summary>
+        </member>
         <member name="F:WebFramework.Filters.AsyncRequestValidationFilter.FluentValidation">
             <summary>
             启用 FluentValidation
@@ -1318,7 +1323,21 @@
         <member name="T:WebFramework.Filters.AsyncTraceMonitorFilter">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+        <member name="P:WebFramework.Filters.AsyncTraceMonitorFilter.Order">
+            <summary>
+            A filter that specifies the relative order it should run.
+            </summary>
+        </member>
+        <member name="P:WebFramework.Filters.AsyncTraceMonitorFilter.Enabled">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Filters.AsyncTraceMonitorFilter.Trace">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.OnActionExecuted(Microsoft.AspNetCore.Mvc.Filters.ActionExecutedContext)">
             <summary></summary>
         </member>
         <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.OnPostRequestAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,System.String)">

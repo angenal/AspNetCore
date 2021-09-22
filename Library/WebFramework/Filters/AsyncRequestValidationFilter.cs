@@ -8,8 +8,13 @@ namespace WebFramework.Filters
     /// <summary>
     /// 请求参数验证
     /// </summary>
-    public class AsyncRequestValidationFilter : IAsyncActionFilter
+    public class AsyncRequestValidationFilter : IAsyncActionFilter, IOrderedFilter
     {
+        /// <summary>
+        /// A filter that specifies the relative order it should run.
+        /// </summary>
+        public int Order { get; } = int.MaxValue - 12;
+
         /// <summary>
         /// 启用 FluentValidation
         /// </summary>
