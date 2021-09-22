@@ -1343,7 +1343,7 @@
         <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.OnPostRequestAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,System.String)">
             <summary>Record post request body</summary>
         </member>
-        <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.TraceRecord(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+        <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.TraceRecord(Microsoft.AspNetCore.Mvc.Filters.ActionExecutedContext,System.String)">
             <summary>Trace request</summary>
         </member>
         <member name="T:WebFramework.Filters.RequestLog">

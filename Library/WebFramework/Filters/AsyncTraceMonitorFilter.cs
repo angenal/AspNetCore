@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -62,7 +63,7 @@ namespace WebFramework.Filters
         /// <summary></summary>
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (Enabled && Logs.Manage.Trace && context.Exception == null) TraceRecord(context.HttpContext, Trace);
+            if (Enabled && Logs.Manage.Trace) TraceRecord(context, Trace);
         }
         /// <summary>Record post request body</summary>
         private static async Task OnPostRequestAsync(ActionExecutingContext context, string trace)
@@ -79,11 +80,11 @@ namespace WebFramework.Filters
             context.HttpContext.Request.Body.Position = 0; // SeekOrigin.Begin
         }
         /// <summary>Trace request</summary>
-        private static void TraceRecord(HttpContext context, string trace)
+        private static void TraceRecord(ActionExecutedContext context, string trace)
         {
-            string url = context.Request.GetDisplayUrl();
+            string url = context.HttpContext.Request.GetDisplayUrl();
             var contents = new StringBuilder(url);
-            if (context.Items.TryGetValue(trace, out object value) && value != null)
+            if (context.HttpContext.Items.TryGetValue(trace, out object value) && value != null)
             {
                 contents.Append(Environment.NewLine);
                 if (value is string body)
@@ -101,23 +102,35 @@ namespace WebFramework.Filters
                         contents.Append(Environment.NewLine);
                     }
                 }
-                if (context.Items.TryGetValue(trace + "sql", out object sqlValue))
+                if (context.HttpContext.Items.TryGetValue(trace + "sql", out object sqlValue))
                 {
                     contents.Append(Environment.NewLine);
                     contents.Append($" sql => {sqlValue}");
                 }
-                contents.Append(Environment.NewLine);
             }
             var res = new StringBuilder();
-            res.AppendLine($"ContentType: {(context.Response.ContentType ?? "application/json")}");
-            res.AppendLine($"StatusCode: {context.Response.StatusCode}");
-            //res.Append(Environment.NewLine);
-            //if (context.Response.Body?.Length > 0 && context.Response.ContentType.Equals("application/json", StringComparison.OrdinalIgnoreCase))
-            //    res.Append(context.Response.Body);
+            var contentType = context.HttpContext.Response.ContentType ?? "application/json";
+            var statusCode = context.HttpContext.Response.StatusCode;
+            res.AppendLine($"ContentType: {contentType}");
+            if (context.Exception != null)
+            {
+                res.AppendLine($"StatusCode: {(statusCode == 200 ? 500 : statusCode)}");
+                res.Append(Environment.NewLine);
+                res.Append(context.Exception.ToString());
+            }
+            else if (context.Result != null)
+            {
+                res.AppendLine($"StatusCode: {(statusCode == 500 ? 200 : statusCode)}");
+                res.Append(Environment.NewLine);
+                if (context.Result is ObjectResult result)
+                {
+                    res.Append(result.Value?.ToJson() ?? "null");
+                }
+            }
             // Asynchronous record log file
             Logs.RequestHandler.Publish(new RequestLog
             {
-                Path = context.Request.Path.Value,
+                Path = context.HttpContext.Request.Path.Value,
                 Trace = trace,
                 Request = contents.ToString(),
                 Response = res.ToString(),
