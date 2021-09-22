@@ -72,7 +72,8 @@ function logSearch(e) {
     if (e.keyCode != 13) return;
     $('#log0MoreBtn').attr('page', '1').hide();
     $('#log1MoreBtn').attr('page', '1').hide();
-    logLoad();
+    log0Load();
+    log1Load();
 }
 
 function log0Delete(btn, id) {

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using WebCore;
+using WebFramework.Filters;
 using WebFramework.Services;
 using WebFramework.SignalR;
 
@@ -105,7 +106,9 @@ namespace WebFramework
             // 下载文件 Tus Endpoint Handler
             endpoints.MapGet("/" + TusFileServer.UrlPath.Trim('/') + "/{fileId}", TusFileServer.DownloadHandler);
 
-            // 查询异常日志记录
+            // 查询日志记录
+            endpoints.MapGet(RequestLogService.QueryUrl, RequestLogService.QueryHandler);
+            endpoints.MapDelete(RequestLogService.DeleteUrl, RequestLogService.DeleteHandler);
             endpoints.MapGet(ExceptionLogService.QueryUrl, ExceptionLogService.QueryHandler);
             endpoints.MapDelete(ExceptionLogService.DeleteUrl, ExceptionLogService.DeleteHandler);
 
