@@ -224,6 +224,11 @@
             微信服务器返回的信息以及当前验证处理的上下文信息【会话密钥】
             </summary>
         </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext.SessionKey">
+            <summary>
+            会话密钥【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
         <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext.OpenId">
             <summary>
             用户唯一标识【请注意该信息的安全性,不要下发至客户端】
@@ -242,11 +247,6 @@
         <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext.ErrMsg">
             <summary>
             错误信息
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinServerResultContext.SessionKey">
-            <summary>
-            会话密钥【请注意该信息的安全性,不要下发至客户端】
             </summary>
         </member>
         <member name="T:WebFramework.Authorization.ApiAuthorizationServicesExtensions">
@@ -1319,6 +1319,188 @@
             <summary></summary>
         </member>
         <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.OnPostRequestAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,System.String)">
+            <summary>Record post request body</summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncTraceMonitorFilter.TraceRecord(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>Trace request</summary>
+        </member>
+        <member name="T:WebFramework.Filters.RequestLog">
+            <summary>
+            Request log database model
+            </summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLog.Id">
+            <summary>编号</summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLog.Path">
+            <summary>跟踪网址</summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLog.Trace">
+            <summary>跟踪编号</summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLog.Request">
+            <summary>请求内容</summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLog.Response">
+            <summary>响应内容</summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLog.Time">
+            <summary>产生时间</summary>
+        </member>
+        <member name="T:WebFramework.Filters.RequestLogOutputDto">
+            <summary>
+            Request log output
+            </summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLogOutputDto.Records">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLogOutputDto.Page">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLogOutputDto.Total">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Filters.RequestLogOutputDto.Rows">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Filters.RequestLogService">
+            <summary>
+            Request log database service
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.RequestLogService.LogDb">
+            <summary>
+            Use LiteDb
+            </summary>
+        </member>
+        <member name="M:WebFramework.Filters.RequestLogService.Init(System.String)">
+            <summary>
+            Init LiteDb
+            </summary>
+            <param name="path"></param>
+        </member>
+        <member name="M:WebFramework.Filters.RequestLogService.WriteLog(WebFramework.Filters.RequestLog)">
+            <summary>
+            Record log, if exists web logs/500 directory, and write LiteDb
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.RequestLogService.QueryUrl">
+            <summary>
+            Query log records Url
+            </summary>
+        </member>
+        <member name="M:WebFramework.Filters.RequestLogService.QueryHandler(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Query log records from LiteDb
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.RequestLogService.DeleteUrl">
+            <summary>
+            Delete log records Url
+            </summary>
+        </member>
+        <member name="M:WebFramework.Filters.RequestLogService.DeleteHandler(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Delete log records from LiteDb
+            </summary>
+        </member>
+        <member name="T:WebFramework.Filters.AsyncRequestHandler`1">
+            <summary>
+            Asynchronous subscription publication > 3k Requests/sec + The background processing time is about one minute.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="F:WebFramework.Filters.AsyncRequestHandler`1.Handlers">
+            <summary>
+            Subscribe Tasks
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.AsyncRequestHandler`1._data">
+            <summary>
+            data list
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.AsyncRequestHandler`1._onceConcurrentTasks">
+            <summary>
+            parallel tasks number
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.AsyncRequestHandler`1._onceInterval">
+            <summary>
+            sleep 1 milliseconds after parallel tasks, for load reduction
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.AsyncRequestHandler`1._interval">
+            <summary>
+            sleep 1 seconds before parallel tasks, for load reduction
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.AsyncRequestHandler`1._timeout">
+            <summary>
+            a task timeout
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.AsyncRequestHandler`1._thread0">
+            <summary>
+            a background thread
+            </summary>
+        </member>
+        <member name="F:WebFramework.Filters.AsyncRequestHandler`1._default">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Filters.AsyncRequestHandler`1.Default">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.#ctor(System.TimeSpan,System.TimeSpan,System.TimeSpan,System.Int32)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Publish(`0)">
+            <summary>
+            Publish Tasks
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Subscribe(System.Action{`0})">
+            <summary>
+            Subscribe Tasks
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Subscribe(System.Func{`0,System.Threading.Tasks.Task})">
+            <summary>
+            Subscribe Tasks
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Unsubscribe">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Start">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Dispose">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.RunPublishTasks">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.RunSubscribeTasks">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Run(System.Action{`0},`0)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Run(System.Func{`0,System.Threading.Tasks.Task},`0)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Run(System.Action{`0[]},`0[])">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Filters.AsyncRequestHandler`1.Run(System.Func{`0[],System.Threading.Tasks.Task},`0[])">
             <summary></summary>
         </member>
         <member name="T:WebFramework.Filters.HttpResponseExceptionFilter">
@@ -2412,9 +2594,14 @@
             Log files root directory
             </summary>
         </member>
-        <member name="F:WebFramework.Services.Logs.WebManage">
+        <member name="F:WebFramework.Services.Logs.Manage">
             <summary>
             Log Manage Configuration
+            </summary>
+        </member>
+        <member name="F:WebFramework.Services.Logs.RequestHandler">
+            <summary>
+            Asynchronous record log file
             </summary>
         </member>
         <member name="F:WebFramework.Services.Logs.ExceptionHandler">
@@ -2459,6 +2646,12 @@
         </member>
         <member name="T:WebFramework.Services.LogManage">
             <summary></summary>
+        </member>
+        <member name="P:WebFramework.Services.LogManage.Trace">
+            <summary>track all api requests</summary>
+        </member>
+        <member name="P:WebFramework.Services.LogManage.Limit">
+            <summary>limit request byte size</summary>
         </member>
         <member name="P:WebFramework.Services.LogManage.Path">
             <summary>the directory in web root path</summary>

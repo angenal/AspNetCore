@@ -12,12 +12,12 @@ namespace WebFramework.Authentication.WeixinMiniProgram
             HttpContext context,
             AuthenticationScheme scheme,
             WeixinLoginOptions options,
+            string sessionKey,
             string openId,
             string uniodId,
             string errCode,
             string errMsg,
-            string sessionKey,
-            string sessionInfoKey = null) : base(context, scheme, options, openId, uniodId, errCode, errMsg, sessionKey)
+            string sessionInfoKey = null) : base(context, scheme, options, sessionKey, openId, uniodId, errCode, errMsg)
         {
             SessionInfoKey = sessionInfoKey;
         }
@@ -37,18 +37,23 @@ namespace WebFramework.Authentication.WeixinMiniProgram
             HttpContext context,
             AuthenticationScheme scheme,
             WeixinLoginOptions options,
+            string sessionKey,
             string openId,
             string uniodId,
             string errCode,
-            string errMsg,
-            string sessionKey) : base(context, scheme, options)
+            string errMsg) : base(context, scheme, options)
         {
+            SessionKey = sessionKey;
             OpenId = openId;
             UnionId = uniodId;
             ErrCode = errCode;
             ErrMsg = errMsg;
-            SessionKey = sessionKey;
         }
+
+        /// <summary>
+        /// 会话密钥【请注意该信息的安全性,不要下发至客户端】
+        /// </summary>
+        public string SessionKey { get; set; }
 
         /// <summary>
         /// 用户唯一标识【请注意该信息的安全性,不要下发至客户端】
@@ -69,10 +74,5 @@ namespace WebFramework.Authentication.WeixinMiniProgram
         /// 错误信息
         /// </summary>
         public string ErrMsg { get; set; }
-
-        /// <summary>
-        /// 会话密钥【请注意该信息的安全性,不要下发至客户端】
-        /// </summary>
-        public string SessionKey { get; set; }
     }
 }

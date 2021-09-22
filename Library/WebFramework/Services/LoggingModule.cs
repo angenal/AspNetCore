@@ -10,11 +10,21 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using WebFramework.Data;
+using WebFramework.Filters;
 
 namespace WebFramework.Services
 {
     /* appsettings.json
-      "Logging": {
+     * LogLevel:
+         Trace = 0,
+         Debug = 1,
+         Information = 2,
+         Warning = 3,
+         Error = 4,
+         Critical = 5,
+         None = 6
+     **
+     "Logging": {
         "LogLevel": {
           "Default": "Warning",
           "Microsoft": "Error",
@@ -22,6 +32,8 @@ namespace WebFramework.Services
           "System": "Error"
         },
         "LogManage": {
+          "Trace": true,
+          "Limit": 1048576,
           "Path": "logs",
           "User": "demo",
           "Pass": "demo"
@@ -93,7 +105,11 @@ namespace WebFramework.Services
         /// <summary>
         /// Log Manage Configuration
         /// </summary>
-        public static LogManage WebManage = new LogManage { Path = RootPath };
+        public static LogManage Manage = new LogManage { Path = RootPath };
+        /// <summary>
+        /// Asynchronous record log file
+        /// </summary>
+        public static AsyncRequestHandler<RequestLog> RequestHandler;
         /// <summary>
         /// Asynchronous record log file
         /// </summary>
@@ -241,6 +257,10 @@ namespace WebFramework.Services
     /// <summary></summary>
     public partial class LogManage
     {
+        /// <summary>track all api requests</summary>
+        public bool Trace { get; set; }
+        /// <summary>limit request byte size</summary>
+        public int Limit { get; set; } = 1048576; // 1MB
         /// <summary>the directory in web root path</summary>
         public string Path { get; set; }
         /// <summary></summary>

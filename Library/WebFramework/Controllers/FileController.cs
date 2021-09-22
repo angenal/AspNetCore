@@ -48,6 +48,7 @@ namespace WebFramework.Controllers
         /// </summary>
         [HttpPost]
         [DisableFormModelBinding]
+        //[DisableRequestSizeLimit]
         //[RequestSizeLimit(524288000)] // 500MB
         [Authorize(Policy = "Upload")]
         [Produces("application/json")]

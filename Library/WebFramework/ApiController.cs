@@ -26,7 +26,7 @@ namespace WebFramework
             System.Diagnostics.Debug.WriteLine(sql);
 #endif
             var trace = HttpContext.TraceIdentifier;
-            if (trace != null) HttpContext.Items.TryAdd(trace + "sql", sql);
+            if (trace != null) HttpContext.Items.TryAdd($"{trace}sql", sql);
         }
 
         /// <summary></summary>
