@@ -67,11 +67,36 @@
         <p><br><br><br></p>
         <!--contents-->
         <div class="container">
+            <div class="panel panel-info">
+                <div class="panel-heading" style="padding:1px">
+                    <ul class="breadcrumb" style="margin-bottom:0;background:none">
+                        <li><span class="label label-info">日志</span></li>
+                        <li class="active"><span class="label label-info">接口请求</span></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover table-striped table-sort">
+                        <thead class="head-bg">
+                            <tr class="text-justify"><th width="276">接口</th><th>请求</th><th width="147">时间</th><th width="50">操作</th></tr>
+                        </thead>
+                        <tbody id="log0ListTbl"></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" align="center" valign="middle">
+                                    <span id="log0MoreInfo" class="text-muted" style="display:none"></span>
+                                    <button id="log0MoreBtn" type="button" class="btn btn-success" page="1" onclick="log0Load()">查看更多...</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <p><br></p>
             <div class="panel panel-danger">
                 <div class="panel-heading" style="padding:1px">
                     <ul class="breadcrumb" style="margin-bottom:0;background:none">
-                        <li class="active"><span class="label label-danger">500异常</span></li>
                         <li><span class="label label-info">日志</span></li>
+                        <li class="active"><span class="label label-danger">系统异常</span></li>
                     </ul>
                 </div>
                 <div class="panel-body">
@@ -79,12 +104,12 @@
                         <thead class="head-bg">
                             <tr class="text-justify"><th width="276">接口</th><th>异常</th><th width="147">时间</th><th width="50">操作</th></tr>
                         </thead>
-                        <tbody id="logListTbl"></tbody>
+                        <tbody id="log1ListTbl"></tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="4" align="center" valign="middle">
-                                    <span id="logMoreInfo" class="text-muted" style="display:none"></span>
-                                    <button id="logMoreBtn" type="button" class="btn btn-success" page="1" onclick="logLoad()">查看更多...</button>
+                                    <span id="log1MoreInfo" class="text-muted" style="display:none"></span>
+                                    <button id="log1MoreBtn" type="button" class="btn btn-success" page="1" onclick="log1Load()">查看更多...</button>
                                 </td>
                             </tr>
                         </tfoot>
