@@ -107,6 +107,7 @@ namespace WebFramework
             endpoints.MapGet("/" + TusFileServer.UrlPath.Trim('/') + "/{fileId}", TusFileServer.DownloadHandler);
 
             // 查询日志记录
+            endpoints.MapGet(RequestLogService.ConfigUrl, RequestLogService.ConfigHandler);
             endpoints.MapGet(RequestLogService.QueryUrl, RequestLogService.QueryHandler);
             endpoints.MapDelete(RequestLogService.DeleteUrl, RequestLogService.DeleteHandler);
             endpoints.MapGet(ExceptionLogService.QueryUrl, ExceptionLogService.QueryHandler);

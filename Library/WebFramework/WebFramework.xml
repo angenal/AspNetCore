@@ -1407,6 +1407,16 @@
             Record log, if exists web logs/500 directory, and write LiteDb
             </summary>
         </member>
+        <member name="F:WebFramework.Filters.RequestLogService.ConfigUrl">
+            <summary>
+            Config log records
+            </summary>
+        </member>
+        <member name="M:WebFramework.Filters.RequestLogService.ConfigHandler(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Config log records from LiteDb
+            </summary>
+        </member>
         <member name="F:WebFramework.Filters.RequestLogService.QueryUrl">
             <summary>
             Query log records Url

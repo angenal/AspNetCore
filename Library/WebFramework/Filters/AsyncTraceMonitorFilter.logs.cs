@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using WebCore;
 using WebFramework.Data;
+using WebFramework.Services;
 
 namespace WebFramework.Filters
 {
@@ -102,9 +103,26 @@ namespace WebFramework.Filters
         }
 
         /// <summary>
+        /// Config log records
+        /// </summary>
+        public const string ConfigUrl = "/api/log/request/trace/{id}";
+
+        /// <summary>
+        /// Config log records from LiteDb
+        /// </summary>
+        public static async Task ConfigHandler(HttpContext context)
+        {
+            string trace = context.Request.RouteValues["id"].ToString();
+            if (!string.IsNullOrEmpty(trace)) Logs.Manage.Trace = (trace != "0" && trace != "no" && trace != "false");
+            string text = "{\"trace\":" + Logs.Manage.Trace.ToString().ToLower() + "}";
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(text);
+        }
+
+        /// <summary>
         /// Query log records Url
         /// </summary>
-        public const string QueryUrl = "/api/log/Request/query/{page}";
+        public const string QueryUrl = "/api/log/request/query/{page}";
 
         /// <summary>
         /// Query log records from LiteDb
@@ -148,7 +166,7 @@ namespace WebFramework.Filters
         /// <summary>
         /// Delete log records Url
         /// </summary>
-        public const string DeleteUrl = "/api/log/Request/delete/{id}";
+        public const string DeleteUrl = "/api/log/request/delete/{id}";
 
         /// <summary>
         /// Delete log records from LiteDb

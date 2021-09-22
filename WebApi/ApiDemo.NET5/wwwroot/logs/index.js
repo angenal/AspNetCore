@@ -1,6 +1,39 @@
 // Gets log records
+logConfig();
 log0Load();
 log1Load();
+
+function logConfig() {
+    var cnf = function (id) {
+        $.ajax({
+            type: 'GET',
+            url: '/api/log/request/trace/' + id,
+            contentType: 'application/json',
+            success: function (data) {
+                //console.log(data);
+                location.reload(true);
+            }
+        });
+    };
+    $.ajax({
+        type: 'GET',
+        url: '/api/log/request/trace/',
+        contentType: 'application/json',
+        success: function (data) {
+            //console.log(data);
+            if (data.trace) {
+                $('#traceOn').hide();
+                $('#traceOff').show().addClass('active').click(function () { cnf(0); });
+            } else {
+                $('#traceOn').show().addClass('active').click(function () { cnf(1); });
+                $('#traceOff').hide();
+            }
+        },
+        error: function (errMsg) {
+            console.log(errMsg);
+        }
+    });
+}
 
 function log0Load() {
     var input = $('#logSearchInput'), btn = $('#log0MoreBtn'), info = $('#log0MoreInfo'), tbl = $('#log0ListTbl');
@@ -12,7 +45,7 @@ function log0Load() {
         type: 'GET',
         url: '/api/log/request/query/' + p + searchText,
         contentType: 'application/json',
-        success: (data) => {
+        success: function (data) {
             //console.log(data);
             if (!data || data.records == 0) {
                 info.html('记录为空').show();
@@ -29,7 +62,7 @@ function log0Load() {
                 tbl.append($(tpl));
             }
         },
-        error: (errMsg) => {
+        error: function (errMsg) {
             console.log(errMsg);
         }
     });
@@ -45,7 +78,7 @@ function log1Load() {
         type: 'GET',
         url: '/api/log/exception/query/' + p + searchText,
         contentType: 'application/json',
-        success: (data) => {
+        success: function (data) {
             //console.log(data);
             if (!data || data.records == 0) {
                 info.html('记录为空').show();
@@ -62,7 +95,7 @@ function log1Load() {
                 tbl.append($(tpl));
             }
         },
-        error: (errMsg) => {
+        error: function (errMsg) {
             console.log(errMsg);
         }
     });
@@ -82,13 +115,13 @@ function log0Delete(btn, id) {
         type: 'DELETE',
         url: '/api/log/request/delete/' + id,
         contentType: 'application/json',
-        success: (data) => {
+        success: function (data) {
             //console.log(data);
             tr.remove(); tr1.remove();
             $('#log00').text((parseInt($('#log00').text()) - 1));
             $('#log01').text((parseInt($('#log01').text()) - 1));
         },
-        error: (errMsg) => {
+        error: function (errMsg) {
             console.log(errMsg);
         }
     });
@@ -100,13 +133,13 @@ function log1Delete(btn, id) {
         type: 'DELETE',
         url: '/api/log/exception/delete/' + id,
         contentType: 'application/json',
-        success: (data) => {
+        success: function (data) {
             //console.log(data);
             tr.remove(); tr1.remove();
             $('#log10').text((parseInt($('#log10').text()) - 1));
             $('#log11').text((parseInt($('#log11').text()) - 1));
         },
-        error: (errMsg) => {
+        error: function (errMsg) {
             console.log(errMsg);
         }
     });
