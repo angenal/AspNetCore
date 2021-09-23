@@ -18,7 +18,7 @@ function logConfig() {
                 offText: '关',
                 onColor: 'success',
                 offColor: 'info',
-                size: 'small',
+                size: 'mini',
                 onSwitchChange: function (event, state) {
                     $.ajax({
                         type: 'GET',

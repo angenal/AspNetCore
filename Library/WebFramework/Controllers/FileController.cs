@@ -98,7 +98,7 @@ namespace WebFramework.Controllers
             if (!input.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)) return Error("文件格式错误!");
             if (!input.Path.StartsWith("/")) return Error("文件不存在!");
             var file = Path.Combine(env.WebRootPath, input.Path.TrimStart('/'));
-            if (!System.IO.File.Exists(file)) return Error("文件不存在!");
+            //if (!System.IO.File.Exists(file)) return Error("文件不存在!");
 
             var signedFile = file.Substring(0, file.Length - 4) + "Signed.pdf";
             // Sign by the signature certificate file: PdfCert.pfx

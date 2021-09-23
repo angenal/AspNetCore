@@ -41,7 +41,7 @@ namespace WebFramework.Filters
             // Record post request body, limit request byte size, less than 1MB.
             else if (Logs.Manage.Trace && context.HttpContext.Request.Method.Equals(HttpMethods.Post)
                 //&& context.ActionDescriptor.ActionConstraints.Any(t => t is HttpMethodActionConstraint c && c.HttpMethods.Contains(HttpMethods.Post))
-                && context.HttpContext.Request.Body?.Length < Logs.Manage.Limit)
+                && 0 < context.HttpContext.Request.ContentLength && context.HttpContext.Request.ContentLength < Logs.Manage.Limit)
             {
                 switch (context.HttpContext.Request.ContentType.ToLower())
                 {
