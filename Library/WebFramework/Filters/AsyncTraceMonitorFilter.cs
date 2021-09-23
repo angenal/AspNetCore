@@ -80,6 +80,8 @@ namespace WebFramework.Filters
         /// <summary>Trace request</summary>
         private static void TraceRecord(ActionExecutedContext context, string trace)
         {
+            var resultType = context.Result?.GetType().Name;
+            if (resultType != null && resultType.Contains("Redirect")) return;
             string url = $"[{context.HttpContext.Request.Method}] {context.HttpContext.Request.GetDisplayUrl()}";
             var contents = new StringBuilder(url);
             if (context.HttpContext.Items.TryGetValue(trace, out object value) && value != null)
@@ -120,10 +122,11 @@ namespace WebFramework.Filters
             {
                 var contentType = context.HttpContext.Response.ContentType ?? "application/json";
                 res.AppendLine($"ContentType: {contentType}");
-                res.AppendLine($"StatusCode: {(statusCode == 500 ? 200 : statusCode)}");
-                res.Append(Environment.NewLine);
                 if (context.Result is ObjectResult result)
                 {
+                    if (resultType.Equals("BadRequestObjectResult")) res.AppendLine($"StatusCode: {(statusCode == 200 ? 400 : statusCode)}");
+                    else res.AppendLine($"StatusCode: {(statusCode == 500 ? 200 : statusCode)}");
+                    res.Append(Environment.NewLine);
                     res.Append(result.Value?.ToJson() ?? "null");
                 }
                 else if (context.Result is JsonResult result1)
