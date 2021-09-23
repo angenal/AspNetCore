@@ -41,16 +41,18 @@ namespace WebFramework.Filters
             // Record post request body, limit request byte size, less than 1MB.
             else if (Logs.Manage.Trace && context.HttpContext.Request.Method.Equals(HttpMethods.Post)
                 //&& context.ActionDescriptor.ActionConstraints.Any(t => t is HttpMethodActionConstraint c && c.HttpMethods.Contains(HttpMethods.Post))
-                && 0 < context.HttpContext.Request.ContentLength && context.HttpContext.Request.ContentLength < Logs.Manage.Limit)
+                && 0 < context.HttpContext.Request.ContentLength && context.HttpContext.Request.ContentLength < Logs.Manage.Limit
+                && context.HttpContext.Request.ContentType != null)
             {
-                switch (context.HttpContext.Request.ContentType.ToLower())
+                switch (context.HttpContext.Request.ContentType.Split(';')[0].ToLower())
                 {
                     case "application/json":
                     case "application/x-www-form-urlencoded":
                         OnPostRequestAsync(context, Trace).Wait();
                         break;
                     case "multipart/form-data":
-                        var hasUpload = context.HttpContext.Request.Headers.TryGetValue("Content-Disposition", out var contentDisposition) && contentDisposition.Any(c => c.Contains("filename", StringComparison.OrdinalIgnoreCase));
+                        var isUpload = context.ActionDescriptor.DisplayName.Contains("upload", StringComparison.OrdinalIgnoreCase) && context.ActionDescriptor.FilterDescriptors.Any(t => t.Filter.GetType().Equals(typeof(DisableFormModelBindingAttribute)));
+                        var hasUpload = isUpload || context.HttpContext.Request.Headers.TryGetValue("Content-Disposition", out var contentDisposition) && contentDisposition.Any(c => c.Contains("filename", StringComparison.OrdinalIgnoreCase));
                         if (!hasUpload) OnPostRequestAsync(context, Trace).Wait();
                         break;
                 }
@@ -78,7 +80,7 @@ namespace WebFramework.Filters
         /// <summary>Trace request</summary>
         private static void TraceRecord(ActionExecutedContext context, string trace)
         {
-            string url = context.HttpContext.Request.GetDisplayUrl();
+            string url = $"[{context.HttpContext.Request.Method}] {context.HttpContext.Request.GetDisplayUrl()}";
             var contents = new StringBuilder(url);
             if (context.HttpContext.Items.TryGetValue(trace, out object value) && value != null)
             {
@@ -105,22 +107,28 @@ namespace WebFramework.Filters
                 }
             }
             var res = new StringBuilder();
-            var contentType = context.HttpContext.Response.ContentType ?? "application/json";
             var statusCode = context.HttpContext.Response.StatusCode;
-            res.AppendLine($"ContentType: {contentType}");
             if (context.Exception != null)
             {
+                var contentType = context.HttpContext.Response.ContentType;
+                res.AppendLine($"ContentType: {contentType}");
                 res.AppendLine($"StatusCode: {(statusCode == 200 ? 500 : statusCode)}");
                 res.Append(Environment.NewLine);
                 res.Append(context.Exception.ToString());
             }
             else if (context.Result != null)
             {
+                var contentType = context.HttpContext.Response.ContentType ?? "application/json";
+                res.AppendLine($"ContentType: {contentType}");
                 res.AppendLine($"StatusCode: {(statusCode == 500 ? 200 : statusCode)}");
                 res.Append(Environment.NewLine);
                 if (context.Result is ObjectResult result)
                 {
                     res.Append(result.Value?.ToJson() ?? "null");
+                }
+                else if (context.Result is JsonResult result1)
+                {
+                    res.Append(result1.Value?.ToJson() ?? "null");
                 }
             }
             // Asynchronous record log file
