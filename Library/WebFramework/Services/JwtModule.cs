@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,10 +21,10 @@ namespace WebFramework.Services
         /// <summary>
         /// Register JWT token authentication service.
         /// </summary>
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
+        public static AuthenticationBuilder AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
         {
             var section = config.GetSection(JwtSettings.AppSettings);
-            if (!section.Exists()) return services;
+            if (!section.Exists()) return services.AddAuthentication();
 
             // Register IOptions<JwtSettings> from appsettings.json
             services.Configure<JwtSettings>(section);
@@ -37,7 +38,7 @@ namespace WebFramework.Services
             // Remove default claims
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            services.AddSingleton<IJwtGenerator, JwtGenerator>().AddAuthentication(options =>
+            return services.AddSingleton<IJwtGenerator, JwtGenerator>().AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -90,8 +91,6 @@ namespace WebFramework.Services
                     }
                 };
             });
-
-            return services;
         }
     }
 

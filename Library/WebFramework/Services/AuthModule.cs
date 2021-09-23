@@ -21,7 +21,11 @@ namespace WebFramework.Services
             //services.AddIdentityLiteDB(config);
 
             // Authentication with JWT
-            services.AddJwtAuthentication(config);
+            var builder = services.AddJwtAuthentication(config);
+
+            // Register Weixin Services
+            services.AddWeixin(builder, config);
+
             // Authentication with OAuth
             if (config.GetSection("OAuth").Exists())
             {

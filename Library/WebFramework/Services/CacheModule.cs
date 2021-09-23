@@ -17,7 +17,9 @@ namespace WebFramework.Services
         public static IServiceCollection AddCache(this IServiceCollection services, IConfiguration config)
         {
             // Caching: a non distributed in memory implementation
-            services.AddMemoryCache();
+            services.AddMemoryCache(); // IMemoryCache cache
+            // Caching: a distributed in memory implementation
+            services.AddDistributedMemoryCache(); // IDistributedCache cache
             // Caching: response caching services, replaced by EasyCaching.ResponseCaching
             //services.AddResponseCaching();
 

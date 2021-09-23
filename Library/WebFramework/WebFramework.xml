@@ -148,6 +148,23 @@
         <member name="P:WebFramework.ConnectionStrings.DefaultConnection">
             <summary></summary>
         </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginDefaults">
+            <summary>
+            微信小程序登录校验的默认设置
+            </summary>
+        </member>
+        <member name="F:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginDefaults.AuthenticationScheme">
+            <summary></summary>
+        </member>
+        <member name="F:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginDefaults.DisplayName">
+            <summary></summary>
+        </member>
+        <member name="F:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginDefaults.AuthorizationEndpoint">
+            <summary>
+            微信小程序服务端验证地址
+            https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
+            </summary>
+        </member>
         <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginEvents">
             <summary>
             微信小程序身份验证的生命周期事件
@@ -324,56 +341,53 @@
         <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinPostConfigureOptions.PostConfigure(System.String,WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions)">
             <summary></summary>
         </member>
-        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse">
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse">
             <summary>
-            微信小程序登录凭证校验后所返回的结果。
+            微信小程序登录凭证校验后返回的结果
             https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
             </summary>
         </member>
-        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.OpenId">
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.SessionKey">
             <summary>
-            用户唯一标识
+            会话密钥【请注意该信息的安全性,不要下发至客户端】
             </summary>
         </member>
-        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.SessionKey">
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.OpenId">
             <summary>
-            会话密钥
+            用户唯一标识【请注意该信息的安全性,不要下发至客户端】
             </summary>
         </member>
-        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.UnionId">
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.UnionId">
             <summary>
-            用户在开放平台的唯一标识符，在满足 UnionID 下发条件的情况下会返回
+            用户在开放平台的唯一标识符，在满足UnionId下发条件的情况下会返回【请注意该信息的安全性,不要下发至客户端】
             </summary>
         </member>
-        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.ErrCode">
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.ErrCode">
             <summary>
             错误码
             </summary>
         </member>
-        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.ErrMsg">
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.ErrMsg">
             <summary>
             错误信息
             </summary>
         </member>
-        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Error">
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.Error">
             <summary></summary>
         </member>
-        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Response">
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.Response">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Success(System.Text.Json.JsonDocument)">
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.Success(System.Text.Json.JsonDocument)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Failed(System.Exception)">
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.Failed(System.Exception)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Dispose">
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.GetString(System.Text.Json.JsonElement,System.String)">
             <summary></summary>
         </member>
-        <member name="T:WebFramework.Authentication.WeixinMiniProgram.JsonDocumentAuthExtensions">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeixinMiniProgram.JsonDocumentAuthExtensions.GetString(System.Text.Json.JsonElement,System.String)">
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinPostResponse.Dispose">
             <summary></summary>
         </member>
         <member name="T:WebFramework.Authorization.ApiAuthorizationServicesExtensions">
