@@ -4,30 +4,35 @@ log0Load();
 log1Load();
 
 function logConfig() {
-    var cnf = function (id) {
-        $.ajax({
-            type: 'GET',
-            url: '/api/log/request/trace/' + id,
-            contentType: 'application/json',
-            success: function (data) {
-                //console.log(data);
-                location.reload(true);
-            }
-        });
-    };
+    var btn = $('#traceSwitch');
+    btn.hide();
     $.ajax({
         type: 'GET',
         url: '/api/log/request/trace/',
         contentType: 'application/json',
         success: function (data) {
             //console.log(data);
-            if (data.trace) {
-                $('#traceOn').hide();
-                $('#traceOff').show().addClass('active').click(function () { cnf(0); });
-            } else {
-                $('#traceOn').show().addClass('active').click(function () { cnf(1); });
-                $('#traceOff').hide();
-            }
+            if (data.trace) btn.attr('checked', 'checked'); else btn.removeAttr('checked');
+            btn.show().bootstrapSwitch({
+                onText: '开',
+                offText: '关',
+                onColor: 'success',
+                offColor: 'info',
+                size: 'small',
+                onSwitchChange: function (event, state) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/api/log/request/trace/' + (state ? '1' : '0'),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            //console.log(data); location.reload(true);
+                        },
+                        error: function (errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+                }
+            });
         },
         error: function (errMsg) {
             console.log(errMsg);

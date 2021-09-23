@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
@@ -32,31 +31,28 @@ namespace WebFramework.Filters
         {
             // Gets a unique identifier to represent this request in trace logs.
             Trace = context.HttpContext.TraceIdentifier;
-            // Trace limit request byte size, less than 1MB
             Enabled = Trace != null;
-            if (Enabled && (Logs.Enabled || Logs.Manage.Trace))
+            if (!Enabled || !Logs.Enabled && !Logs.Manage.Trace) return;
+            // Record input arguments from api request.
+            if (context.ActionArguments.Count > 0)
             {
-                // Record input arguments
-                if (context.ActionArguments.Count > 0)
+                context.HttpContext.Items.TryAdd(Trace, context.ActionArguments);
+            }
+            // Record post request body, limit request byte size, less than 1MB.
+            else if (Logs.Manage.Trace && context.HttpContext.Request.Method.Equals(HttpMethods.Post)
+                //&& context.ActionDescriptor.ActionConstraints.Any(t => t is HttpMethodActionConstraint c && c.HttpMethods.Contains(HttpMethods.Post))
+                && context.HttpContext.Request.Body?.Length < Logs.Manage.Limit)
+            {
+                switch (context.HttpContext.Request.ContentType.ToLower())
                 {
-                    context.HttpContext.Items.TryAdd(Trace, context.ActionArguments);
-                }
-                // Record post request body
-                else if (context.HttpContext.Request.Method.Equals(HttpMethods.Post)
-                    && context.ActionDescriptor.ActionConstraints.Any(t => t is HttpMethodActionConstraint c && c.HttpMethods.Contains(HttpMethods.Post))
-                    && context.HttpContext.Request.Body?.Length < Logs.Manage.Limit)
-                {
-                    switch (context.HttpContext.Request.ContentType.ToLower())
-                    {
-                        case "application/json":
-                        case "application/x-www-form-urlencoded":
-                            OnPostRequestAsync(context, Trace).Wait();
-                            break;
-                        case "multipart/form-data":
-                            var hasUpload = context.HttpContext.Request.Headers.TryGetValue("Content-Disposition", out var contentDisposition) && contentDisposition.Any(c => c.Contains("filename", StringComparison.OrdinalIgnoreCase));
-                            if (!hasUpload) OnPostRequestAsync(context, Trace).Wait();
-                            break;
-                    }
+                    case "application/json":
+                    case "application/x-www-form-urlencoded":
+                        OnPostRequestAsync(context, Trace).Wait();
+                        break;
+                    case "multipart/form-data":
+                        var hasUpload = context.HttpContext.Request.Headers.TryGetValue("Content-Disposition", out var contentDisposition) && contentDisposition.Any(c => c.Contains("filename", StringComparison.OrdinalIgnoreCase));
+                        if (!hasUpload) OnPostRequestAsync(context, Trace).Wait();
+                        break;
                 }
             }
         }

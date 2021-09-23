@@ -105,14 +105,14 @@ namespace WebFramework.Filters
         /// <summary>
         /// Config log records
         /// </summary>
-        public const string ConfigUrl = "/api/log/request/trace/{id}";
+        public const string ConfigUrl = "/api/log/request/trace/{id?}";
 
         /// <summary>
         /// Config log records from LiteDb
         /// </summary>
         public static async Task ConfigHandler(HttpContext context)
         {
-            string trace = context.Request.RouteValues["id"].ToString();
+            string trace = context.Request.RouteValues["id"]?.ToString();
             if (!string.IsNullOrEmpty(trace)) Logs.Manage.Trace = (trace != "0" && trace != "no" && trace != "false");
             string text = "{\"trace\":" + Logs.Manage.Trace.ToString().ToLower() + "}";
             context.Response.ContentType = "application/json";
