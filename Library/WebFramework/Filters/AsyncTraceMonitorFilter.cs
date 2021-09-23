@@ -112,11 +112,12 @@ namespace WebFramework.Filters
             var statusCode = context.HttpContext.Response.StatusCode;
             if (context.Exception != null)
             {
-                var contentType = context.HttpContext.Response.ContentType;
-                res.AppendLine($"ContentType: {contentType}");
                 res.AppendLine($"StatusCode: {(statusCode == 200 ? 500 : statusCode)}");
                 res.Append(Environment.NewLine);
-                res.Append(context.Exception.ToString().Split(Environment.NewLine)[0]);
+                string detail = context.Exception.ToString();
+                string[] s = detail.Split(Environment.NewLine);
+                if (s.Length > 3) detail = string.Join(Environment.NewLine, s[0], s[1], s[2]);
+                res.Append(detail);
             }
             else if (context.Result != null)
             {

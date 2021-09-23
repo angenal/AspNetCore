@@ -61,8 +61,8 @@ function log0Load() {
             if (searchText) tbl.html('');
             for (var i = 0; i < data.rows.length; i++) {
                 var item = data.rows[i];
-                var tpl = '<tr><td><span class="text-muted bg-info" style="cursor:pointer" onclick="$(\'#log0' + (item.id.replace('-', '')) + '\').toggle()">' + (item.path) + '</span><br><span class="text-info bg-warning">' + (item.trace) + '</span></td><td class="text-info vmiddle"><pre>' + (item.request) + '</pre></td><td class="text-muted vmiddle">' + (item.time) + '</td><td class="vmiddle"><button type="button" class="btn btn-xs btn-danger" page="1" onclick="log0Delete(this,\'' + (item.id) + '\')">删除</button></td></tr>';
-                tpl += '<tr id="log0' + (item.id.replace('-', '')) + '" style="display:none"><td colspan="4" align="left"><pre>' + (item.response) + '</pre></td></tr>';
+                var tpl = '<tr><td><span class="text-muted bg-info" style="cursor:pointer" onclick="$(\'#log0' + (item.id.replace('-', '')) + '\').toggle()">' + (item.path) + '</span><br><span class="text-info bg-warning">' + (item.trace) + '</span></td><td class="text-info vmiddle' + labelTdCls(item.response) + '"><pre>' + (item.request) + '</pre></td><td class="text-muted vmiddle">' + (item.time) + '</td><td class="vmiddle"><button type="button" class="btn btn-xs btn-danger" page="1" onclick="log0Delete(this,\'' + (item.id) + '\')">删除</button></td></tr>';
+                tpl += '<tr id="log0' + (item.id.replace('-', '')) + '" style="display:none"><td colspan="4" align="left" class="text-info' + labelTdCls(item.response) + '"><pre>' + (item.response) + '</pre></td></tr>';
                 //console.log(tpl);
                 tbl.append($(tpl));
             }
@@ -148,4 +148,11 @@ function log1Delete(btn, id) {
             console.log(errMsg);
         }
     });
+}
+
+function labelTdCls(s) {
+    if (!s) return '';
+    if (s.indexOf('StatusCode: 500') != -1) return ' label-danger';
+    if (s.indexOf('StatusCode: 400') != -1) return ' label-warning';
+    return '';
 }
