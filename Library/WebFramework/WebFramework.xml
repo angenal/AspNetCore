@@ -249,6 +249,133 @@
             错误信息
             </summary>
         </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginStateInfoStore">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginStateInfoStore.#ctor(Microsoft.Extensions.Caching.Distributed.IDistributedCache)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginStateInfoStore.GetSessionInfo(System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginStateInfoStore.RemoveAsync(System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginStateInfoStore.RenewAsync(System.String,WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo,WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginStateInfoStore.StoreAsync(WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo,WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions)">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.IWeixinLoginStateInfoStore">
+            <summary>
+            保存微信服务端返回的Sessionkey等信息到缓存.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.IWeixinLoginStateInfoStore.StoreAsync(WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo,WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions)">
+            <summary>
+            保存<see cref="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo"/>,并且返回所关联的Key。
+            </summary>
+            <param name="sessionInfo"><see cref="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo"/></param>
+            <param name="currentOption">当前的微信验证配置信息</param>
+            <returns>与该seesionInfo所关联的Key信息</returns>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.IWeixinLoginStateInfoStore.RenewAsync(System.String,WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo,WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions)">
+            <summary>
+            刷新当前Key的所对应的信息。
+            </summary>
+            <param name="key"></param>
+            <param name="sessionInfo"><see cref="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo"/></param>
+            <param name="currentOption">当前的微信验证配置信息</param>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.IWeixinLoginStateInfoStore.RemoveAsync(System.String)">
+            <summary>
+            根据Key来移除缓存中的结果。
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.IWeixinLoginStateInfoStore.GetSessionInfo(System.String)">
+            <summary>
+            根据Key来获取对应的<see cref="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo"/>。
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo">
+            <summary>
+            微信服务端返回的密匙信息.
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo.OpenId">
+            <summary>
+            用户唯一标识
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinLoginSessionInfo.SessionKey">
+            <summary>
+            会话密钥
+            </summary>
+        </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinPostConfigureOptions">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinPostConfigureOptions.#ctor(Microsoft.AspNetCore.DataProtection.IDataProtectionProvider)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinPostConfigureOptions.PostConfigure(System.String,WebFramework.Authentication.WeixinMiniProgram.WeixinLoginOptions)">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse">
+            <summary>
+            微信小程序登录凭证校验后所返回的结果。
+            https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.OpenId">
+            <summary>
+            用户唯一标识
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.SessionKey">
+            <summary>
+            会话密钥
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.UnionId">
+            <summary>
+            用户在开放平台的唯一标识符，在满足 UnionID 下发条件的情况下会返回
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.ErrCode">
+            <summary>
+            错误码
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.ErrMsg">
+            <summary>
+            错误信息
+            </summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Error">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Response">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Success(System.Text.Json.JsonDocument)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Failed(System.Exception)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.WeixinTokenResponse.Dispose">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Authentication.WeixinMiniProgram.JsonDocumentAuthExtensions">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Authentication.WeixinMiniProgram.JsonDocumentAuthExtensions.GetString(System.Text.Json.JsonElement,System.String)">
+            <summary></summary>
+        </member>
         <member name="T:WebFramework.Authorization.ApiAuthorizationServicesExtensions">
             <summary>
             依赖注入 services.AddApiAuthorization 服务
