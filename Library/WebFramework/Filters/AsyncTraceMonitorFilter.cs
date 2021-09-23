@@ -116,7 +116,7 @@ namespace WebFramework.Filters
                 res.AppendLine($"ContentType: {contentType}");
                 res.AppendLine($"StatusCode: {(statusCode == 200 ? 500 : statusCode)}");
                 res.Append(Environment.NewLine);
-                res.Append(context.Exception.ToString());
+                res.Append(context.Exception.ToString().Split(Environment.NewLine)[0]);
             }
             else if (context.Result != null)
             {
@@ -131,6 +131,8 @@ namespace WebFramework.Filters
                 }
                 else if (context.Result is JsonResult result1)
                 {
+                    res.AppendLine($"StatusCode: {(statusCode == 500 ? 200 : statusCode)}");
+                    res.Append(Environment.NewLine);
                     res.Append(result1.Value?.ToJson() ?? "null");
                 }
             }
