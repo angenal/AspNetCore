@@ -7,7 +7,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using WebCore;
-using WebFramework.Authentication.WeixinMiniProgram;
+using WebFramework.Authentication.WeChat.WxOpen;
 
 namespace WebFramework.Services
 {
@@ -21,16 +21,20 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection AddWeixin(this IServiceCollection services, AuthenticationBuilder builder, IConfiguration config)
         {
-            var section = config.GetSection(WeixinLoginDefaults.AppSettings);
+            var section = config.GetSection(WxOpenLoginDefaults.AppSettings);
             if (!section.Exists()) return services;
 
-            builder.AddWeixinMiniProgram(options =>
+            string appid = section.GetValue<string>("appid"), secret = section.GetValue<string>("secret");
+            if (string.IsNullOrEmpty(appid) || string.IsNullOrEmpty(secret)) return services;
+
+            builder.AddWxOpenMiniProgram(options =>
             {
-                options.AppId = section.GetValue<string>("appid");
-                options.Secret = section.GetValue<string>("secret");
+                options.AppId = appid;
+                options.Secret = secret;
                 options.CustomerLoginState += context =>
                 {
-                    context.HttpContext.Response.Redirect($"{WeixinAuthenticationService.GetWeixinMiniProgramTokenUrl}?key={context.SessionInfoKey}");
+                    // 创建登录凭证 WxOpenController.CreateToken(string key)
+                    context.HttpContext.Response.Redirect($"/WxOpen/CreateToken?key={context.SessionInfoKey}");
                     return Task.CompletedTask;
                 };
             });
@@ -45,36 +49,9 @@ namespace WebFramework.Services
     public class WeixinAuthenticationService
     {
         /// <summary>
-        /// 自定义逻辑：处理微信OpenId与该系统的关系
-        /// </summary>
-        public static Func<WeixinLoginStateContext, Task<Session>> GetSessionFromWeixinMiniProgram { get; set; } = context => Task.FromResult(new Session());
-
-        /// <summary>
-        /// Login weixin mini program
-        /// </summary>
-        public const string GetWeixinMiniProgramTokenUrl = "/api/WxOpen/CreateToken";
-
-        /// <summary>
         /// Login weixin mini program, return token.
         /// </summary>
-        public static async Task GetWeixinMiniProgramTokenHandler(HttpContext context)
-        {
-            string key = context.Request.Query["key"].ToString();
-            if (string.IsNullOrWhiteSpace(key))
-                throw new ArgumentException($"参数 key 不能为空");
-
-            var service = context.RequestServices.GetService<IWeixinLoginStateInfoStore>();
-            var session = service.GetSessionInfo(key).ConfigureAwait(false).GetAwaiter().GetResult();
-            //session.OpenId;
-            var text = session.ToJson();
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(text);
-        }
-
-        /// <summary>
-        /// Login weixin mini program, return token.
-        /// </summary>
-        public async Task CreateToken(WeixinLoginStateContext context)
+        public async Task CreateToken(WxOpenLoginStateContext context)
         {
             if (context.ErrCode != null && !context.ErrCode.Equals("0"))
             {
@@ -84,7 +61,9 @@ namespace WebFramework.Services
                 await context.Response.WriteAsync(error.ToJson());
                 return;
             }
-            var o = await GetSessionFromWeixinMiniProgram(context) ?? new Session();
+            // 自定义逻辑：处理微信OpenId与该系统的关系
+            var openId = context.OpenId;
+            var o = new Session();
             var session = JObject.FromObject(o);
             if (!string.IsNullOrEmpty(o.Id)) session["token"] = context.HttpContext.RequestServices.GetService<IJwtGenerator>()?.Generate(o.Claims());
             context.Response.ContentType = "application/json";

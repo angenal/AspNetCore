@@ -1,12 +1,12 @@
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.AspNetCore.Authentication.Weixin
+namespace Microsoft.AspNetCore.Authentication.WeChat
 {
     /// <summary>
     /// Contains static methods that allow to extract user's information from a <see cref="JObject"/>
-    /// instance retrieved from Weixin after a successful authentication process.
+    /// instance retrieved from WeChat after a successful authentication process.
     /// </summary>
-    static class WeixinAuthenticationHelper
+    static class WeChatAuthenticationHelper
     {
         /// <summary>
         /// Gets the user identifier.
@@ -54,12 +54,7 @@ namespace Microsoft.AspNetCore.Authentication.Weixin
         public static string GetPrivilege(JObject user)
         {
             var value = user.Value<JArray>("privilege");
-            if (value == null)
-            {
-                return null;
-            }
-
-            return string.Join(",", value.ToObject<string[]>());
+            return value == null ? null : string.Join(",", value.ToObject<string[]>());
         }
     }
 }

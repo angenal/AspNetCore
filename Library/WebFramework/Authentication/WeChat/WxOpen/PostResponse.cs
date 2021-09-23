@@ -1,13 +1,13 @@
 using System;
 using System.Text.Json;
 
-namespace WebFramework.Authentication.WeixinMiniProgram
+namespace WebFramework.Authentication.WeChat.WxOpen
 {
     /// <summary>
     /// 微信小程序登录凭证校验后返回的结果
     /// https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
     /// </summary>
-    public class WeixinPostResponse : IDisposable
+    public class WxOpenPostResponse : IDisposable
     {
         /// <summary>
         /// 会话密钥【请注意该信息的安全性,不要下发至客户端】
@@ -40,7 +40,7 @@ namespace WebFramework.Authentication.WeixinMiniProgram
         /// <summary></summary>
         public JsonDocument Response { get; set; }
 
-        private WeixinPostResponse(JsonDocument response)
+        private WxOpenPostResponse(JsonDocument response)
         {
             var root = response.RootElement;
             SessionKey = GetString(root, "session_key");
@@ -51,21 +51,21 @@ namespace WebFramework.Authentication.WeixinMiniProgram
             Response = response;
         }
 
-        private WeixinPostResponse(Exception error)
+        private WxOpenPostResponse(Exception error)
         {
             Error = error;
         }
 
         /// <summary></summary>
-        public static WeixinPostResponse Success(JsonDocument response)
+        public static WxOpenPostResponse Success(JsonDocument response)
         {
-            return new WeixinPostResponse(response);
+            return new WxOpenPostResponse(response);
         }
 
         /// <summary></summary>
-        public static WeixinPostResponse Failed(Exception error)
+        public static WxOpenPostResponse Failed(Exception error)
         {
-            return new WeixinPostResponse(error);
+            return new WxOpenPostResponse(error);
         }
 
         /// <summary></summary>

@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0
+#if NETSTANDARD2_0
 
 using System;
 using System.Collections.Generic;
@@ -12,11 +12,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.AspNetCore.Authentication.Weixin
+namespace Microsoft.AspNetCore.Authentication.WeChat
 {
-	internal class WeixinAuthenticationHandler : OAuthHandler<WeixinAuthenticationOptions>
+	internal class WeChatAuthenticationHandler : OAuthHandler<WeChatAuthenticationOptions>
 	{
-		public WeixinAuthenticationHandler(IOptionsMonitor<WeixinAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+		public WeChatAuthenticationHandler(IOptionsMonitor<WeChatAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
 		{
 		}
 
@@ -60,17 +60,17 @@ namespace Microsoft.AspNetCore.Authentication.Weixin
 				throw new HttpRequestException("An error occurred while retrieving user information.");
 			}
 
-			identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, WeixinAuthenticationHelper.GetUnionid(payload), Options.ClaimsIssuer));
-			identity.AddClaim(new Claim(ClaimTypes.Name, WeixinAuthenticationHelper.GetNickname(payload), Options.ClaimsIssuer));
-			identity.AddClaim(new Claim(ClaimTypes.Gender, WeixinAuthenticationHelper.GetSex(payload), Options.ClaimsIssuer));
-			identity.AddClaim(new Claim(ClaimTypes.Country, WeixinAuthenticationHelper.GetCountry(payload), Options.ClaimsIssuer));
-			identity.AddClaim(new Claim("urn:weixin:openid", WeixinAuthenticationHelper.GetOpenId(payload), Options.ClaimsIssuer));
-			identity.AddClaim(new Claim("urn:weixin:province", WeixinAuthenticationHelper.GetProvince(payload), Options.ClaimsIssuer));
-			identity.AddClaim(new Claim("urn:weixin:city", WeixinAuthenticationHelper.GetCity(payload), Options.ClaimsIssuer));
-			identity.AddClaim(new Claim("urn:weixin:headimgurl", WeixinAuthenticationHelper.GetHeadimgUrl(payload), Options.ClaimsIssuer));
-			identity.AddClaim(new Claim("urn:weixin:privilege", WeixinAuthenticationHelper.GetPrivilege(payload), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, WeChatAuthenticationHelper.GetUnionid(payload), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim(ClaimTypes.Name, WeChatAuthenticationHelper.GetNickname(payload), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim(ClaimTypes.Gender, WeChatAuthenticationHelper.GetSex(payload), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim(ClaimTypes.Country, WeChatAuthenticationHelper.GetCountry(payload), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim("urn:WeChat:openid", WeChatAuthenticationHelper.GetOpenId(payload), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim("urn:WeChat:province", WeChatAuthenticationHelper.GetProvince(payload), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim("urn:WeChat:city", WeChatAuthenticationHelper.GetCity(payload), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim("urn:WeChat:headimgurl", WeChatAuthenticationHelper.GetHeadimgUrl(payload), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim("urn:WeChat:privilege", WeChatAuthenticationHelper.GetPrivilege(payload), Options.ClaimsIssuer));
 
-			identity.AddClaim(new Claim("urn:weixin:user_info", payload.ToString(), Options.ClaimsIssuer));
+			identity.AddClaim(new Claim("urn:WeChat:user_info", payload.ToString(), Options.ClaimsIssuer));
 
 			var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, Context, Scheme, Options, Backchannel, tokens, payload);
 			context.RunClaimActions();

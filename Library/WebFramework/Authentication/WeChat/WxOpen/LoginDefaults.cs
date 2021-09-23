@@ -1,9 +1,9 @@
-namespace WebFramework.Authentication.WeixinMiniProgram
+namespace WebFramework.Authentication.WeChat.WxOpen
 {
     /// <summary>
     /// 微信小程序登录校验的默认设置
     /// </summary>
-    public class WeixinLoginDefaults
+    public class WxOpenLoginDefaults
     {
         /// <summary>
         /// Configuration Section in appsettings.json

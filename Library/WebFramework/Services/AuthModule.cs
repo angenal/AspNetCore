@@ -37,7 +37,7 @@ namespace WebFramework.Services
                     t.ClientId = qq;
                     t.ClientSecret = qqSecret;
                 });
-                if (!string.IsNullOrEmpty(wx) && !string.IsNullOrEmpty(wxSecret)) oAuth.AddWeixinAuthentication(t =>
+                if (!string.IsNullOrEmpty(wx) && !string.IsNullOrEmpty(wxSecret)) oAuth.AddWeChatAuthentication(t =>
                 {
                     t.ClientId = wx;
                     t.ClientSecret = wxSecret;

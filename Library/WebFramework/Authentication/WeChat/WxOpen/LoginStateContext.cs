@@ -1,17 +1,17 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
-namespace WebFramework.Authentication.WeixinMiniProgram
+namespace WebFramework.Authentication.WeChat.WxOpen
 {
     /// <summary>
     /// 用户进行登录操作时所需要的上下文信息
     /// </summary>
-    public class WeixinLoginStateContext : WeixinServerResultContext
+    public class WxOpenLoginStateContext : WxOpenServerResultContext
     {
-        public WeixinLoginStateContext(
+        public WxOpenLoginStateContext(
             HttpContext context,
             AuthenticationScheme scheme,
-            WeixinLoginOptions options,
+            WxOpenLoginOptions options,
             string sessionKey,
             string openId,
             string uniodId,
@@ -31,12 +31,12 @@ namespace WebFramework.Authentication.WeixinMiniProgram
     /// <summary>
     /// 微信服务器返回的信息以及当前验证处理的上下文信息【会话密钥】
     /// </summary>
-    public class WeixinServerResultContext : ResultContext<WeixinLoginOptions>
+    public class WxOpenServerResultContext : ResultContext<WxOpenLoginOptions>
     {
-        public WeixinServerResultContext(
+        public WxOpenServerResultContext(
             HttpContext context,
             AuthenticationScheme scheme,
-            WeixinLoginOptions options,
+            WxOpenLoginOptions options,
             string sessionKey,
             string openId,
             string uniodId,

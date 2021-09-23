@@ -10,17 +10,17 @@ using Newtonsoft.Json.Linq;
 using System.Text.Json;
 #endif
 
-namespace Microsoft.AspNetCore.Authentication.Weixin
+namespace Microsoft.AspNetCore.Authentication.WeChat
 {
     /// <summary></summary>
     public static class HttpContextExtensions
     {
         /// <summary>
-        ///  Get the external login information from weixin provider.
+        ///  Get the external login information from WeChat provider.
         /// </summary>
-        public static async Task<Dictionary<string, string>> GetExternalWeixinLoginInfoAsync(this HttpContext httpContext, string expectedXsrf = null)
+        public static async Task<Dictionary<string, string>> GetExternalWeChatLoginInfoAsync(this HttpContext httpContext, string expectedXsrf = null)
         {
-            var auth = await httpContext.AuthenticateAsync(WeixinAuthenticationDefaults.AuthenticationScheme);
+            var auth = await httpContext.AuthenticateAsync(WeChatAuthenticationDefaults.AuthenticationScheme);
 
             var items = auth?.Properties?.Items;
             if (auth?.Principal == null || items == null || !items.ContainsKey("LoginProvider"))
@@ -41,7 +41,7 @@ namespace Microsoft.AspNetCore.Authentication.Weixin
                 }
             }
 
-            var userInfo = auth.Principal.FindFirst("urn:weixin:user_info");
+            var userInfo = auth.Principal.FindFirst("urn:WeChat:user_info");
             if (userInfo == null)
             {
                 return null;
@@ -85,12 +85,12 @@ namespace Microsoft.AspNetCore.Authentication.Weixin
     public static class AuthenticationManagerExtensions
     {
         /// <summary>
-        ///  Get the external login information from weixin provider.
+        ///  Get the external login information from WeChat provider.
         /// </summary>
-        [Obsolete("Use HttpContext.GetExternalWeixinLoginInfoAsync()")]
-        public static async Task<Dictionary<string, string>> GetExternalWeixinLoginInfoAsync(this AuthenticationManager authenticationManager, string expectedXsrf = null)
+        [Obsolete("Use HttpContext.GetExternalWeChatLoginInfoAsync()")]
+        public static async Task<Dictionary<string, string>> GetExternalWeChatLoginInfoAsync(this AuthenticationManager authenticationManager, string expectedXsrf = null)
         {
-            AuthenticateContext authenticateContext = new AuthenticateContext(WeixinAuthenticationDefaults.AuthenticationScheme);
+            AuthenticateContext authenticateContext = new AuthenticateContext(WeChatAuthenticationDefaults.AuthenticationScheme);
             await authenticationManager.AuthenticateAsync(authenticateContext);
 
             if (authenticateContext.Principal == null || authenticateContext.Properties == null || !authenticateContext.Properties.ContainsKey("LoginProvider"))
@@ -110,7 +110,7 @@ namespace Microsoft.AspNetCore.Authentication.Weixin
                 }
             }
 
-            var userInfo = authenticateContext.Principal.FindFirst("urn:weixin:user_info");
+            var userInfo = authenticateContext.Principal.FindFirst("urn:WeChat:user_info");
             if (userInfo == null)
             {
                 return null;

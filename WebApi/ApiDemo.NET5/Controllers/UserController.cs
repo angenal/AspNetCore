@@ -1,7 +1,7 @@
 using ApiDemo.NET5.Models.DTO.User;
 using ApiDemo.NET5.Models.Entities;
 using Microsoft.AspNetCore.Authentication.QQ;
-using Microsoft.AspNetCore.Authentication.Weixin;
+using Microsoft.AspNetCore.Authentication.WeChat;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -155,7 +155,7 @@ namespace ApiDemo.NET5.Controllers
             if (!string.IsNullOrEmpty(remoteError)) return BadRequest(remoteError);
 
             // get information from HttpContext using Microsoft.AspNetCore.Authentication.Weixin
-            var loginInfo = await HttpContext.GetExternalWeixinLoginInfoAsync();
+            var loginInfo = await HttpContext.GetExternalWeChatLoginInfoAsync();
 
             if (!string.IsNullOrEmpty(returnUrl))
             {

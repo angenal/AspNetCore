@@ -11,11 +11,11 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.Weixin
+namespace Microsoft.AspNetCore.Authentication.WeChat
 {
-    internal class WeixinAuthenticationHandler : OAuthHandler<WeixinAuthenticationOptions>
+    internal class WeChatAuthenticationHandler : OAuthHandler<WeChatAuthenticationOptions>
     {
-        public WeixinAuthenticationHandler(IOptionsMonitor<WeixinAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        public WeChatAuthenticationHandler(IOptionsMonitor<WeChatAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
         }
 
@@ -73,11 +73,11 @@ namespace Microsoft.AspNetCore.Authentication.Weixin
                 {
                     string privilege = string.Join(",", privilegeEle.EnumerateArray().ToArray().Select(t => t.GetString()));
 
-                    identity.AddClaim(new Claim("urn:weixin:privilege", privilege, Options.ClaimsIssuer));
+                    identity.AddClaim(new Claim("urn:WeChat:privilege", privilege, Options.ClaimsIssuer));
                 }
 
 
-                identity.AddClaim(new Claim("urn:weixin:user_info", payload.ToString(), Options.ClaimsIssuer));
+                identity.AddClaim(new Claim("urn:WeChat:user_info", payload.ToString(), Options.ClaimsIssuer));
 
                 var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, Context, Scheme, Options, Backchannel, tokens, payload.RootElement);
 
