@@ -42,18 +42,18 @@ namespace WebFramework.Filters
             else if (Logs.Manage.Trace && context.HttpContext.Request.Method.Equals(HttpMethods.Post)
                 //&& context.ActionDescriptor.ActionConstraints.Any(t => t is HttpMethodActionConstraint c && c.HttpMethods.Contains(HttpMethods.Post))
                 && 0 < context.HttpContext.Request.ContentLength && context.HttpContext.Request.ContentLength < Logs.Manage.Limit
-                && context.HttpContext.Request.ContentType != null)
+                && context.HttpContext.Request.ContentType != null && context.HttpContext.Request.Body.CanRead)
             {
                 switch (context.HttpContext.Request.ContentType.Split(';')[0].ToLower())
                 {
                     case "application/json":
                     case "application/x-www-form-urlencoded":
-                        OnPostRequestAsync(context, Trace).Wait();
+                        OnPostRequestAsync(context).Wait();
                         break;
                     case "multipart/form-data":
                         var isUpload = context.ActionDescriptor.DisplayName.Contains("upload", StringComparison.OrdinalIgnoreCase) && context.ActionDescriptor.FilterDescriptors.Any(t => t.Filter.GetType().Equals(typeof(DisableFormModelBindingAttribute)));
                         var hasUpload = isUpload || context.HttpContext.Request.Headers.TryGetValue("Content-Disposition", out var contentDisposition) && contentDisposition.Any(c => c.Contains("filename", StringComparison.OrdinalIgnoreCase));
-                        if (!hasUpload) OnPostRequestAsync(context, Trace).Wait();
+                        if (!hasUpload) OnPostRequestAsync(context).Wait();
                         break;
                 }
             }
@@ -61,30 +61,27 @@ namespace WebFramework.Filters
         /// <summary></summary>
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (Enabled && Logs.Manage.Trace) TraceRecord(context, Trace);
+            if (Enabled && Logs.Manage.Trace) TraceRecord(context);
         }
         /// <summary>Record post request body</summary>
-        private static async Task OnPostRequestAsync(ActionExecutingContext context, string trace)
+        private async Task OnPostRequestAsync(ActionExecutingContext context)
         {
             // Enable seeking
             context.HttpContext.Request.EnableBuffering();
             // Read the stream as text
-            if (context.HttpContext.Request.Body?.Length > 0 && context.HttpContext.Request.Body.CanRead)
-            {
-                var body = await new StreamReader(context.HttpContext.Request.Body).ReadToEndAsync();
-                context.HttpContext.Items.TryAdd(trace, body);
-            }
+            var text = await new StreamReader(context.HttpContext.Request.Body).ReadToEndAsync();
+            context.HttpContext.Items.TryAdd(Trace, text);
             // Set the position of the stream to 0 to enable rereading
             context.HttpContext.Request.Body.Position = 0; // SeekOrigin.Begin
         }
         /// <summary>Trace request</summary>
-        private static void TraceRecord(ActionExecutedContext context, string trace)
+        private void TraceRecord(ActionExecutedContext context)
         {
             var resultType = context.Result?.GetType().Name;
             if (resultType != null && resultType.Contains("Redirect")) return;
             string url = $"[{context.HttpContext.Request.Method}] {context.HttpContext.Request.GetDisplayUrl()}";
             var contents = new StringBuilder(url);
-            if (context.HttpContext.Items.TryGetValue(trace, out object value) && value != null)
+            if (context.HttpContext.Items.TryGetValue(Trace, out object value) && value != null)
             {
                 contents.Append(Environment.NewLine);
                 if (value is string body)
@@ -102,7 +99,7 @@ namespace WebFramework.Filters
                         contents.Append(Environment.NewLine);
                     }
                 }
-                if (context.HttpContext.Items.TryGetValue(trace + "sql", out object sqlValue))
+                if (context.HttpContext.Items.TryGetValue(Trace + "sql", out object sqlValue))
                 {
                     contents.Append(Environment.NewLine);
                     contents.Append($" sql => {sqlValue}");
@@ -141,7 +138,7 @@ namespace WebFramework.Filters
             Logs.RequestHandler.Publish(new RequestLog
             {
                 Path = context.HttpContext.Request.Path.Value,
-                Trace = trace,
+                Trace = Trace,
                 Request = contents.ToString(),
                 Response = res.ToString(),
                 Time = DateTime.Now,
