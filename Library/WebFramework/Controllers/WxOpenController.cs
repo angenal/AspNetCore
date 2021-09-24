@@ -11,7 +11,7 @@ namespace WebFramework.Controllers
     /// 微信小程序
     /// </summary>
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class WxOpenController : ApiController
     {
         private readonly IWxOpenLoginStateInfoStore store;
@@ -25,19 +25,16 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 创建登录凭证
-        /// <para>
-        /// 官方文档 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
-        /// </para>
+        /// 创建登录凭证 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
         /// </summary>
         /// <param name="cacheKey">微信服务端返回的会话密匙保存在缓存中关联的Key</param>
         /// <param name="sessionKey">会话密钥(选填)【请注意该信息的安全性】</param>
         /// <param name="openid">用户唯一标识(选填)【请注意该信息的安全性】</param>
         /// <param name="unionid">用户在开放平台的唯一标识符(选填)【请注意该信息的安全性】</param>
-        [HttpGet]
+        [HttpGet("CreateToken")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> CreateToken(string cacheKey, string sessionKey, string openid, string unionid)
+        public async Task<IActionResult> CreateToken(string cacheKey, string sessionKey = "", string openid = "", string unionid = "")
         {
             if (string.IsNullOrWhiteSpace(cacheKey) && string.IsNullOrWhiteSpace(openid)) return Error($"参数{nameof(cacheKey)}不能为空");
 

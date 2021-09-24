@@ -95,7 +95,9 @@ namespace WebFramework.Services
                             return Task.CompletedTask;
                         };
                     });
+                    else oAuth.AddWeixinMiniProgramAuthentication(null);
                 }
+                else oAuth.AddWeixinMiniProgramAuthentication(null);
             }
 
 

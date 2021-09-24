@@ -24,6 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services.TryAddSingleton<IWxOpenLoginStateInfoStore, WxOpenLoginStateInfoStore>();
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<WxOpenLoginOptions>, WxOpenPostConfigureOptions>());
+            if (configureOptions == null) return builder;
             return builder.AddRemoteScheme<WxOpenLoginOptions, WxOpenLoginHandler>(authenticationScheme, displayName, configureOptions);
         }
     }
