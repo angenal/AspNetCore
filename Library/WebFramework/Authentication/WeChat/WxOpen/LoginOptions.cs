@@ -34,7 +34,7 @@ namespace WebFramework.Authentication.WeChat.WxOpen
         public string JsQuery { get; set; } = "code";
 
         /// <summary>
-        /// 根据微信服务器返回的会话密匙执行登录操作, 比如颁发JWT, 重定向Action等.
+        /// 根据微信服务器返回的会话密匙执行登录成功的操作, 比如颁发JWT, 重定向Action等
         /// </summary>
         public Func<WxOpenLoginStateContext, Task> CustomerLoginState { get; set; }
 

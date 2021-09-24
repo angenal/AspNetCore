@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using ToolGood.Words;
 
 namespace WebCore
@@ -16,20 +17,14 @@ namespace WebCore
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public static string BinaryToHex(this byte[] data)
-        {
-            return Sodium.Utilities.BinaryToHex(data);
-        }
+        public static string BinaryToHex(this byte[] data) => data == null || data.Length == 0 ? string.Empty : Sodium.Utilities.BinaryToHex(data);
 
         /// <summary>
         /// Hex To Binary
         /// </summary>
         /// <param name="hex"></param>
         /// <returns></returns>
-        public static byte[] HexToBinary(this string hex)
-        {
-            return Sodium.Utilities.HexToBinary(hex);
-        }
+        public static byte[] HexToBinary(this string hex) => string.IsNullOrEmpty(hex) ? new byte[0] : Sodium.Utilities.HexToBinary(hex);
 
         /// <summary>
         /// Binary To Base64
@@ -37,10 +32,7 @@ namespace WebCore
         /// <param name="data"></param>
         /// <param name="variant"></param>
         /// <returns></returns>
-        public static string BinaryToBase64(this byte[] data)
-        {
-            return Sodium.Utilities.BinaryToBase64(data);
-        }
+        public static string BinaryToBase64(this byte[] data) => data == null || data.Length == 0 ? string.Empty : Sodium.Utilities.BinaryToBase64(data);
 
         /// <summary>
         /// Base64 To Binary
@@ -49,10 +41,48 @@ namespace WebCore
         /// <param name="ignoredChars"></param>
         /// <param name="variant"></param>
         /// <returns></returns>
-        public static byte[] Base64ToBinary(this string base64, string ignoredChars)
-        {
-            return Sodium.Utilities.Base64ToBinary(base64, ignoredChars);
-        }
+        public static byte[] Base64ToBinary(this string base64, string ignoredChars) => string.IsNullOrEmpty(base64) ? new byte[0] : Sodium.Utilities.Base64ToBinary(base64, ignoredChars);
+
+        /// <summary>
+        /// Converts a string that has been encoded for transmission in a URL into a decoded string.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string UrlDecode(this string str) => string.IsNullOrEmpty(str) ? string.Empty : HttpUtility.UrlDecode(str);
+        /// <summary>
+        /// Converts a URL-encoded string into a decoded string, using the specified encoding object.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static string UrlDecode(this string str, Encoding e) => string.IsNullOrEmpty(str) ? string.Empty : HttpUtility.UrlDecode(str, e);
+        /// <summary>
+        /// Converts a URL-encoded byte array into a decoded string using the specified decoding object.
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static string UrlDecode(this byte[] bytes, Encoding e) => bytes == null || bytes.Length == 0 ? string.Empty : HttpUtility.UrlDecode(bytes, e);
+
+        /// <summary>
+        /// Encodes a URL string.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string UrlEncode(this string str) => string.IsNullOrEmpty(str) ? string.Empty : HttpUtility.UrlEncode(str);
+        /// <summary>
+        /// Encodes a URL string using the specified encoding object.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static string UrlEncode(this string str, Encoding e) => string.IsNullOrEmpty(str) ? string.Empty : HttpUtility.UrlEncode(str, e);
+        /// <summary>
+        /// Converts a byte array into an encoded URL string.
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static string UrlEncode(this byte[] bytes) => bytes == null || bytes.Length == 0 ? string.Empty : HttpUtility.UrlEncode(bytes);
 
         /// <summary>
         /// Compare a > b or a == b ...
@@ -60,10 +90,7 @@ namespace WebCore
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool Compare(this byte[] a, byte[] b)
-        {
-            return Sodium.Utilities.Compare(a, b);
-        }
+        public static bool Compare(this byte[] a, byte[] b) => Sodium.Utilities.Compare(a, b);
 
 
         /// <summary>Converts a string to a <see cref="Version"/> object. </summary>
@@ -109,21 +136,12 @@ namespace WebCore
         /// <summary>
         /// 逗号拆分字符串
         /// </summary>
-        public static string SplitComma(this string str, string comma = DefaultFormat.CommaChars)
-        {
-            return string.Join(",", str.Split(comma.ToCharArray()));
-        }
-
+        public static string SplitComma(this string str, string comma = DefaultFormat.CommaChars) => string.IsNullOrEmpty(str) ? string.Empty : string.Join(",", str.Split(comma.ToCharArray()));
 
         /// <summary>
         /// 截断字符串长度
         /// </summary>
-        public static string Substr(this string str, int maxlength)
-        {
-            if (str == null || maxlength <= 0 || str.Length <= maxlength) return str;
-
-            return str.Substring(0, maxlength);
-        }
+        public static string Substr(this string str, int maxlength) => str == null || maxlength <= 0 || str.Length <= maxlength ? str : str.Substring(0, maxlength);
 
         /// <summary>
         /// 判断一个数字是否在指定数组中
@@ -138,7 +156,7 @@ namespace WebCore
         /// <param name="value"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static bool IsIn(this string value, params string[] values) => value == null ? false : values.Any(v => value.Equals(v, StringComparison.OrdinalIgnoreCase));
+        public static bool IsIn(this string value, params string[] values) => !string.IsNullOrEmpty(value) && values.Any(v => value.Equals(v, StringComparison.OrdinalIgnoreCase));
         /// <summary>
         /// 判断一个数字是否在指定数组中
         /// </summary>
@@ -150,27 +168,27 @@ namespace WebCore
         /// <summary>
         /// 判断含有中文,中文字符集为[0x4E00,0x9FA5][0x3400,0x4db5]
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="content"></param>
         /// <returns></returns>
-        public static bool HasChinese(this string str) => WordsHelper.HasChinese(str);
+        public static bool HasChinese(this string content) => !string.IsNullOrEmpty(content) && WordsHelper.HasChinese(content);
         /// <summary>
         /// 判断含有英语
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        public static bool HasEnglish(this string content) => WordsHelper.HasEnglish(content);
+        public static bool HasEnglish(this string content) => !string.IsNullOrEmpty(content) && WordsHelper.HasEnglish(content);
         /// <summary>
         /// 判断输入是否全为中文,中文字符集为[0x4E00,0x9FA5][0x3400,0x4db5]
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        public static bool IsAllChinese(this string content) => WordsHelper.IsAllChinese(content);
+        public static bool IsAllChinese(this string content) => !string.IsNullOrEmpty(content) && WordsHelper.IsAllChinese(content);
         /// <summary>
         /// 判断是否全部英语
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        public static bool IsAllEnglish(this string content) => WordsHelper.IsAllEnglish(content);
+        public static bool IsAllEnglish(this string content) => !string.IsNullOrEmpty(content) && WordsHelper.IsAllEnglish(content);
         /// <summary>
         /// 获取所有拼音,中文字符集为[0x3400,0x9FD5]，注：偏僻汉字很多未验证
         /// </summary>
@@ -183,14 +201,14 @@ namespace WebCore
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string GetFirstPinyin(this string text) => WordsHelper.GetFirstPinyin(text);
+        public static string GetFirstPinyin(this string text) => string.IsNullOrEmpty(text) ? string.Empty : WordsHelper.GetFirstPinyin(text);
         /// <summary>
         /// 获取拼音全拼,支持多音,中文字符集为[0x4E00,0x9FD5],[0x20000-0x2B81D]，注：偏僻汉字很多未验证
         /// </summary>
         /// <param name="text"></param>
         /// <param name="tone"></param>
         /// <returns></returns>
-        public static string GetPinyin(this string text, bool tone = false) => WordsHelper.GetPinyin(text, tone);
+        public static string GetPinyin(this string text, bool tone = false) => string.IsNullOrEmpty(text) ? string.Empty : WordsHelper.GetPinyin(text, tone);
         /// <summary>
         /// 获取拼音全拼,支持多音,中文字符集为[0x4E00,0x9FD5],[0x20000-0x2B81D]，注：偏僻汉字很多未验证
         /// </summary>
@@ -198,14 +216,14 @@ namespace WebCore
         /// <param name="splitSpan"></param>
         /// <param name="tone"></param>
         /// <returns></returns>
-        public static string GetPinyin(this string text, string splitSpan, bool tone = false) => WordsHelper.GetPinyin(text, splitSpan, tone);
+        public static string GetPinyin(this string text, string splitSpan, bool tone = false) => string.IsNullOrEmpty(text) ? string.Empty : WordsHelper.GetPinyin(text, splitSpan, tone);
         /// <summary>
         /// 获取姓名拼音,中文字符集为[0x3400,0x9FD5],[0x20000-0x2B81D]，注：偏僻汉字很多未验证
         /// </summary>
         /// <param name="name"></param>
         /// <param name="tone"></param>
         /// <returns></returns>
-        public static string GetPinyinForName(this string name, bool tone = false) => WordsHelper.GetPinyinForName(name, tone);
+        public static string GetPinyinForName(this string name, bool tone = false) => string.IsNullOrEmpty(name) ? string.Empty : WordsHelper.GetPinyinForName(name, tone);
         /// <summary>
         /// 获取姓名拼音,中文字符集为[0x3400,0x9FD5],[0x20000-0x2B81D]，注：偏僻汉字很多未验证
         /// </summary>
@@ -213,33 +231,33 @@ namespace WebCore
         /// <param name="splitSpan"></param>
         /// <param name="tone"></param>
         /// <returns></returns>
-        public static string GetPinyinForName(this string name, string splitSpan, bool tone = false) => WordsHelper.GetPinyinForName(name, splitSpan, tone);
+        public static string GetPinyinForName(this string name, string splitSpan, bool tone = false) => string.IsNullOrEmpty(name) ? string.Empty : WordsHelper.GetPinyinForName(name, splitSpan, tone);
         /// <summary>
         /// 获取拼音全拼,支持多音,中文字符集为[0x4E00,0x9FD5],[0x20000-0x2B81D]，注：偏僻汉字很多未验证
         /// </summary>
         /// <param name="text"></param>
         /// <param name="tone"></param>
         /// <returns></returns>
-        public static string[] GetPinyinList(this string text, bool tone = false) => WordsHelper.GetPinyinList(text, tone);
+        public static string[] GetPinyinList(this string text, bool tone = false) => string.IsNullOrEmpty(text) ? new string[0] : WordsHelper.GetPinyinList(text, tone);
         /// <summary>
         /// 获取姓名拼音,中文字符集为[0x3400,0x9FD5],[0x20000-0x2B81D]，注：偏僻汉字很多未验证
         /// </summary>
         /// <param name="name"></param>
         /// <param name="tone"></param>
         /// <returns></returns>
-        public static List<string> GetPinyinListForName(this string name, bool tone = false) => WordsHelper.GetPinyinListForName(name, tone);
+        public static List<string> GetPinyinListForName(this string name, bool tone = false) => string.IsNullOrEmpty(name) ? new List<string>() : WordsHelper.GetPinyinListForName(name, tone);
         /// <summary>
         /// 转半角的函数
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static string ToDBC(this string input) => WordsHelper.ToDBC(input);
+        public static string ToDBC(this string input) => string.IsNullOrEmpty(input) ? string.Empty : WordsHelper.ToDBC(input);
         /// <summary>
         /// 半角转全角
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static string ToSBC(this string input) => WordsHelper.ToSBC(input);
+        public static string ToSBC(this string input) => string.IsNullOrEmpty(input) ? string.Empty : WordsHelper.ToSBC(input);
         /// <summary>
         /// 数字转中文大写
         /// </summary>
@@ -258,21 +276,21 @@ namespace WebCore
         /// <param name="text"></param>
         /// <param name="srcType"></param>
         /// <returns></returns>
-        public static string ToSimplifiedChinese(this string text, int srcType = 0) => WordsHelper.ToSimplifiedChinese(text, srcType);
+        public static string ToSimplifiedChinese(this string text, int srcType = 0) => string.IsNullOrEmpty(text) ? string.Empty : WordsHelper.ToSimplifiedChinese(text, srcType);
         /// <summary>
         /// 转繁体中文
         /// </summary>
         /// <param name="text"></param>
         /// <param name="srcType"></param>
         /// <returns></returns>
-        public static string ToTraditionalChinese(this string text, int srcType = 0) => WordsHelper.ToTraditionalChinese(text, srcType);
+        public static string ToTraditionalChinese(this string text, int srcType = 0) => string.IsNullOrEmpty(text) ? string.Empty : WordsHelper.ToTraditionalChinese(text, srcType);
 
         /// <summary>
         /// 首字母大写
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string ToTitleCase(this string text) => System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(text.ToLower());
+        public static string ToTitleCase(this string text) => string.IsNullOrEmpty(text) ? string.Empty : System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(text.ToLower());
 
         /// <summary>
         /// Sql拼接 Id In()
