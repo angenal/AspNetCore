@@ -1,15 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using WebCore;
 using WebFramework.Authentication.WeChat.WxOpen;
-using WebInterface;
 
 namespace WebFramework.Controllers
 {
@@ -46,6 +41,7 @@ namespace WebFramework.Controllers
             if (string.IsNullOrWhiteSpace(key))
                 return Error($"参数 key 不能为空");
 
+            // 获取缓存OpenId后创建登录凭证
             var i = await store.GetSessionInfo(key);
             if (i == null || string.IsNullOrEmpty(i.OpenId))
                 return Error($"参数 key 错误");

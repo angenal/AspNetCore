@@ -33,7 +33,7 @@ namespace WebFramework.Authentication.WeChat.WxOpen
         /// <summary>
         /// Default value for <see cref="RemoteAuthenticationOptions.CallbackPath"/>.
         /// </summary>
-        public const string CallbackPath = "/signin-weixin";
+        public const string CallbackPath = "/signin-wxopen";
 
         /// <summary>
         /// Default value for <see cref="AuthenticationSchemeOptions.ClaimsIssuer"/>.

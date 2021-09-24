@@ -60,14 +60,18 @@ namespace WebFramework.Services
                     {
                         options.AppId = appid;
                         options.Secret = secret;
-                        // 根据微信服务器返回的会话密匙执行登录操作, 比如颁发JWT, 缓存OpenId, 重定向Action等.
+                        // 通过微信小程序调用 wx.login() 获取到临时登录凭证 code 后调用该回调地址: /signin-wxopen?code=xxx 进入验证过程中
+                        //options.CallbackPath = new PathString(Authentication.WeChat.WxOpen.WxOpenLoginDefaults.CallbackPath);
+                        // 根据微信服务器返回的会话密匙执行登录操作, 比如颁发JWT, 重定向Action等
                         options.CustomerLoginState += context =>
                         {
-                            // 创建登录凭证 WxOpenController.CreateToken(string key)
+                            //var session = new { openid = context.OpenId, unionid = context.UnionId };
+                            // 获取缓存OpenId后创建登录凭证 WxOpenController.CreateToken(string key)
+                            // 重定向 /signin-wxopen 至 /WxOpen/CreateToken (参数为缓存key)
                             context.HttpContext.Response.Redirect($"/WxOpen/CreateToken?key={context.SessionInfoKey}");
                             return Task.CompletedTask;
                         };
-                        // 微信服务端验证完成后触发,注册该方法获取用户信息.
+                        // 微信服务端验证完成后触发,注册该方法获取用户信息
                         options.Events.OnWxOpenServerCompleted = context =>
                         {
                             if (context.ErrCode != null && !context.ErrCode.Equals("0"))
