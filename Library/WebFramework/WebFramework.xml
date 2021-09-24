@@ -148,18 +148,6 @@
         <member name="P:WebFramework.ConnectionStrings.DefaultConnection">
             <summary></summary>
         </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenExtensions">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenExtensions.AddWxOpenMiniProgram(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions})">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenExtensions.AddWxOpenMiniProgram(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.Action{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions})">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenExtensions.AddWxOpenMiniProgram(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.String,System.Action{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions})">
-            <summary></summary>
-        </member>
         <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults">
             <summary>
             微信小程序登录校验的默认设置
@@ -167,12 +155,12 @@
         </member>
         <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.AuthenticationScheme">
             <summary>
-            Default value for <see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenExtensions"/>, <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultAuthenticateScheme"/>.
+            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultAuthenticateScheme"/>.
             </summary>
         </member>
         <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.DisplayName">
             <summary>
-            Default value for <see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenExtensions"/>.
+            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultScheme"/>.
             </summary>
         </member>
         <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.CallbackPath">
@@ -3876,24 +3864,31 @@
             </summary>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions">
-            <summary>
-            </summary>
+            <summary></summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions.AddWeChatAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder)">
-            <summary>
-            </summary>
+        <member name="M:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions.AddWeixinAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder)">
+            <summary></summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions.AddWeChatAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationOptions})">
-            <summary>
-            </summary>
+        <member name="M:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions.AddWeixinAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationOptions})">
+            <summary></summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions.AddWeChatAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.Action{Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationOptions})">
-            <summary>
-            </summary>
+        <member name="M:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions.AddWeixinAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.Action{Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationOptions})">
+            <summary></summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions.AddWeChatAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.String,System.Action{Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationOptions})">
-            <summary>
-            </summary>
+        <member name="M:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions.AddWeixinAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.String,System.Action{Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationOptions})">
+            <summary></summary>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.WxOpenExtensions">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.WxOpenExtensions.AddWeixinMiniProgramAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions})">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.WxOpenExtensions.AddWeixinMiniProgramAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.Action{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions})">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.WxOpenExtensions.AddWeixinMiniProgramAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.String,System.Action{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions})">
+            <summary></summary>
         </member>
     </members>
 </doc>

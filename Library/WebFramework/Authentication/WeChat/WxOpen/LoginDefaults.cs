@@ -10,10 +10,10 @@ namespace WebFramework.Authentication.WeChat.WxOpen
         ///// <summary>
         ///// Configuration Section in appsettings.json
         ///// </summary>
-        //public const string AppSettings = "OAuth:WeixinMiniProgam";
+        //public const string AppSettings = "OAuth:WeixinMiniProgram";
         /*
           "OAuth": {
-              "WeixinMiniProgam": {
+              "WeixinMiniProgram": {
                 "ClientId": "AppId",
                 "ClientSecret": "Secret"
               }
@@ -21,14 +21,14 @@ namespace WebFramework.Authentication.WeChat.WxOpen
         */
 
         /// <summary>
-        /// Default value for <see cref="WxOpenExtensions"/>, <see cref="AuthenticationOptions.DefaultAuthenticateScheme"/>.
+        /// Default value for <see cref="AuthenticationOptions.DefaultAuthenticateScheme"/>.
         /// </summary>
-        public const string AuthenticationScheme = "WeixinMiniProgam";
+        public const string AuthenticationScheme = "WeixinMiniProgram";
 
         /// <summary>
-        /// Default value for <see cref="WxOpenExtensions"/>.
+        /// Default value for <see cref="AuthenticationOptions.DefaultScheme"/>.
         /// </summary>
-        public static readonly string DisplayName = "WeixinMiniProgam";
+        public static readonly string DisplayName = "WeixinMiniProgram";
 
         /// <summary>
         /// Default value for <see cref="RemoteAuthenticationOptions.CallbackPath"/>.
@@ -38,7 +38,7 @@ namespace WebFramework.Authentication.WeChat.WxOpen
         /// <summary>
         /// Default value for <see cref="AuthenticationSchemeOptions.ClaimsIssuer"/>.
         /// </summary>
-        public const string Issuer = "WeixinMiniProgam";
+        public const string Issuer = "WeixinMiniProgram";
 
         /// <summary>
         /// 微信小程序服务端验证地址 for <see cref="WxOpenLoginHandler"/>.

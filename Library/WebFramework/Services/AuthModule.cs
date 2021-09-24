@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Threading.Tasks;
 using WebCore;
-using WebFramework.Authentication.WeChat.WxOpen;
 
 namespace WebFramework.Services
 {
@@ -47,17 +46,17 @@ namespace WebFramework.Services
                 if (wxSection.Exists())
                 {
                     string appid = wxSection.GetValue<string>("ClientId"), secret = wxSection.GetValue<string>("ClientSecret");
-                    if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddWeChatAuthentication(t =>
+                    if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddWeixinAuthentication(t =>
                     {
                         t.ClientId = appid;
                         t.ClientSecret = secret;
                     });
                 }
-                var wxmSection = section.GetSection("WeixinMiniProgam");
+                var wxmSection = section.GetSection("WeixinMiniProgram");
                 if (wxmSection.Exists())
                 {
                     string appid = wxmSection.GetValue<string>("ClientId"), secret = wxmSection.GetValue<string>("ClientSecret");
-                    if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddWxOpenMiniProgram(options =>
+                    if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddWeixinMiniProgramAuthentication(options =>
                     {
                         options.AppId = appid;
                         options.Secret = secret;

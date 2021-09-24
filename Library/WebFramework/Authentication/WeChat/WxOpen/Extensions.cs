@@ -1,26 +1,26 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
+using WebFramework.Authentication.WeChat.WxOpen;
 
-namespace WebFramework.Authentication.WeChat.WxOpen
+namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary></summary>
     public static class WxOpenExtensions
     {
         /// <summary></summary>
-        public static AuthenticationBuilder AddWxOpenMiniProgram(this AuthenticationBuilder builder, Action<WxOpenLoginOptions> configureOptions)
+        public static AuthenticationBuilder AddWeixinMiniProgramAuthentication(this AuthenticationBuilder builder, Action<WxOpenLoginOptions> configureOptions)
         {
-            return builder.AddWxOpenMiniProgram(WxOpenLoginDefaults.AuthenticationScheme, configureOptions);
+            return builder.AddWeixinMiniProgramAuthentication(WxOpenLoginDefaults.AuthenticationScheme, configureOptions);
         }
         /// <summary></summary>
-        public static AuthenticationBuilder AddWxOpenMiniProgram(this AuthenticationBuilder builder, string authenticationScheme, Action<WxOpenLoginOptions> configureOptions)
+        public static AuthenticationBuilder AddWeixinMiniProgramAuthentication(this AuthenticationBuilder builder, string authenticationScheme, Action<WxOpenLoginOptions> configureOptions)
         {
-            return builder.AddWxOpenMiniProgram(authenticationScheme, WxOpenLoginDefaults.DisplayName, configureOptions);
+            return builder.AddWeixinMiniProgramAuthentication(authenticationScheme, WxOpenLoginDefaults.DisplayName, configureOptions);
         }
         /// <summary></summary>
-        public static AuthenticationBuilder AddWxOpenMiniProgram(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<WxOpenLoginOptions> configureOptions)
+        public static AuthenticationBuilder AddWeixinMiniProgramAuthentication(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<WxOpenLoginOptions> configureOptions)
         {
             builder.Services.TryAddSingleton<IWxOpenLoginStateInfoStore, WxOpenLoginStateInfoStore>();
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<WxOpenLoginOptions>, WxOpenPostConfigureOptions>());
