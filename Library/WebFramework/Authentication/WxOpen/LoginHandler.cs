@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -9,7 +8,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace WebFramework.Authentication.WeChat.WxOpen
+namespace Microsoft.AspNetCore.Authentication.WxOpen
 {
     /// <summary></summary>
     public class WxOpenLoginHandler : RemoteAuthenticationHandler<WxOpenLoginOptions>

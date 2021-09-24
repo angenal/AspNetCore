@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
-
-namespace WebFramework.Authentication.WeChat.WxOpen
+namespace Microsoft.AspNetCore.Authentication.WxOpen
 {
     /// <summary>
     /// 微信小程序登录校验的默认设置

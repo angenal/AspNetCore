@@ -115,7 +115,7 @@ function logSearch(e) {
 }
 
 function log0Delete(btn, id) {
-    var tr = $(btn).parent().parent(), tr1 = $('#log0' + id.replace('-', ''));
+    var tr = $(btn).parent().parent(), tr1 = $('#log0' + id.replace('-', '')), btn = $('#log0MoreBtn');
     $.ajax({
         type: 'DELETE',
         url: '/api/log/request/delete/' + id,
@@ -123,8 +123,13 @@ function log0Delete(btn, id) {
         success: function (data) {
             //console.log(data);
             tr.remove(); tr1.remove();
-            $('#log00').text((parseInt($('#log00').text()) - 1));
-            $('#log01').text((parseInt($('#log01').text()) - 1));
+            var i0 = parseInt($('#log00').text()) - 1, i1 = parseInt($('#log01').text()) - 1;
+            if (i1 == 0) {
+                $('#log01').parent().html('记录为空');
+            } else {
+                $('#log00').text(i0); $('#log01').text(i1);
+                if (i0 == 0) btn.show();
+            }
         },
         error: function (errMsg) {
             console.log(errMsg);
@@ -133,7 +138,7 @@ function log0Delete(btn, id) {
 }
 
 function log1Delete(btn, id) {
-    var tr = $(btn).parent().parent(), tr1 = $('#log1' + id.replace('-', ''));
+    var tr = $(btn).parent().parent(), tr1 = $('#log1' + id.replace('-', '')), btn = $('#log1MoreBtn');
     $.ajax({
         type: 'DELETE',
         url: '/api/log/exception/delete/' + id,
@@ -141,8 +146,13 @@ function log1Delete(btn, id) {
         success: function (data) {
             //console.log(data);
             tr.remove(); tr1.remove();
-            $('#log10').text((parseInt($('#log10').text()) - 1));
-            $('#log11').text((parseInt($('#log11').text()) - 1));
+            var i0 = parseInt($('#log10').text()) - 1, i1 = parseInt($('#log11').text()) - 1;
+            if (i1 == 0) {
+                $('#log11').parent().html('记录为空');
+            } else {
+                $('#log10').text(i0); $('#log11').text(i1);
+                if (i0 == 0) btn.show();
+            }
         },
         error: function (errMsg) {
             console.log(errMsg);

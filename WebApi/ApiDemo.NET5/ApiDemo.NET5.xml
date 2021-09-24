@@ -70,10 +70,8 @@
             认证授权
             </summary>
         </member>
-        <member name="M:ApiDemo.NET5.Controllers.V1.AuthController.#ctor(WebInterface.ILiteDb,WebInterface.ICrypto,WebFramework.IJwtGenerator)">
-             <summary>
-            
-             </summary>
+        <member name="M:ApiDemo.NET5.Controllers.V1.AuthController.#ctor(WebInterface.ICrypto,WebFramework.IJwtGenerator)">
+            <summary></summary>
         </member>
         <member name="M:ApiDemo.NET5.Controllers.V1.AuthController.TestLogin">
             <summary>
@@ -101,9 +99,7 @@
             </summary>
         </member>
         <member name="M:ApiDemo.NET5.Controllers.V2.AuthController.#ctor(WebInterface.ILiteDb,WebInterface.ICrypto,WebFramework.IJwtGenerator)">
-             <summary>
-            
-             </summary>
+            <summary></summary>
         </member>
         <member name="M:ApiDemo.NET5.Controllers.V2.AuthController.TestLogin">
             <summary>

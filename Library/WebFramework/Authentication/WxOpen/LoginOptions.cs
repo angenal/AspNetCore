@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 
-namespace WebFramework.Authentication.WeChat.WxOpen
+namespace Microsoft.AspNetCore.Authentication.WxOpen
 {
     /// <summary></summary>
     public class WxOpenLoginOptions : RemoteAuthenticationOptions

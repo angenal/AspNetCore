@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
-namespace WebFramework.Authentication.WeChat.WxOpen
+namespace Microsoft.AspNetCore.Authentication.WxOpen
 {
     /// <summary>
     /// 用户进行登录操作时所需要的上下文信息

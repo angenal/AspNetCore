@@ -3,7 +3,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace WebFramework.Authentication.WeChat.WxOpen
+namespace Microsoft.AspNetCore.Authentication.WxOpen
 {
     /// <summary>
     /// 保存微信服务端返回的OpenId,Sessionkey等信息到缓存.

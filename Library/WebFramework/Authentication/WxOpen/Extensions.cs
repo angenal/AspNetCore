@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.WxOpen;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
-using WebFramework.Authentication.WeChat.WxOpen;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

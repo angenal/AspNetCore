@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json;
 
-namespace WebFramework.Authentication.WeChat.WxOpen
+namespace Microsoft.AspNetCore.Authentication.WxOpen
 {
     /// <summary>
     /// 微信小程序登录凭证校验后返回的结果

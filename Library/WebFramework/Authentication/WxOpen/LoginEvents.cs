@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Authentication;
 using System;
 using System.Threading.Tasks;
 
-namespace WebFramework.Authentication.WeChat.WxOpen
+namespace Microsoft.AspNetCore.Authentication.WxOpen
 {
     /// <summary>
     /// 微信小程序远程服务器身份验证的生命周期事件

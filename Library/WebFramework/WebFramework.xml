@@ -148,279 +148,6 @@
         <member name="P:WebFramework.ConnectionStrings.DefaultConnection">
             <summary></summary>
         </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults">
-            <summary>
-            微信小程序登录校验的默认设置
-            </summary>
-        </member>
-        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.AuthenticationScheme">
-            <summary>
-            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultAuthenticateScheme"/>.
-            </summary>
-        </member>
-        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.DisplayName">
-            <summary>
-            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultScheme"/>.
-            </summary>
-        </member>
-        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.CallbackPath">
-            <summary>
-            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.RemoteAuthenticationOptions.CallbackPath"/>.
-            </summary>
-        </member>
-        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.Issuer">
-            <summary>
-            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions.ClaimsIssuer"/>.
-            </summary>
-        </member>
-        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.AuthorizationEndpoint">
-            <summary>
-            微信小程序服务端验证地址 for <see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginHandler"/>.
-            https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
-            </summary>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginEvents">
-            <summary>
-            微信小程序远程服务器身份验证的生命周期事件
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginEvents.OnWxOpenServerCompleted">
-            <summary>
-            微信服务端验证完成后触发,注册该方法获取用户信息.
-            </summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginEvents.WxOpenServerCompleted(WebFramework.Authentication.WeChat.WxOpen.WxOpenServerResultContext)">
-            <summary>
-            微信服务端验证完成后将会调用该方法.
-            </summary>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginHandler">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginHandler.#ctor(Microsoft.Extensions.Options.IOptionsMonitor{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions},Microsoft.Extensions.Logging.ILoggerFactory,System.Text.Encodings.Web.UrlEncoder,Microsoft.AspNetCore.Authentication.ISystemClock)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginHandler.HandleRemoteAuthenticateAsync">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginHandler.ExchangeCodeAsync(System.String)">
-            <summary></summary>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions">
-            <summary></summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions.AppId">
-            <summary>
-            微信小程序 appId【请注意该信息的安全性,避免下发至客户端】
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions.Secret">
-            <summary>
-            微信小程序 appSecret【请注意该信息的安全性,避免下发至客户端】
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions.GrantType">
-            <summary>
-            微信授权类型, 默认: authorization_code
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions.JsQuery">
-            <summary>
-            从微信服务器换取用户信息, 携带小程序客户端获取到的参数, 默认值: code
-            
-            <para>
-                该值需要配合参数 CallbackPath, 默认: <see cref="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.CallbackPath"/>.
-                则"https://yourdomain/signin-wxopen?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
-            </para>
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions.CustomerLoginState">
-            <summary>
-            根据微信服务器返回的会话密匙执行登录成功的操作, 比如颁发JWT, 重定向Action等
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions.CacheExpiration">
-            <summary>
-            缓存过期时间, 默认：1天
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions.Events">
-            <summary>
-            Gets or sets the <see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginEvents"/> used to handle authentication events.
-            </summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions.#ctor">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions.Validate">
-            <summary></summary>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginStateContext">
-            <summary>
-            用户进行登录操作时所需要的上下文信息
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginStateContext.SessionInfoKey">
-            <summary>
-            微信服务端返回的密匙保存在缓存中关联的Key
-            </summary>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenServerResultContext">
-            <summary>
-            微信服务器返回的信息以及当前验证处理的上下文信息【会话密钥】
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenServerResultContext.SessionKey">
-            <summary>
-            会话密钥【请注意该信息的安全性,不要下发至客户端】
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenServerResultContext.OpenId">
-            <summary>
-            用户唯一标识【请注意该信息的安全性,不要下发至客户端】
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenServerResultContext.UnionId">
-            <summary>
-            用户在开放平台的唯一标识符，在满足UnionId下发条件的情况下会返回【请注意该信息的安全性,不要下发至客户端】
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenServerResultContext.ErrCode">
-            <summary>
-            错误码
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenServerResultContext.ErrMsg">
-            <summary>
-            错误信息
-            </summary>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginStateInfoStore">
-            <summary>
-            保存微信服务端返回的OpenId,Sessionkey等信息到缓存.
-            </summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginStateInfoStore.#ctor(Microsoft.Extensions.Caching.Distributed.IDistributedCache)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginStateInfoStore.GetSessionInfo(System.String)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginStateInfoStore.RemoveAsync(System.String)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginStateInfoStore.RenewAsync(System.String,WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo,WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginStateInfoStore.StoreAsync(WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo,WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions)">
-            <summary></summary>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.IWxOpenLoginStateInfoStore">
-            <summary>
-            保存微信服务端返回的Sessionkey等信息到缓存.
-            </summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.IWxOpenLoginStateInfoStore.StoreAsync(WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo,WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions)">
-            <summary>
-            保存<see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo"/>,并且返回所关联的Key。
-            </summary>
-            <param name="sessionInfo"><see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo"/></param>
-            <param name="currentOption">当前的微信验证配置信息</param>
-            <returns>与该seesionInfo所关联的Key信息</returns>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.IWxOpenLoginStateInfoStore.RenewAsync(System.String,WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo,WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions)">
-            <summary>
-            刷新当前Key的所对应的信息。
-            </summary>
-            <param name="key"></param>
-            <param name="sessionInfo"><see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo"/></param>
-            <param name="currentOption">当前的微信验证配置信息</param>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.IWxOpenLoginStateInfoStore.RemoveAsync(System.String)">
-            <summary>
-            根据Key来移除缓存中的结果。
-            </summary>
-            <param name="key"></param>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.IWxOpenLoginStateInfoStore.GetSessionInfo(System.String)">
-            <summary>
-            根据Key来获取对应的<see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo"/>。
-            </summary>
-            <param name="key"></param>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo">
-            <summary>
-            微信服务端返回的密匙信息.
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo.OpenId">
-            <summary>
-            用户唯一标识
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginSessionInfo.SessionKey">
-            <summary>
-            会话密钥
-            </summary>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostConfigureOptions">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostConfigureOptions.#ctor(Microsoft.AspNetCore.DataProtection.IDataProtectionProvider)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostConfigureOptions.PostConfigure(System.String,WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions)">
-            <summary></summary>
-        </member>
-        <member name="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse">
-            <summary>
-            微信小程序登录凭证校验后返回的结果
-            https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.SessionKey">
-            <summary>
-            会话密钥【请注意该信息的安全性,不要下发至客户端】
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.OpenId">
-            <summary>
-            用户唯一标识【请注意该信息的安全性,不要下发至客户端】
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.UnionId">
-            <summary>
-            用户在开放平台的唯一标识符，在满足UnionId下发条件的情况下会返回【请注意该信息的安全性,不要下发至客户端】
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.ErrCode">
-            <summary>
-            错误码
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.ErrMsg">
-            <summary>
-            错误信息
-            </summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.Error">
-            <summary></summary>
-        </member>
-        <member name="P:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.Response">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.Success(System.Text.Json.JsonDocument)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.Failed(System.Exception)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.GetString(System.Text.Json.JsonElement,System.String)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Authentication.WeChat.WxOpen.WxOpenPostResponse.Dispose">
-            <summary></summary>
-        </member>
         <member name="T:WebFramework.Authorization.ApiAuthorizationServicesExtensions">
             <summary>
             依赖注入 services.AddApiAuthorization 服务
@@ -895,7 +622,7 @@
             微信小程序
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.WxOpenController.#ctor(WebFramework.Authentication.WeChat.WxOpen.IWxOpenLoginStateInfoStore,WebFramework.IJwtGenerator)">
+        <member name="M:WebFramework.Controllers.WxOpenController.#ctor(WebInterface.ILiteDb,WebInterface.ICrypto,WebFramework.IJwtGenerator)">
             <summary></summary>
         </member>
         <member name="M:WebFramework.Controllers.WxOpenController.CreateToken(System.String,System.String,System.String,System.String)">
@@ -3840,6 +3567,279 @@
         <member name="M:Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationOptions.#ctor">
             <summary></summary>
         </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginDefaults">
+            <summary>
+            微信小程序登录校验的默认设置
+            </summary>
+        </member>
+        <member name="F:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginDefaults.AuthenticationScheme">
+            <summary>
+            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultAuthenticateScheme"/>.
+            </summary>
+        </member>
+        <member name="F:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginDefaults.DisplayName">
+            <summary>
+            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultScheme"/>.
+            </summary>
+        </member>
+        <member name="F:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginDefaults.CallbackPath">
+            <summary>
+            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.RemoteAuthenticationOptions.CallbackPath"/>.
+            </summary>
+        </member>
+        <member name="F:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginDefaults.Issuer">
+            <summary>
+            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions.ClaimsIssuer"/>.
+            </summary>
+        </member>
+        <member name="F:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginDefaults.AuthorizationEndpoint">
+            <summary>
+            微信小程序服务端验证地址 for <see cref="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginHandler"/>.
+            https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
+            </summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginEvents">
+            <summary>
+            微信小程序远程服务器身份验证的生命周期事件
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginEvents.OnWxOpenServerCompleted">
+            <summary>
+            微信服务端验证完成后触发,注册该方法获取用户信息.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginEvents.WxOpenServerCompleted(Microsoft.AspNetCore.Authentication.WxOpen.WxOpenServerResultContext)">
+            <summary>
+            微信服务端验证完成后将会调用该方法.
+            </summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginHandler">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginHandler.#ctor(Microsoft.Extensions.Options.IOptionsMonitor{Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions},Microsoft.Extensions.Logging.ILoggerFactory,System.Text.Encodings.Web.UrlEncoder,Microsoft.AspNetCore.Authentication.ISystemClock)">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginHandler.HandleRemoteAuthenticateAsync">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginHandler.ExchangeCodeAsync(System.String)">
+            <summary></summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions">
+            <summary></summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions.AppId">
+            <summary>
+            微信小程序 appId【请注意该信息的安全性,避免下发至客户端】
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions.Secret">
+            <summary>
+            微信小程序 appSecret【请注意该信息的安全性,避免下发至客户端】
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions.GrantType">
+            <summary>
+            微信授权类型, 默认: authorization_code
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions.JsQuery">
+            <summary>
+            从微信服务器换取用户信息, 携带小程序客户端获取到的参数, 默认值: code
+            
+            <para>
+                该值需要配合参数 CallbackPath, 默认: <see cref="F:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginDefaults.CallbackPath"/>.
+                则"https://yourdomain/signin-wxopen?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
+            </para>
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions.CustomerLoginState">
+            <summary>
+            根据微信服务器返回的会话密匙执行登录成功的操作, 比如颁发JWT, 重定向Action等
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions.CacheExpiration">
+            <summary>
+            缓存过期时间, 默认：1天
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions.Events">
+            <summary>
+            Gets or sets the <see cref="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginEvents"/> used to handle authentication events.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions.Validate">
+            <summary></summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginStateContext">
+            <summary>
+            用户进行登录操作时所需要的上下文信息
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginStateContext.SessionInfoKey">
+            <summary>
+            微信服务端返回的密匙保存在缓存中关联的Key
+            </summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenServerResultContext">
+            <summary>
+            微信服务器返回的信息以及当前验证处理的上下文信息【会话密钥】
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenServerResultContext.SessionKey">
+            <summary>
+            会话密钥【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenServerResultContext.OpenId">
+            <summary>
+            用户唯一标识【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenServerResultContext.UnionId">
+            <summary>
+            用户在开放平台的唯一标识符，在满足UnionId下发条件的情况下会返回【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenServerResultContext.ErrCode">
+            <summary>
+            错误码
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenServerResultContext.ErrMsg">
+            <summary>
+            错误信息
+            </summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginStateInfoStore">
+            <summary>
+            保存微信服务端返回的OpenId,Sessionkey等信息到缓存.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginStateInfoStore.#ctor(Microsoft.Extensions.Caching.Distributed.IDistributedCache)">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginStateInfoStore.GetSessionInfo(System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginStateInfoStore.RemoveAsync(System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginStateInfoStore.RenewAsync(System.String,Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo,Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions)">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginStateInfoStore.StoreAsync(Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo,Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions)">
+            <summary></summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.IWxOpenLoginStateInfoStore">
+            <summary>
+            保存微信服务端返回的Sessionkey等信息到缓存.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.IWxOpenLoginStateInfoStore.StoreAsync(Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo,Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions)">
+            <summary>
+            保存<see cref="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo"/>,并且返回所关联的Key。
+            </summary>
+            <param name="sessionInfo"><see cref="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo"/></param>
+            <param name="currentOption">当前的微信验证配置信息</param>
+            <returns>与该seesionInfo所关联的Key信息</returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.IWxOpenLoginStateInfoStore.RenewAsync(System.String,Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo,Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions)">
+            <summary>
+            刷新当前Key的所对应的信息。
+            </summary>
+            <param name="key"></param>
+            <param name="sessionInfo"><see cref="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo"/></param>
+            <param name="currentOption">当前的微信验证配置信息</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.IWxOpenLoginStateInfoStore.RemoveAsync(System.String)">
+            <summary>
+            根据Key来移除缓存中的结果。
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.IWxOpenLoginStateInfoStore.GetSessionInfo(System.String)">
+            <summary>
+            根据Key来获取对应的<see cref="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo"/>。
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo">
+            <summary>
+            微信服务端返回的密匙信息.
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo.OpenId">
+            <summary>
+            用户唯一标识
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginSessionInfo.SessionKey">
+            <summary>
+            会话密钥
+            </summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostConfigureOptions">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostConfigureOptions.#ctor(Microsoft.AspNetCore.DataProtection.IDataProtectionProvider)">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostConfigureOptions.PostConfigure(System.String,Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions)">
+            <summary></summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse">
+            <summary>
+            微信小程序登录凭证校验后返回的结果
+            https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.SessionKey">
+            <summary>
+            会话密钥【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.OpenId">
+            <summary>
+            用户唯一标识【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.UnionId">
+            <summary>
+            用户在开放平台的唯一标识符，在满足UnionId下发条件的情况下会返回【请注意该信息的安全性,不要下发至客户端】
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.ErrCode">
+            <summary>
+            错误码
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.ErrMsg">
+            <summary>
+            错误信息
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.Error">
+            <summary></summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.Response">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.Success(System.Text.Json.JsonDocument)">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.Failed(System.Exception)">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.GetString(System.Text.Json.JsonElement,System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.Dispose">
+            <summary></summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.QQAuthenticationExtensions">
             <summary>
             </summary>
@@ -3878,13 +3878,13 @@
         <member name="T:Microsoft.Extensions.DependencyInjection.WxOpenExtensions">
             <summary></summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.WxOpenExtensions.AddWeixinMiniProgramAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.WxOpenExtensions.AddWeixinMiniProgramAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions})">
             <summary></summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.WxOpenExtensions.AddWeixinMiniProgramAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.Action{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.WxOpenExtensions.AddWeixinMiniProgramAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.Action{Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions})">
             <summary></summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.WxOpenExtensions.AddWeixinMiniProgramAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.String,System.Action{WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginOptions})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.WxOpenExtensions.AddWeixinMiniProgramAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.String,System.Action{Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginOptions})">
             <summary></summary>
         </member>
     </members>

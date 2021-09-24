@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authentication.WxOpen;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using WebFramework.Authentication.WeChat.WxOpen;
+using WebInterface;
 
 namespace WebFramework.Controllers
 {
@@ -14,13 +16,15 @@ namespace WebFramework.Controllers
     [Route("[controller]")]
     public class WxOpenController : ApiController
     {
-        private readonly IWxOpenLoginStateInfoStore store;
+        private readonly ILiteDb liteDb;
+        private readonly ICrypto crypto;
         private readonly IJwtGenerator jwtToken;
 
         /// <summary></summary>
-        public WxOpenController(IWxOpenLoginStateInfoStore store, IJwtGenerator jwtToken)
+        public WxOpenController(ILiteDb liteDb, ICrypto crypto, IJwtGenerator jwtToken)
         {
-            this.store = store;
+            this.liteDb = liteDb;
+            this.crypto = crypto;
             this.jwtToken = jwtToken;
         }
 
@@ -41,6 +45,8 @@ namespace WebFramework.Controllers
             // 获取缓存OpenId后创建登录凭证
             if (string.IsNullOrWhiteSpace(openid))
             {
+                var store = HttpContext.RequestServices.GetService<IWxOpenLoginStateInfoStore>();
+                if (store == null) return Error("系统服务未配置正确");
                 var i = await store.GetSessionInfo(cacheKey);
                 if (i == null) return Error($"参数{nameof(cacheKey)}错误");
                 openid = i.OpenId;

@@ -20,18 +20,14 @@ namespace ApiDemo.NET5.Controllers.V1
     [Route("api/[controller]/v{version:version}/[action]")]
     public class AuthController : ApiController
     {
-        private readonly ILiteDb liteDb;
         private readonly ICrypto crypto;
-        private readonly IJwtGenerator JwtToken;
+        private readonly IJwtGenerator jwtToken;
 
-        /// <summary>
-        ///
-        /// </summary>
-        public AuthController(ILiteDb liteDb, ICrypto crypto, IJwtGenerator jwtToken)
+        /// <summary></summary>
+        public AuthController(ICrypto crypto, IJwtGenerator jwtToken)
         {
-            this.liteDb = liteDb;
             this.crypto = crypto;
-            JwtToken = jwtToken;
+            this.jwtToken = jwtToken;
         }
 
 
@@ -52,7 +48,7 @@ namespace ApiDemo.NET5.Controllers.V1
             };
             var claims = o.Claims();
             var session = new JObject();
-            session["token"] = JwtToken.Generate(claims);
+            session["token"] = jwtToken.Generate(claims);
 
             var refreshToken = crypto.RandomString(32);
             var cookieOptions = new CookieOptions

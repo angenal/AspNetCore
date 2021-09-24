@@ -55,9 +55,9 @@ namespace WebFramework.Services
                 var wxmSection = section.GetSection("WeixinMiniProgram");
                 if (wxmSection.Exists())
                 {
+                    // 回调地址: /signin-wxopen?code=xxx
                     // 登录凭证校验。通过 wx.login 接口获得临时登录凭证 code 后传到开发者服务器调用此接口完成登录流程。
                     // https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
-                    // 回调地址: /signin-wxopen?code=xxx
                     string appid = wxmSection.GetValue<string>("ClientId"), secret = wxmSection.GetValue<string>("ClientSecret");
                     if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddWeixinMiniProgramAuthentication(options =>
                     {
@@ -95,9 +95,7 @@ namespace WebFramework.Services
                             return Task.CompletedTask;
                         };
                     });
-                    else oAuth.AddWeixinMiniProgramAuthentication(null);
                 }
-                else oAuth.AddWeixinMiniProgramAuthentication(null);
             }
 
 

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
 
-namespace WebFramework.Authentication.WeChat.WxOpen
+namespace Microsoft.AspNetCore.Authentication.WxOpen
 {
     /// <summary></summary>
     public class WxOpenPostConfigureOptions : IPostConfigureOptions<WxOpenLoginOptions>
@@ -18,7 +18,7 @@ namespace WebFramework.Authentication.WeChat.WxOpen
         /// <summary></summary>
         public void PostConfigure(string name, WxOpenLoginOptions options)
         {
-            options.DataProtectionProvider = options.DataProtectionProvider ?? _dp;
+            options.DataProtectionProvider ??= _dp;
             if (options.Backchannel != null) return;
 
             options.Backchannel = new HttpClient(options.BackchannelHttpHandler ?? new HttpClientHandler());

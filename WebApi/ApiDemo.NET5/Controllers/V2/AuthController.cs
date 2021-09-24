@@ -22,16 +22,14 @@ namespace ApiDemo.NET5.Controllers.V2
     {
         private readonly ILiteDb liteDb;
         private readonly ICrypto crypto;
-        private readonly IJwtGenerator JwtToken;
+        private readonly IJwtGenerator jwtToken;
 
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         public AuthController(ILiteDb liteDb, ICrypto crypto, IJwtGenerator jwtToken)
         {
             this.liteDb = liteDb;
             this.crypto = crypto;
-            JwtToken = jwtToken;
+            this.jwtToken = jwtToken;
         }
 
 
@@ -53,7 +51,7 @@ namespace ApiDemo.NET5.Controllers.V2
             };
             var claims = o.Claims();
             var session = JObject.FromObject(o);
-            session["token"] = JwtToken.Generate(claims);
+            session["token"] = jwtToken.Generate(claims);
             return Ok(session);
         }
 
@@ -118,7 +116,7 @@ namespace ApiDemo.NET5.Controllers.V2
                 }).FirstOrDefault();
                 var claims = o.Claims();
                 var session = JObject.FromObject(o);
-                session["token"] = JwtToken.Generate(claims);
+                session["token"] = jwtToken.Generate(claims);
                 return Ok(session);
             }
         }
