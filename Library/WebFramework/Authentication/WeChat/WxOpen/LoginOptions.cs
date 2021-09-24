@@ -27,8 +27,8 @@ namespace WebFramework.Authentication.WeChat.WxOpen
         /// 从微信服务器换取用户信息, 携带小程序客户端获取到的参数, 默认: code
         /// 
         /// <para>
-        ///     该值需要配合参数 CallbackPath, 默认: /WxOpen/Signin
-        ///     则"https://localhost/WxOpen/Signin?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
+        ///     该值需要配合参数 CallbackPath, 默认: <see cref="WxOpenLoginDefaults.CallbackPath"/>.
+        ///     则"https://yourdomain/signin-wechat?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
         /// </para>
         /// </summary>
         public string JsQuery { get; set; } = "code";
@@ -56,7 +56,8 @@ namespace WebFramework.Authentication.WeChat.WxOpen
         public WxOpenLoginOptions()
         {
             BackchannelTimeout = TimeSpan.FromSeconds(60);
-            CallbackPath = new PathString("/WxOpen/Signin");
+            ClaimsIssuer = WxOpenLoginDefaults.Issuer;
+            CallbackPath = new PathString(WxOpenLoginDefaults.CallbackPath);
             Events = new WxOpenLoginEvents();
         }
 

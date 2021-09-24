@@ -28,7 +28,7 @@ namespace WebFramework.Authentication.WeChat.WxOpen
                 return HandleRequestResult.Fail(tokens.Error);
 
             var completedContext = new WxOpenServerResultContext(Context, Scheme, Options, tokens.SessionKey, tokens.OpenId, tokens.UnionId, tokens.ErrCode, tokens.ErrMsg);
-            await Options.Events?.OnWxOpenServerCompleted(completedContext);
+            await Options.Events?.OnWxOpenServerCompleted?.Invoke(completedContext);
 
             if (string.IsNullOrEmpty(tokens.OpenId) || string.IsNullOrEmpty(tokens.SessionKey))
                 return HandleRequestResult.Fail("没有接收到微信服务器所返回的OpenID和SessionKey");

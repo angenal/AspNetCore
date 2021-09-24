@@ -45,13 +45,13 @@ namespace Microsoft.Extensions.DependencyInjection
 namespace Microsoft.AspNetCore.Builder
 {
     /// <summary>
-    /// Extension methods to add WeChat authentication capabilities to an HTTP application pipeline.
+    /// Extension methods to add weixin authentication capabilities to an HTTP application pipeline.
     /// </summary>
     public static class WeChatAuthenticationExtensions
     {
         /// <summary>
         /// Adds the <see cref="WeChatAuthenticationMiddleware"/> middleware to the specified
-        /// <see cref="IApplicationBuilder"/>, which enables WeChat authentication capabilities.
+        /// <see cref="IApplicationBuilder"/>, which enables weixin authentication capabilities.
         /// </summary>
         /// <param name="app">The <see cref="IApplicationBuilder"/> to add the middleware to.</param>
         /// <param name="options">A <see cref="WeChatAuthenticationOptions"/> that specifies options for the middleware.</param>
@@ -63,7 +63,7 @@ namespace Microsoft.AspNetCore.Builder
 
         /// <summary>
         /// Adds the <see cref="WeChatAuthenticationMiddleware"/> middleware to the specified
-        /// <see cref="IApplicationBuilder"/>, which enables WeChat authentication capabilities.
+        /// <see cref="IApplicationBuilder"/>, which enables weixin authentication capabilities.
         /// </summary>
         /// <param name="app">The <see cref="IApplicationBuilder"/> to add the middleware to.</param>
         /// <param name="configuration">An action delegate to configure the provided <see cref="WeChatAuthenticationOptions"/>.</param>

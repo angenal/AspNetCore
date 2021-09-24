@@ -4,7 +4,7 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
 {
     /// <summary>
     /// Contains static methods that allow to extract user's information from a <see cref="JObject"/>
-    /// instance retrieved from WeChat after a successful authentication process.
+    /// instance retrieved from weixin after a successful authentication process.
     /// </summary>
     static class WeChatAuthenticationHelper
     {

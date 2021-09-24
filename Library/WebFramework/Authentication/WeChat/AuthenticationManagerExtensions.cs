@@ -16,7 +16,7 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
     public static class HttpContextExtensions
     {
         /// <summary>
-        ///  Get the external login information from WeChat provider.
+        ///  Get the external login information from weixin provider.
         /// </summary>
         public static async Task<Dictionary<string, string>> GetExternalWeChatLoginInfoAsync(this HttpContext httpContext, string expectedXsrf = null)
         {
@@ -41,7 +41,7 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
                 }
             }
 
-            var userInfo = auth.Principal.FindFirst("urn:WeChat:user_info");
+            var userInfo = auth.Principal.FindFirst("urn:weixin:user_info");
             if (userInfo == null)
             {
                 return null;
@@ -85,7 +85,7 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
     public static class AuthenticationManagerExtensions
     {
         /// <summary>
-        ///  Get the external login information from WeChat provider.
+        ///  Get the external login information from weixin provider.
         /// </summary>
         [Obsolete("Use HttpContext.GetExternalWeChatLoginInfoAsync()")]
         public static async Task<Dictionary<string, string>> GetExternalWeChatLoginInfoAsync(this AuthenticationManager authenticationManager, string expectedXsrf = null)
@@ -110,7 +110,7 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
                 }
             }
 
-            var userInfo = authenticateContext.Principal.FindFirst("urn:WeChat:user_info");
+            var userInfo = authenticateContext.Principal.FindFirst("urn:weixin:user_info");
             if (userInfo == null)
             {
                 return null;

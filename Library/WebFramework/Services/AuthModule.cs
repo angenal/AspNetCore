@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
+using System.Threading.Tasks;
+using WebCore;
+using WebFramework.Authentication.WeChat.WxOpen;
 
 namespace WebFramework.Services
 {
@@ -21,27 +26,69 @@ namespace WebFramework.Services
             //services.AddIdentityLiteDB(config);
 
             // Authentication with JWT
-            var builder = services.AddJwtAuthentication(config);
-
-            // Register Weixin Services
-            services.AddWeixin(builder, config);
+            services.AddJwtAuthentication(config);
 
             // Authentication with OAuth
-            if (config.GetSection("OAuth").Exists())
+            var section = config.GetSection("OAuth");
+            if (section.Exists())
             {
                 var oAuth = services.AddAuthentication();
-                string qq = config.GetValue<string>("OAuth:QQ:ClientId"), qqSecret = config.GetValue<string>("OAuth:QQ:ClientSecret");
-                string wx = config.GetValue<string>("OAuth:Weixin:ClientId"), wxSecret = config.GetValue<string>("OAuth:Weixin:ClientSecret");
-                if (!string.IsNullOrEmpty(qq) && !string.IsNullOrEmpty(qqSecret)) oAuth.AddQQAuthentication(t =>
+                var qqSection = section.GetSection("QQ");
+                if (qqSection.Exists())
                 {
-                    t.ClientId = qq;
-                    t.ClientSecret = qqSecret;
-                });
-                if (!string.IsNullOrEmpty(wx) && !string.IsNullOrEmpty(wxSecret)) oAuth.AddWeChatAuthentication(t =>
+                    string appid = qqSection.GetValue<string>("ClientId"), secret = qqSection.GetValue<string>("ClientSecret");
+                    if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddQQAuthentication(t =>
+                    {
+                        t.ClientId = appid;
+                        t.ClientSecret = secret;
+                    });
+                }
+                var wxSection = section.GetSection("Weixin");
+                if (wxSection.Exists())
                 {
-                    t.ClientId = wx;
-                    t.ClientSecret = wxSecret;
-                });
+                    string appid = wxSection.GetValue<string>("ClientId"), secret = wxSection.GetValue<string>("ClientSecret");
+                    if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddWeChatAuthentication(t =>
+                    {
+                        t.ClientId = appid;
+                        t.ClientSecret = secret;
+                    });
+                }
+                var wxmSection = section.GetSection("WeixinMiniProgam");
+                if (wxmSection.Exists())
+                {
+                    string appid = wxmSection.GetValue<string>("ClientId"), secret = wxmSection.GetValue<string>("ClientSecret");
+                    if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddWxOpenMiniProgram(options =>
+                    {
+                        options.AppId = appid;
+                        options.Secret = secret;
+                        // 根据微信服务器返回的会话密匙执行登录操作, 比如颁发JWT, 缓存OpenId, 重定向Action等.
+                        options.CustomerLoginState += context =>
+                        {
+                            // 创建登录凭证 WxOpenController.CreateToken(string key)
+                            context.HttpContext.Response.Redirect($"/WxOpen/CreateToken?key={context.SessionInfoKey}");
+                            return Task.CompletedTask;
+                        };
+                        // 微信服务端验证完成后触发,注册该方法获取用户信息.
+                        options.Events.OnWxOpenServerCompleted = context =>
+                        {
+                            if (context.ErrCode != null && !context.ErrCode.Equals("0"))
+                            {
+                                var error = new { errcode = context.ErrCode, errmsg = context.ErrMsg };
+                                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                                context.Response.ContentType = "application/json";
+                                return context.Response.WriteAsync(error.ToJson());
+                            }
+                            // 自定义逻辑：处理微信OpenId与该系统的关系.
+                            var session = new { openid = context.OpenId, unionid = context.UnionId, errcode = context.ErrCode, errmsg = context.ErrMsg };
+                            // 颁发JWT
+                            //var o = new Session();
+                            //var session = JObject.FromObject(o);
+                            //if (!string.IsNullOrEmpty(o.Id)) session["token"] = new JwtGenerator().Generate(o.Claims());
+                            context.Response.ContentType = "application/json";
+                            return context.Response.WriteAsync(session.ToJson());
+                        };
+                    });
+                }
             }
 
 

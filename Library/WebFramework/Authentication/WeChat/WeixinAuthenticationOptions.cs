@@ -25,10 +25,10 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
             ClaimActions.MapJsonKey(ClaimTypes.Gender, "sex");
             ClaimActions.MapJsonKey(ClaimTypes.Country, "country");
 
-            ClaimActions.MapJsonKey("urn:WeChat:nickname", "nickname");
-            ClaimActions.MapJsonKey("urn:WeChat:city", "city");
-            ClaimActions.MapJsonKey("urn:WeChat:province", "province");
-            ClaimActions.MapJsonKey("urn:WeChat:headimgurl", "headimgurl");
+            ClaimActions.MapJsonKey("urn:weixin:nickname", "nickname");
+            ClaimActions.MapJsonKey("urn:weixin:city", "city");
+            ClaimActions.MapJsonKey("urn:weixin:province", "province");
+            ClaimActions.MapJsonKey("urn:weixin:headimgurl", "headimgurl");
         }
     }
 }

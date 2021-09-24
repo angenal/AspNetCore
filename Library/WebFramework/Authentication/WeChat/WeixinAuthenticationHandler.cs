@@ -73,11 +73,11 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
                 {
                     string privilege = string.Join(",", privilegeEle.EnumerateArray().ToArray().Select(t => t.GetString()));
 
-                    identity.AddClaim(new Claim("urn:WeChat:privilege", privilege, Options.ClaimsIssuer));
+                    identity.AddClaim(new Claim("urn:weixin:privilege", privilege, Options.ClaimsIssuer));
                 }
 
 
-                identity.AddClaim(new Claim("urn:WeChat:user_info", payload.ToString(), Options.ClaimsIssuer));
+                identity.AddClaim(new Claim("urn:weixin:user_info", payload.ToString(), Options.ClaimsIssuer));
 
                 var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, Context, Scheme, Options, Backchannel, tokens, payload.RootElement);
 

@@ -165,20 +165,29 @@
             微信小程序登录校验的默认设置
             </summary>
         </member>
-        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.AppSettings">
+        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.AuthenticationScheme">
             <summary>
-            Configuration Section in appsettings.json
+            Default value for <see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenExtensions"/>, <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultAuthenticateScheme"/>.
             </summary>
         </member>
-        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.AuthenticationScheme">
-            <summary></summary>
-        </member>
         <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.DisplayName">
-            <summary></summary>
+            <summary>
+            Default value for <see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenExtensions"/>.
+            </summary>
+        </member>
+        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.CallbackPath">
+            <summary>
+            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.RemoteAuthenticationOptions.CallbackPath"/>.
+            </summary>
+        </member>
+        <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.Issuer">
+            <summary>
+            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions.ClaimsIssuer"/>.
+            </summary>
         </member>
         <member name="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.AuthorizationEndpoint">
             <summary>
-            微信小程序服务端验证地址
+            微信小程序服务端验证地址 for <see cref="T:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginHandler"/>.
             https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html
             </summary>
         </member>
@@ -232,8 +241,8 @@
             从微信服务器换取用户信息, 携带小程序客户端获取到的参数, 默认: code
             
             <para>
-                该值需要配合参数 CallbackPath, 默认: /WxOpen/Signin
-                则"https://localhost/WxOpen/Signin?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
+                该值需要配合参数 CallbackPath, 默认: <see cref="F:WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginDefaults.CallbackPath"/>.
+                则"https://yourdomain/signin-wechat?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
             </para>
             </summary>
         </member>
@@ -3216,26 +3225,6 @@
             <param name="addControllerVersions"></param>
             <returns></returns>
         </member>
-        <member name="T:WebFramework.Services.WeixinModule">
-            <summary>
-            Weixin Module
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.WeixinModule.AddWeixin(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.AspNetCore.Authentication.AuthenticationBuilder,Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-            Register Weixin Services
-            </summary>
-        </member>
-        <member name="T:WebFramework.Services.WeixinAuthenticationService">
-            <summary>
-            Weixin Authentication Service
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.WeixinAuthenticationService.CreateToken(WebFramework.Authentication.WeChat.WxOpen.WxOpenLoginStateContext)">
-            <summary>
-            Login weixin mini program, return token.
-            </summary>
-        </member>
         <member name="T:WebFramework.Session">
             <summary>
             用户会话 by Jwt Token
@@ -3743,7 +3732,7 @@
         </member>
         <member name="M:Microsoft.AspNetCore.Authentication.WeChat.HttpContextExtensions.GetExternalWeChatLoginInfoAsync(Microsoft.AspNetCore.Http.HttpContext,System.String)">
             <summary>
-             Get the external login information from WeChat provider.
+             Get the external login information from weixin provider.
             </summary>
         </member>
         <member name="T:Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationDefaults">
@@ -3754,6 +3743,11 @@
         <member name="F:Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationDefaults.AuthenticationScheme">
             <summary>
             Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultAuthenticateScheme"/>.
+            </summary>
+        </member>
+        <member name="F:Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationDefaults.DisplayName">
+            <summary>
+            Default value for <see cref="T:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions"/>.
             </summary>
         </member>
         <member name="F:Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationDefaults.CallbackPath">
@@ -3805,7 +3799,7 @@
         <member name="T:Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationHelper">
             <summary>
             Contains static methods that allow to extract user's information from a <see cref="T:Newtonsoft.Json.Linq.JObject"/>
-            instance retrieved from WeChat after a successful authentication process.
+            instance retrieved from weixin after a successful authentication process.
             </summary>
         </member>
         <member name="M:Microsoft.AspNetCore.Authentication.WeChat.WeChatAuthenticationHelper.GetOpenId(Newtonsoft.Json.Linq.JObject)">
