@@ -35,6 +35,7 @@ namespace WebFramework.Services
                 var qqSection = section.GetSection("QQ");
                 if (qqSection.Exists())
                 {
+                    // 回调地址: /signin-qq
                     string appid = qqSection.GetValue<string>("ClientId"), secret = qqSection.GetValue<string>("ClientSecret");
                     if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddQQAuthentication(t =>
                     {
@@ -45,6 +46,7 @@ namespace WebFramework.Services
                 var wxSection = section.GetSection("Weixin");
                 if (wxSection.Exists())
                 {
+                    // 回调地址: /signin-weixin
                     string appid = wxSection.GetValue<string>("ClientId"), secret = wxSection.GetValue<string>("ClientSecret");
                     if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddWeixinAuthentication(t =>
                     {
@@ -55,6 +57,7 @@ namespace WebFramework.Services
                 var wxmSection = section.GetSection("WeixinMiniProgram");
                 if (wxmSection.Exists())
                 {
+                    // 回调地址: /signin-wxopen
                     string appid = wxmSection.GetValue<string>("ClientId"), secret = wxmSection.GetValue<string>("ClientSecret");
                     if (!string.IsNullOrEmpty(appid) && !string.IsNullOrEmpty(secret)) oAuth.AddWeixinMiniProgramAuthentication(options =>
                     {
@@ -66,14 +69,20 @@ namespace WebFramework.Services
                         options.CustomerLoginState += context =>
                         {
                             //var session = new { openid = context.OpenId, unionid = context.UnionId };
-                            // 获取缓存OpenId后创建登录凭证 WxOpenController.CreateToken(string key)
-                            // 重定向 /signin-wxopen 至 /WxOpen/CreateToken (参数为缓存key)
+
+                            // 颁发JWT
+                            //var o = new Session();
+                            //var session = JObject.FromObject(o);
+                            //if (!string.IsNullOrEmpty(o.Id)) session["token"] = new JwtGenerator().Generate(o.Claims());
+
+                            // 重定向 /signin-wxopen 至 /WxOpen/CreateToken (参数为缓存key) 获取缓存OpenId后创建登录凭证 WxOpenController.CreateToken(string key)
                             context.HttpContext.Response.Redirect($"/WxOpen/CreateToken?key={context.SessionInfoKey}");
                             return Task.CompletedTask;
                         };
                         // 微信服务端验证完成后触发,注册该方法获取用户信息
                         options.Events.OnWxOpenServerCompleted = context =>
                         {
+                            // 微信服务端返回异常信息时
                             if (context.ErrCode != null && !context.ErrCode.Equals("0"))
                             {
                                 var error = new { errcode = context.ErrCode, errmsg = context.ErrMsg };
@@ -81,12 +90,8 @@ namespace WebFramework.Services
                                 context.Response.ContentType = "application/json";
                                 return context.Response.WriteAsync(error.ToJson());
                             }
-                            // 自定义逻辑：处理微信OpenId与该系统的关系.
+                            // 自定义逻辑：处理微信OpenId与该系统的关系. 比如保存数据库
                             var session = new { openid = context.OpenId, unionid = context.UnionId, errcode = context.ErrCode, errmsg = context.ErrMsg };
-                            // 颁发JWT
-                            //var o = new Session();
-                            //var session = JObject.FromObject(o);
-                            //if (!string.IsNullOrEmpty(o.Id)) session["token"] = new JwtGenerator().Generate(o.Claims());
                             context.Response.ContentType = "application/json";
                             return context.Response.WriteAsync(session.ToJson());
                         };
