@@ -1,7 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <AssemblyName>WebInterface</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Authors>angenal@hotmail.com</Authors>
+    <Company></Company>
+    <Copyright></Copyright>
+    <Description></Description>
+    <PackageProjectUrl>https://gitee.com/angenal/AspNetCore/tree/master/Library/WebInterface</PackageProjectUrl>
+    <RepositoryUrl>https://gitee.com/angenal/AspNetCore/tree/master/Library/WebInterface</RepositoryUrl>
+    <PackageReleaseNotes>.NET Standard 2.0</PackageReleaseNotes>
+    <PackageId>WebInterface</PackageId>
+    <PackageTags>WebInterface</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

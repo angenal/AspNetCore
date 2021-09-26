@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-	<DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -10,6 +8,24 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <WarningLevel>1</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <AssemblyName>WebFramework</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Authors>angenal@hotmail.com</Authors>
+    <Company></Company>
+    <Copyright></Copyright>
+    <Description></Description>
+    <PackageProjectUrl>https://gitee.com/angenal/AspNetCore/tree/master/Library/WebFramework</PackageProjectUrl>
+    <RepositoryUrl>https://gitee.com/angenal/AspNetCore/tree/master/Library/WebFramework</RepositoryUrl>
+    <PackageReleaseNotes>.NET 5.0</PackageReleaseNotes>
+    <PackageId>WebFramework</PackageId>
+    <PackageTags>WebFramework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

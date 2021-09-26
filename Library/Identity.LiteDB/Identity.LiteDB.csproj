@@ -1,11 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup>
     <Version>1.0.0</Version>
     <AssemblyName>Identity.LiteDB</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Authors>angenal@hotmail.com</Authors>
+    <Company></Company>
+    <Copyright></Copyright>
+    <Description></Description>
+    <PackageProjectUrl>https://gitee.com/angenal/AspNetCore/tree/master/Library/Identity.LiteDB</PackageProjectUrl>
+    <RepositoryUrl>https://gitee.com/angenal/AspNetCore/tree/master/Library/Identity.LiteDB</RepositoryUrl>
+    <PackageReleaseNotes>.NET Standard 2.0</PackageReleaseNotes>
+    <PackageId>Identity.LiteDB</PackageId>
+    <PackageTags>Identity LiteDB</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

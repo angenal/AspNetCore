@@ -2,20 +2,26 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>WebCore</AssemblyName>
-    <PackageId>WebDotnetCore.Core</PackageId>
     <Configurations>Debug;Release;Validate</Configurations>
-	<DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
-    <RootNamespace>WebCore</RootNamespace>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Documents\Handlers\**" />
-    <EmbeddedResource Remove="Documents\Handlers\**" />
-    <None Remove="Documents\Handlers\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Binary\BitVector.cs" />
-  </ItemGroup>
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <AssemblyName>WebCore</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Authors>angenal@hotmail.com</Authors>
+    <Company></Company>
+    <Copyright></Copyright>
+    <Description></Description>
+    <PackageProjectUrl>https://gitee.com/angenal/AspNetCore/tree/master/Library/WebCore</PackageProjectUrl>
+    <RepositoryUrl>https://gitee.com/angenal/AspNetCore/tree/master/Library/WebCore</RepositoryUrl>
+    <PackageReleaseNotes>.NET Standard 2.0</PackageReleaseNotes>
+    <PackageId>WebCore</PackageId>
+    <PackageTags>WebCore</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
     <Compile Remove="Properties\AssemblyInfo.Linux.cs" />
   </ItemGroup>
