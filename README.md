@@ -55,7 +55,7 @@ PM> Install-Package Avalonia            # ui/xaml from https://github.com/Avalon
 PM> Install-Package Avalonia.Desktop
 ~~~
 
-#### 构建与发布项目 [`NuGet`](https://www.nuget.org/)[微软官方包源](https://docs.microsoft.com/zh-cn/nuget)、[微软推荐托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/overview)、[本地`NuGet.Server`托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/nuget-server)、[开源`BaGet`托管](https://loic-sharma.github.io/BaGet/)
+#### 构建与发布项目
 ~~~shell
 # 查看在线.NET Core项目依赖包
 PS> dotnet nuget locals all --list
@@ -69,6 +69,18 @@ PS> dotnet build ./*.csproj -c Release  # 生成项目(要还原NuGet依赖包) 
 PS> dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true -f net5.0 -r linux-x64 -o "./bin/Release/net5.0/publish/linux-x64"
 PS> dotnet publish -c Release /p:PublishSingleFile=false /p:PublishTrimmed=false -f net5.0 -r win-x64 -o "./bin/Release/net5.0/publish/win-x64"
 PS> dotnet publish ./*.csproj -c Release -r win-x64 -o "./bin/Release/net5.0/publish/win-x64"
+~~~
+
+#### [`NuGet`](https://www.nuget.org/)包管理器 [官方NuGet程序包源](https://docs.microsoft.com/zh-cn/nuget)
+    [微软推荐托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/overview)、[本地`NuGet.Server`托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/nuget-server)、[开源`BaGet`托管](https://loic-sharma.github.io/BaGet/)
+~~~shell
+# 安装
+docker run --name nuget-server -itd -p 8880:80 --restart=always --env-file baget.env -v "$(pwd)/baget-data:/var/baget" loicsharma/baget:latest
+# 配置 baget.env # ApiKey=
+# 打包
+dotnet pack
+# 发布
+dotnet nuget push -s http://nuget.xxx.com/v3/index.json -k {ApiKey} {PackageId}.{Version}.nupkg
 ~~~
 
 
