@@ -63,6 +63,11 @@ namespace WebFramework.Services
                 options.MultipartBodyLengthLimit = maxMultipartBodySize;
             });
 
+
+            // 集成HTTPS  https://github.com/natemcmaster/LettuceEncrypt
+            //services.AddLettuceEncrypt();
+
+
             // 系统性能指标的跟踪监控 App.Metrics.AspNetCore
             // 参考Grafana 数据源  http://localhost:3000/datasources
             /* appsettings.json

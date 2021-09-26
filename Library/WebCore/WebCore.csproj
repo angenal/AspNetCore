@@ -51,6 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
+    <PackageReference Include="DeviceId" Version="6.0.0" />
+    <PackageReference Include="DeviceId.Linux" Version="6.0.0" />
+    <PackageReference Include="DeviceId.Mac" Version="6.0.0" />
+    <PackageReference Include="DeviceId.Windows" Version="6.0.0" />
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.1.11" />
     <PackageReference Include="K4os.Hash.xxHash" Version="1.0.6" />
