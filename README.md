@@ -55,9 +55,10 @@ PM> Install-Package Avalonia            # ui/xaml from https://github.com/Avalon
 PM> Install-Package Avalonia.Desktop
 ~~~
 
+# [<NuGet>](https://www.nuget.org/) [微软官方包源](https://docs.microsoft.com/zh-cn/nuget)、[微软推荐托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/overview)、[本地`NuGet.Server`托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/nuget-server)、[开源`BaGet`托管](https://loic-sharma.github.io/BaGet/)
 ~~~shell
 # 查看在线.NET Core项目依赖包
-PS> dotnet nuget locals all --list  
+PS> dotnet nuget locals all --list
   # 复制 http-cache: C:\Users\Administrator\AppData\Local\NuGet\v3-cache
   # 复制 global-packages: C:\Users\Administrator\.nuget\packages\
 # 离线还原.NET Core项目依赖包
