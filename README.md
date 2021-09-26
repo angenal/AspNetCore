@@ -71,8 +71,7 @@ PS> dotnet publish -c Release /p:PublishSingleFile=false /p:PublishTrimmed=false
 PS> dotnet publish ./*.csproj -c Release -r win-x64 -o "./bin/Release/net5.0/publish/win-x64"
 ~~~
 
-#### [`NuGet`](https://www.nuget.org/)包管理器 [官方NuGet程序包源](https://docs.microsoft.com/zh-cn/nuget)
-    [微软推荐托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/overview)、[本地`NuGet.Server`托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/nuget-server)、[开源`BaGet`托管](https://loic-sharma.github.io/BaGet/)
+#### [`NuGet`](https://www.nuget.org/)包管理器 [官方NuGet程序包源](https://docs.microsoft.com/zh-cn/nuget)、[微软推荐托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/overview)、[本地`NuGet.Server`托管](https://docs.microsoft.com/zh-cn/nuget/hosting-packages/nuget-server)、[开源`BaGet`托管](https://loic-sharma.github.io/BaGet/)
 ~~~shell
 # 安装
 docker run --name nuget-server -itd -p 8880:80 --restart=always --env-file baget.env -v "$(pwd)/baget-data:/var/baget" loicsharma/baget:latest
