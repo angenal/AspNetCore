@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace WebCore.IO
 {
@@ -12,6 +9,13 @@ namespace WebCore.IO
     /// </summary>
     public class FileMD5
     {
+        /// <summary>
+        /// Gets the md5 value.
+        /// </summary>
+        /// <param name="paths">The paths to read. The first path that can be successfully read will be used.</param>
+        /// <returns>The md5 value.</returns>
+        public static string ComputeHash(params string[] paths) => new FileMD5(paths).GetValue();
+
         /// <summary>
         /// The paths to read.
         /// </summary>
@@ -41,9 +45,9 @@ namespace WebCore.IO
         }
 
         /// <summary>
-        /// Gets the component value.
+        /// Gets the md5 value.
         /// </summary>
-        /// <returns>The component value.</returns>
+        /// <returns>The md5 value.</returns>
         public string GetValue()
         {
             foreach (var path in _paths)
@@ -69,11 +73,7 @@ namespace WebCore.IO
                         return contents;
                     }
 
-                    using (var hasher = MD5.Create())
-                    {
-                        var hash = hasher.ComputeHash(Encoding.ASCII.GetBytes(contents));
-                        return BitConverter.ToString(hash).Replace("-", "").ToUpper();
-                    }
+                    return contents.Md5();
                 }
                 catch
                 {

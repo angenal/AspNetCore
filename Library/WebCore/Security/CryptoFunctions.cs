@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Web;
 using WebCore.Security;
 
@@ -25,7 +24,7 @@ namespace WebCore
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static uint XXH32(this string text) { var bytes = Encoding.UTF8.GetBytes(text); return K4os.Hash.xxHash.XXH32.DigestOf(bytes, 0, bytes.Length); }
+        public static uint XXH32(this string text) { var bytes = Crypto.Encoding.Default.GetBytes(text); return K4os.Hash.xxHash.XXH32.DigestOf(bytes, 0, bytes.Length); }
         /// <summary>
         /// XXH64
         /// </summary>
@@ -37,19 +36,19 @@ namespace WebCore
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static ulong XXH64(this string text) { var bytes = Encoding.UTF8.GetBytes(text); return K4os.Hash.xxHash.XXH64.DigestOf(bytes, 0, bytes.Length); }
+        public static ulong XXH64(this string text) { var bytes = Crypto.Encoding.Default.GetBytes(text); return K4os.Hash.xxHash.XXH64.DigestOf(bytes, 0, bytes.Length); }
         /// <summary>
         /// Crc16
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static ushort Crc16(this string text) => Crc16Algorithm.Crc16(Encoding.ASCII.GetBytes(text));
+        public static ushort Crc16(this string text) => Crc16Algorithm.Crc16(Crypto.Encoding.Default.GetBytes(text));
         /// <summary>
         /// Crc32
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static uint Crc32(this string text) => Crc32Algorithm.Crc32(Encoding.ASCII.GetBytes(text));
+        public static uint Crc32(this string text) => Crc32Algorithm.Crc32(Crypto.Encoding.Default.GetBytes(text));
         /// <summary>
         /// Crc32.ToString("x8")
         /// </summary>
@@ -84,7 +83,7 @@ namespace WebCore
         public static string ToBase64String(this string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return text;
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(HttpUtility.UrlEncode(text)));
+            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(HttpUtility.UrlEncode(text)));
         }
         /// <summary>
         /// 文本Base64解码 = decodeURIComponent(atob(text))
@@ -94,7 +93,7 @@ namespace WebCore
         public static string FromBase64String(this string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return text;
-            return HttpUtility.UrlDecode(Encoding.UTF8.GetString(Convert.FromBase64String(text)));
+            return HttpUtility.UrlDecode(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(text)));
         }
         /// <summary>
         /// 判断文本为Base64编码

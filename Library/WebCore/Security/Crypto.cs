@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
-using System.Web;
 using WebInterface;
 
 namespace WebCore.Security
@@ -13,6 +11,13 @@ namespace WebCore.Security
     /// </summary>
     public class Crypto : ICrypto
     {
+        /// <summary>The cryptography's text encoding.</summary>
+        public static class Encoding
+        {
+            /// <summary>Gets or set an encoding for the cryptography's text encoding.</summary>
+            public static System.Text.Encoding Default = System.Text.Encoding.ASCII;
+        }
+
         /// <summary>
         /// Crypto Instance.
         /// </summary>
@@ -35,7 +40,7 @@ namespace WebCore.Security
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public uint XXH32(string text) { var bytes = Encoding.UTF8.GetBytes(text); return K4os.Hash.xxHash.XXH32.DigestOf(bytes, 0, bytes.Length); }
+        public uint XXH32(string text) { var bytes = Encoding.Default.GetBytes(text); return K4os.Hash.xxHash.XXH32.DigestOf(bytes, 0, bytes.Length); }
         /// <summary>
         /// XXH64
         /// </summary>
@@ -47,19 +52,19 @@ namespace WebCore.Security
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public ulong XXH64(string text) { var bytes = Encoding.UTF8.GetBytes(text); return K4os.Hash.xxHash.XXH64.DigestOf(bytes, 0, bytes.Length); }
+        public ulong XXH64(string text) { var bytes = Encoding.Default.GetBytes(text); return K4os.Hash.xxHash.XXH64.DigestOf(bytes, 0, bytes.Length); }
         /// <summary>
         /// Crc16
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public ushort Crc16(string text) => Crc16Algorithm.Crc16(Encoding.ASCII.GetBytes(text));
+        public ushort Crc16(string text) => Crc16Algorithm.Crc16(Encoding.Default.GetBytes(text));
         /// <summary>
         /// Crc32
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public uint Crc32(string text) => Crc32Algorithm.Crc32(Encoding.ASCII.GetBytes(text));
+        public uint Crc32(string text) => Crc32Algorithm.Crc32(Encoding.Default.GetBytes(text));
         /// <summary>
         /// Crc32.ToString("x8")
         /// </summary>
@@ -361,10 +366,10 @@ namespace WebCore.Security
         public string AESEncrypt(string password, string key, string iv) => AESencrypt(password, key, iv);
         public static string AESencrypt(string password, string key, string iv)
         {
-            byte[] inputBytes = Encoding.UTF8.GetBytes(password);
+            byte[] inputBytes = Encoding.Default.GetBytes(password);
             SymmetricAlgorithm des = Aes.Create();
-            des.Key = Encoding.UTF8.GetBytes(key.PadRight(32));
-            des.IV = Encoding.UTF8.GetBytes(iv);
+            des.Key = Encoding.Default.GetBytes(key.PadRight(32));
+            des.IV = Encoding.Default.GetBytes(iv);
             using (MemoryStream ms = new MemoryStream())
             {
                 using (CryptoStream cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write))
@@ -383,9 +388,9 @@ namespace WebCore.Security
         public static string AESdecrypt(string hashedPassword, string key, string iv)
         {
             SymmetricAlgorithm des = Aes.Create();
-            des.Key = Encoding.UTF8.GetBytes(key.PadRight(32));
-            des.IV = Encoding.UTF8.GetBytes(iv);
-            MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(hashedPassword));
+            des.Key = Encoding.Default.GetBytes(key.PadRight(32));
+            des.IV = Encoding.Default.GetBytes(iv);
+            MemoryStream ms = new MemoryStream(Encoding.Default.GetBytes(hashedPassword));
             CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Read);
             try
             {
@@ -394,7 +399,7 @@ namespace WebCore.Security
                 MemoryStream stream = new MemoryStream();
                 while ((readBytes = cs.Read(buffer, 0, buffer.Length)) > 0) stream.Write(buffer, 0, readBytes);
                 byte[] outputBytes = stream.ToArray();
-                return Encoding.UTF8.GetString(outputBytes);
+                return Encoding.Default.GetString(outputBytes);
             }
             catch (Exception)
             {
@@ -416,10 +421,10 @@ namespace WebCore.Security
         public static string AESencrypt(string password, string key)
         {
             if (string.IsNullOrEmpty(password)) return null;
-            byte[] inputBytes = Encoding.UTF8.GetBytes(password);
+            byte[] inputBytes = Encoding.Default.GetBytes(password);
             byte[] outputBytes = new RijndaelManaged
             {
-                Key = Encoding.UTF8.GetBytes(key.PadRight(32)),
+                Key = Encoding.Default.GetBytes(key.PadRight(32)),
                 Mode = CipherMode.ECB,
                 Padding = PaddingMode.PKCS7
             }.CreateEncryptor().TransformFinalBlock(inputBytes, 0, inputBytes.Length);
@@ -432,7 +437,7 @@ namespace WebCore.Security
         public static string AESdecrypt(string hashedPassword, string key)
         {
             byte[] bKey = new byte[32], encryptedBytes = Convert.FromBase64String(hashedPassword);
-            Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(bKey.Length)), bKey, bKey.Length);
+            Array.Copy(Encoding.Default.GetBytes(key.PadRight(bKey.Length)), bKey, bKey.Length);
             SymmetricAlgorithm aes = Aes.Create();
             aes.Mode = CipherMode.ECB;
             aes.Padding = PaddingMode.PKCS7;
@@ -446,7 +451,7 @@ namespace WebCore.Security
                 int readBytes = cs.Read(buffer, 0, encryptedBytes.Length + 32);
                 byte[] outputBytes = new byte[readBytes];
                 Array.Copy(buffer, 0, outputBytes, 0, readBytes);
-                return Encoding.UTF8.GetString(outputBytes);
+                return Encoding.Default.GetString(outputBytes);
             }
             catch (Exception)
             {
@@ -632,7 +637,10 @@ namespace WebCore.Security
         /// </summary>
         /// <param name="password"></param>
         /// <returns></returns>
-        public string Md5(string password) => BitConverter.ToString(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(password))).Replace("-", "").ToLower();
+        public string Md5(string password)
+        {
+            using (var h = MD5.Create()) return BitConverter.ToString(h.ComputeHash(Encoding.Default.GetBytes(password))).Replace("-", "").ToLower();
+        }
 
         /// <summary>
         /// Sha1
@@ -643,7 +651,7 @@ namespace WebCore.Security
         {
             using (var h = SHA1.Create())
             {
-                byte[] o = h.ComputeHash(Encoding.UTF8.GetBytes(password));
+                byte[] o = h.ComputeHash(Encoding.Default.GetBytes(password));
                 return Convert.ToBase64String(o);
                 //var s = new StringBuilder();
                 //foreach (var b in o) s.AppendFormat("{0:x2}", b);
@@ -667,7 +675,7 @@ namespace WebCore.Security
         /// </summary>
         public static string HMACSHA256(string password, string key)
         {
-            using (var h = new HMACSHA256(Encoding.UTF8.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.UTF8.GetBytes(password)));
+            using (var h = new HMACSHA256(Encoding.Default.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.Default.GetBytes(password)));
         }
         /// <summary>
         /// HS512 = HMACSHA512
@@ -681,7 +689,7 @@ namespace WebCore.Security
         /// </summary>
         public static string HMACSHA512(string password, string key)
         {
-            using (var h = new HMACSHA512(Encoding.UTF8.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.UTF8.GetBytes(password)));
+            using (var h = new HMACSHA512(Encoding.Default.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.Default.GetBytes(password)));
         }
         /// <summary>
         /// HS1 = HMACSHA1
@@ -695,7 +703,7 @@ namespace WebCore.Security
         /// </summary>
         public static string HMACSHA1(string password, string key)
         {
-            using (var h = new HMACSHA1(Encoding.UTF8.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.UTF8.GetBytes(password)));
+            using (var h = new HMACSHA1(Encoding.Default.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.Default.GetBytes(password)));
         }
         /// <summary>
         /// HMD5 = HMACMD5
@@ -709,7 +717,7 @@ namespace WebCore.Security
         /// </summary>
         public static string HMACMD5(string password, string key)
         {
-            using (var h = new HMACMD5(Encoding.UTF8.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.UTF8.GetBytes(password)));
+            using (var h = new HMACMD5(Encoding.Default.GetBytes(key))) return Convert.ToBase64String(h.ComputeHash(Encoding.Default.GetBytes(password)));
         }
 
         /// <summary>

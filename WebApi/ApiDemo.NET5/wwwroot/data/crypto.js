@@ -36,10 +36,10 @@ function encryptWithCsharp() {
         url: '/api/Data/Encrypt',
         data: JSON.stringify({ text: $('#encrypt').val(), keys: keys }),
         contentType: 'application/json',
-        success: (data) => {
+        success: function(data) {
             $('#decrypt').val(data.text);
         },
-        error: (errMsg) => {
+        error: function(errMsg) {
             console.log(errMsg);
         }
     });
@@ -52,10 +52,10 @@ function decryptWithCsharp() {
         url: '/api/Data/Decrypt',
         data: JSON.stringify({ text: $('#decrypt').val(), keys: keys }),
         contentType: 'application/json',
-        success: (data) => {
+        success: function(data) {
             $('#encrypt').val(data.text);
         },
-        error: (errMsg) => {
+        error: function(errMsg) {
             console.log(errMsg);
         }
     });
