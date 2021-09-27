@@ -279,6 +279,14 @@ namespace WebInterface
         /// <param name="iv"></param>
         /// <returns></returns>
         string AESDecrypt(string hashedPassword, string key, string iv);
+        /// <summary>
+        /// AESEncrypt + CBC + Pkcs7
+        /// </summary>
+        byte[] AESCBCPkcs7Encrypt(string plainText, byte[] key, byte[] iv);
+        /// <summary>
+        /// AESDecrypt + CBC + Pkcs7
+        /// </summary>
+        string AESCBCPkcs7Decrypt(byte[] cipherText, byte[] key, byte[] iv);
 
         /// <summary>
         /// New RSA Instance.

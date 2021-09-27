@@ -83,7 +83,7 @@ namespace WebCore
         public static string ToBase64String(this string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return text;
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(HttpUtility.UrlEncode(text)));
+            return Convert.ToBase64String(Crypto.Encoding.Default.GetBytes(HttpUtility.UrlEncode(text)));
         }
         /// <summary>
         /// 文本Base64解码 = decodeURIComponent(atob(text))
@@ -93,7 +93,7 @@ namespace WebCore
         public static string FromBase64String(this string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return text;
-            return HttpUtility.UrlDecode(System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(text)));
+            return HttpUtility.UrlDecode(Crypto.Encoding.Default.GetString(Convert.FromBase64String(text)));
         }
         /// <summary>
         /// 判断文本为Base64编码
@@ -337,6 +337,15 @@ namespace WebCore
         /// <param name="iv"></param>
         /// <returns></returns>
         public static string AESDecrypt(this string hashedPassword, string key, string iv) => Crypto.Instance.AESDecrypt(hashedPassword, key, iv);
+
+        /// <summary>
+        /// AESEncrypt + CBC + Pkcs7
+        /// </summary>
+        public static byte[] AESCBCPkcs7Encrypt(this string plainText, byte[] key, byte[] iv) => Crypto.Instance.AESCBCPkcs7Encrypt(plainText, key, iv);
+        /// <summary>
+        /// AESDecrypt + CBC + Pkcs7
+        /// </summary>
+        public static string AESCBCPkcs7Decrypt(this byte[] cipherText, byte[] key, byte[] iv) => Crypto.Instance.AESCBCPkcs7Decrypt(cipherText, key, iv);
         #endregion
 
         #region AES + CEB

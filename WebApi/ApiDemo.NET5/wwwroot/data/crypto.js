@@ -33,7 +33,7 @@ function encryptWithCsharp() {
     $('#decrypt').val('');
     $.ajax({
         type: 'POST',
-        url: '/api/Data/Encrypt',
+        url: '/api/Data/AESCBCPkcs7Encrypt',
         data: JSON.stringify({ text: $('#encrypt').val(), keys: keys }),
         contentType: 'application/json',
         success: function(data) {
@@ -49,7 +49,7 @@ function decryptWithCsharp() {
     $('#encrypt').val('');
     $.ajax({
         type: 'POST',
-        url: '/api/Data/Decrypt',
+        url: '/api/Data/AESCBCPkcs7Decrypt',
         data: JSON.stringify({ text: $('#decrypt').val(), keys: keys }),
         contentType: 'application/json',
         success: function(data) {

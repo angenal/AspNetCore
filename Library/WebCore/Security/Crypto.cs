@@ -19,7 +19,7 @@ namespace WebCore.Security
         }
 
         /// <summary>
-        /// Crypto Instance.
+        /// the singleton cryptography instance.
         /// </summary>
         public static Crypto Instance
         {
@@ -27,6 +27,11 @@ namespace WebCore.Security
             set => _crypto = value;
         }
         internal static Crypto _crypto;
+
+        /// <summary>
+        /// new cryptography instance.
+        /// </summary>
+        public Crypto() { rsa = RSA(); }
 
         //public static uint XXH(this byte[] bytes) => BitConverter.ToUInt32(new K4os.Hash.xxHash.XXH32().AsHashAlgorithm().ComputeHash(bytes), 0);
         /// <summary>
@@ -410,6 +415,88 @@ namespace WebCore.Security
                 cs?.Dispose();
                 ms?.Dispose();
             }
+        }
+
+        /// <summary>
+        /// AESEncrypt + CBC + Pkcs7
+        /// </summary>
+        public byte[] AESCBCPkcs7Encrypt(string plainText, byte[] key, byte[] iv) => AESCBCPkcs7encrypt(plainText, key, iv);
+        public static byte[] AESCBCPkcs7encrypt(string plainText, byte[] key, byte[] iv)
+        {
+            if (plainText == null || plainText.Length <= 0)
+                throw new ArgumentNullException(nameof(plainText));
+            if (key == null || key.Length <= 0)
+                throw new ArgumentNullException(nameof(key));
+            if (iv == null || iv.Length <= 0)
+                throw new ArgumentNullException(nameof(key));
+            byte[] encrypted;
+            // Create a RijndaelManaged object
+            // with the specified key and IV.
+            using (var rijAlg = new RijndaelManaged())
+            {
+                rijAlg.Mode = CipherMode.CBC;
+                rijAlg.Padding = PaddingMode.PKCS7;
+                rijAlg.FeedbackSize = 128;
+                rijAlg.Key = key;
+                rijAlg.IV = iv;
+                // Create a decrytor to perform the stream transform.
+                var encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
+                // Create the streams used for encryption.
+                using (var msEncrypt = new MemoryStream())
+                {
+                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (var swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            //Write all data to the stream.
+                            swEncrypt.Write(plainText);
+                        }
+                        encrypted = msEncrypt.ToArray();
+                    }
+                }
+            }
+            // Return the encrypted bytes from the memory stream.
+            return encrypted;
+        }
+        /// <summary>
+        /// AESDecrypt + CBC + Pkcs7
+        /// </summary>
+        public string AESCBCPkcs7Decrypt(byte[] cipherText, byte[] key, byte[] iv) => AESCBCPkcs7decrypt(cipherText, key, iv);
+        public static string AESCBCPkcs7decrypt(byte[] cipherText, byte[] key, byte[] iv)
+        {
+            if (cipherText == null || cipherText.Length <= 0)
+                throw new ArgumentNullException(nameof(cipherText));
+            if (key == null || key.Length <= 0)
+                throw new ArgumentNullException(nameof(key));
+            if (iv == null || iv.Length <= 0)
+                throw new ArgumentNullException(nameof(key));
+            // Declare the string used to hold the decrypted text.
+            string plaintext = null;
+            // Create an RijndaelManaged object with the specified key and IV.
+            using (var rijAlg = new RijndaelManaged())
+            {
+                //Settings
+                rijAlg.Mode = CipherMode.CBC;
+                rijAlg.Padding = PaddingMode.PKCS7;
+                rijAlg.FeedbackSize = 128;
+                rijAlg.Key = key;
+                rijAlg.IV = iv;
+                // Create a decrytor to perform the stream transform.
+                var decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
+                // Create the streams used for decryption.
+                using (var msDecrypt = new MemoryStream(cipherText))
+                {
+                    using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (var srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            // Read the decrypted bytes from the decrypting stream and place them in a string.
+                            plaintext = srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+            return plaintext;
         }
         #endregion
 

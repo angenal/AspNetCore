@@ -23,7 +23,7 @@ namespace WebFramework.Services
             services.Configure<AesSettings>(section);
             config.Bind(AesSettings.AppSettings, AesSettings.Instance);
 
-            services.AddSingleton<ICrypto, Crypto>();
+            services.AddSingleton<ICrypto, Crypto>(_ => Crypto.Instance);
 
             return services;
         }

@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.IO;
 using System.Net;
-using System.Security.Cryptography;
 using System.Text;
 using WebCore;
 using WebCore.Platform;
@@ -86,7 +84,7 @@ namespace WebFramework.Controllers
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
-        public IActionResult Encode([FromBody] EncodeTextInputDto input)
+        public IActionResult Base64Encode([FromBody] EncodeTextInputDto input)
         {
             var result = new EncodeTextOutputDto()
             {
@@ -101,7 +99,7 @@ namespace WebFramework.Controllers
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
-        public IActionResult Decode([FromBody] EncodeTextInputDto input)
+        public IActionResult Base64Decode([FromBody] EncodeTextInputDto input)
         {
             var result = new EncodeTextOutputDto()
             {
@@ -111,12 +109,86 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
+        /// 文本加密
+        /// </summary>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult Encrypt([FromBody] EncryptText1InputDto input)
+        {
+            var key = Encoding.UTF8.GetBytes(input.Keys.Key);
+            var nonce = Encoding.UTF8.GetBytes(input.Keys.Nonce);
+
+            var encryptToBytes = crypto.Encrypt(Encoding.UTF8.GetBytes(input.Text), nonce, key);
+            string base64String = Convert.ToBase64String(encryptToBytes, 0, encryptToBytes.Length);
+
+            var result = new EncodeTextOutputDto() { Text = base64String };
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 文本解密
+        /// </summary>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult Decrypt([FromBody] DecryptText1InputDto input)
+        {
+            var key = Encoding.UTF8.GetBytes(input.Keys.Key);
+            var nonce = Encoding.UTF8.GetBytes(input.Keys.Nonce);
+
+            var encrypted = Convert.FromBase64String(input.Text);
+            var decriptedBytes = crypto.Decrypt(encrypted, nonce, key);
+
+            var text = Encoding.UTF8.GetString(decriptedBytes);
+            var result = new EncodeTextOutputDto() { Text = text };
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 文本加密
+        /// </summary>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult EncryptChaCha20([FromBody] EncryptText2InputDto input)
+        {
+            var key = Encoding.UTF8.GetBytes(input.Keys.Key);
+            var nonce = Encoding.UTF8.GetBytes(input.Keys.Nonce);
+
+            var encryptToBytes = crypto.EncryptChaCha20(Encoding.UTF8.GetBytes(input.Text), nonce, key);
+            string base64String = Convert.ToBase64String(encryptToBytes, 0, encryptToBytes.Length);
+
+            var result = new EncodeTextOutputDto() { Text = base64String };
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 文本解密
+        /// </summary>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult DecryptChaCha20([FromBody] DecryptText2InputDto input)
+        {
+            var key = Encoding.UTF8.GetBytes(input.Keys.Key);
+            var nonce = Encoding.UTF8.GetBytes(input.Keys.Nonce);
+
+            var encrypted = Convert.FromBase64String(input.Text);
+            var decriptedBytes = crypto.DecryptChaCha20(encrypted, nonce, key);
+
+            var text = Encoding.UTF8.GetString(decriptedBytes);
+            var result = new EncodeTextOutputDto() { Text = text };
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 文本加密 = CryptoJS.AES.encrypt  /data/crypto.html
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
-        public IActionResult Encrypt([FromBody] EncryptTextInputDto input)
+        public IActionResult AESCBCPkcs7Encrypt([FromBody] EncryptTextInputDto input)
         {
             if (input.Keys == null) input.Keys = new EncryptKeyPairInputDto
             {
@@ -127,7 +199,7 @@ namespace WebFramework.Controllers
             var key = Encoding.UTF8.GetBytes(input.Keys.Key);
             var iv = Encoding.UTF8.GetBytes(input.Keys.Iv);
 
-            var encryptToBytes = EncryptToBytes(input.Text, key, iv);
+            var encryptToBytes = crypto.AESCBCPkcs7Encrypt(input.Text, key, iv);
             string base64String = Convert.ToBase64String(encryptToBytes, 0, encryptToBytes.Length);
 
             var result = new EncodeTextOutputDto() { Text = base64String };
@@ -140,7 +212,7 @@ namespace WebFramework.Controllers
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
-        public IActionResult Decrypt([FromBody] DecryptTextInputDto input)
+        public IActionResult AESCBCPkcs7Decrypt([FromBody] DecryptTextInputDto input)
         {
             if (input.Keys == null) input.Keys = new EncryptKeyPairInputDto
             {
@@ -152,7 +224,7 @@ namespace WebFramework.Controllers
             var iv = Encoding.UTF8.GetBytes(input.Keys.Iv);
 
             var encrypted = Convert.FromBase64String(input.Text);
-            var decriptedFromJavascript = DecryptFromBytes(encrypted, key, iv);
+            var decriptedFromJavascript = crypto.AESCBCPkcs7Decrypt(encrypted, key, iv);
 
             var result = new EncodeTextOutputDto() { Text = decriptedFromJavascript };
             return Ok(result);
@@ -161,83 +233,69 @@ namespace WebFramework.Controllers
         /// <summary>
         /// 文本加密
         /// </summary>
-        private static string DecryptFromBytes(byte[] cipherText, byte[] key, byte[] iv)
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult AES256GCMEncrypt([FromBody] EncryptText3InputDto input)
         {
-            if (cipherText == null || cipherText.Length <= 0)
-                throw new ArgumentNullException(nameof(cipherText));
-            if (key == null || key.Length <= 0)
-                throw new ArgumentNullException(nameof(key));
-            if (iv == null || iv.Length <= 0)
-                throw new ArgumentNullException(nameof(key));
-            // Declare the string used to hold the decrypted text.
-            string plaintext = null;
-            // Create an RijndaelManaged object with the specified key and IV.
-            using (var rijAlg = new RijndaelManaged())
-            {
-                //Settings
-                rijAlg.Mode = CipherMode.CBC;
-                rijAlg.Padding = PaddingMode.PKCS7;
-                rijAlg.FeedbackSize = 128;
-                rijAlg.Key = key;
-                rijAlg.IV = iv;
-                // Create a decrytor to perform the stream transform.
-                var decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
-                // Create the streams used for decryption.
-                using (var msDecrypt = new MemoryStream(cipherText))
-                {
-                    using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (var srDecrypt = new StreamReader(csDecrypt))
-                        {
-                            // Read the decrypted bytes from the decrypting stream and place them in a string.
-                            plaintext = srDecrypt.ReadToEnd();
-                        }
-                    }
-                }
-            }
-            return plaintext;
+            var key = Encoding.UTF8.GetBytes(input.Keys.Key);
+            var nonce = Encoding.UTF8.GetBytes(input.Keys.Nonce);
+
+            var encryptToBytes = crypto.AES256GCMEncrypt(Encoding.UTF8.GetBytes(input.Text), nonce, key);
+            string base64String = Convert.ToBase64String(encryptToBytes, 0, encryptToBytes.Length);
+
+            var result = new EncodeTextOutputDto() { Text = base64String };
+            return Ok(result);
         }
 
         /// <summary>
         /// 文本解密
         /// </summary>
-        private static byte[] EncryptToBytes(string plainText, byte[] key, byte[] iv)
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult AES256GCMDecrypt([FromBody] DecryptText3InputDto input)
         {
-            if (plainText == null || plainText.Length <= 0)
-                throw new ArgumentNullException(nameof(plainText));
-            if (key == null || key.Length <= 0)
-                throw new ArgumentNullException(nameof(key));
-            if (iv == null || iv.Length <= 0)
-                throw new ArgumentNullException(nameof(key));
-            byte[] encrypted;
-            // Create a RijndaelManaged object
-            // with the specified key and IV.
-            using (var rijAlg = new RijndaelManaged())
-            {
-                rijAlg.Mode = CipherMode.CBC;
-                rijAlg.Padding = PaddingMode.PKCS7;
-                rijAlg.FeedbackSize = 128;
-                rijAlg.Key = key;
-                rijAlg.IV = iv;
-                // Create a decrytor to perform the stream transform.
-                var encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
-                // Create the streams used for encryption.
-                using (var msEncrypt = new MemoryStream())
-                {
-                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (var swEncrypt = new StreamWriter(csEncrypt))
-                        {
-                            //Write all data to the stream.
-                            swEncrypt.Write(plainText);
-                        }
-                        encrypted = msEncrypt.ToArray();
-                    }
-                }
-            }
-            // Return the encrypted bytes from the memory stream.
-            return encrypted;
+            var key = Encoding.UTF8.GetBytes(input.Keys.Key);
+            var nonce = Encoding.UTF8.GetBytes(input.Keys.Nonce);
+
+            var encrypted = Convert.FromBase64String(input.Text);
+            var decriptedBytes = crypto.AES256GCMDecrypt(encrypted, nonce, key);
+
+            var text = Encoding.UTF8.GetString(decriptedBytes);
+            var result = new EncodeTextOutputDto() { Text = text };
+            return Ok(result);
         }
 
+        /// <summary>
+        /// 文本加密
+        /// </summary>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult RSAEncrypt([FromBody] EncodeTextInputDto input)
+        {
+            var encryptToBytes = crypto.RSAEncrypt(Encoding.UTF8.GetBytes(input.Text));
+            string base64String = Convert.ToBase64String(encryptToBytes, 0, encryptToBytes.Length);
+
+            var result = new EncodeTextOutputDto() { Text = base64String };
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 文本解密
+        /// </summary>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult RSADecrypt([FromBody] EncodeTextInputDto input)
+        {
+            var encrypted = Convert.FromBase64String(input.Text);
+            var decriptedBytes = crypto.RSADecrypt(encrypted);
+
+            var text = Encoding.UTF8.GetString(decriptedBytes);
+            var result = new EncodeTextOutputDto() { Text = text };
+            return Ok(result);
+        }
     }
 }

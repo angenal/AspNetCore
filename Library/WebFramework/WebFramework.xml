@@ -454,32 +454,62 @@
             线程ID
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.DataController.Encode(WebFramework.Models.DTO.EncodeTextInputDto)">
+        <member name="M:WebFramework.Controllers.DataController.Base64Encode(WebFramework.Models.DTO.EncodeTextInputDto)">
             <summary>
             文本Base64编码 = btoa(encodeURIComponent(text))
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.DataController.Decode(WebFramework.Models.DTO.EncodeTextInputDto)">
+        <member name="M:WebFramework.Controllers.DataController.Base64Decode(WebFramework.Models.DTO.EncodeTextInputDto)">
             <summary>
             文本Base64解码 = decodeURIComponent(atob(text))
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.DataController.Encrypt(WebFramework.Models.DTO.EncryptTextInputDto)">
-            <summary>
-            文本加密 = CryptoJS.AES.encrypt  /data/crypto.html
-            </summary>
-        </member>
-        <member name="M:WebFramework.Controllers.DataController.Decrypt(WebFramework.Models.DTO.DecryptTextInputDto)">
-            <summary>
-            文本解密 = CryptoJS.AES.decrypt  /data/crypto.html
-            </summary>
-        </member>
-        <member name="M:WebFramework.Controllers.DataController.DecryptFromBytes(System.Byte[],System.Byte[],System.Byte[])">
+        <member name="M:WebFramework.Controllers.DataController.Encrypt(WebFramework.Models.DTO.EncryptText1InputDto)">
             <summary>
             文本加密
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.DataController.EncryptToBytes(System.String,System.Byte[],System.Byte[])">
+        <member name="M:WebFramework.Controllers.DataController.Decrypt(WebFramework.Models.DTO.DecryptText1InputDto)">
+            <summary>
+            文本解密
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.EncryptChaCha20(WebFramework.Models.DTO.EncryptText2InputDto)">
+            <summary>
+            文本加密
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.DecryptChaCha20(WebFramework.Models.DTO.DecryptText2InputDto)">
+            <summary>
+            文本解密
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.AESCBCPkcs7Encrypt(WebFramework.Models.DTO.EncryptTextInputDto)">
+            <summary>
+            文本加密 = CryptoJS.AES.encrypt  /data/crypto.html
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.AESCBCPkcs7Decrypt(WebFramework.Models.DTO.DecryptTextInputDto)">
+            <summary>
+            文本解密 = CryptoJS.AES.decrypt  /data/crypto.html
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.AES256GCMEncrypt(WebFramework.Models.DTO.EncryptText3InputDto)">
+            <summary>
+            文本加密
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.AES256GCMDecrypt(WebFramework.Models.DTO.DecryptText3InputDto)">
+            <summary>
+            文本解密
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.RSAEncrypt(WebFramework.Models.DTO.EncodeTextInputDto)">
+            <summary>
+            文本加密
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.RSADecrypt(WebFramework.Models.DTO.EncodeTextInputDto)">
             <summary>
             文本解密
             </summary>
@@ -1750,6 +1780,141 @@
             </summary>
         </member>
         <member name="P:WebFramework.Models.DTO.DecryptTextInputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.EncryptKeyPair1InputDto">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptKeyPair1InputDto.Key">
+            <summary>
+            密钥
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptKeyPair1InputDto.Nonce">
+            <summary>
+            随机值
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.EncryptText1InputDto">
+            <summary>
+            文本加密输入
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptText1InputDto.Text">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptText1InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.DecryptText1InputDto">
+            <summary>
+            文本解密输入
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.DecryptText1InputDto.Text">
+            <summary>
+            加密文本
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.DecryptText1InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.EncryptKeyPair2InputDto">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptKeyPair2InputDto.Key">
+            <summary>
+            密钥
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptKeyPair2InputDto.Nonce">
+            <summary>
+            随机值
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.EncryptText2InputDto">
+            <summary>
+            文本加密输入
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptText2InputDto.Text">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptText2InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.DecryptText2InputDto">
+            <summary>
+            文本解密输入
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.DecryptText2InputDto.Text">
+            <summary>
+            加密文本
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.DecryptText2InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.EncryptKeyPair3InputDto">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptKeyPair3InputDto.Key">
+            <summary>
+            密钥
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptKeyPair3InputDto.Nonce">
+            <summary>
+            随机值
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.EncryptText3InputDto">
+            <summary>
+            文本加密输入
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptText3InputDto.Text">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.EncryptText3InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.DecryptText3InputDto">
+            <summary>
+            文本解密输入
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.DecryptText3InputDto.Text">
+            <summary>
+            加密文本
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.DecryptText3InputDto.Keys">
             <summary>
             密钥对
             </summary>
