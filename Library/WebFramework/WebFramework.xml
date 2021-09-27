@@ -466,22 +466,22 @@
         </member>
         <member name="M:WebFramework.Controllers.DataController.Encrypt(WebFramework.Models.DTO.EncryptText1InputDto)">
             <summary>
-            文本加密
+            文本加密 (authenticated encryption)
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.Decrypt(WebFramework.Models.DTO.DecryptText1InputDto)">
             <summary>
-            文本解密
+            文本解密 (authenticated encryption)
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.EncryptChaCha20(WebFramework.Models.DTO.EncryptText2InputDto)">
             <summary>
-            文本加密
+            文本加密 (ChaCha20)
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.DecryptChaCha20(WebFramework.Models.DTO.DecryptText2InputDto)">
             <summary>
-            文本解密
+            文本解密 (ChaCha20)
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.AESCBCPkcs7Encrypt(WebFramework.Models.DTO.EncryptTextInputDto)">
@@ -496,22 +496,22 @@
         </member>
         <member name="M:WebFramework.Controllers.DataController.AES256GCMEncrypt(WebFramework.Models.DTO.EncryptText3InputDto)">
             <summary>
-            文本加密
+            文本加密 (AES 256 + GCM)
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.AES256GCMDecrypt(WebFramework.Models.DTO.DecryptText3InputDto)">
             <summary>
-            文本解密
+            文本解密 (AES 256 + GCM)
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.RSAEncrypt(WebFramework.Models.DTO.EncodeTextInputDto)">
             <summary>
-            文本加密
+            文本加密 (RSA动态加密)
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.DataController.RSADecrypt(WebFramework.Models.DTO.EncodeTextInputDto)">
             <summary>
-            文本解密
+            文本解密 (RSA动态解密)
             </summary>
         </member>
         <member name="T:WebFramework.Controllers.FileController">

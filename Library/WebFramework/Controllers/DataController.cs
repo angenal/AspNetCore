@@ -109,7 +109,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 文本加密
+        /// 文本加密 (authenticated encryption)
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
@@ -127,7 +127,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 文本解密
+        /// 文本解密 (authenticated encryption)
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
@@ -146,7 +146,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 文本加密
+        /// 文本加密 (ChaCha20)
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
@@ -164,7 +164,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 文本解密
+        /// 文本解密 (ChaCha20)
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
@@ -231,7 +231,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 文本加密
+        /// 文本加密 (AES 256 + GCM)
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
@@ -249,7 +249,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 文本解密
+        /// 文本解密 (AES 256 + GCM)
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
@@ -268,7 +268,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 文本加密
+        /// 文本加密 (RSA动态加密)
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
@@ -283,7 +283,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 文本解密
+        /// 文本解密 (RSA动态解密)
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
