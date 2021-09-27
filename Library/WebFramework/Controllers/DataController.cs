@@ -7,6 +7,8 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using WebCore;
+using WebCore.Platform;
 using WebFramework.Models.DTO;
 using WebInterface;
 using WebInterface.Settings;
@@ -34,6 +36,49 @@ namespace WebFramework.Controllers
             this.cache = cache;
         }
 
+        /// <summary>
+        /// 系统状态
+        /// </summary>
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public ActionResult AppStatus()
+        {
+            return Ok(new
+            {
+                OS = OS.Name,
+                OS.Version,
+                Environment.MachineName,
+                env.ApplicationName,
+                env.EnvironmentName,
+                Startup = Date.Startup.ToDateTimeString(),
+                Uptime = DateTime.Now - Date.Startup,
+            });
+        }
+
+        /// <summary>
+        /// 设备ID
+        /// </summary>
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public ActionResult DeviceId()
+        {
+            var id = OS.GetDeviceId();
+            return Ok(new { id });
+        }
+
+        /// <summary>
+        /// 线程ID
+        /// </summary>
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public ActionResult ThreadId()
+        {
+            var id = OS.GetCurrentThreadId();
+            return Ok(new { id, pid = Environment.ProcessId });
+        }
 
         /// <summary>
         /// 文本Base64编码 = btoa(encodeURIComponent(text))

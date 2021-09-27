@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
+using System.Text;
 using WebCore.Platform.Posix;
-using WebCore.Platform.Posix.macOS;
 using RuntimeEnvironment = Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironment;
 
 namespace WebCore.Platform
@@ -30,36 +31,128 @@ namespace WebCore.Platform
 
         public static readonly string HostName = Environment.GetEnvironmentVariable("CUMPUTERNAME") ?? Environment.GetEnvironmentVariable("HOSTNAME") ?? Dns.GetHostName();
 
-        public static string Name => IsLinux ? $"linux{(Is64Bit ? " x64" : " x32")}{(IsDocker ? " on docker" : "")}" : IsMacOS ? $"macOS{(Is64Bit ? " x64" : " x32")}{(IsDocker ? " on docker" : "")}" : $"windows{(Is64Bit ? " x64" : " x32")}{(IsDocker ? " on docker" : "")}";
+        public static string Name => IsLinux ? $"linux{(Is64Bit ? "-x64" : "-x32")}{(IsDocker ? " on docker" : "")}" : IsMacOS ? $"macOS{(Is64Bit ? "-x64" : "-x32")}{(IsDocker ? " on docker" : "")}" : $"windows{(Is64Bit ? "-x64" : "-x32")}{(IsDocker ? " on docker" : "")}";
 
         public static string Version => IsWindows ? Environment.OSVersion.ToString() : string.Concat(RuntimeEnvironment.OperatingSystem, " ", RuntimeEnvironment.OperatingSystemVersion);
+
+        internal static ConcurrentDictionary<string, string> Data = new ConcurrentDictionary<string, string>();
 
         public static ulong GetCurrentThreadId()
         {
             if (IsPosix == false) return Win32ThreadsMethods.GetCurrentThreadId();
             if (IsLinux) return (ulong)Syscall.syscall0(PerPlatformValues.SyscallNumbers.SYS_gettid);
-            return macSyscall.pthread_self();// OSX
+            return Posix.macOS.macSyscall.pthread_self(); // OSX
         }
 
         public static string GetDeviceId()
         {
-            string machineName = Environment.MachineName, osVersion = Version, macAddress = GetMacAddress();
-            // Get Registry @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography"
-            var machineGuid = !IsWindows ? string.Empty : Regedit.GetValueInLocalMachine(@"SOFTWARE\Microsoft\Cryptography", "MachineGuid")?.ToString();
-
-            return machineGuid;
+            if (Data.TryGetValue(nameof(GetDeviceId), out string v)) return v;
+            string machineName = Environment.MachineName, macAddress = GetMacAddress(), osVersion = Version;
+            var s = new StringBuilder();
+            s.Append(machineName);
+            s.Append(macAddress);
+            s.Append(osVersion);
+            if (IsWindows)
+            {
+                // Get Registry @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography"
+                var machineGuid = Regedit.GetValueInLocalMachine(@"SOFTWARE\Microsoft\Cryptography", "MachineGuid")?.ToString();
+                s.Append(machineGuid);
+                var motherboardSerialNumber = ManagementObject.Search("Win32_BaseBoard", "SerialNumber");
+                s.Append(motherboardSerialNumber);
+                var systemUUID = ManagementObject.Search("Win32_ComputerSystemProduct", "UUID");
+                s.Append(systemUUID);
+                var systemDriveSerialNumber = GetSystemDriveSerialNumber();
+                s.Append(systemDriveSerialNumber);
+            }
+            else if (IsLinux)
+            {
+                var machineID = Posix.Linux.Environment.MachineID;
+                s.Append(machineID);
+                var productUUID = Posix.Linux.Environment.ProductUUID;
+                s.Append(productUUID);
+                var motherboardSerialNumber = Posix.Linux.Environment.MotherboardSerialNumber;
+                s.Append(motherboardSerialNumber);
+                var systemDriveSerialNumber = Posix.Linux.Environment.SystemDriveSerialNumber;
+                s.Append(systemDriveSerialNumber);
+            }
+            else if (IsMacOS)
+            {
+                var platformSerialNumber = new Posix.macOS.PlatformSerialNumber().GetValue();
+                s.Append(platformSerialNumber);
+                var systemDriveSerialNumber = new Posix.macOS.SystemDriveSerialNumber().GetValue();
+                s.Append(systemDriveSerialNumber);
+            }
+            v = s.ToString().Md5();
+            Data.TryAdd(nameof(GetDeviceId), v);
+            return v;
         }
 
         public static string GetMacAddress(bool excludeWireless = false)
         {
+            if (Data.TryGetValue($"{nameof(GetMacAddress)}{excludeWireless}", out string v)) return v;
             var values = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(x => !excludeWireless || x.NetworkInterfaceType != NetworkInterfaceType.Wireless80211)
                 .Select(x => x.GetPhysicalAddress().ToString())
-                .Where(x => x != "000000000000")
+                .Where(x => !string.IsNullOrWhiteSpace(x) && x != "000000000000")
                 .Select(x => x.FormatMacAddress())
                 .ToList();
-            values.Sort();
-            return values.Count > 0 ? string.Join(",", values.ToArray()) : null;
+            if (values.Count > 0)
+            {
+                values.Sort();
+                v = string.Join(",", values.ToArray());
+            }
+            if (v == null) return v;
+            Data.TryAdd($"{nameof(GetMacAddress)}{excludeWireless}", v);
+            return v;
+        }
+
+        public static string GetMotherboardSerialNumber(bool isWindows = true)
+        {
+            if (isWindows)
+            {
+                return ManagementObject.Search("Win32_BaseBoard", "SerialNumber");
+            }
+            else if (IsLinux)
+            {
+                return Posix.Linux.Environment.MotherboardSerialNumber;
+            }
+            else if (IsMacOS)
+            {
+                return new Posix.macOS.PlatformSerialNumber().GetValue();
+            }
+            return null;
+        }
+
+        public static string GetSystemDriveSerialNumber(bool isWindows = true)
+        {
+            if (isWindows)
+            {
+                var systemLogicalDiskDeviceId = Environment.GetFolderPath(Environment.SpecialFolder.System).Substring(0, 2);
+
+                var queryString = $"SELECT * FROM Win32_LogicalDisk where DeviceId = '{systemLogicalDiskDeviceId}'";
+                using (var searcher = new System.Management.ManagementObjectSearcher(queryString))
+                {
+                    foreach (var disk in searcher.Get().OfType<System.Management.ManagementObject>())
+                    {
+                        foreach (var partition in disk.GetRelated("Win32_DiskPartition").OfType<System.Management.ManagementObject>())
+                        {
+                            foreach (var drive in partition.GetRelated("Win32_DiskDrive").OfType<System.Management.ManagementObject>())
+                            {
+                                if (drive["SerialNumber"] is string serialNumber) return serialNumber.Trim();
+                            }
+                        }
+                    }
+                }
+            }
+            else if (IsLinux)
+            {
+                return new Posix.Linux.SystemDriveSerialNumber().GetValue();
+            }
+            else if (IsMacOS)
+            {
+                return new Posix.macOS.SystemDriveSerialNumber().GetValue();
+            }
+            return null;
         }
 
         public static bool IsWindows8OrNewer()
@@ -100,7 +193,7 @@ namespace WebCore.Platform
         }
 
         /// <summary>
-        /// a instance of the System.Management.ManagementObjectSearcher.
+        /// Windows System.Management.ManagementObjectSearcher
         /// </summary>
         public static class ManagementObject
         {
@@ -143,7 +236,7 @@ namespace WebCore.Platform
         }
 
         /// <summary>
-        /// Windows注册表
+        /// Windows 注册表
         /// </summary>
         public static class Regedit
         {
@@ -191,7 +284,7 @@ namespace WebCore.Platform
             public static void SetValue(string keyName, string valueName, object value, RegeditValueKind valueKind) => Microsoft.Win32.Registry.SetValue(keyName, valueName, Enum.TryParse<Microsoft.Win32.RegistryValueKind>(valueKind.ToString(), out var kind) ? kind : Microsoft.Win32.RegistryValueKind.String);
         }
         /// <summary>
-        /// Windows注册表 - 存储数据时使用的注册表数据类型。
+        /// Windows 注册表 - 存储数据时使用的注册表数据类型。
         /// </summary>
         public enum RegeditValueKind
         {

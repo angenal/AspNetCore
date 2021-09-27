@@ -439,6 +439,21 @@
         <member name="M:WebFramework.Controllers.DataController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Configuration.IConfiguration,WebInterface.ICrypto,Microsoft.Extensions.Caching.Memory.IMemoryCache)">
             <summary></summary>
         </member>
+        <member name="M:WebFramework.Controllers.DataController.AppStatus">
+            <summary>
+            系统状态
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.DeviceId">
+            <summary>
+            设备ID
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.DataController.ThreadId">
+            <summary>
+            线程ID
+            </summary>
+        </member>
         <member name="M:WebFramework.Controllers.DataController.Encode(WebFramework.Models.DTO.EncodeTextInputDto)">
             <summary>
             文本Base64编码 = btoa(encodeURIComponent(text))
