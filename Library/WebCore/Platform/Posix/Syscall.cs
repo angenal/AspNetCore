@@ -95,7 +95,7 @@ namespace WebCore.Platform.Posix
         public static IntPtr mmap64(IntPtr start, UIntPtr length,
             MmapProts prot, MmapFlags flags, int fd, long offset)
         {
-            if (PlatformDetails.RunningOnMacOsx)
+            if (OS.IsMacOS)
                 return mmap64_mac(start, length, prot, flags, fd, offset);
             return mmap64_posix(start, length, prot, flags, fd, offset);
         }
@@ -227,7 +227,7 @@ namespace WebCore.Platform.Posix
 
         public static long lseek64(int fd, long offset, WhenceFlags whence)
         {
-            if (PlatformDetails.RunningOnMacOsx)
+            if (OS.IsMacOS)
                 return lseek64_mac(fd, offset, whence);
             return lseek64_posix(fd, offset, whence);
         }

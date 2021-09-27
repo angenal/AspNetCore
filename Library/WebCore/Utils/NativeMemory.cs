@@ -61,7 +61,7 @@ namespace WebCore.Utils
             {
                 _threadInstance = Thread.CurrentThread;
                 Id = _threadInstance.ManagedThreadId;
-                UnmanagedThreadId = PlatformDetails.GetCurrentThreadId();
+                UnmanagedThreadId = OS.GetCurrentThreadId();
             }
         }
 
@@ -172,7 +172,7 @@ namespace WebCore.Utils
             thread = ThreadAllocations.Value;
             thread.Allocations += size;
 
-            if (PlatformDetails.RunningOnPosix)
+            if (OS.IsPosix)
             {
                 byte* ptr;
                 var rc = Syscall.posix_memalign(&ptr, (IntPtr)4096, (IntPtr)size);
@@ -212,7 +212,7 @@ namespace WebCore.Utils
             }
 
             var p = new IntPtr(ptr);
-            if (PlatformDetails.RunningOnPosix)
+            if (OS.IsPosix)
             {
                 Syscall.free(p);
                 return;

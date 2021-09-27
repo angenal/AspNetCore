@@ -11,7 +11,7 @@ namespace WebCore
 
         public static UIntPtr crypto_kdf_keybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_kdf_keybytes();
              }
@@ -23,7 +23,7 @@ namespace WebCore
 
         public static int sodium_init()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.sodium_init();
              }
@@ -35,7 +35,7 @@ namespace WebCore
 
         public static UIntPtr crypto_generichash_bytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_generichash_bytes();
              }
@@ -47,7 +47,7 @@ namespace WebCore
 
         public static UIntPtr crypto_sign_statebytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_statebytes();
              }
@@ -59,7 +59,7 @@ namespace WebCore
 
         public static UIntPtr crypto_generichash_keybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_generichash_keybytes();
              }
@@ -71,7 +71,7 @@ namespace WebCore
 
         public static int crypto_sign_init(void* /* crypto_sign_state  */ state)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_init(state);
              }
@@ -83,7 +83,7 @@ namespace WebCore
 
         public static int crypto_sign_update(void* /* crypto_generichash_state */ state, byte* m, ulong mlen)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_update(state, m, mlen);
              }
@@ -95,7 +95,7 @@ namespace WebCore
 
         public static int crypto_sign_final_create(void* /* crypto_generichash_state */ state, byte* sig, ulong* siglen_p, byte* sk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_final_create(state, sig, siglen_p, sk);
              }
@@ -107,7 +107,7 @@ namespace WebCore
 
         public static int crypto_generichash_init(void* /* crypto_generichash_state */ state, byte* key, UIntPtr keylen, UIntPtr outlen)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_generichash_init(state, key, keylen, outlen);
              }
@@ -119,7 +119,7 @@ namespace WebCore
 
         public static int crypto_generichash_update(void* /* crypto_generichash_state */ state, byte* @in, ulong inlen)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_generichash_update(state, @in, inlen);
              }
@@ -131,7 +131,7 @@ namespace WebCore
 
         public static int crypto_generichash_final(void* /* crypto_generichash_state */ state, byte* @out, UIntPtr outlen)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_generichash_final(state, @out, outlen);
              }
@@ -143,7 +143,7 @@ namespace WebCore
 
         public static int crypto_kx_keypair(byte* pk, byte* sk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_kx_keypair(pk, sk);
              }
@@ -155,7 +155,7 @@ namespace WebCore
 
         public static void randombytes_buf(byte* buffer, UIntPtr size)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 Posix.randombytes_buf(buffer, size);
              }
@@ -167,7 +167,7 @@ namespace WebCore
 
         public static void crypto_kdf_keygen(byte* masterkey)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 Posix.crypto_kdf_keygen(masterkey);
              }
@@ -179,7 +179,7 @@ namespace WebCore
 
         public static int crypto_kdf_derive_from_key(byte* subkey, UIntPtr subkeylen, ulong subkeyid, byte* ctx, byte* key)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_kdf_derive_from_key(subkey, subkeylen, subkeyid, ctx, key);
              }
@@ -191,7 +191,7 @@ namespace WebCore
 
         public static int crypto_stream_xchacha20_xor_ic(byte* c, byte* m, ulong mlen, byte* n, ulong ic, byte* k)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_stream_xchacha20_xor_ic(c, m, mlen, n, ic, k);
              }
@@ -203,7 +203,7 @@ namespace WebCore
 
         public static int crypto_aead_xchacha20poly1305_ietf_encrypt(byte* c, ulong* clen, byte* m, ulong mlen, byte* ad, ulong adlen, byte* nsec, byte* npub, byte* k)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_aead_xchacha20poly1305_ietf_encrypt(c, clen, m, mlen, ad, adlen, nsec, npub, k);
              }
@@ -215,7 +215,7 @@ namespace WebCore
 
         public static int crypto_aead_xchacha20poly1305_ietf_decrypt(byte* m, ulong* mlen, byte* nsec, byte* c, ulong clen, byte* ad, ulong adlen, byte* npub, byte* k)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_aead_xchacha20poly1305_ietf_decrypt(m, mlen, nsec, c, clen, ad, adlen, npub, k);
              }
@@ -227,7 +227,7 @@ namespace WebCore
 
         public static int crypto_aead_xchacha20poly1305_ietf_encrypt_detached(byte* c, byte* mac, ulong* maclen_p, byte* m, ulong mlen, byte* ad, ulong adlen, byte* nsec, byte* npub, byte* k)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_aead_xchacha20poly1305_ietf_encrypt_detached(c, mac, maclen_p, m, mlen, ad, adlen, nsec, npub, k);
              }
@@ -239,7 +239,7 @@ namespace WebCore
 
         public static int crypto_aead_xchacha20poly1305_ietf_decrypt_detached(byte* m, byte* nsec, byte* c, ulong clen, byte* mac, byte* ad, ulong adlen, byte* npub, byte* k)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_aead_xchacha20poly1305_ietf_decrypt_detached(m, nsec, c, clen, mac, ad, adlen, npub, k);
              }
@@ -251,7 +251,7 @@ namespace WebCore
 
         public static int crypto_box_seal(byte* c, byte* m, ulong mlen, byte* pk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_seal(c, m, mlen, pk);
              }
@@ -263,7 +263,7 @@ namespace WebCore
 
         public static int crypto_box_seal_open(byte* m, byte* c, ulong clen, byte* pk, byte* sk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_seal_open(m, c, clen, pk, sk);
              }
@@ -275,7 +275,7 @@ namespace WebCore
 
         public static UIntPtr crypto_stream_xchacha20_keybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_stream_xchacha20_keybytes();
              }
@@ -287,7 +287,7 @@ namespace WebCore
 
         public static UIntPtr crypto_stream_xchacha20_noncebytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_stream_xchacha20_noncebytes();
              }
@@ -299,7 +299,7 @@ namespace WebCore
 
         public static UIntPtr crypto_aead_xchacha20poly1305_ietf_keybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_aead_xchacha20poly1305_ietf_keybytes();
              }
@@ -311,7 +311,7 @@ namespace WebCore
 
         public static UIntPtr crypto_aead_xchacha20poly1305_ietf_npubbytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_aead_xchacha20poly1305_ietf_npubbytes();
              }
@@ -323,7 +323,7 @@ namespace WebCore
 
         public static UIntPtr crypto_aead_xchacha20poly1305_ietf_abytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_aead_xchacha20poly1305_ietf_abytes();
              }
@@ -335,7 +335,7 @@ namespace WebCore
 
         public static UIntPtr crypto_box_sealbytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_sealbytes();
              }
@@ -347,7 +347,7 @@ namespace WebCore
 
         public static UIntPtr crypto_box_secretkeybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_secretkeybytes();
              }
@@ -359,7 +359,7 @@ namespace WebCore
 
         public static UIntPtr crypto_kx_secretkeybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_kx_secretkeybytes();
              }
@@ -371,7 +371,7 @@ namespace WebCore
 
         public static UIntPtr crypto_kx_publickeybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_kx_publickeybytes();
              }
@@ -383,7 +383,7 @@ namespace WebCore
 
         public static UIntPtr crypto_generichash_bytes_max()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_generichash_bytes_max();
              }
@@ -395,7 +395,7 @@ namespace WebCore
 
         public static UIntPtr crypto_box_publickeybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_publickeybytes();
              }
@@ -407,7 +407,7 @@ namespace WebCore
 
         public static int crypto_box_keypair(byte* pk, byte* sk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_keypair(pk, sk);
              }
@@ -419,7 +419,7 @@ namespace WebCore
 
         public static int crypto_generichash(byte* @out, UIntPtr outlen, byte* @in, ulong inlen, byte* key, UIntPtr keylen)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_generichash(@out, outlen, @in, inlen, key, keylen);
              }
@@ -431,7 +431,7 @@ namespace WebCore
 
         public static int sodium_memcmp(byte* b, byte* vh, UIntPtr verifiedHashLength)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.sodium_memcmp(b, vh, verifiedHashLength);
              }
@@ -443,7 +443,7 @@ namespace WebCore
 
         public static UIntPtr crypto_box_macbytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_macbytes();
              }
@@ -455,7 +455,7 @@ namespace WebCore
 
         public static UIntPtr crypto_box_noncebytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_noncebytes();
              }
@@ -467,7 +467,7 @@ namespace WebCore
 
         public static int crypto_kx_client_session_keys(byte* rx, byte* tx, byte* client_pk, byte* client_sk, byte* server_pk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_kx_client_session_keys(rx, tx, client_pk, client_sk, server_pk);
              }
@@ -479,7 +479,7 @@ namespace WebCore
 
         public static int crypto_kx_server_session_keys(byte* rx, byte* tx, byte* server_pk, byte* server_sk, byte* client_pk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_kx_server_session_keys(rx, tx, server_pk, server_sk, client_pk);
              }
@@ -491,7 +491,7 @@ namespace WebCore
 
         public static int crypto_box_easy(byte* c, byte* m, ulong mlen, byte* n, byte* pk, byte* sk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_easy(c, m, mlen, n, pk, sk);
              }
@@ -503,7 +503,7 @@ namespace WebCore
 
         public static int crypto_box_open_easy(byte* m, byte* c, ulong clen, byte* n, byte* pk, byte* sk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_box_open_easy(m, c, clen, n, pk, sk);
              }
@@ -515,7 +515,7 @@ namespace WebCore
 
         public static int crypto_sign_detached(byte* sig, ulong* siglen, byte* m, ulong mlen, byte* sk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_detached(sig, siglen, m, mlen, sk);
              }
@@ -527,7 +527,7 @@ namespace WebCore
 
         public static int crypto_sign_verify_detached(byte* sig, byte* m, ulong mlen, byte* pk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_verify_detached(sig, m, mlen, pk);
              }
@@ -539,7 +539,7 @@ namespace WebCore
 
         public static UIntPtr crypto_sign_bytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_bytes();
              }
@@ -551,7 +551,7 @@ namespace WebCore
 
         public static UIntPtr crypto_sign_publickeybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_publickeybytes();
              }
@@ -563,7 +563,7 @@ namespace WebCore
 
         public static UIntPtr crypto_sign_secretkeybytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_secretkeybytes();
              }
@@ -575,7 +575,7 @@ namespace WebCore
 
         public static int crypto_sign_keypair(byte* pk, byte* sk)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_sign_keypair(pk, sk);
              }
@@ -587,7 +587,7 @@ namespace WebCore
 
         public static void sodium_memzero(byte* pnt, UIntPtr len)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 Posix.sodium_memzero(pnt, len);
              }
@@ -599,7 +599,7 @@ namespace WebCore
 
         public static UIntPtr crypto_generichash_statebytes()
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.crypto_generichash_statebytes();
              }
@@ -611,7 +611,7 @@ namespace WebCore
 
         public static int sodium_munlock(byte* addr, UIntPtr len)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.sodium_munlock(addr, len);
              }
@@ -623,7 +623,7 @@ namespace WebCore
 
         public static int sodium_mlock(byte* addr, UIntPtr len)
         {
-             if(PlatformDetails.RunningOnPosix)
+             if(OS.IsPosix)
              {
                 return Posix.sodium_mlock(addr, len);
              }
@@ -646,14 +646,14 @@ namespace WebCore
 
             static Posix()
             {
-                if (PlatformDetails.RunningOnPosix == false)
+                if (OS.IsPosix == false)
                 {
                     return;
                 }
 
-                _is32bits = PlatformDetails.Is32Bit;
+                _is32bits = OS.Is32Bit;
                 _isArm = RuntimeInformation.OSArchitecture == Architecture.Arm;
-                _isMac64 = PlatformDetails.RunningOnMacOsx;
+                _isMac64 = OS.IsMacOS;
 
                 if (_is32bits)
                 {
@@ -672,7 +672,7 @@ namespace WebCore
                 }
                 else
                 {
-                    if (PlatformDetails.RunningOnMacOsx)
+                    if (OS.IsMacOS)
                         MacOsxX64.Initialize();
                     else
                         X64.Initialize();
@@ -688,7 +688,7 @@ namespace WebCore
                     if (_isMac64)
                         throw new Exception("Make sure libsodium is installed on your Mac OSX. Use `brew install libsodium`", e);
 
-                    if (PlatformDetails.RunningOnPosix)
+                    if (OS.IsPosix)
                         throw new Exception("Make sure libsodium is installed on your Linux OS. (install package `libsodium` or `libsodium-18`", e);
 
                     throw new Exception("Make sure libsodium is installed on your Windows OS.", e);
@@ -2801,12 +2801,12 @@ namespace WebCore
 
             static Windows()
             {
-                if (PlatformDetails.RunningOnPosix)
+                if (OS.IsPosix)
                 {
                     return;
                 }
 
-                _is32bits = PlatformDetails.Is32Bit;
+                _is32bits = OS.Is32Bit;
                 if (_is32bits)
                 {
                     X86.Initialize();

@@ -497,7 +497,7 @@ namespace WebCore.Security
 
             var rsa = new RSACryptoServiceProvider(keySize);
 
-            if (!string.IsNullOrEmpty(keyContainerName) && !Platform.PlatformDetails.RunningOnPosix)
+            if (!string.IsNullOrEmpty(keyContainerName) && !Platform.OS.IsPosix)
                 rsa = new RSACryptoServiceProvider(keySize, new CspParameters() { KeyContainerName = keyContainerName });
 
             rsa.PersistKeyInCsp = persistKeyInCsp;

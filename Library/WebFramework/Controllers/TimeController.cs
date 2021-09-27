@@ -8,6 +8,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using WebCore;
+using WebCore.Platform;
 using WebFramework.Data;
 using WebFramework.SignalR;
 using WebInterface;
@@ -48,8 +49,9 @@ namespace WebFramework.Controllers
 
             return Ok(new
             {
-                WebCore.Platform.PlatformDetails.OS,
-                WebCore.Platform.PlatformDetails.MachineName,
+                OS = OS.Name,
+                OS.Version,
+                Environment.MachineName,
                 env.ApplicationName,
                 env.EnvironmentName,
                 Startup = Date.Startup.ToDateTimeString(),

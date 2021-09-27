@@ -94,7 +94,7 @@ namespace WebCore.LowMemory
             if (DisableEarlyOutOfMemoryCheck)
                 return;
 
-            if (PlatformDetails.RunningOnPosix &&       // we only _need_ this check on Windows
+            if (OS.IsPosix &&       // we only _need_ this check on Windows
                 EnableEarlyOutOfMemoryCheck == false)   // but we want to enable this manually if needed
                 return;
 
@@ -220,10 +220,10 @@ namespace WebCore.LowMemory
 
             try
             {
-                if (PlatformDetails.RunningOnPosix == false)
+                if (OS.IsPosix == false)
                     return GetMemoryInfoWindows();
 
-                if (PlatformDetails.RunningOnMacOsx)
+                if (OS.IsMacOS)
                     return GetMemoryInfoMacOs();
 
                 return GetMemoryInfoLinux();
@@ -410,7 +410,7 @@ namespace WebCore.LowMemory
         {
             using (var currentProcess = Process.GetCurrentProcess())
             {
-                var workingSet = PlatformDetails.RunningOnLinux == false
+                var workingSet = OS.IsLinux == false
                         ? currentProcess.WorkingSet64
                         : GetRssMemoryUsage(currentProcess.Id);
 
@@ -498,12 +498,12 @@ namespace WebCore.LowMemory
 
         public static string IsSwappingOnHddInsteadOfSsd()
         {
-            if (PlatformDetails.RunningOnPosix)
+            if (OS.IsPosix)
                 return CheckPageFileOnHdd.PosixIsSwappingOnHddInsteadOfSsd();
             return CheckPageFileOnHdd.WindowsIsSwappingOnHddInsteadOfSsd();
         }
 
-        public static unsafe bool WillCauseHardPageFault(byte* address, long length) => PlatformDetails.RunningOnPosix ? PosixMemoryQueryMethods.WillCauseHardPageFault(address, length) : Win32MemoryQueryMethods.WillCauseHardPageFault(address, length);
+        public static unsafe bool WillCauseHardPageFault(byte* address, long length) => OS.IsPosix ? PosixMemoryQueryMethods.WillCauseHardPageFault(address, length) : Win32MemoryQueryMethods.WillCauseHardPageFault(address, length);
     }
 
     public struct MemoryInfoResult

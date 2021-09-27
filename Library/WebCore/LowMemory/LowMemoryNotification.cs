@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using WebCore.Collections;
@@ -165,7 +165,7 @@ namespace WebCore.LowMemory
 
         private void MonitorMemoryUsage()
         {
-            SmapsReader smapsReader = PlatformDetails.RunningOnLinux ? new SmapsReader(new[] {new byte[SmapsReader.BufferSize], new byte[SmapsReader.BufferSize]}) : null;
+            SmapsReader smapsReader = OS.IsLinux ? new SmapsReader(new[] {new byte[SmapsReader.BufferSize], new byte[SmapsReader.BufferSize]}) : null;
             NativeMemory.EnsureRegistered();
             var memoryAvailableHandles = new WaitHandle[] { _simulatedLowMemory, _shutdownRequested };
             var timeout = 5 * 1000;
@@ -325,7 +325,7 @@ namespace WebCore.LowMemory
 
         public bool IsLowMemory(MemoryInfoResult memInfo, SmapsReader smapsReader, out long sharedCleanInBytes)
         {
-            if (PlatformDetails.RunningOnLinux)
+            if (OS.IsLinux)
             {
                 var result = smapsReader.CalculateMemUsageFromSmaps<SmapsReaderNoAllocResults>();
                 memInfo.AvailableMemory.Add(result.SharedClean, SizeUnit.Bytes);
@@ -342,7 +342,7 @@ namespace WebCore.LowMemory
             // we don't want to stay in low memory due to retained memory.
             var isLowMemory = memInfo.AvailableMemory < _lowMemoryThreshold;
 
-            if (PlatformDetails.RunningOnPosix == false)
+            if (OS.IsPosix == false)
             {
                 // this is relevant only on Windows
                 var commitChargePlusMinSizeToKeepFree = memInfo.CurrentCommitCharge + GetCommitChargeThreshold(memInfo);

@@ -49,7 +49,7 @@ namespace WebCore.Platform
         {
             
             var memory =
-            PlatformDetails.RunningOnPosix
+            OS.IsPosix
                 ? PosixElectricFencedMemory.Allocate(size)
                 : Win32ElectricFencedMemory.Allocate(size);
 #if MEM_GUARD_STACK
@@ -69,7 +69,7 @@ namespace WebCore.Platform
             }
 #endif
 
-            if (PlatformDetails.RunningOnPosix)
+            if (OS.IsPosix)
                 PosixElectricFencedMemory.Free(p);
             else
                 Win32ElectricFencedMemory.Free(p);
