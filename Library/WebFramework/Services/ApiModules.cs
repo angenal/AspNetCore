@@ -16,7 +16,7 @@ using System.Linq;
 using WebCore;
 using WebCore.Documents;
 using WebFramework.Filters;
-using WebFramework.Services.Weixin;
+using WebFramework.Weixins;
 using WebInterface;
 
 namespace WebFramework.Services
@@ -75,8 +75,11 @@ namespace WebFramework.Services
             var dataPath = Path.Combine(env.ContentRootPath, "data"); // Linux system file directories are case sensitive
             if (!Directory.Exists(dataPath)) dataPath = Path.Combine(env.ContentRootPath, "Data");
             if (!Directory.Exists(dataPath)) dataPath = Path.Combine(env.ContentRootPath, "App_Data");
-            var dataDirectory = new DirectoryInfo(dataPath);
-            if (!dataDirectory.Exists) dataDirectory.Create();
+            if (!Directory.Exists(dataPath)) Directory.CreateDirectory(dataPath);
+            var filePath = Path.Combine(env.WebRootPath, "file");
+            if (!Directory.Exists(filePath)) Directory.CreateDirectory(filePath);
+            var tempPath = Path.Combine(env.WebRootPath, "temp");
+            if (!Directory.Exists(tempPath)) Directory.CreateDirectory(tempPath);
             // Adds services required for using options
             services.AddOptions();
 

@@ -1177,6 +1177,12 @@
             Value 最多长度50个字
             </summary>
         </member>
+        <member name="T:WebFramework.DefaultCaching">
+            <summary>Default Cache</summary>
+        </member>
+        <member name="F:WebFramework.DefaultCaching.Memory">
+            <summary>Memory Cache</summary>
+        </member>
         <member name="T:WebFramework.DefaultWorker">
             <summary>
             Default Worker for Background Service.
@@ -3122,125 +3128,6 @@
             <param name="addControllerVersions"></param>
             <returns></returns>
         </member>
-        <member name="T:WebFramework.Services.Weixin.AddDependencyInjection">
-            <summary>
-            微信配置：公众号、小程序、企业微信、微信支付、开放平台、代理参数等
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.Weixin.AddDependencyInjection.AddWeixin(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
-            <summary>
-            Register services
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.Weixin.AddDependencyInjection.UseWeixin(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
-            <summary>
-            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.Weixin.AddDependencyInjection.ConfigTraceLog">
-            <summary>
-            配置全局跟踪日志
-            </summary>
-        </member>
-        <member name="T:WebFramework.Services.Weixin.Data.MP">
-            <summary>
-            公众号
-            </summary>
-        </member>
-        <member name="F:WebFramework.Services.Weixin.Data.MP.RootPath">
-            <summary>
-            根目录
-            </summary>
-        </member>
-        <member name="F:WebFramework.Services.Weixin.Data.MP.SubscribeRequestReply">
-            <summary>
-            被关注回复
-            </summary>
-        </member>
-        <member name="F:WebFramework.Services.Weixin.Data.MP.TextRequestReply">
-            <summary>
-            文本消息的请求回复内容 /根目录/*.json
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.Weixin.Data.MP.InitTextRequestReply(System.String)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Services.Weixin.Data.MP.SetTextRequestReply(WebFramework.Services.Weixin.DTO.RequestReplyDTO)">
-            <summary></summary>
-        </member>
-        <member name="T:WebFramework.Services.Weixin.DTO.AccessTokenInfo">
-            <summary>
-            统一的AccessToken信息
-            </summary>
-        </member>
-        <member name="P:WebFramework.Services.Weixin.DTO.AccessTokenInfo.Token">
-            <summary>
-            凭证信息
-            </summary>
-        </member>
-        <member name="P:WebFramework.Services.Weixin.DTO.AccessTokenInfo.Expire">
-            <summary>
-            凭证过期时间
-            </summary>
-        </member>
-        <member name="T:WebFramework.Services.Weixin.DTO.ImageDTO">
-            <summary>
-            图片
-            </summary>
-        </member>
-        <member name="T:WebFramework.Services.Weixin.DTO.NewsDTO">
-            <summary>
-            图文素材
-            </summary>
-        </member>
-        <member name="T:WebFramework.Services.Weixin.DTO.RequestReplyDTO">
-            <summary>
-            消息接收与回复
-            </summary>
-        </member>
-        <member name="P:WebFramework.Services.Weixin.DTO.RequestReplyDTO.keyword">
-            <summary>
-            输入keyword
-            </summary>
-        </member>
-        <member name="P:WebFramework.Services.Weixin.DTO.RequestReplyDTO.type">
-            <summary>
-            回复：图片（image）、图文（news）
-            </summary>
-        </member>
-        <member name="P:WebFramework.Services.Weixin.DTO.RequestReplyDTO.media_id">
-            <summary>
-            缓存 media
-            </summary>
-        </member>
-        <member name="T:WebFramework.Services.Weixin.MP.AccessToken">
-            <summary>
-            管理AccessToken
-            </summary>
-        </member>
-        <member name="T:WebFramework.Services.Weixin.MP.Material">
-            <summary>
-            管理图文素材
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.Weixin.MP.Material.GetWeixinMPMaterial``1(Microsoft.Extensions.Caching.Distributed.IDistributedCache,System.String,System.Int32,System.String,System.String,System.String)">
-            <summary>
-            获取图文素材
-            </summary>
-        </member>
-        <member name="T:WebFramework.Services.Weixin.MP.User">
-            <summary>
-            管理微信用户
-            </summary>
-        </member>
-        <member name="M:WebFramework.Services.Weixin.MP.User.IsSubscribeWeixinMP(System.String,System.String)">
-            <summary>
-            用户是否关注了公众号
-            </summary>
-            <param name="openid">用户的openid</param>
-            <param name="appid"></param>
-            <returns></returns>
-        </member>
         <member name="T:WebFramework.Session">
             <summary>
             用户会话 by Jwt Token
@@ -3668,6 +3555,346 @@
             <summary></summary>
         </member>
         <member name="M:WebFramework.MultipartSectionExtensions.GetEncoding(Microsoft.AspNetCore.WebUtilities.MultipartSection)">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Weixins.Data.MP">
+            <summary>
+            公众号
+            </summary>
+        </member>
+        <member name="F:WebFramework.Weixins.Data.MP.RootPath">
+            <summary>
+            根目录
+            </summary>
+        </member>
+        <member name="F:WebFramework.Weixins.Data.MP.SubscribeRequestReply">
+            <summary>
+            被关注回复
+            </summary>
+        </member>
+        <member name="F:WebFramework.Weixins.Data.MP.TextRequestReply">
+            <summary>
+            文本消息的请求回复内容 /根目录/*.json
+            </summary>
+        </member>
+        <member name="M:WebFramework.Weixins.Data.MP.InitTextRequestReply(System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Weixins.Data.MP.SetTextRequestReply(WebFramework.Weixins.DTO.RequestReplyDTO)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Weixins.Data.MP.SaveSubscribeStatus(System.String,System.Int32,System.String)">
+            <summary>
+            保存用户关注状态
+            </summary>
+            <param name="openid"></param>
+            <param name="subscribe">用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息。</param>
+            <param name="appid"></param>
+        </member>
+        <member name="T:WebFramework.Weixins.DTO.AccessTokenInfo">
+            <summary>
+            统一的AccessToken信息
+            </summary>
+        </member>
+        <member name="P:WebFramework.Weixins.DTO.AccessTokenInfo.Token">
+            <summary>
+            凭证信息
+            </summary>
+        </member>
+        <member name="P:WebFramework.Weixins.DTO.AccessTokenInfo.Expire">
+            <summary>
+            凭证过期时间
+            </summary>
+        </member>
+        <member name="T:WebFramework.Weixins.DTO.ImageDTO">
+            <summary>
+            图片
+            </summary>
+        </member>
+        <member name="T:WebFramework.Weixins.DTO.NewsDTO">
+            <summary>
+            图文素材
+            </summary>
+        </member>
+        <member name="T:WebFramework.Weixins.DTO.RequestReplyDTO">
+            <summary>
+            消息接收与回复
+            </summary>
+        </member>
+        <member name="P:WebFramework.Weixins.DTO.RequestReplyDTO.keyword">
+            <summary>
+            输入keyword
+            </summary>
+        </member>
+        <member name="P:WebFramework.Weixins.DTO.RequestReplyDTO.type">
+            <summary>
+            回复：图片（image）、图文（news）
+            </summary>
+        </member>
+        <member name="P:WebFramework.Weixins.DTO.RequestReplyDTO.media_id">
+            <summary>
+            缓存 media
+            </summary>
+        </member>
+        <member name="T:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageContext">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageContext.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageContext.CustomMessageContext_MessageContextRemoved(System.Object,Senparc.NeuChar.Context.WeixinContextRemovedEventArgs{Senparc.NeuChar.Entities.IRequestMessageBase,Senparc.NeuChar.Entities.IResponseMessageBase})">
+            <summary>
+            当上下文过期，被移除时触发的时间
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler">
+            <summary>
+            自定义 微信公众号消息接收处理方法 MessageHandler
+            </summary>
+        </member>
+        <member name="F:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.TemplateMessageCollection">
+            <summary>
+            模板消息集合（Key：checkCode，Value：OpenId）
+            </summary>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnTextRequest(Senparc.Weixin.MP.Entities.RequestMessageText)">
+            <summary>
+            处理文字请求
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnLocationRequest(Senparc.Weixin.MP.Entities.RequestMessageLocation)">
+            <summary>
+            处理位置请求
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnImageRequest(Senparc.Weixin.MP.Entities.RequestMessageImage)">
+            <summary>
+            处理图片请求
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnVoiceRequest(Senparc.Weixin.MP.Entities.RequestMessageVoice)">
+            <summary>
+            处理语音请求
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnVideoRequest(Senparc.Weixin.MP.Entities.RequestMessageVideo)">
+            <summary>
+            处理视频请求
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.DefaultResponseMessage(Senparc.NeuChar.Entities.IRequestMessageBase)">
+            <summary>
+            处理链接消息请求
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_SubscribeRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Subscribe)">
+            <summary>
+            订阅（关注）事件
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_ScanRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Scan)">
+            <summary>
+            通过二维码扫描（关注）事件
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_UnsubscribeRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Unsubscribe)">
+            <summary>
+            退订（关注）事件
+            实际上用户无法收到非订阅账号的消息，所以这里可以随便写。
+            unsubscribe事件的意义在于及时删除网站应用中已经记录的OpenID绑定，消除冗余数据。并且关注用户流失的情况。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_ClickRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Click)">
+            <summary>
+            点击事件
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_EnterRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Enter)">
+            <summary>
+            进入事件
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_LocationRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Location)">
+            <summary>
+            位置事件
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_ViewRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_View)">
+            <summary>
+            打开网页事件
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_MassSendJobFinishRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_MassSendJobFinish)">
+            <summary>
+            群发完成事件
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_ScancodePushRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Scancode_Push)">
+            <summary>
+            事件之扫码推事件(scancode_push)
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_ScancodeWaitmsgRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Scancode_Waitmsg)">
+            <summary>
+            事件之扫码推事件且弹出“消息接收中”提示框(scancode_waitmsg)
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_PicPhotoOrAlbumRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Pic_Photo_Or_Album)">
+            <summary>
+            事件之弹出拍照或者相册发图（pic_photo_or_album）
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_PicSysphotoRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Pic_Sysphoto)">
+            <summary>
+            事件之弹出系统拍照发图(pic_sysphoto)
+            实际测试时发现微信并没有推送RequestMessageEvent_Pic_Sysphoto消息，只能接收到用户在微信中发送的图片消息。
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_PicWeixinRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Pic_Weixin)">
+            <summary>
+            事件之弹出微信相册发图器(pic_weixin)
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_LocationSelectRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_Location_Select)">
+            <summary>
+            事件之弹出地理位置选择器（location_select）
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomMessageHandlers.CustomMessageHandler.OnEvent_TemplateSendJobFinishRequest(Senparc.Weixin.MP.Entities.RequestMessageEvent_TemplateSendJobFinish)">
+            <summary>
+            事件之发送模板消息返回结果
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomThirdPartyMessageHandlers.CustomThirdPartyMessageHandler.OnComponentVerifyTicketRequest(Senparc.Weixin.Open.RequestMessageComponentVerifyTicket)">
+            <summary>
+            请求授权
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.CustomThirdPartyMessageHandlers.CustomThirdPartyMessageHandler.OnUnauthorizedRequest(Senparc.Weixin.Open.RequestMessageUnauthorized)">
+            <summary>
+            取消授权
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.WxOpenMessageHandlers.CustomWxOpenMessageContext.CustomMessageContext_MessageContextRemoved(System.Object,Senparc.NeuChar.Context.WeixinContextRemovedEventArgs{Senparc.NeuChar.Entities.IRequestMessageBase,Senparc.NeuChar.Entities.IResponseMessageBase})">
+            <summary>
+            当上下文过期，被移除时触发的时间
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.WxOpenMessageHandlers.CustomWxOpenMessageHandler.OnTextRequestAsync(Senparc.Weixin.WxOpen.Entities.RequestMessageText)">
+            <summary>
+            处理文字请求
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:WebFramework.Weixins.MessageTemplate.WeixinTemplate_ExceptionAlert">
+            <summary>
+            系统异常
+            </summary>
+        </member>
+        <member name="T:WebFramework.Weixins.MessageTemplate.WxOpen.WxOpenTemplateMessage_Notice">
+            <summary>
+            系统通知
+            </summary>
+        </member>
+        <member name="T:WebFramework.Weixins.MP.AccessToken">
+            <summary>
+            管理AccessToken
+            </summary>
+        </member>
+        <member name="T:WebFramework.Weixins.MP.Material">
+            <summary>
+            管理图文素材
+            </summary>
+        </member>
+        <member name="M:WebFramework.Weixins.MP.Material.Get``1(System.String,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            获取图文素材
+            </summary>
+        </member>
+        <member name="T:WebFramework.Weixins.MP.User">
+            <summary>
+            管理微信用户
+            </summary>
+        </member>
+        <member name="M:WebFramework.Weixins.MP.User.IsSubscribe(System.String,System.String)">
+            <summary>
+            用户是否关注了公众号
+            </summary>
+            <param name="openid">用户的openid</param>
+            <param name="appid"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebFramework.Weixins.Services">
+            <summary>
+            微信配置：公众号、小程序、企业微信、微信支付、开放平台、代理参数等
+            </summary>
+        </member>
+        <member name="M:WebFramework.Weixins.Services.AddWeixin(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            Register services
+            </summary>
+        </member>
+        <member name="M:WebFramework.Weixins.Services.UseWeixin(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Weixins.Services.ConfigTraceLog">
+            <summary>
+            配置全局跟踪日志
+            </summary>
+        </member>
+        <member name="T:WebFramework.Weixins.Server">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Weixins.Server.GetMapPath(System.String)">
             <summary></summary>
         </member>
         <member name="T:Microsoft.AspNetCore.Authentication.QQ.HttpContextExtensions">

@@ -33,6 +33,7 @@ bld/
 #wwwroot/
 wwwroot/file/
 wwwroot/files/
+wwwroot/temp/
 App_Data/*.db
 App_Data/*.[Ll]db
 
