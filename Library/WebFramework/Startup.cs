@@ -69,6 +69,9 @@ namespace WebFramework
         /// <summary></summary>
         public void ConfigServices(IServiceCollection services)
         {
+            // Adds Session Before Mvc
+            //services.AddSession();
+
             // Adds services for api controllers
             var builder = services.AddApiControllers(); // services.AddMvc() for Mvc application
 
@@ -80,6 +83,9 @@ namespace WebFramework
         /// <summary></summary>
         public void ConfigApp(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            // Use Session
+            //app.UseSession();
+
             // Services: Crypto,Database,Compression,Caching,CORS,Authentication,Authorization,Swagger,i18n...
             app.Configure(Configuration, env, loggerFactory);
 

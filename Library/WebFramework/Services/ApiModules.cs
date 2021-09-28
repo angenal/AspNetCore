@@ -16,6 +16,7 @@ using System.Linq;
 using WebCore;
 using WebCore.Documents;
 using WebFramework.Filters;
+using WebFramework.Services.Weixin;
 using WebInterface;
 
 namespace WebFramework.Services
@@ -168,6 +169,10 @@ namespace WebFramework.Services
             //services.AddSignalR().AddMessagePackProtocol();
 
 
+            // Weixin  https://github.com/JeffreySu/WeiXinMPSDK
+            services.AddWeixin(config, env);
+
+
             // Upload File
             services.AddUpload(config, env);
 
@@ -250,6 +255,10 @@ namespace WebFramework.Services
 
             // Use the given route template
             app.UseRouting();
+
+            // Use Weixin before authorization
+            app.UseWeixin(env);
+
             // Use Authentication with JWT or Microsoft.AspNetCore.Identity system
             app.UseAuthentication();
             // Use ApiAuthorization using WebFramework.Authorization

@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
@@ -16,6 +18,12 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true; // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             // Custom Api Authorization using WebFramework.Authorization
             //services.AddApiAuthorization(config);
 
