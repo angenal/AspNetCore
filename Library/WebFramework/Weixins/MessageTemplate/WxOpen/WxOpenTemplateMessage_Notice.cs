@@ -8,16 +8,16 @@ namespace WebFramework.Weixins.MessageTemplate.WxOpen
     /// <summary>
     /// 系统通知
     /// </summary>
-    public class WxOpenTemplateMessage_Notice : TemplateMessageBase
+    public class WxOpenTemplateMessage_Notice : TemplateMessageData
     {
+        public string TemplateId { get; set; }
+
         public TemplateDataItem keyword1 { get; set; }
         public TemplateDataItem keyword2 { get; set; }
         public TemplateDataItem keyword3 { get; set; }
 
-        public WxOpenTemplateMessage_Notice(string title, DateTime time, string content, string url = null,
-            //根据实际的“模板ID”进行修改
-            string templateId = "TmZ5Vz1jO3u0YzYsfCS2zy6eD21HJUVd3Frgq8F0cbo")
-            : base(templateId, url, "系统通知")
+        public WxOpenTemplateMessage_Notice(string templateId,//根据实际的“模板ID”进行修改
+            string title, string content, DateTime time)
         {
             /*
             标题 {{keyword1.DATA}}
@@ -25,9 +25,15 @@ namespace WebFramework.Weixins.MessageTemplate.WxOpen
             事件 {{keyword3.DATA}}
             */
 
+            TemplateId = templateId;
+
             keyword1 = new TemplateDataItem(title);
             keyword2 = new TemplateDataItem(time.ToDateTimeString());
             keyword3 = new TemplateDataItem(content);
+
+            Add("标题", new TemplateMessageDataValue(keyword1));
+            Add("时间", new TemplateMessageDataValue(keyword2));
+            Add("事件", new TemplateMessageDataValue(keyword3));
         }
     }
 }

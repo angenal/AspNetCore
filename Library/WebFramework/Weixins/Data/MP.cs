@@ -5,7 +5,7 @@ using System.IO;
 namespace WebFramework.Weixins.Data
 {
     /// <summary>
-    /// 公众号
+    /// 微信公众号
     /// </summary>
     public static class MP
     {
@@ -31,9 +31,12 @@ namespace WebFramework.Weixins.Data
         /// </summary>
         public static Dictionary<string, DTO.RequestReplyDTO> TextRequestReply = new Dictionary<string, DTO.RequestReplyDTO>();
         /// <summary></summary>
-        public static void InitTextRequestReply(string file = "*.json")
+        public static void Init(string file = "*.json")
         {
-            foreach (string fileName in Directory.GetFiles(Path.Combine(RootPath, "TextRequestReply"), file))
+            if (!Directory.Exists(RootPath)) Directory.CreateDirectory(RootPath);
+            var path = Path.Combine(RootPath, "TextRequestReply");
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            foreach (string fileName in Directory.GetFiles(path, file))
             {
                 string s = File.ReadAllText(fileName);
                 var dto = Newtonsoft.Json.JsonConvert.DeserializeObject<DTO.RequestReplyDTO>(s);

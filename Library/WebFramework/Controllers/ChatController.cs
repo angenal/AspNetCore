@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using WebCore;
 using WebFramework.Models.DTO;
 using WebFramework.SignalR;
 
@@ -39,7 +40,7 @@ namespace WebFramework.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Consumes("application/json")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(IEnumerable<ChatUser>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult GetUser([FromQuery] MessageUserSelectInputDto input)
@@ -54,7 +55,7 @@ namespace WebFramework.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Consumes("application/json")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(IEnumerable<ChatUser>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult GetUsers([FromQuery] MessageUsersSelectInputDto input)
@@ -69,7 +70,7 @@ namespace WebFramework.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Consumes("application/json")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(IEnumerable<ChatUser>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult GetRoomUsers([FromQuery] MessageUsersListInputDto input)
@@ -84,7 +85,7 @@ namespace WebFramework.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Consumes("application/json")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(IEnumerable<ChatUser>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult GetAllUsers()
@@ -99,7 +100,7 @@ namespace WebFramework.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Consumes("application/json")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(IEnumerable<Message>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult GetMessages([FromQuery] MessageListInputDto input)
@@ -115,7 +116,7 @@ namespace WebFramework.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Consumes("application/json")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(Message), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> SendMessage([FromBody] MessageInputDto input)
@@ -143,7 +144,7 @@ namespace WebFramework.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Consumes("application/json")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(Message), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> SendMessages([FromBody] MessagesInputDto input)

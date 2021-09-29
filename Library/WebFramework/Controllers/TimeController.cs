@@ -40,7 +40,7 @@ namespace WebFramework.Controllers
         /// 当前时间
         /// </summary>
         [HttpGet]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult Now()
         {
@@ -78,7 +78,7 @@ namespace WebFramework.Controllers
         /// 检测消息推送(每分钟)
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<ActionResult> RecurringPushMessagesEveryMinute()
         {

@@ -30,7 +30,7 @@ namespace WebFramework.Controllers
         /// 默认值
         /// </summary>
         [HttpGet]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public IActionResult Default()
         {
@@ -42,7 +42,7 @@ namespace WebFramework.Controllers
         /// </summary>
         /// <param name="fieldAsKey">"零":由值作为返回对象属性; "非零":由名称作为对象属性</param>
         [HttpGet("{fieldAsKey=0}")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public IActionResult Options(string fieldAsKey)
         {
@@ -54,7 +54,7 @@ namespace WebFramework.Controllers
         /// 修改默认值
         /// </summary>
         [HttpGet("{option=zh-CN}")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public IActionResult Update(string option)
         {

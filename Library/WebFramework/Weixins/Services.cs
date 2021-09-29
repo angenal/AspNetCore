@@ -164,7 +164,8 @@ namespace WebFramework.Weixins
             }
 
             //微信相关数据
-            Data.MP.InitTextRequestReply();
+            Data.MP.Init();
+            Data.WxOpen.Init();
 
             return services;
         }

@@ -131,6 +131,14 @@ namespace WebCore
             return result;
         }
 
+        /// <summary>
+        /// Formats the string with input args.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static string Format(this string format, params object[] args) => string.Format(format, args);
+
         /// <summary></summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetUtf8MaxSize(this string value)

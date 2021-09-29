@@ -26,7 +26,7 @@ namespace WebFramework.Controllers
         /// 当前状态
         /// </summary>
         [HttpGet]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult Status()
         {

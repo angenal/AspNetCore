@@ -27,7 +27,7 @@ namespace Microsoft.AspNetCore.Authentication.WxOpen
         /// 
         /// <para>
         ///     该值需要配合参数 CallbackPath, 默认: <see cref="WxOpenLoginDefaults.CallbackPath"/>.
-        ///     则"https://yourdomain/signin-wxopen?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
+        ///     则"https://YourDomainName/signin-wxopen?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
         /// </para>
         /// </summary>
         public string JsQuery { get; set; } = "code";

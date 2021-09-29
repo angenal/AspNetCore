@@ -51,7 +51,7 @@ namespace WebFramework.Controllers
         //[DisableRequestSizeLimit]
         //[RequestSizeLimit(524288000)] // 500MB
         [Authorize(Policy = "Upload")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(List<UploadFileOutputDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorJsonResultObject), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Upload()
@@ -90,7 +90,7 @@ namespace WebFramework.Controllers
         /// PDF数字签名 by SignLib
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(FileSignOutputDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorJsonResultObject), (int)HttpStatusCode.BadRequest)]
         public IActionResult PdfFileSign(PdfFileSignInputDto input)
@@ -117,7 +117,7 @@ namespace WebFramework.Controllers
         /// 配置密钥 for Minisign
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(MinisignKeyOutputDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorJsonResultObject), (int)HttpStatusCode.BadRequest)]
         public IActionResult MinisignGenerateKey(MinisignGenerateKeyInputDto input)
@@ -157,7 +157,7 @@ namespace WebFramework.Controllers
         /// 文件签名 by Minisign
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(FileSignOutputDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorJsonResultObject), (int)HttpStatusCode.BadRequest)]
         public IActionResult MinisignFileSign(MinisignFileSignInputDto input)
@@ -202,7 +202,7 @@ namespace WebFramework.Controllers
         /// </summary>
         /// <param name="expireSeconds">过期时间(单位/秒):默认60秒,最多10分钟</param>
         [HttpPost("{expireSeconds=60}")]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(CaptchaCodeOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult CaptchaCode(string expireSeconds)
         {
@@ -240,7 +240,7 @@ namespace WebFramework.Controllers
         /// 确认验证码输入
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(CaptchaCodeComfirmOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult CaptchaComfirm([FromBody] CaptchaCodeComfirmInputDto input)
         {

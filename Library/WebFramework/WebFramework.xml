@@ -667,8 +667,24 @@
             微信小程序
             </summary>
         </member>
-        <member name="M:WebFramework.Controllers.WxOpenController.#ctor(WebInterface.ILiteDb,WebInterface.ICrypto,WebFramework.IJwtGenerator)">
+        <member name="M:WebFramework.Controllers.WxOpenController.#ctor(Microsoft.Extensions.Options.IOptions{Senparc.Weixin.Entities.SenparcWeixinSetting},WebInterface.ILiteDb,WebInterface.ICrypto,WebFramework.IJwtGenerator)">
             <summary></summary>
+        </member>
+        <member name="M:WebFramework.Controllers.WxOpenController.Get(Senparc.Weixin.WxOpen.Entities.Request.PostModel,System.String)">
+            <summary>
+            微信后台验证地址“接口配置信息”的Url填写如 https://YourDomainName/WxOpen
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.WxOpenController.Post(Senparc.Weixin.WxOpen.Entities.Request.PostModel)">
+            <summary>
+            用户发送消息后，微信平台自动Post一个请求到这里，并等待响应XML
+            </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.WxOpenController.GetToken(System.String)">
+            <summary>
+            获取登录凭证 (wx.login登陆成功后发送该请求)
+            </summary>
+            <param name="code">客户端获取到的参数,会被传递至微信服务器进行验证.</param>
         </member>
         <member name="M:WebFramework.Controllers.WxOpenController.CreateToken(System.String,System.String,System.String,System.String)">
             <summary>
@@ -677,12 +693,45 @@
             <param name="cacheKey">微信服务端返回的会话密匙保存在缓存中关联的Key</param>
             <param name="sessionKey">会话密钥(选填)【请注意该信息的安全性】</param>
             <param name="openid">用户唯一标识(选填)【请注意该信息的安全性】</param>
-            <param name="unionid">用户在开放平台的唯一标识符(选填)【请注意该信息的安全性】</param>
+            <param name="unionid">用户在开放平台的唯一标识符(选填)</param>
         </member>
         <member name="M:WebFramework.Controllers.WxOpenController.GetSessionByOpenId(System.String)">
             <summary>
             自定义逻辑：处理微信OpenId与该系统的关系
             </summary>
+        </member>
+        <member name="M:WebFramework.Controllers.WxOpenController.GetPhoneNumber(System.String,System.String,System.String)">
+            <summary>
+            获取手机号
+            </summary>
+            <param name="sessionId">登录凭证id</param>
+            <param name="encryptedData"></param>
+            <param name="iv"></param>
+        </member>
+        <member name="M:WebFramework.Controllers.WxOpenController.CheckSign(System.String,System.String,System.String)">
+            <summary>
+            签名校验
+            </summary>
+            <param name="sessionId">登录凭证id</param>
+            <param name="rawData"></param>
+            <param name="signature"></param>
+        </member>
+        <member name="M:WebFramework.Controllers.WxOpenController.CheckData(System.String,System.String,System.String)">
+            <summary>
+            水印校验
+            </summary>
+            <param name="sessionId">登录凭证id</param>
+            <param name="encryptedData"></param>
+            <param name="iv"></param>
+        </member>
+        <member name="M:WebFramework.Controllers.WxOpenController.TestTemplate(System.String,System.String,System.String,System.String)">
+            <summary>
+            测试订阅消息接口
+            </summary>
+            <param name="sessionId">登录凭证id</param>
+            <param name="templateId">消息模板id</param>
+            <param name="title"></param>
+            <param name="content"></param>
         </member>
         <member name="T:WebFramework.Data.LiteDb">
             <summary>
@@ -3559,7 +3608,7 @@
         </member>
         <member name="T:WebFramework.Weixins.Data.MP">
             <summary>
-            公众号
+            微信公众号
             </summary>
         </member>
         <member name="F:WebFramework.Weixins.Data.MP.RootPath">
@@ -3577,7 +3626,7 @@
             文本消息的请求回复内容 /根目录/*.json
             </summary>
         </member>
-        <member name="M:WebFramework.Weixins.Data.MP.InitTextRequestReply(System.String)">
+        <member name="M:WebFramework.Weixins.Data.MP.Init(System.String)">
             <summary></summary>
         </member>
         <member name="M:WebFramework.Weixins.Data.MP.SetTextRequestReply(WebFramework.Weixins.DTO.RequestReplyDTO)">
@@ -3590,6 +3639,19 @@
             <param name="openid"></param>
             <param name="subscribe">用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息。</param>
             <param name="appid"></param>
+        </member>
+        <member name="T:WebFramework.Weixins.Data.WxOpen">
+            <summary>
+            微信小程序
+            </summary>
+        </member>
+        <member name="F:WebFramework.Weixins.Data.WxOpen.RootPath">
+            <summary>
+            根目录
+            </summary>
+        </member>
+        <member name="M:WebFramework.Weixins.Data.WxOpen.Init(System.String)">
+            <summary></summary>
         </member>
         <member name="T:WebFramework.Weixins.DTO.AccessTokenInfo">
             <summary>
@@ -4180,7 +4242,7 @@
             
             <para>
                 该值需要配合参数 CallbackPath, 默认: <see cref="F:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenLoginDefaults.CallbackPath"/>.
-                则"https://yourdomain/signin-wxopen?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
+                则"https://YourDomainName/signin-wxopen?code=xxx"为验证地址,而xxx则会被传递至微信服务器进行验证.
             </para>
             </summary>
         </member>

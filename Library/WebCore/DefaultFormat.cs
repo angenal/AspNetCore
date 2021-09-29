@@ -10,6 +10,9 @@ namespace WebCore
         /// </summary>
         public const string UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.82 Safari/537.36";
 
+        public const string JSON = "application/json";
+        public const string XML = "application/xml";
+
         // Gets or sets how System.DateTime and System.DateTimeOffset values are formatted
         // when writing JSON text, and the expected date format when reading JSON text.
         // The default value is "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK".
@@ -38,5 +41,11 @@ namespace WebCore
             "yyyy-MM-ddTHH:mm:ss.fffK",
             "yyyy-MM-ddTHH:mm:ss.FFFK",
         };
+    }
+
+    public static class Produces
+    {
+        public const string JSON = "application/json";
+        public const string XML = "application/xml";
     }
 }

@@ -38,7 +38,7 @@ namespace WebFramework.Controllers
         /// 系统状态
         /// </summary>
         [HttpGet]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult AppStatus()
         {
@@ -58,7 +58,7 @@ namespace WebFramework.Controllers
         /// 设备ID
         /// </summary>
         [HttpGet]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult DeviceId()
         {
@@ -70,7 +70,7 @@ namespace WebFramework.Controllers
         /// 线程ID
         /// </summary>
         [HttpGet]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public ActionResult ThreadId()
         {
@@ -82,7 +82,7 @@ namespace WebFramework.Controllers
         /// 文本Base64编码 = btoa(encodeURIComponent(text))
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult Base64Encode([FromBody] EncodeTextInputDto input)
         {
@@ -97,7 +97,7 @@ namespace WebFramework.Controllers
         /// 文本Base64解码 = decodeURIComponent(atob(text))
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult Base64Decode([FromBody] EncodeTextInputDto input)
         {
@@ -112,7 +112,7 @@ namespace WebFramework.Controllers
         /// 文本加密 (authenticated encryption)
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult Encrypt([FromBody] EncryptText1InputDto input)
         {
@@ -130,7 +130,7 @@ namespace WebFramework.Controllers
         /// 文本解密 (authenticated encryption)
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult Decrypt([FromBody] DecryptText1InputDto input)
         {
@@ -149,7 +149,7 @@ namespace WebFramework.Controllers
         /// 文本加密 (ChaCha20)
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult EncryptChaCha20([FromBody] EncryptText2InputDto input)
         {
@@ -167,7 +167,7 @@ namespace WebFramework.Controllers
         /// 文本解密 (ChaCha20)
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult DecryptChaCha20([FromBody] DecryptText2InputDto input)
         {
@@ -186,7 +186,7 @@ namespace WebFramework.Controllers
         /// 文本加密 = CryptoJS.AES.encrypt  /data/crypto.html
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult AESCBCPkcs7Encrypt([FromBody] EncryptTextInputDto input)
         {
@@ -210,7 +210,7 @@ namespace WebFramework.Controllers
         /// 文本解密 = CryptoJS.AES.decrypt  /data/crypto.html
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult AESCBCPkcs7Decrypt([FromBody] DecryptTextInputDto input)
         {
@@ -234,7 +234,7 @@ namespace WebFramework.Controllers
         /// 文本加密 (AES 256 + GCM)
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult AES256GCMEncrypt([FromBody] EncryptText3InputDto input)
         {
@@ -252,7 +252,7 @@ namespace WebFramework.Controllers
         /// 文本解密 (AES 256 + GCM)
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult AES256GCMDecrypt([FromBody] DecryptText3InputDto input)
         {
@@ -271,7 +271,7 @@ namespace WebFramework.Controllers
         /// 文本加密 (RSA动态加密)
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult RSAEncrypt([FromBody] EncodeTextInputDto input)
         {
@@ -286,7 +286,7 @@ namespace WebFramework.Controllers
         /// 文本解密 (RSA动态解密)
         /// </summary>
         [HttpPost]
-        [Produces("application/json")]
+        [Produces(Produces.JSON)]
         [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
         public IActionResult RSADecrypt([FromBody] EncodeTextInputDto input)
         {
