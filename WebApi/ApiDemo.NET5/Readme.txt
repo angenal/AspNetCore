@@ -41,6 +41,19 @@ dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true -f ne
 
 
 --------------------------
+I.使用ngrok部署“外网访问”
+--------------------------
+# 先获取您的授权码 https://dashboard.ngrok.com
+ngrok -help
+ngrok authtoken [授权码]
+ngrok http 35000 -host-header="localhost:35000"
+# 查看运行状态
+start https://dashboard.ngrok.com/endpoints/status
+# 查看访问流量
+start http://localhost:4040/inspect/http
+
+
+--------------------------
 其他相关资源
 --------------------------
 ASP.NET Core SignalR JavaScript 客户端 https://docs.microsoft.com/zh-cn/aspnet/core/signalr/javascript-client?view=aspnetcore-5.0
