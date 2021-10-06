@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Identity.LiteDB.Models
+namespace WebFramework.Models.Entities
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
     /// <summary>
@@ -10,12 +10,12 @@ namespace Identity.LiteDB.Models
     /// The Id property is initialized to form a new GUID string value.
     /// </summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public partial class IdentityUser : IdentityUser<string>
+    public partial class User : IdentityUser<string>
     {
         /// <summary>
         /// Initializes a new instance of IdentityUser.
         /// </summary>
-        public IdentityUser()
+        public User()
         {
             Initialize();
         }
@@ -23,7 +23,7 @@ namespace Identity.LiteDB.Models
         /// Initializes a new instance of IdentityUser.
         /// </summary>
         /// <param name="userName">The user login name.</param>
-        public IdentityUser(string userName)
+        public User(string userName)
         {
             UserName = userName;
             Initialize();
@@ -32,7 +32,7 @@ namespace Identity.LiteDB.Models
         /// Initializes a new instance of IdentityUser.
         /// </summary>
         /// <param name="init">Want to initialize?</param>
-        public IdentityUser(bool init)
+        public User(bool init)
         {
             if (init) Initialize();
         }

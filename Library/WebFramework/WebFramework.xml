@@ -2225,6 +2225,194 @@
             分页数量
             </summary>
         </member>
+        <member name="T:WebFramework.Models.Entities.User">
+            <summary>
+            User Account to Represents a user in the identity system.
+            The Id property is initialized to form a new GUID string value.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Models.Entities.User.#ctor">
+            <summary>
+            Initializes a new instance of IdentityUser.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Models.Entities.User.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of IdentityUser.
+            </summary>
+            <param name="userName">The user login name.</param>
+        </member>
+        <member name="M:WebFramework.Models.Entities.User.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of IdentityUser.
+            </summary>
+            <param name="init">Want to initialize?</param>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.PasswordSalt">
+            <summary>
+            the password salt for this user.
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.EmailConfirmedTime">
+            <summary>
+            邮箱激活时间
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.PhoneNumberConfirmedTime">
+            <summary>
+            手机激活时间
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.LastLoginIP">
+            <summary>
+            最近登录IP
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.AuthenticationKey">
+            <summary>
+            最新认证密钥
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.IsActive">
+            <summary>
+            账号是否激活(用户启用状态)
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.IdCard">
+            <summary>
+            身份证号码(身份唯一标识)
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.WeChatOpenId">
+            <summary>
+            微信openid(身份唯一标识)
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.FaceImgCode">
+            <summary>
+            人脸识别id(身份唯一标识)
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Type">
+            <summary>
+            用户类型
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Role">
+            <summary>
+            用户角色
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Menu">
+            <summary>
+            用户菜单
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Name">
+            <summary>
+            姓名
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Avatar">
+            <summary>
+            头像
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Nickname">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Birthday">
+            <summary>
+            生日
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Nation">
+            <summary>
+            民族
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.NativePlace">
+            <summary>
+            籍贯
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.LivePlace">
+            <summary>
+            现居住地
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.DomicileAddress">
+            <summary>
+            户籍所在地
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.FamilyAddress">
+            <summary>
+            家庭住址
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.AreaPath">
+            <summary>
+            行政区划
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Education">
+            <summary>
+            学历
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Degree">
+            <summary>
+            学位
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.TechnicalLevel">
+            <summary>
+            专业技术级别
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.TechnicalLevelDate">
+            <summary>
+            取得专业技术职务日期
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.WorkUnit">
+            <summary>
+            工作单位
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.WorkPost">
+            <summary>
+            工作岗位
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.JobTitle">
+            <summary>
+            工作职务
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.CreationTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.LastModificationTime">
+            <summary>
+            最近修改时间
+            </summary>
+        </member>
         <member name="T:WebFramework.PostFormFile`1">
             <summary>
             上传文件

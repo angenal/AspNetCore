@@ -11,17 +11,21 @@ namespace WebFramework.Services
     /// </summary>
     public static class CacheModule
     {
+        private static bool UseEasyCaching = false;
+
         /// <summary>
         /// Register services
         /// </summary>
         public static IServiceCollection AddCache(this IServiceCollection services, IConfiguration config)
         {
+            UseEasyCaching = config.GetSection("easycaching").Exists();
+
             // Caching: a non distributed in memory implementation
             services.AddMemoryCache(); // IMemoryCache cache
             // Caching: a distributed in memory implementation
             services.AddDistributedMemoryCache(); // IDistributedCache cache
             // Caching: response caching services, replaced by EasyCaching.ResponseCaching
-            //services.AddResponseCaching();
+            if (!UseEasyCaching) return services.AddResponseCaching();
 
 
             // EasyCaching  https://easycaching.readthedocs.io
@@ -110,7 +114,7 @@ namespace WebFramework.Services
         public static IApplicationBuilder UseCache(this IApplicationBuilder app)
         {
             // Caching
-            //app.UseResponseCaching();
+            if (!UseEasyCaching) return app.UseResponseCaching();
 
             // use response caching
             app.UseEasyCachingResponseCaching();
