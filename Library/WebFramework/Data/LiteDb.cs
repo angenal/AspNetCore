@@ -84,11 +84,11 @@ namespace WebFramework.Data
         }
 
 
-        /// <summary>Open Current ConnectionString Database</summary>
+        /// <summary>Open database (or create if doesn't exist)</summary>
         public LiteDatabase Open() => new LiteDatabase(_connectionString);
-        /// <summary>Open New ConnectionString Database</summary>
+        /// <summary>Open sub database (or create if doesn't exist)</summary>
         public LiteDatabase Open(string s) => new LiteDatabase(GetConnectionString(s));
-        /// <summary>Open Memory Database</summary>
+        /// <summary>Open Memory database (or create if doesn't exist)</summary>
         public LiteDatabase OpenMemory() => new LiteDatabase(new MemoryStream());
 
         /// <summary></summary>

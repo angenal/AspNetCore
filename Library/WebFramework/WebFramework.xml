@@ -763,13 +763,13 @@
             <summary></summary>
         </member>
         <member name="M:WebFramework.Data.LiteDb.Open">
-            <summary>Open Current ConnectionString Database</summary>
+            <summary>Open database (or create if doesn't exist)</summary>
         </member>
         <member name="M:WebFramework.Data.LiteDb.Open(System.String)">
-            <summary>Open New ConnectionString Database</summary>
+            <summary>Open sub database (or create if doesn't exist)</summary>
         </member>
         <member name="M:WebFramework.Data.LiteDb.OpenMemory">
-            <summary>Open Memory Database</summary>
+            <summary>Open Memory database (or create if doesn't exist)</summary>
         </member>
         <member name="M:WebFramework.Data.LiteDb.GetConnectionString">
             <summary></summary>

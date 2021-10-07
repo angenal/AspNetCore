@@ -17,6 +17,10 @@ namespace WebInterface
         /// </summary>
         LiteDatabase Open();
         /// <summary>
+        /// Open sub database (or create if doesn't exist)
+        /// </summary>
+        LiteDatabase Open(string s);
+        /// <summary>
         /// Open Memory database (or create if doesn't exist)
         /// </summary>
         LiteDatabase OpenMemory();
