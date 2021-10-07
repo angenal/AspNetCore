@@ -62,6 +62,10 @@ namespace WebFramework.Models.Entities
         /// </summary>
         public virtual string LastLoginIP { get; set; }
         /// <summary>
+        /// 最近登录时间
+        /// </summary>
+        public virtual DateTime? LastLoginTime { get; set; }
+        /// <summary>
         /// 最新认证密钥
         /// </summary>
         public string AuthenticationKey { get; set; }
