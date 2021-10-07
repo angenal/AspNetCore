@@ -44,7 +44,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 微信后台验证地址“接口配置信息”的Url填写如 https://YourDomainName/WxOpen
+        /// [配置]微信后台验证地址“接口配置信息”的Url填写如 https://YourDomainName/WxOpen
         /// </summary>
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -56,7 +56,7 @@ namespace WebFramework.Controllers
         }
 
         /// <summary>
-        /// 用户发送消息后，微信平台自动Post一个请求到这里，并等待响应XML
+        /// [配置]用户发送消息后，微信平台自动Post一个请求到这里，并等待响应XML
         /// </summary>
         [HttpPost]
         [Produces(Produces.XML)]
