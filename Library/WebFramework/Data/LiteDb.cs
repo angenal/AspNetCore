@@ -76,4 +76,16 @@ namespace WebFramework.Data
         /// <summary></summary>
         public LiteDatabase LiteDatabase { get; protected set; }
     }
+
+    /// <summary>
+    /// LiteDB extensions.
+    /// </summary>
+    public static class LiteDbExtensions
+    {
+        /// <summary></summary>
+        public static ILiteQueryable<T> WhereIF<T>(this ILiteQueryable<T> query, bool condition, Expression<Func<T, bool>> predicate)
+        {
+            return condition ? query.Where(predicate) : query;
+        }
+    }
 }
