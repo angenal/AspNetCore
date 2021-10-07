@@ -177,8 +177,8 @@ namespace WebFramework.Services
                 var ver = ApiVersionService.Versions[version];
                 var info = new OpenApiInfo
                 {
-                    Title = ver?.Name ?? ApiSettings.Instance.Title,
-                    Description = ver?.Description ?? ApiSettings.Instance.Description,
+                    Title = ApiSettings.Instance.Title ?? ver?.Name,
+                    Description = ApiSettings.Instance.Description ?? ver?.Description,
                     Version = string.Join(", ", ver.Versions.Select(v => v.ToString()).OrderBy(v => v)),
                     Contact = contact,
                     License = license,
