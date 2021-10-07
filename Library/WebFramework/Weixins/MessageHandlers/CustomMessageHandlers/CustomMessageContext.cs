@@ -4,9 +4,8 @@ using Senparc.Weixin.MP.MessageContexts;
 
 namespace WebFramework.Weixins.MessageHandlers.CustomMessageHandlers
 {
-    /* Senparc.Weixin.MP v16.8.0 后直接用 DefaultMpMessageContext */
     /// <summary></summary>
-    public class CustomMessageContext : DefaultMpMessageContext //MessageContext<IRequestMessageBase, IResponseMessageBase>
+    public class CustomMessageContext : DefaultMpMessageContext
     {
         /// <summary></summary>
         public CustomMessageContext()

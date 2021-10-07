@@ -1,25 +1,16 @@
-using Senparc.NeuChar;
 using Senparc.NeuChar.Context;
 using Senparc.NeuChar.Entities;
-using System.Xml.Linq;
+using Senparc.Weixin.WxOpen.MessageContexts;
 
 namespace WebFramework.Weixins.MessageHandlers.WxOpenMessageHandlers
 {
-    public class CustomWxOpenMessageContext : MessageContext<IRequestMessageBase, IResponseMessageBase>
+    /// <summary></summary>
+    public class CustomWxOpenMessageContext : DefaultWxOpenMessageContext
     {
+        /// <summary></summary>
         public CustomWxOpenMessageContext()
         {
             base.MessageContextRemoved += CustomMessageContext_MessageContextRemoved;
-        }
-
-        public override IRequestMessageBase GetRequestEntityMappingResult(RequestMsgType requestMsgType, XDocument doc)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override IResponseMessageBase GetResponseEntityMappingResult(ResponseMsgType responseMsgType, XDocument doc)
-        {
-            throw new System.NotImplementedException();
         }
 
         /// <summary>
