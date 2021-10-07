@@ -2263,6 +2263,11 @@
             the password salt for this user.
             </summary>
         </member>
+        <member name="P:WebFramework.Models.Entities.User.PasswordResetCode">
+            <summary>
+            the password reset code.
+            </summary>
+        </member>
         <member name="P:WebFramework.Models.Entities.User.EmailConfirmedTime">
             <summary>
             邮箱激活时间

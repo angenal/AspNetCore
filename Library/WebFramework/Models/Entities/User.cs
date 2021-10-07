@@ -47,6 +47,10 @@ namespace WebFramework.Models.Entities
         /// the password salt for this user.
         /// </summary>
         public virtual string PasswordSalt { get; set; }
+        /// <summary>
+        /// the password reset code.
+        /// </summary>
+        public virtual string PasswordResetCode { get; set; }
 
         /// <summary>
         /// 邮箱激活时间
