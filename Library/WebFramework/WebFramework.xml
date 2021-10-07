@@ -672,12 +672,12 @@
         </member>
         <member name="M:WebFramework.Controllers.WxOpenController.Get(Senparc.Weixin.WxOpen.Entities.Request.PostModel,System.String)">
             <summary>
-            微信后台验证地址“接口配置信息”的Url填写如 https://YourDomainName/WxOpen
+            [配置]微信后台验证地址“接口配置信息”的Url填写如 https://YourDomainName/WxOpen
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.WxOpenController.Post(Senparc.Weixin.WxOpen.Entities.Request.PostModel)">
             <summary>
-            用户发送消息后，微信平台自动Post一个请求到这里，并等待响应XML
+            [配置]用户发送消息后，微信平台自动Post一个请求到这里，并等待响应XML
             </summary>
         </member>
         <member name="M:WebFramework.Controllers.WxOpenController.GetToken(System.String)">
@@ -756,8 +756,17 @@
         <member name="M:WebFramework.Data.LiteDb.#ctor(LiteDB.LiteDatabase)">
             <summary></summary>
         </member>
+        <member name="M:WebFramework.Data.LiteDb.NewConnectionString(System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Data.LiteDb.GetConnectionString(LiteDB.ConnectionString)">
+            <summary></summary>
+        </member>
         <member name="M:WebFramework.Data.LiteDb.Open">
             <summary>Open Current ConnectionString Database</summary>
+        </member>
+        <member name="M:WebFramework.Data.LiteDb.Open(System.String)">
+            <summary>Open New ConnectionString Database</summary>
         </member>
         <member name="M:WebFramework.Data.LiteDb.OpenMemory">
             <summary>Open Memory Database</summary>
@@ -765,10 +774,27 @@
         <member name="M:WebFramework.Data.LiteDb.GetConnectionString">
             <summary></summary>
         </member>
+        <member name="M:WebFramework.Data.LiteDb.GetConnectionString(System.String)">
+            <summary></summary>
+        </member>
         <member name="P:WebFramework.Data.LiteDb.HasConnectionString">
             <summary></summary>
         </member>
+        <member name="F:WebFramework.Data.LiteDb._connectionString">
+            <summary></summary>
+        </member>
+        <member name="F:WebFramework.Data.LiteDb._connectionStringTpl">
+            <summary></summary>
+        </member>
         <member name="P:WebFramework.Data.LiteDb.LiteDatabase">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Data.LiteDbExtensions">
+            <summary>
+            LiteDB extensions.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Data.LiteDbExtensions.WhereIF``1(LiteDB.ILiteQueryable{``0},System.Boolean,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
             <summary></summary>
         </member>
         <member name="T:WebFramework.Data.RavenDb">
@@ -2102,6 +2128,21 @@
         <member name="P:WebFramework.Models.DTO.IdOutputDto.Id">
             <summary>
             编号
+            </summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.IdxOutputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.IdxOutputDto.Id">
+            <summary>
+            编号
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.IdxOutputDto.X">
+            <summary>
+            附加信息
             </summary>
         </member>
         <member name="T:WebFramework.Models.DTO.IdListInputDto">

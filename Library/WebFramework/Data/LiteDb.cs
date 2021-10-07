@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using WebInterface;
 
 namespace WebFramework.Data
@@ -33,9 +34,8 @@ namespace WebFramework.Data
                 throw new NullReferenceException("No connection string defined in appsettings.json");
             }
 
-            _connectionString = connectionString;
-
-            if (init) LiteDatabase = new LiteDatabase(connectionString);
+            var c = NewConnectionString(connectionString);
+            if (init) LiteDatabase = new LiteDatabase(c);
         }
 
         /// <summary></summary>
@@ -47,31 +47,74 @@ namespace WebFramework.Data
         /// <summary></summary>
         public LiteDb(string connectionString, bool init = true)
         {
-            _connectionString = connectionString;
-            if (init) LiteDatabase = new LiteDatabase(connectionString);
+            var c = NewConnectionString(connectionString);
+            if (init) LiteDatabase = new LiteDatabase(c);
         }
 
         /// <summary></summary>
-        public LiteDb(string connectionString, BsonMapper mapper) => LiteDatabase = new LiteDatabase(connectionString, mapper);
+        public LiteDb(string connectionString, BsonMapper mapper) => LiteDatabase = new LiteDatabase(NewConnectionString(connectionString), mapper);
 
         /// <summary></summary>
-        public LiteDb(ConnectionString connectionString, BsonMapper mapper) => LiteDatabase = new LiteDatabase(connectionString, mapper);
+        public LiteDb(ConnectionString connectionString, BsonMapper mapper) => LiteDatabase = new LiteDatabase(GetConnectionString(connectionString), mapper);
 
         /// <summary></summary>
         public LiteDb(LiteDatabase liteDatabase) => LiteDatabase = liteDatabase;
 
+        /// <summary></summary>
+        private ConnectionString NewConnectionString(string connectionString) => GetConnectionString(new ConnectionString(connectionString));
+        /// <summary></summary>
+        private ConnectionString GetConnectionString(ConnectionString c)
+        {
+            var s = c.Filename;
+            var i = s.LastIndexOf(".");
+            var filename = $"{s.Substring(0, i)}{{0}}{s.Substring(i)}";
+            _connectionString = c;
+            _connectionStringTpl = new ConnectionString()
+            {
+                Connection = c.Connection,
+                Filename = filename,
+                Password = c.Password,
+                InitialSize = c.InitialSize,
+                ReadOnly = c.ReadOnly,
+                Upgrade = c.Upgrade,
+                Collation = c.Collation,
+            };
+            return c;
+            /// <summary></summary>
+        }
+
 
         /// <summary>Open Current ConnectionString Database</summary>
         public LiteDatabase Open() => new LiteDatabase(_connectionString);
+        /// <summary>Open New ConnectionString Database</summary>
+        public LiteDatabase Open(string s) => new LiteDatabase(GetConnectionString(s));
         /// <summary>Open Memory Database</summary>
         public LiteDatabase OpenMemory() => new LiteDatabase(new MemoryStream());
 
         /// <summary></summary>
-        public string GetConnectionString() => _connectionString;
+        public ConnectionString GetConnectionString() => _connectionString;
         /// <summary></summary>
-        public bool HasConnectionString => !string.IsNullOrEmpty(_connectionString);
+        public ConnectionString GetConnectionString(string s)
+        {
+            var c = _connectionStringTpl;
+            return new ConnectionString()
+            {
+                Connection = c.Connection,
+                Filename = string.Format(c.Filename, s),
+                Password = c.Password,
+                InitialSize = c.InitialSize,
+                ReadOnly = c.ReadOnly,
+                Upgrade = c.Upgrade,
+                Collation = c.Collation,
+            };
+        }
+        /// <summary></summary>
+        public bool HasConnectionString => _connectionString != null && !string.IsNullOrEmpty(_connectionString.Filename);
 
-        private readonly string _connectionString;
+        /// <summary></summary>
+        private ConnectionString _connectionString;
+        /// <summary></summary>
+        private ConnectionString _connectionStringTpl;
 
         /// <summary></summary>
         public LiteDatabase LiteDatabase { get; protected set; }
