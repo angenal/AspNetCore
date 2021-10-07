@@ -2094,6 +2094,16 @@
             编号
             </summary>
         </member>
+        <member name="T:WebFramework.Models.DTO.IdOutputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebFramework.Models.DTO.IdOutputDto.Id">
+            <summary>
+            编号
+            </summary>
+        </member>
         <member name="T:WebFramework.Models.DTO.IdListInputDto">
              <summary>
             
@@ -2266,6 +2276,11 @@
         <member name="P:WebFramework.Models.Entities.User.LastLoginIP">
             <summary>
             最近登录IP
+            </summary>
+        </member>
+        <member name="P:WebFramework.Models.Entities.User.LastLoginTime">
+            <summary>
+            最近登录时间
             </summary>
         </member>
         <member name="P:WebFramework.Models.Entities.User.AuthenticationKey">
@@ -4069,6 +4084,12 @@
             </summary>
             <param name="requestMessage"></param>
             <returns></returns>
+        </member>
+        <member name="T:WebFramework.Weixins.MessageHandlers.WxOpenMessageHandlers.CustomWxOpenMessageContext">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.WxOpenMessageHandlers.CustomWxOpenMessageContext.#ctor">
+            <summary></summary>
         </member>
         <member name="M:WebFramework.Weixins.MessageHandlers.WxOpenMessageHandlers.CustomWxOpenMessageContext.CustomMessageContext_MessageContextRemoved(System.Object,Senparc.NeuChar.Context.WeixinContextRemovedEventArgs{Senparc.NeuChar.Entities.IRequestMessageBase,Senparc.NeuChar.Entities.IResponseMessageBase})">
             <summary>

@@ -29,6 +29,16 @@ namespace WebFramework.Models.DTO
     /// <summary>
     ///
     /// </summary>
+    public class IdOutputDto
+    {
+        /// <summary>
+        /// 编号
+        /// </summary>
+        public string Id { get; set; }
+    }
+    /// <summary>
+    ///
+    /// </summary>
     public class IdListInputDto
     {
         /// <summary>
