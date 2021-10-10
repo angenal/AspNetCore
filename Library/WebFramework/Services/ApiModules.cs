@@ -70,6 +70,13 @@ namespace WebFramework.Services
             // ApiServer (Kestrel,IIS)
             services.AddApiServer(config, env);
 
+            // HTTP proxies forward information
+            services.Configure<ForwardedHeadersOptions>(x =>
+            {
+                x.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                x.ForwardLimit = null; x.KnownNetworks.Clear(); x.KnownProxies.Clear(); //使用负载均衡或CDN时需清空限制
+            });
+
 
             // App Data Directory
             var dataPath = Path.Combine(env.ContentRootPath, "data"); // Linux system file directories are case sensitive
@@ -142,10 +149,10 @@ namespace WebFramework.Services
 
             // CORS services
             var allowedHosts = config.GetSection("AllowedHosts").Exists() ? config.GetSection("AllowedHosts").Value.Split(',') : new[] { "*" };
-            services.AddCors(options => options.AddDefaultPolicy(policy =>
+            services.AddCors(x => x.AddDefaultPolicy(p =>
             {
-                if (allowedHosts.Any(c => c == "*")) policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(_ => true);
-                else policy.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(_ => true);
+                if (allowedHosts.Any(c => c == "*")) p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(_ => true);
+                else p.WithOrigins(allowedHosts).AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(_ => true);
             }));
             // Adds HttpContext for Controllers
             services.AddHttpContextAccessor();
@@ -236,11 +243,12 @@ namespace WebFramework.Services
             // Use ApiServer (Kestrel,IIS)
             app.UseApiServer(config);
 
-            //var ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
-            app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto });
+            // HTTP proxies forward information
+            app.UseForwardedHeaders().UseCertificateForwarding();
+
             //app.UseFileServer(enableDirectoryBrowsing: true);
             app.UseDefaultFiles(new DefaultFilesOptions() { DefaultFileNames = new[] { "index.html" } });
-            app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800") });
+            app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = c => c.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800") });
             //app.Map("/assets", x => x.UseStaticFiles(new StaticFileOptions { FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "assets")) }));
 
             // Use Compression

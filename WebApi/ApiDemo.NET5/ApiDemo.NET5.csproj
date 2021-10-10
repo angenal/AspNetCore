@@ -102,6 +102,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Library\WebControllers\WebControllers.csproj" />
     <ProjectReference Include="..\..\Library\WebCore\WebCore.csproj" />
     <ProjectReference Include="..\..\Library\WebFramework\WebFramework.csproj" />
     <ProjectReference Include="..\..\Library\WebInterface\WebInterface.csproj" />

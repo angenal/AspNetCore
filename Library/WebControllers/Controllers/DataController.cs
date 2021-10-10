@@ -7,11 +7,12 @@ using System.Net;
 using System.Text;
 using WebCore;
 using WebCore.Platform;
+using WebFramework;
 using WebFramework.Models.DTO;
 using WebInterface;
 using WebInterface.Settings;
 
-namespace WebFramework.Controllers
+namespace WebControllers.Controllers
 {
     /// <summary>
     /// 数据

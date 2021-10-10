@@ -4,8 +4,9 @@ using System;
 using System.Net;
 using WebCore;
 using WebCore.Platform;
+using WebFramework;
 
-namespace WebFramework.Controllers
+namespace WebControllers.Controllers
 {
     /// <summary>
     /// 系统检查

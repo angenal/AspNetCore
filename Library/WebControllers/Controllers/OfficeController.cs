@@ -6,10 +6,11 @@ using System.Data;
 using System.IO;
 using System.Net;
 using WebCore;
+using WebFramework;
 using WebFramework.Models.DTO;
 using WebInterface;
 
-namespace WebFramework.Controllers
+namespace WebControllers.Controllers
 {
     /// <summary>
     /// 办公文档

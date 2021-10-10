@@ -16,11 +16,12 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using WebCore;
+using WebFramework;
 using WebFramework.Weixins.MessageHandlers.WxOpenMessageHandlers;
 using WebFramework.Weixins.MessageTemplate.WxOpen;
 using WebInterface;
 
-namespace WebFramework.Controllers
+namespace WebControllers.Controllers
 {
     /// <summary>
     /// 微信小程序
@@ -84,12 +85,12 @@ namespace WebFramework.Controllers
             try
             {
                 //测试时可开启此记录，帮助跟踪数据，使用前请确保App_Data文件夹存在，且有读写权限。
-                if (Config.IsDebug) messageHandler.SaveRequestMessageLog(Weixins.Data.WxOpen.RootPath);//记录 Request 日志（可选）
+                if (Config.IsDebug) messageHandler.SaveRequestMessageLog(WebFramework.Weixins.Data.WxOpen.RootPath);//记录 Request 日志（可选）
 
                 await messageHandler.ExecuteAsync(new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);//执行微信处理过程（关键）
                 if (messageHandler.ResponseDocument == null) return Content(error.Format(400, "消息去重"), Produces.XML);
 
-                if (Config.IsDebug) messageHandler.SaveResponseMessageLog(Weixins.Data.WxOpen.RootPath);//记录 Response 日志（可选）
+                if (Config.IsDebug) messageHandler.SaveResponseMessageLog(WebFramework.Weixins.Data.WxOpen.RootPath);//记录 Response 日志（可选）
 
                 var s = messageHandler.ResponseDocument.ToString();
                 return Content(s, Produces.XML);

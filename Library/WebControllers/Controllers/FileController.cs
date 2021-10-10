@@ -10,10 +10,11 @@ using System.Net;
 using System.Threading.Tasks;
 using WebCore;
 using WebCore.Security;
+using WebFramework;
 using WebFramework.Models.DTO;
 using WebInterface;
 
-namespace WebFramework.Controllers
+namespace WebControllers.Controllers
 {
     /// <summary>
     /// 文件

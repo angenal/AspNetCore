@@ -80,9 +80,7 @@ namespace WebFramework.Data
                 Collation = c.Collation,
             };
             return c;
-            /// <summary></summary>
         }
-
 
         /// <summary>Open database (or create if doesn't exist)</summary>
         public LiteDatabase Open() => new LiteDatabase(_connectionString);

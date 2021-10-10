@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO.Compression;
+using System.Linq;
 
 namespace WebFramework.Services
 {
@@ -19,11 +20,18 @@ namespace WebFramework.Services
             // Compression: response compression services
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
             services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
-            services.AddResponseCompression(action =>
+            services.AddResponseCompression(options =>
             {
-                action.EnableForHttps = true;
-                action.Providers.Add<GzipCompressionProvider>();
-                action.Providers.Add<BrotliCompressionProvider>();
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+                {
+                    "image/svg+xml",
+                    "application/atom+xml",
+                    "application/xhtml+xml",
+                    "text/html; charset=utf-8",
+                });
             });
 
             return services;

@@ -8,10 +8,11 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using WebCore;
+using WebFramework;
 using WebFramework.Models.DTO;
 using WebFramework.SignalR;
 
-namespace WebFramework.Controllers
+namespace WebControllers.Controllers
 {
     /// <summary>
     /// 聊天消息

@@ -9,11 +9,12 @@ using System.Net;
 using System.Threading.Tasks;
 using WebCore;
 using WebCore.Platform;
+using WebFramework;
 using WebFramework.Data;
 using WebFramework.SignalR;
 using WebInterface;
 
-namespace WebFramework.Controllers
+namespace WebControllers.Controllers
 {
     /// <summary>
     /// 系统时间

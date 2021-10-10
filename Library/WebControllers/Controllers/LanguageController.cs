@@ -3,9 +3,11 @@ using System;
 using System.Linq;
 using System.Net;
 using WebCore;
+using WebFramework;
+using WebFramework.Services;
 using WebInterface;
 
-namespace WebFramework.Controllers
+namespace WebControllers.Controllers
 {
     /// <summary>
     /// 语言
@@ -58,8 +60,8 @@ namespace WebFramework.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public IActionResult Update(string option)
         {
-            if (!Services.LanguageRouteConstraint.Cultures.Any(x => x.Equals(option, StringComparison.OrdinalIgnoreCase))
-                && !Services.LanguageRouteConstraint.Languages.Any(x => x.Equals(option, StringComparison.OrdinalIgnoreCase)))
+            if (!LanguageRouteConstraint.Cultures.Any(x => x.Equals(option, StringComparison.OrdinalIgnoreCase))
+                && !LanguageRouteConstraint.Languages.Any(x => x.Equals(option, StringComparison.OrdinalIgnoreCase)))
                 return Error("It's not an supported option.");
 
             var result = Localizations.SetDefaultCulture(option);

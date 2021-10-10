@@ -8,7 +8,8 @@ using System.Text;
 
 namespace WebCore
 {
-    public static class UrlExtensions
+    /// <summary>Provides HTTP utility methods. </summary>
+    public static class HttpExtensions
     {
         /// <summary>
         ///
@@ -75,6 +76,7 @@ namespace WebCore
             }
             return false;
         }
+
         /// <summary>
         ///
         /// </summary>
@@ -91,6 +93,53 @@ namespace WebCore
                 return true;
             }
             return false;
+        }
+        /// <summary>Get remote ip address.</summary>
+        /// <param name="request"></param>
+        /// <param name="trueIpHeader"></param>
+        /// <returns></returns>
+        public static string IP(this HttpRequest request, string trueIpHeader = "CF-Connecting-IP")
+        {
+            if (!string.IsNullOrEmpty(trueIpHeader))
+            {
+                var ip = request.Headers[trueIpHeader].ToString();
+                if (!string.IsNullOrEmpty(ip)) return ip;
+            }
+            // HTTP proxies forward information
+            return request.HttpContext.Connection.RemoteIpAddress.ToString();
+        }
+        /// <summary>Get remote ip address.</summary>
+        /// <param name="request"></param>
+        /// <param name="trueIpHeader"></param>
+        /// <returns></returns>
+        public static string IPv4(this HttpRequest request, string trueIpHeader = "CF-Connecting-IP")
+        {
+            if (!string.IsNullOrEmpty(trueIpHeader))
+            {
+                var ip = request.Headers[trueIpHeader].ToString();
+                if (!string.IsNullOrEmpty(ip)) return ip;
+            }
+            // HTTP proxies forward information
+            return request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+        }
+
+        /// <summary>Parses a given HTTP query string into key-value pairs. </summary>
+        /// <param name="queryString">The query string to parse. </param>
+        /// <returns>The key-value pairs. </returns>
+        public static Dictionary<string, string> ParseQueryString(string queryString)
+        {
+            var dict = new Dictionary<string, string>();
+            foreach (var s in queryString.Split('&'))
+            {
+                var index = s.IndexOf('=');
+                if (index != -1 && index + 1 < s.Length)
+                {
+                    var key = s.Substring(0, index);
+                    var value = Uri.UnescapeDataString(s.Substring(index + 1));
+                    if (!dict.ContainsKey(key)) dict.Add(key, value);
+                }
+            }
+            return dict;
         }
 
         /// <summary>

@@ -85,9 +85,9 @@ namespace WebFramework.Services
         /// <summary></summary>
         internal static IList<CultureInfo> SupportedCultures = new List<CultureInfo>();
         /// <summary></summary>
-        internal static IEnumerable<string> Cultures = Array.Empty<string>();
+        public static IEnumerable<string> Cultures = Array.Empty<string>();
         /// <summary></summary>
-        internal static IEnumerable<string> Languages = Array.Empty<string>();
+        public static IEnumerable<string> Languages = Array.Empty<string>();
 
         /// <summary></summary>
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
