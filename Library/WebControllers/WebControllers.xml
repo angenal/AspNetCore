@@ -12,17 +12,17 @@
         <member name="M:WebControllers.Controllers.ChatController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.AspNetCore.SignalR.IHubContext{WebFramework.SignalR.ChatHub},EasyCaching.Core.IEasyCachingProviderFactory)">
             <summary></summary>
         </member>
-        <member name="M:WebControllers.Controllers.ChatController.GetUser(WebFramework.Models.DTO.MessageUserSelectInputDto)">
+        <member name="M:WebControllers.Controllers.ChatController.GetUser(WebControllers.Models.DTO.MessageUserSelectInputDto)">
             <summary>
             获取某个在线用户.
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.ChatController.GetUsers(WebFramework.Models.DTO.MessageUsersSelectInputDto)">
+        <member name="M:WebControllers.Controllers.ChatController.GetUsers(WebControllers.Models.DTO.MessageUsersSelectInputDto)">
             <summary>
             获取某些在线用户.
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.ChatController.GetRoomUsers(WebFramework.Models.DTO.MessageUsersListInputDto)">
+        <member name="M:WebControllers.Controllers.ChatController.GetRoomUsers(WebControllers.Models.DTO.MessageUsersListInputDto)">
             <summary>
             获取聊天室(群)在线用户.
             </summary>
@@ -32,17 +32,17 @@
             获取全部在线用户.
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.ChatController.GetMessages(WebFramework.Models.DTO.MessageListInputDto)">
+        <member name="M:WebControllers.Controllers.ChatController.GetMessages(WebControllers.Models.DTO.MessageListInputDto)">
             <summary>
             获取聊天室(群)的消息列表.
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.ChatController.SendMessage(WebFramework.Models.DTO.MessageInputDto)">
+        <member name="M:WebControllers.Controllers.ChatController.SendMessage(WebControllers.Models.DTO.MessageInputDto)">
             <summary>
             发送消息给在线用户.
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.ChatController.SendMessages(WebFramework.Models.DTO.MessagesInputDto)">
+        <member name="M:WebControllers.Controllers.ChatController.SendMessages(WebControllers.Models.DTO.MessagesInputDto)">
             <summary>
             发送消息给聊天室(群).
             </summary>
@@ -70,62 +70,62 @@
             线程ID
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.Base64Encode(WebFramework.Models.DTO.EncodeTextInputDto)">
+        <member name="M:WebControllers.Controllers.DataController.Base64Encode(WebControllers.Models.DTO.EncodeTextInputDto)">
             <summary>
             文本Base64编码 = btoa(encodeURIComponent(text))
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.Base64Decode(WebFramework.Models.DTO.EncodeTextInputDto)">
+        <member name="M:WebControllers.Controllers.DataController.Base64Decode(WebControllers.Models.DTO.EncodeTextInputDto)">
             <summary>
             文本Base64解码 = decodeURIComponent(atob(text))
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.Encrypt(WebFramework.Models.DTO.EncryptText1InputDto)">
+        <member name="M:WebControllers.Controllers.DataController.Encrypt(WebControllers.Models.DTO.EncryptText1InputDto)">
             <summary>
             文本加密 (authenticated encryption)
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.Decrypt(WebFramework.Models.DTO.DecryptText1InputDto)">
+        <member name="M:WebControllers.Controllers.DataController.Decrypt(WebControllers.Models.DTO.DecryptText1InputDto)">
             <summary>
             文本解密 (authenticated encryption)
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.EncryptChaCha20(WebFramework.Models.DTO.EncryptText2InputDto)">
+        <member name="M:WebControllers.Controllers.DataController.EncryptChaCha20(WebControllers.Models.DTO.EncryptText2InputDto)">
             <summary>
             文本加密 (ChaCha20)
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.DecryptChaCha20(WebFramework.Models.DTO.DecryptText2InputDto)">
+        <member name="M:WebControllers.Controllers.DataController.DecryptChaCha20(WebControllers.Models.DTO.DecryptText2InputDto)">
             <summary>
             文本解密 (ChaCha20)
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.AESCBCPkcs7Encrypt(WebFramework.Models.DTO.EncryptTextInputDto)">
+        <member name="M:WebControllers.Controllers.DataController.AESCBCPkcs7Encrypt(WebControllers.Models.DTO.EncryptTextInputDto)">
             <summary>
             文本加密 = CryptoJS.AES.encrypt  /data/crypto.html
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.AESCBCPkcs7Decrypt(WebFramework.Models.DTO.DecryptTextInputDto)">
+        <member name="M:WebControllers.Controllers.DataController.AESCBCPkcs7Decrypt(WebControllers.Models.DTO.DecryptTextInputDto)">
             <summary>
             文本解密 = CryptoJS.AES.decrypt  /data/crypto.html
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.AES256GCMEncrypt(WebFramework.Models.DTO.EncryptText3InputDto)">
+        <member name="M:WebControllers.Controllers.DataController.AES256GCMEncrypt(WebControllers.Models.DTO.EncryptText3InputDto)">
             <summary>
             文本加密 (AES 256 + GCM)
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.AES256GCMDecrypt(WebFramework.Models.DTO.DecryptText3InputDto)">
+        <member name="M:WebControllers.Controllers.DataController.AES256GCMDecrypt(WebControllers.Models.DTO.DecryptText3InputDto)">
             <summary>
             文本解密 (AES 256 + GCM)
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.RSAEncrypt(WebFramework.Models.DTO.EncodeTextInputDto)">
+        <member name="M:WebControllers.Controllers.DataController.RSAEncrypt(WebControllers.Models.DTO.EncodeTextInputDto)">
             <summary>
             文本加密 (RSA动态加密)
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.DataController.RSADecrypt(WebFramework.Models.DTO.EncodeTextInputDto)">
+        <member name="M:WebControllers.Controllers.DataController.RSADecrypt(WebControllers.Models.DTO.EncodeTextInputDto)">
             <summary>
             文本解密 (RSA动态解密)
             </summary>
@@ -143,17 +143,17 @@
             上传文件
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.FileController.PdfFileSign(WebFramework.Models.DTO.PdfFileSignInputDto)">
+        <member name="M:WebControllers.Controllers.FileController.PdfFileSign(WebControllers.Models.DTO.PdfFileSignInputDto)">
             <summary>
             PDF数字签名 by SignLib
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.FileController.MinisignGenerateKey(WebFramework.Models.DTO.MinisignGenerateKeyInputDto)">
+        <member name="M:WebControllers.Controllers.FileController.MinisignGenerateKey(WebControllers.Models.DTO.MinisignGenerateKeyInputDto)">
             <summary>
             配置密钥 for Minisign
             </summary>
         </member>
-        <member name="M:WebControllers.Controllers.FileController.MinisignFileSign(WebFramework.Models.DTO.MinisignFileSignInputDto)">
+        <member name="M:WebControllers.Controllers.FileController.MinisignFileSign(WebControllers.Models.DTO.MinisignFileSignInputDto)">
             <summary>
             文件签名 by Minisign
             </summary>
@@ -174,7 +174,7 @@
             <param name="fontSize">字体大小</param>
             <param name="degree">难度系数 1.低 2.高</param>
         </member>
-        <member name="M:WebControllers.Controllers.FileController.CaptchaComfirm(WebFramework.Models.DTO.CaptchaCodeComfirmInputDto)">
+        <member name="M:WebControllers.Controllers.FileController.CaptchaComfirm(WebControllers.Models.DTO.CaptchaCodeComfirmInputDto)">
             <summary>
             确认验证码输入
             </summary>
@@ -208,7 +208,7 @@
         <member name="M:WebControllers.Controllers.OfficeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,WebInterface.IExcelTools,WebInterface.IWordTools,WebInterface.IPptTools,WebInterface.IPdfTools)">
             <summary></summary>
         </member>
-        <member name="M:WebControllers.Controllers.OfficeController.ExcelExport(WebFramework.Models.DTO.ExcelExportDataInputDto)">
+        <member name="M:WebControllers.Controllers.OfficeController.ExcelExport(WebControllers.Models.DTO.ExcelExportDataInputDto)">
             <summary>
             Excel Export with template.xlsx
             </summary>
@@ -348,6 +348,505 @@
             <param name="templateId">消息模板id</param>
             <param name="title"></param>
             <param name="content"></param>
+        </member>
+        <member name="T:WebControllers.Models.DTO.CaptchaCodeOutputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.CaptchaCodeOutputDto.LastCode">
+            <summary>
+            验证码生成参数
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.CaptchaCodeOutputDto.ExpireAt">
+            <summary>
+            过期时间
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.CaptchaCodeComfirmInputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.CaptchaCodeComfirmInputDto.LastCode">
+            <summary>
+            验证码生成参数
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.CaptchaCodeComfirmInputDto.CaptchaCode">
+            <summary>
+            验证码输入值
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.CaptchaCodeComfirmOutputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.CaptchaCodeComfirmOutputDto.LastCode">
+            <summary>
+            验证码生成参数
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.CaptchaCodeComfirmOutputDto.CaptchaCode">
+            <summary>
+            验证码输入值
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.CaptchaCodeComfirmOutputDto.Correct">
+            <summary>
+            是否正确
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.CaptchaCodeComfirmOutputDto.Expired">
+            <summary>
+            是否已过期
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MessageUserSelectInputDto">
+            <summary></summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessageUserSelectInputDto.UserId">
+            <summary>
+            用户Id from Sid
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MessageUsersSelectInputDto">
+            <summary></summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessageUsersSelectInputDto.UserId">
+            <summary>
+            用户Id from Sid
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MessageUsersListInputDto">
+            <summary></summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessageUsersListInputDto.GroupName">
+            <summary>
+            消息群
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessageUsersListInputDto.Size">
+            <summary>
+            获取数量
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MessageListInputDto">
+            <summary></summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessageListInputDto.GroupName">
+            <summary>
+            消息群
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessageListInputDto.Size">
+            <summary>
+            获取数量
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MessageInputDto">
+            <summary></summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessageInputDto.ToUser">
+            <summary>
+            消息群用户
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessageInputDto.Content">
+            <summary>
+            消息内容
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessageInputDto.From">
+            <summary>
+            消息来源
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MessagesInputDto">
+            <summary></summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessagesInputDto.GroupName">
+            <summary>
+            消息群
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessagesInputDto.Content">
+            <summary>
+            消息内容
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MessagesInputDto.From">
+            <summary>
+            消息来源
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncodeTextInputDto">
+            <summary>
+            文本编码输入
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncodeTextInputDto.Text">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncodeTextOutputDto">
+            <summary>
+            文本编码输出
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncodeTextOutputDto.Text">
+            <summary>
+            编码后的文本
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncryptKeyPairInputDto">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptKeyPairInputDto.Key">
+            <summary>
+            密钥
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptKeyPairInputDto.Iv">
+            <summary>
+            向量
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncryptTextInputDto">
+            <summary>
+            文本加密输入
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptTextInputDto.Text">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptTextInputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.DecryptTextInputDto">
+            <summary>
+            文本解密输入
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.DecryptTextInputDto.Text">
+            <summary>
+            加密文本
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.DecryptTextInputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncryptKeyPair1InputDto">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptKeyPair1InputDto.Key">
+            <summary>
+            密钥
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptKeyPair1InputDto.Nonce">
+            <summary>
+            随机值
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncryptText1InputDto">
+            <summary>
+            文本加密输入
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptText1InputDto.Text">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptText1InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.DecryptText1InputDto">
+            <summary>
+            文本解密输入
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.DecryptText1InputDto.Text">
+            <summary>
+            加密文本
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.DecryptText1InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncryptKeyPair2InputDto">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptKeyPair2InputDto.Key">
+            <summary>
+            密钥
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptKeyPair2InputDto.Nonce">
+            <summary>
+            随机值
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncryptText2InputDto">
+            <summary>
+            文本加密输入
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptText2InputDto.Text">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptText2InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.DecryptText2InputDto">
+            <summary>
+            文本解密输入
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.DecryptText2InputDto.Text">
+            <summary>
+            加密文本
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.DecryptText2InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncryptKeyPair3InputDto">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptKeyPair3InputDto.Key">
+            <summary>
+            密钥
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptKeyPair3InputDto.Nonce">
+            <summary>
+            随机值
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncryptText3InputDto">
+            <summary>
+            文本加密输入
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptText3InputDto.Text">
+            <summary>
+            文本
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.EncryptText3InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.DecryptText3InputDto">
+            <summary>
+            文本解密输入
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.DecryptText3InputDto.Text">
+            <summary>
+            加密文本
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.DecryptText3InputDto.Keys">
+            <summary>
+            密钥对
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.EncodeTextInputDto_Validator">
+            <summary>
+            模型验证
+            </summary>
+        </member>
+        <member name="M:WebControllers.Models.DTO.EncodeTextInputDto_Validator.#ctor">
+            <summary></summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.UploadFileOutputDto">
+            <summary>
+            上传文件结果
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.UploadFileOutputDto.Key">
+            <summary>
+            the form field name.
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.UploadFileOutputDto.Value">
+            <summary>
+            the file name.
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.UploadFileOutputDto.ContentType">
+            <summary>
+            the raw Content-Type header of the uploaded file.
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.UploadFileOutputDto.Length">
+            <summary>
+            the file length in bytes.
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.UploadFileOutputDto.Path">
+            <summary>
+            Output File Path.
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.PdfFileSignInputDto">
+            <summary>
+            PDF数字签名 by SignLib
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.PdfFileSignInputDto.Path">
+            <summary>
+            未签名文件的路径(以/开头)
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MinisignGenerateKeyInputDto">
+            <summary>
+            生成签名密钥 by Minisign
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MinisignGenerateKeyInputDto.Renew">
+            <summary>
+            重新生成
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MinisignKeyInputDto">
+            <summary>
+            签名密钥 by Minisign
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MinisignKeyInputDto.KeyPass">
+            <summary>
+            安全密钥
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MinisignKeyInputDto.KeyFile">
+            <summary>
+            密钥文件名;不包括文件扩展名,默认minisign
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MinisignKeyOutputDto">
+            <summary>
+            签名密钥 by Minisign
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MinisignKeyOutputDto.KeyId">
+            <summary>
+            安全密钥Id
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.MinisignFileSignInputDto">
+            <summary>
+            文件签名 by Minisign
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.MinisignFileSignInputDto.Path">
+            <summary>
+            未签名文件的路径(以/开头)
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.FileSignOutputDto">
+            <summary>
+            文件签名结果
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.FileSignOutputDto.Path">
+            <summary>
+            已签名文件的路径
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.ExcelExportDataInputDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataInputDto.Data">
+            <summary>
+            数据列表
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataInputDto.Filename">
+            <summary>
+            导出文件名
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataInputDto.Template">
+            <summary>
+            是否使用模板 template.xlsx
+            </summary>
+        </member>
+        <member name="T:WebControllers.Models.DTO.ExcelExportDataItemDto">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataItemDto.NO">
+            <summary>
+            编号
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataItemDto.Name">
+            <summary>
+            名字
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataItemDto.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataItemDto.Nation">
+            <summary>
+            民族
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataItemDto.Phone">
+            <summary>
+            电话
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataItemDto.IdCard">
+            <summary>
+            身份证
+            </summary>
+        </member>
+        <member name="P:WebControllers.Models.DTO.ExcelExportDataItemDto.Memo">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:WebControllers.Startup">
+            <summary></summary>
         </member>
     </members>
 </doc>

@@ -54,13 +54,9 @@ namespace WebFramework.Services
                 // add operation filter which sets default values.
                 if (ApiVersionService.UseVersionedApiExplorer) c.OperationFilter<SwaggerDefaultValues>();
                 // integrate xml comments, set project properties to generate XML file.
-                var assemblies = WebCore.Main.Assemblies;
-                var basePath = AppDomain.CurrentDomain.BaseDirectory;
-                foreach (var assembly in assemblies)
+                foreach (string filePath in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml"))
                 {
-                    var filePath = Path.Combine(basePath, $"{assembly.GetName().Name}.xml");
-                    if (!File.Exists(filePath)) continue;
-                    c.IncludeXmlComments(filePath, true);
+                    if (File.Exists(filePath.Substring(0, filePath.Length - 4) + ".dll")) c.IncludeXmlComments(filePath, true);
                 }
                 // add authentication security scheme.
                 string name = "Authorization", scheme = JwtBearerDefaults.AuthenticationScheme;

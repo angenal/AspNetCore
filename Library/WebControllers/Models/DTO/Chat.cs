@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebFramework.SignalR;
 
-namespace WebFramework.Models.DTO
+namespace WebControllers.Models.DTO
 {
     /// <summary></summary>
     public class MessageUserSelectInputDto

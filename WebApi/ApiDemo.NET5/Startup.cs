@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace ApiDemo.NET5
 {
@@ -15,14 +16,14 @@ namespace ApiDemo.NET5
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         /// <summary></summary>
-        public void ConfigureServices(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services)
         {
             ConfigServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// <summary></summary>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             ConfigApp(app, env, loggerFactory);
 
@@ -33,6 +34,15 @@ namespace ApiDemo.NET5
                 endpoints.MapControllers();
                 //endpoints.MapRazorPages();
             });
+        }
+
+        /// <summary>
+        /// Set all the assemblies referenced web controllers.
+        /// </summary>
+        public override void SetAssemblies()
+        {
+            Assemblies.Add(Assembly.GetEntryAssembly());
+            Assemblies.Add(Assembly.GetAssembly(typeof(WebControllers.Startup)));
         }
     }
 }

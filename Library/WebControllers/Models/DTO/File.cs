@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebFramework.Models.DTO
+namespace WebControllers.Models.DTO
 {
     /// <summary>
     /// 上传文件结果

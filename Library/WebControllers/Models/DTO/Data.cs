@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebFramework.Models.DTO
+namespace WebControllers.Models.DTO
 {
     /// <summary>
     /// 文本编码输入
@@ -10,9 +10,9 @@ namespace WebFramework.Models.DTO
         /// <summary>
         /// 文本
         /// </summary>
-        [Display(Name = "文本")]
-        [Required(ErrorMessage = "{0} 为必填项")]
-        [StringLength(255, MinimumLength = 1, ErrorMessage = "文本编码最多255个字符")]
+        //[Display(Name = "文本")]
+        //[Required(ErrorMessage = "{0} 为必填项")]
+        //[StringLength(255, MinimumLength = 1, ErrorMessage = "文本编码最多255个字符")]
         public string Text { get; set; }
     }
     /// <summary>

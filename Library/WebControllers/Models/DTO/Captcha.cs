@@ -1,6 +1,6 @@
 using System;
 
-namespace WebFramework.Models.DTO
+namespace WebControllers.Models.DTO
 {
     /// <summary>
     ///
@@ -52,4 +52,5 @@ namespace WebFramework.Models.DTO
         /// </summary>
         public bool Expired { get; set; }
     }
+
 }

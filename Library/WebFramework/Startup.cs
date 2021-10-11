@@ -7,7 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using WebCore;
 using WebFramework.Filters;
 using WebFramework.Services;
@@ -16,7 +18,7 @@ using WebFramework.SignalR;
 namespace WebFramework
 {
     /// <summary></summary>
-    public class Startup
+    public abstract class Startup
     {
         readonly IConfiguration Configuration;
         readonly IWebHostEnvironment Environment;
@@ -26,7 +28,27 @@ namespace WebFramework
         {
             Configuration = configuration;
             Environment = environment;
+            SetAssemblies();
         }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// <summary></summary>
+        public abstract void ConfigureServices(IServiceCollection services);
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary></summary>
+        public abstract void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory);
+
+        /// <summary>
+        /// Set all the assemblies referenced web controllers.
+        /// </summary>
+        public abstract void SetAssemblies();
+
+        /// <summary>
+        /// Gets all the assemblies referenced web controllers.
+        /// </summary>
+        public static readonly List<Assembly> Assemblies = new List<Assembly>();
 
         /// <summary></summary>
         public static void Run<TStartup>(string[] args) where TStartup : Startup

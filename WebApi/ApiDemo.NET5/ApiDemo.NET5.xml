@@ -651,5 +651,10 @@
         <member name="M:ApiDemo.NET5.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary></summary>
         </member>
+        <member name="M:ApiDemo.NET5.Startup.SetAssemblies">
+            <summary>
+            Set all the assemblies referenced web controllers.
+            </summary>
+        </member>
     </members>
 </doc>

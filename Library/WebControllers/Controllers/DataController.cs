@@ -5,10 +5,10 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Net;
 using System.Text;
+using WebControllers.Models.DTO;
 using WebCore;
 using WebCore.Platform;
 using WebFramework;
-using WebFramework.Models.DTO;
 using WebInterface;
 using WebInterface.Settings;
 

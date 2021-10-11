@@ -7,9 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using WebControllers.Models.DTO;
 using WebCore;
 using WebFramework;
-using WebFramework.Models.DTO;
 using WebFramework.SignalR;
 
 namespace WebControllers.Controllers
