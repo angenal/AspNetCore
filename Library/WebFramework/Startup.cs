@@ -30,10 +30,6 @@ namespace WebFramework
         {
             Configuration = configuration;
             Environment = environment;
-            // Gets all the assemblies referenced web controllers.
-            var assembly = Assembly.GetEntryAssembly();
-            var assemblies = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly).Assemblies; //assembly.GetReferencedAssemblies().Select(Assembly.Load)
-            Assemblies = assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.GetCustomAttribute<ApiControllerAttribute>() != null));
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -44,11 +40,6 @@ namespace WebFramework
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// <summary></summary>
         public abstract void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory);
-
-        /// <summary>
-        /// Gets all the assemblies referenced web controllers.
-        /// </summary>
-        public static IEnumerable<Assembly> Assemblies = Array.Empty<Assembly>();
 
         /// <summary></summary>
         public static void Run<TStartup>(string[] args) where TStartup : Startup
@@ -143,6 +134,25 @@ namespace WebFramework
 
             // 默认路由 Default MVC with culture
             endpoints.MapControllerRoute("default", "{culture:culture}/{controller=Home}/{action=Index}/{id?}");
+        }
+
+
+        /// <summary>
+        /// Gets all the assemblies referenced web controllers.
+        /// </summary>
+        public static IEnumerable<Assembly> ApiControllerAssemblies => GetCustomAttributeAssemblies<ApiControllerAttribute>(Assembly.GetEntryAssembly());
+
+        /// <summary>
+        /// Gets all the assemblies referenced specified type with a custom attribute.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entryAssembly"></param>
+        /// <returns></returns>
+        public static IEnumerable<Assembly> GetCustomAttributeAssemblies<T>(Assembly entryAssembly) where T : Attribute
+        {
+            //var assemblies = entryAssembly.GetReferencedAssemblies().Select(Assembly.Load);
+            var assemblies = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(entryAssembly).Assemblies;
+            return assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.GetCustomAttribute<T>() != null));
         }
     }
 }

@@ -2942,11 +2942,6 @@
         <member name="M:WebFramework.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary></summary>
         </member>
-        <member name="F:WebFramework.Startup.Assemblies">
-            <summary>
-            Gets all the assemblies referenced web controllers.
-            </summary>
-        </member>
         <member name="M:WebFramework.Startup.Run``1(System.String[])">
             <summary></summary>
         </member>
@@ -2958,6 +2953,19 @@
         </member>
         <member name="M:WebFramework.Startup.UseEndpointsMaps(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)">
             <summary>ApiController Endpoints Maps</summary>
+        </member>
+        <member name="P:WebFramework.Startup.ApiControllerAssemblies">
+            <summary>
+            Gets all the assemblies referenced web controllers.
+            </summary>
+        </member>
+        <member name="M:WebFramework.Startup.GetCustomAttributeAssemblies``1(System.Reflection.Assembly)">
+            <summary>
+            Gets all the assemblies referenced specified type with a custom attribute.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="entryAssembly"></param>
+            <returns></returns>
         </member>
         <member name="T:WebFramework.DisableFormModelBindingAttribute">
             <summary>
