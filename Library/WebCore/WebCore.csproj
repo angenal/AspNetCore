@@ -64,21 +64,13 @@
     <PackageReference Include="NodaTime" Version="3.0.6" />
     <PackageReference Include="SkiaSharp" Version="1.68.3" />
     <PackageReference Include="Sodium.Core" Version="1.2.3" />
-    <PackageReference Include="System.Buffers" Version="4.5.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
-    <PackageReference Include="System.Formats.Asn1" Version="5.0.0" />
     <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
-    <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
-    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
-    <PackageReference Include="System.IO.FileSystem.Watcher" Version="4.3.0" />
     <PackageReference Include="System.Management" Version="5.0.0" />
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageReference Include="System.Net.Primitives" Version="4.3.1" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
-    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="ToolGood.Words" Version="3.0.2.8" />
   </ItemGroup>
   <ItemGroup>

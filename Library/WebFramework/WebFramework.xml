@@ -2942,11 +2942,6 @@
         <member name="M:WebFramework.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Startup.SetAssemblies">
-            <summary>
-            Set all the assemblies referenced web controllers.
-            </summary>
-        </member>
         <member name="F:WebFramework.Startup.Assemblies">
             <summary>
             Gets all the assemblies referenced web controllers.

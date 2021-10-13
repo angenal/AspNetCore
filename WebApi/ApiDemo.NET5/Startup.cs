@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
 
 namespace ApiDemo.NET5
 {
@@ -34,15 +33,6 @@ namespace ApiDemo.NET5
                 endpoints.MapControllers();
                 //endpoints.MapRazorPages();
             });
-        }
-
-        /// <summary>
-        /// Set all the assemblies referenced web controllers.
-        /// </summary>
-        public override void SetAssemblies()
-        {
-            Assemblies.Add(Assembly.GetEntryAssembly());
-            Assemblies.Add(Assembly.GetAssembly(typeof(WebControllers.Startup)));
         }
     }
 }

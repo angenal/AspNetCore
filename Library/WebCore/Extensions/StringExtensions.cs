@@ -322,6 +322,12 @@ namespace WebCore
         /// <param name="text"></param>
         /// <returns></returns>
         public static string ToTitleCase(this string text) => string.IsNullOrEmpty(text) ? string.Empty : System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(text.ToLower());
+        /// <summary>
+        /// 首字母小写
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToCamelCase(this string value) => string.IsNullOrEmpty(value) ? string.Empty : string.Join(".", from part in value.Split(new char[] { '.' }, StringSplitOptions.None) select char.ToLowerInvariant(part[0]).ToString() + part.Substring(1));
 
         /// <summary>
         /// Sql拼接 Id In()

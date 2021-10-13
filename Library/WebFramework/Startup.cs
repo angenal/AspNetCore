@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using WebCore;
 using WebFramework.Filters;
@@ -28,7 +30,10 @@ namespace WebFramework
         {
             Configuration = configuration;
             Environment = environment;
-            SetAssemblies();
+            // Gets all the assemblies referenced web controllers.
+            var assembly = Assembly.GetEntryAssembly();
+            var assemblies = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly).Assemblies; //assembly.GetReferencedAssemblies().Select(Assembly.Load)
+            Assemblies = assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.GetCustomAttribute<ApiControllerAttribute>() != null));
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -41,14 +46,9 @@ namespace WebFramework
         public abstract void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory);
 
         /// <summary>
-        /// Set all the assemblies referenced web controllers.
-        /// </summary>
-        public abstract void SetAssemblies();
-
-        /// <summary>
         /// Gets all the assemblies referenced web controllers.
         /// </summary>
-        public static readonly List<Assembly> Assemblies = new List<Assembly>();
+        public static IEnumerable<Assembly> Assemblies = Array.Empty<Assembly>();
 
         /// <summary></summary>
         public static void Run<TStartup>(string[] args) where TStartup : Startup
