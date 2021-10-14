@@ -15,6 +15,34 @@ namespace WebCore
     [DebuggerStepThrough]
     public static class ReflectionExtensions
     {
+        #region Assembly
+
+        /// <summary>
+        /// Gets all the assemblies referenced specified type with a custom attribute.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public static IEnumerable<Assembly> GetCustomAttributeAssemblies<T>(this Assembly assembly) where T : Attribute
+        {
+            //var assemblies = System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies;
+            var assemblies = assembly.GetReferencedAssemblies().Select(Assembly.Load);
+            return assemblies.GetCustomAttributeAssemblies<T>();
+        }
+        /// <summary>
+        /// Gets some assemblies referenced specified type with a custom attribute.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assemblies"></param>
+        /// <returns></returns>
+        public static IEnumerable<Assembly> GetCustomAttributeAssemblies<T>(this IEnumerable<Assembly> assemblies) where T : Attribute
+        {
+            return assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.GetCustomAttribute<T>() != null));
+        }
+
+        #endregion
+
+        #region Type
         /// <summary>Gets the name of the type (without namespace or assembly version). </summary>
         /// <param name="type">The type. </param>
         /// <returns>The name of the type. </returns>
@@ -44,7 +72,6 @@ namespace WebCore
             }
             return false;
         }
-
 
         /// <summary>Instantiates an object of a generic type. </summary>
         /// <param name="type">The type. </param>
@@ -145,7 +172,7 @@ namespace WebCore
         }
 
 #endif
-
+        #endregion
 
         #region PropertyInfo
         public static bool IsStatic(this PropertyInfo property)

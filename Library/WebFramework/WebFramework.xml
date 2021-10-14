@@ -2954,19 +2954,6 @@
         <member name="M:WebFramework.Startup.UseEndpointsMaps(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder)">
             <summary>ApiController Endpoints Maps</summary>
         </member>
-        <member name="P:WebFramework.Startup.ApiControllerAssemblies">
-            <summary>
-            Gets all the assemblies referenced web controllers.
-            </summary>
-        </member>
-        <member name="M:WebFramework.Startup.GetCustomAttributeAssemblies``1(System.Reflection.Assembly)">
-            <summary>
-            Gets all the assemblies referenced specified type with a custom attribute.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="entryAssembly"></param>
-            <returns></returns>
-        </member>
         <member name="T:WebFramework.DisableFormModelBindingAttribute">
             <summary>
             Attribute for File Upload Controller

@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(ProjectDir)bin\Release\$(PackageId).$(Version).nupkg&quot; &quot;A:\dotnet\NuGetPackages\$(PackageId).$(Version).nupkg&quot;" />
+    <Exec Command="if exist &quot;$(ProjectDir)bin\Release\$(PackageId).$(Version).nupkg&quot; (copy &quot;$(ProjectDir)bin\Release\$(PackageId).$(Version).nupkg&quot; &quot;A:\dotnet\NuGetPackages\$(PackageId).$(Version).nupkg&quot;)" />
   </Target>
-
 </Project>

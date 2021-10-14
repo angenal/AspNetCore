@@ -1,17 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using WebCore;
 using WebFramework.Filters;
 using WebFramework.Services;
@@ -134,25 +130,6 @@ namespace WebFramework
 
             // 默认路由 Default MVC with culture
             endpoints.MapControllerRoute("default", "{culture:culture}/{controller=Home}/{action=Index}/{id?}");
-        }
-
-
-        /// <summary>
-        /// Gets all the assemblies referenced web controllers.
-        /// </summary>
-        public static IEnumerable<Assembly> ApiControllerAssemblies => GetCustomAttributeAssemblies<ApiControllerAttribute>(Assembly.GetEntryAssembly());
-
-        /// <summary>
-        /// Gets all the assemblies referenced specified type with a custom attribute.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="entryAssembly"></param>
-        /// <returns></returns>
-        public static IEnumerable<Assembly> GetCustomAttributeAssemblies<T>(Assembly entryAssembly) where T : Attribute
-        {
-            //var assemblies = entryAssembly.GetReferencedAssemblies().Select(Assembly.Load);
-            var assemblies = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(entryAssembly).Assemblies;
-            return assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.GetCustomAttribute<T>() != null));
         }
     }
 }
