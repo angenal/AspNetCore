@@ -3382,79 +3382,6 @@
         <member name="M:WebFramework.Weixins.Server.GetMapPath(System.String)">
             <summary></summary>
         </member>
-        <member name="T:Microsoft.AspNetCore.Authentication.QQ.HttpContextExtensions">
-            <summary></summary>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Authentication.QQ.HttpContextExtensions.GetExternalQQLoginInfoAsync(Microsoft.AspNetCore.Http.HttpContext,System.String)">
-            <summary>
-             Get the external login information from qq provider.
-            </summary>
-        </member>
-        <member name="T:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationDefaults">
-            <summary>
-            Default values for QQ authentication.
-            </summary>
-        </member>
-        <member name="F:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationDefaults.AuthenticationScheme">
-            <summary>
-            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.AuthenticationOptions.DefaultAuthenticateScheme"/>.
-            </summary>
-        </member>
-        <member name="F:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationDefaults.DisplayName">
-            <summary>
-            Default value for <see cref="!:RemoteAuthenticationOptions.DisplayName"/>.
-            </summary>
-        </member>
-        <member name="F:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationDefaults.CallbackPath">
-            <summary>
-            Default value for <see cref="P:Microsoft.AspNetCore.Authentication.RemoteAuthenticationOptions.CallbackPath"/>.
-            </summary>
-        </member>
-        <member name="F:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationDefaults.Issuer">
-            <summary>
-            Default value for <see cref="!:AuthenticationOptions.ClaimsIssuer"/>.
-            </summary>
-        </member>
-        <member name="T:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationHandler">
-            <summary>
-            </summary>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationHandler.CreateTicketAsync(System.Security.Claims.ClaimsIdentity,Microsoft.AspNetCore.Authentication.AuthenticationProperties,Microsoft.AspNetCore.Authentication.OAuth.OAuthTokenResponse)">
-            <summary>
-             Last Step
-            </summary>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationHandler.ExchangeCodeAsync(Microsoft.AspNetCore.Authentication.OAuth.OAuthCodeExchangeContext)">
-            <summary>
-             Step2：通过Authorization Code获取Access Token
-             http://wiki.connect.qq.com/%E4%BD%BF%E7%94%A8authorization_code%E8%8E%B7%E5%8F%96access_token
-            </summary>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationHandler.ObtainUserOpenIdAsync(Microsoft.AspNetCore.Authentication.OAuth.OAuthTokenResponse)">
-            <summary>
-             Step3：通过Access Token获取OpenId
-            </summary>
-            <param name="tokens"></param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationHandler.BuildChallengeUrl(Microsoft.AspNetCore.Authentication.AuthenticationProperties,System.String)">
-            <summary>
-             Step1：获取Authorization Code
-             构建请求地址
-            </summary>
-            <param name="properties"></param>
-            <param name="redirectUri"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationOptions">
-            <summary>
-            </summary>
-        </member>
-        <member name="P:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationOptions.OpenIdEndpoint">
-            <summary></summary>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationOptions.#ctor">
-            <summary></summary>
-        </member>
         <member name="T:Microsoft.AspNetCore.Authentication.WeChat.HttpContextExtensions">
             <summary></summary>
         </member>
@@ -3855,26 +3782,6 @@
         </member>
         <member name="M:Microsoft.AspNetCore.Authentication.WxOpen.WxOpenPostResponse.Dispose">
             <summary></summary>
-        </member>
-        <member name="T:Microsoft.Extensions.DependencyInjection.QQAuthenticationExtensions">
-            <summary>
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.QQAuthenticationExtensions.AddQQAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder)">
-            <summary>
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.QQAuthenticationExtensions.AddQQAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationOptions})">
-            <summary>
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.QQAuthenticationExtensions.AddQQAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.Action{Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationOptions})">
-            <summary>
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.QQAuthenticationExtensions.AddQQAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.String,System.String,System.Action{Microsoft.AspNetCore.Authentication.QQ.QQAuthenticationOptions})">
-            <summary>
-            </summary>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.WeChatAuthenticationExtensions">
             <summary></summary>
