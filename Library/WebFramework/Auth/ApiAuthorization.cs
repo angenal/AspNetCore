@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using WebCore;
 using WebCore.Annotations;
 
-namespace WebFramework.Authorization
+namespace WebFramework.Auth
 {
     /// <summary>
     /// 依赖注入 services.AddApiAuthorization 服务

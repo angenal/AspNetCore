@@ -148,12 +148,12 @@
         <member name="P:WebFramework.ConnectionStrings.DefaultConnection">
             <summary></summary>
         </member>
-        <member name="T:WebFramework.Authorization.ApiAuthorizationServicesExtensions">
+        <member name="T:WebFramework.Auth.ApiAuthorizationServicesExtensions">
             <summary>
             依赖注入 services.AddApiAuthorization 服务
             </summary>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationServicesExtensions.AddApiAuthorization(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationServicesExtensions.AddApiAuthorization(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             添加 Api认证授权 服务
             </summary>
@@ -161,7 +161,7 @@
             <param name="configuration"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationServicesExtensions.AddApiAuthorization(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Action{WebFramework.Authorization.ApiAuthorizationOptions})">
+        <member name="M:WebFramework.Auth.ApiAuthorizationServicesExtensions.AddApiAuthorization(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Action{WebFramework.Auth.ApiAuthorizationOptions})">
             <summary>
             添加 Api认证授权 服务
             </summary>
@@ -170,19 +170,19 @@
             <param name="configureOptions">A delegate to configure the <see cref="T:Microsoft.AspNetCore.ResponseCompression.ResponseCompressionOptions"/>.</param>
             <returns></returns>
         </member>
-        <member name="T:WebFramework.Authorization.ApiAuthorizationMiddlewareExtensions">
+        <member name="T:WebFramework.Auth.ApiAuthorizationMiddlewareExtensions">
             <summary>
             添加中间件 app.UseApiAuthorization 到 Pipeline
             </summary>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddlewareExtensions.UseApiAuthorization(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddlewareExtensions.UseApiAuthorization(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
             添加中间件 Api认证授权
             </summary>
             <param name="builder"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddlewareExtensions.UseApiAuthorization(Microsoft.AspNetCore.Builder.IApplicationBuilder,WebFramework.Authorization.ApiAuthorizationOptions)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddlewareExtensions.UseApiAuthorization(Microsoft.AspNetCore.Builder.IApplicationBuilder,WebFramework.Auth.ApiAuthorizationOptions)">
             <summary>
             添加中间件 Api认证授权
             </summary>
@@ -190,88 +190,88 @@
             <param name="options"></param>
             <returns></returns>
         </member>
-        <member name="T:WebFramework.Authorization.ApiAuthorization">
+        <member name="T:WebFramework.Auth.ApiAuthorization">
             <summary>
             Api认证授权:/api/auth
             </summary>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorization.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+        <member name="M:WebFramework.Auth.ApiAuthorization.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorization.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:WebFramework.Auth.ApiAuthorization.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             把 api认证 注册到服务容器中
             </summary>
             <param name="services"></param>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorization.ConfigAppAsync(System.Func{System.Collections.Generic.List{WebCore.Data.DTO.IAppInfo}},System.Boolean)">
+        <member name="M:WebFramework.Auth.ApiAuthorization.ConfigAppAsync(System.Func{System.Collections.Generic.List{WebCore.Data.DTO.IAppInfo}},System.Boolean)">
             <summary>
             初始化 App.Infos
             </summary>
             <param name="action"></param>
             <param name="_async"></param>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorization.ConfigUserAsync(System.Func{System.Collections.Generic.List{WebCore.Data.DTO.IUserInfo}},System.Boolean)">
+        <member name="M:WebFramework.Auth.ApiAuthorization.ConfigUserAsync(System.Func{System.Collections.Generic.List{WebCore.Data.DTO.IUserInfo}},System.Boolean)">
             <summary>
             初始化 User.Infos
             </summary>
             <param name="action"></param>
             <param name="_async"></param>
         </member>
-        <member name="P:WebFramework.Authorization.ApiAuthorization.Configuration">
+        <member name="P:WebFramework.Auth.ApiAuthorization.Configuration">
             <summary></summary>
         </member>
-        <member name="T:WebFramework.Authorization.ApiAuthorizationOptions">
+        <member name="T:WebFramework.Auth.ApiAuthorizationOptions">
             <summary>
             Api认证授权:选项
             </summary>
         </member>
-        <member name="P:WebFramework.Authorization.ApiAuthorizationOptions.Name">
+        <member name="P:WebFramework.Auth.ApiAuthorizationOptions.Name">
             <summary>
             凭证名称
             </summary>
         </member>
-        <member name="P:WebFramework.Authorization.ApiAuthorizationOptions.Secret">
+        <member name="P:WebFramework.Auth.ApiAuthorizationOptions.Secret">
             <summary>
             凭证密钥Key
             </summary>
         </member>
-        <member name="P:WebFramework.Authorization.ApiAuthorizationOptions.ExpiresIn">
+        <member name="P:WebFramework.Auth.ApiAuthorizationOptions.ExpiresIn">
             <summary>
             凭证有效时间，单位：秒
             </summary>
         </member>
-        <member name="P:WebFramework.Authorization.ApiAuthorizationOptions.Path">
+        <member name="P:WebFramework.Auth.ApiAuthorizationOptions.Path">
             <summary>
             需要认证的路径 - 正则表达式
             </summary>
         </member>
-        <member name="T:WebFramework.Authorization.ApiAuthorizationMiddleware">
+        <member name="T:WebFramework.Auth.ApiAuthorizationMiddleware">
             <summary>
             Api认证授权:中间件
             </summary>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Options.IOptions{WebFramework.Authorization.ApiAuthorizationOptions})">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Options.IOptions{WebFramework.Auth.ApiAuthorizationOptions})">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.ReturnNoAuthorized(Microsoft.AspNetCore.Http.HttpContext)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.ReturnNoAuthorized(Microsoft.AspNetCore.Http.HttpContext)">
             <summary>
             401 not authorized
             </summary>
             <param name="context"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.ReturnTimeOut(Microsoft.AspNetCore.Http.HttpContext)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.ReturnTimeOut(Microsoft.AspNetCore.Http.HttpContext)">
             <summary>
             408 timeout
             </summary>
             <param name="context"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.CheckApp(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.CheckApp(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
             <summary>
             check the application - after config App.Infos
             </summary>
@@ -280,7 +280,7 @@
             <param name="secret"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.CheckUser(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.CheckUser(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
             <summary>
             check the user - after config User.Infos
             </summary>
@@ -289,7 +289,7 @@
             <param name="secret"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.CheckExpiredTime(System.Int64,System.Int64)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.CheckExpiredTime(System.Int64,System.Int64)">
             <summary>
             check the expired time
             </summary>
@@ -297,21 +297,21 @@
             <param name="expiresIn"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.GetInvoke(Microsoft.AspNetCore.Http.HttpContext)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.GetInvoke(Microsoft.AspNetCore.Http.HttpContext)">
             <summary>
             http get invoke
             </summary>
             <param name="context"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.PostInvoke(Microsoft.AspNetCore.Http.HttpContext)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.PostInvoke(Microsoft.AspNetCore.Http.HttpContext)">
             <summary>
             http post invoke
             </summary>
             <param name="context"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.CheckApp(Microsoft.AspNetCore.Http.HttpContext,WebCore.Data.DTO.ReqAppInfo)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.CheckApp(Microsoft.AspNetCore.Http.HttpContext,WebCore.Data.DTO.ReqAppInfo)">
             <summary>
             the main check method - Sinature_HMACMD5
             </summary>
@@ -319,7 +319,7 @@
             <param name="req"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.Authorization.ApiAuthorizationMiddleware.CheckUser(Microsoft.AspNetCore.Http.HttpContext,WebCore.Data.DTO.ReqUserInfo)">
+        <member name="M:WebFramework.Auth.ApiAuthorizationMiddleware.CheckUser(Microsoft.AspNetCore.Http.HttpContext,WebCore.Data.DTO.ReqUserInfo)">
             <summary>
             the main check method - Sinature_HMACMD5
             </summary>
