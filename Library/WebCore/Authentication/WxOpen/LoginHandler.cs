@@ -22,35 +22,37 @@ namespace Microsoft.AspNetCore.Authentication.WxOpen
             if (string.IsNullOrEmpty(code))
                 return HandleRequestResult.Fail("没有找到客户端所提供的code供微信服务器进行验证");
 
-            using var tokens = await ExchangeCodeAsync(code);
-            if (tokens.Error != null)
-                return HandleRequestResult.Fail(tokens.Error);
-
-            var completedContext = new WxOpenServerResultContext(Context, Scheme, Options, tokens.SessionKey, tokens.OpenId, tokens.UnionId, tokens.ErrCode, tokens.ErrMsg);
-            await Options.Events?.OnWxOpenServerCompleted?.Invoke(completedContext);
-
-            if (string.IsNullOrEmpty(tokens.OpenId) || string.IsNullOrEmpty(tokens.SessionKey))
-                return HandleRequestResult.Fail("没有接收到微信服务器所返回的OpenID和SessionKey");
-
-            // 根据微信服务器返回的会话密匙执行登录操作, 比如颁发JWT, 缓存OpenId, 重定向Action等.
-            if (Options.CustomerLoginState == null)
+            using (var tokens = await ExchangeCodeAsync(code))
             {
-                Logger.LogWarning("当前没有提供根据微信服务器返回的会话密匙执行登录操作的逻辑");
+                if (tokens.Error != null)
+                    return HandleRequestResult.Fail(tokens.Error);
+
+                var completedContext = new WxOpenServerResultContext(Context, Scheme, Options, tokens.SessionKey, tokens.OpenId, tokens.UnionId, tokens.ErrCode, tokens.ErrMsg);
+                await Options.Events?.OnWxOpenServerCompleted?.Invoke(completedContext);
+
+                if (string.IsNullOrEmpty(tokens.OpenId) || string.IsNullOrEmpty(tokens.SessionKey))
+                    return HandleRequestResult.Fail("没有接收到微信服务器所返回的OpenID和SessionKey");
+
+                // 根据微信服务器返回的会话密匙执行登录操作, 比如颁发JWT, 缓存OpenId, 重定向Action等.
+                if (Options.CustomerLoginState == null)
+                {
+                    Logger.LogWarning("当前没有提供根据微信服务器返回的会话密匙执行登录操作的逻辑");
+                    return HandleRequestResult.Handle();
+                }
+                try
+                {
+                    string sessionInfoKey = null;
+                    var state = Context.RequestServices.GetService<IWxOpenLoginStateInfoStore>();
+                    if (state != null) sessionInfoKey = await state.StoreAsync(new WxOpenLoginSessionInfo(tokens.OpenId, tokens.SessionKey), Options);
+                    var customerLoginStateContext = new WxOpenLoginStateContext(Context, Scheme, Options, tokens.SessionKey, tokens.OpenId, tokens.UnionId, tokens.ErrCode, tokens.ErrMsg, sessionInfoKey);
+                    await Options.CustomerLoginState.Invoke(customerLoginStateContext);
+                }
+                catch (Exception ex)
+                {
+                    return HandleRequestResult.Fail(ex);
+                }
                 return HandleRequestResult.Handle();
             }
-            try
-            {
-                string sessionInfoKey = null;
-                var state = Context.RequestServices.GetService<IWxOpenLoginStateInfoStore>();
-                if (state != null) sessionInfoKey = await state.StoreAsync(new WxOpenLoginSessionInfo(tokens.OpenId, tokens.SessionKey), Options);
-                var customerLoginStateContext = new WxOpenLoginStateContext(Context, Scheme, Options, tokens.SessionKey, tokens.OpenId, tokens.UnionId, tokens.ErrCode, tokens.ErrMsg, sessionInfoKey);
-                await Options.CustomerLoginState.Invoke(customerLoginStateContext);
-            }
-            catch (Exception ex)
-            {
-                return HandleRequestResult.Fail(ex);
-            }
-            return HandleRequestResult.Handle();
         }
         /// <summary></summary>
         protected virtual async Task<WxOpenPostResponse> ExchangeCodeAsync(string clientJsCode)

@@ -1,19 +1,19 @@
 namespace Microsoft.AspNetCore.Authentication.WxOpen
 {
     /// <summary>
-    /// 微信小程序登录校验的默认设置
+    /// Default values for Weixin-MiniProgram authentication.
     /// </summary>
-    public class WxOpenLoginDefaults
+    public static class WxOpenLoginDefaults
     {
-        ///// <summary>
-        ///// Configuration Section in appsettings.json
-        ///// </summary>
-        //public const string AppSettings = "OAuth:WeixinMiniProgram";
+        /// <summary>
+        /// Configuration Section in appsettings.json
+        /// </summary>
+        public const string AppSettings = "OAuth:WeixinMiniProgram";
         /*
           "OAuth": {
               "WeixinMiniProgram": {
-                "ClientId": "AppId",
-                "ClientSecret": "Secret"
+                "ClientId": "{AppId}",
+                "ClientSecret": "{Secret}"
               }
           }
         */

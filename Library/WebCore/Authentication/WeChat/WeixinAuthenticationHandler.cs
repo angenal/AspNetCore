@@ -1,15 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.AspNetCore.Authentication.WeChat
 {
@@ -32,13 +31,14 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
             var address = QueryHelpers.AddQueryString(Options.UserInformationEndpoint, new Dictionary<string, string>
             {
                 ["access_token"] = tokens.AccessToken,
-                ["openid"] = tokens.Response.RootElement.GetProperty("openid").GetString()
+                ["openid"] = tokens.Response.Value<string>("openid")
             });
 
             var response = await Backchannel.GetAsync(address);
             if (!response.IsSuccessStatusCode)
             {
-                Logger.LogError("An error occurred while retrieving the user profile: the remote server returned a {Status} response with the following payload: {Headers} {Body}.",
+                Logger.LogError("An error occurred while retrieving the user profile: the remote server " +
+                                "returned a {Status} response with the following payload: {Headers} {Body}.",
                                 /* Status: */ response.StatusCode,
                                 /* Headers: */ response.Headers.ToString(),
                                 /* Body: */ await response.Content.ReadAsStringAsync());
@@ -46,61 +46,48 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
                 throw new HttpRequestException("An error occurred while retrieving user information.");
             }
 
-            string responseContent = await response.Content.ReadAsStringAsync();
-            using (var payload = JsonDocument.Parse(responseContent))
+            var payload = JObject.Parse(await response.Content.ReadAsStringAsync());
+            if (!string.IsNullOrEmpty(payload.Value<string>("errcode")))
             {
-                string errorCode = payload.RootElement.GetString("errcode");
-                if (!string.IsNullOrEmpty(errorCode))
-                {
-                    Logger.LogError("An error occurred while retrieving the user profile: the remote server returned a {Status} response with the following payload: {Headers} {Body}.",
-                                    /* Status: */ response.StatusCode,
-                                    /* Headers: */ response.Headers.ToString(),
-                                    /* Body: */ await response.Content.ReadAsStringAsync());
+                Logger.LogError("An error occurred while retrieving the user profile: the remote server " +
+                                "returned a {Status} response with the following payload: {Headers} {Body}.",
+                                /* Status: */ response.StatusCode,
+                                /* Headers: */ response.Headers.ToString(),
+                                /* Body: */ await response.Content.ReadAsStringAsync());
 
-                    throw new HttpRequestException("An error occurred while retrieving user information.");
-                }
-
-                if (payload.RootElement.TryGetProperty("unionid", out var unionidEle))
-                {
-                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, unionidEle.GetString(), Options.ClaimsIssuer));
-                }
-                else
-                {
-                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, payload.RootElement.GetString("openid"), Options.ClaimsIssuer));
-                }
-
-                if (payload.RootElement.TryGetProperty("privilege", out var privilegeEle))
-                {
-                    string privilege = string.Join(",", privilegeEle.EnumerateArray().ToArray().Select(t => t.GetString()));
-
-                    identity.AddClaim(new Claim("urn:weixin:privilege", privilege, Options.ClaimsIssuer));
-                }
-
-
-                identity.AddClaim(new Claim("urn:weixin:user_info", payload.ToString(), Options.ClaimsIssuer));
-
-                var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, Context, Scheme, Options, Backchannel, tokens, payload.RootElement);
-
-                context.RunClaimActions();
-
-                await Events.CreatingTicket(context);
-
-                return new AuthenticationTicket(context.Principal, context.Properties, Scheme.Name);
+                throw new HttpRequestException("An error occurred while retrieving user information.");
             }
 
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, WeChatAuthenticationHelper.GetUnionid(payload), Options.ClaimsIssuer));
+            identity.AddClaim(new Claim(ClaimTypes.Name, WeChatAuthenticationHelper.GetNickname(payload), Options.ClaimsIssuer));
+            identity.AddClaim(new Claim(ClaimTypes.Gender, WeChatAuthenticationHelper.GetSex(payload), Options.ClaimsIssuer));
+            identity.AddClaim(new Claim(ClaimTypes.Country, WeChatAuthenticationHelper.GetCountry(payload), Options.ClaimsIssuer));
+            identity.AddClaim(new Claim("urn:weixin:openid", WeChatAuthenticationHelper.GetOpenId(payload), Options.ClaimsIssuer));
+            identity.AddClaim(new Claim("urn:weixin:province", WeChatAuthenticationHelper.GetProvince(payload), Options.ClaimsIssuer));
+            identity.AddClaim(new Claim("urn:weixin:city", WeChatAuthenticationHelper.GetCity(payload), Options.ClaimsIssuer));
+            identity.AddClaim(new Claim("urn:weixin:headimgurl", WeChatAuthenticationHelper.GetHeadimgUrl(payload), Options.ClaimsIssuer));
+            identity.AddClaim(new Claim("urn:weixin:privilege", WeChatAuthenticationHelper.GetPrivilege(payload), Options.ClaimsIssuer));
 
+            identity.AddClaim(new Claim("urn:weixin:user_info", payload.ToString(), Options.ClaimsIssuer));
+
+            var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, Context, Scheme, Options, Backchannel, tokens, payload);
+            context.RunClaimActions();
+
+            await Events.CreatingTicket(context);
+
+            return new AuthenticationTicket(context.Principal, context.Properties, Scheme.Name);
         }
 
         /// <summary>
         /// Step 2：通过code获取access_token
-        /// </summary>
-        protected override async Task<OAuthTokenResponse> ExchangeCodeAsync(OAuthCodeExchangeContext context)
+        /// </summary> 
+        protected override async Task<OAuthTokenResponse> ExchangeCodeAsync(string code, string redirectUri)
         {
             var address = QueryHelpers.AddQueryString(Options.TokenEndpoint, new Dictionary<string, string>()
             {
                 ["appid"] = Options.ClientId,
                 ["secret"] = Options.ClientSecret,
-                ["code"] = context.Code,
+                ["code"] = code,
                 ["grant_type"] = "authorization_code"
             });
 
@@ -116,10 +103,11 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
                 return OAuthTokenResponse.Failed(new Exception("An error occurred while retrieving an access token."));
             }
 
-            var payload = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-            if (!string.IsNullOrEmpty(payload.RootElement.GetString("errcode")))
+            var payload = JObject.Parse(await response.Content.ReadAsStringAsync());
+            if (!string.IsNullOrEmpty(payload.Value<string>("errcode")))
             {
-                Logger.LogError("An error occurred while retrieving an access token: the remote server returned a {Status} response with the following payload: {Headers} {Body}.",
+                Logger.LogError("An error occurred while retrieving an access token: the remote server " +
+                                "returned a {Status} response with the following payload: {Headers} {Body}.",
                                 /* Status: */ response.StatusCode,
                                 /* Headers: */ response.Headers.ToString(),
                                 /* Body: */ await response.Content.ReadAsStringAsync());
@@ -130,9 +118,9 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
         }
 
         /// <summary>
-        ///  Step 1：请求CODE
+        ///  Step 1：请求CODE 
         ///  构建用户授权地址
-        /// </summary>
+        /// </summary> 
         protected override string BuildChallengeUrl(AuthenticationProperties properties, string redirectUri)
         {
             return QueryHelpers.AddQueryString(Options.AuthorizationEndpoint, new Dictionary<string, string>
@@ -149,6 +137,5 @@ namespace Microsoft.AspNetCore.Authentication.WeChat
         {
             return string.Join(",", Options.Scope);
         }
-
     }
 }

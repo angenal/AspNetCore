@@ -3,10 +3,23 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Microsoft.AspNetCore.Authentication.WeChat
 {
     /// <summary>
-    /// Default values for WeChat authentication.
+    /// Default values for Weixin authentication.
     /// </summary>
-    internal static class WeChatAuthenticationDefaults
+    public static class WeChatAuthenticationDefaults
     {
+        /// <summary>
+        /// Configuration Section in appsettings.json
+        /// </summary>
+        public const string AppSettings = "OAuth:Weixin";
+        /*
+          "OAuth": {
+              "Weixin": {
+                "ClientId": "{AppId}",
+                "ClientSecret": "{Secret}"
+              }
+          }
+        */
+
         /// <summary>
         /// Default value for <see cref="AuthenticationOptions.DefaultAuthenticateScheme"/>.
         /// </summary>

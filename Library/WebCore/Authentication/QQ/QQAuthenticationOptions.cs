@@ -23,8 +23,8 @@ namespace Microsoft.AspNetCore.Authentication.QQ
             OpenIdEndpoint = QQAuthenticationDefaults.UserOpenIdEndpoint;
 
             ClaimActionCollectionMapExtensions.MapJsonKey(ClaimActions, ClaimTypes.NameIdentifier, "id");
-            ClaimActionCollectionMapExtensions.MapJsonKey(ClaimActions, ClaimTypes.Name, "displayName");
-            //ClaimActionCollectionMapExtensions.MapJsonKey(ClaimActions, ClaimTypes.Name, "nickname");
+            //ClaimActionCollectionMapExtensions.MapJsonKey(ClaimActions, ClaimTypes.Name, "displayName");
+            ClaimActionCollectionMapExtensions.MapJsonKey(ClaimActions, ClaimTypes.Name, "nickname");
             ClaimActionCollectionMapExtensions.MapJsonKey(ClaimActions, ClaimTypes.Gender, "gender");
             ClaimActionCollectionMapExtensions.MapJsonKey(ClaimActions, "urn:qq:figureurl", "figureurl");
             ClaimActionCollectionMapExtensions.MapJsonKey(ClaimActions, "urn:qq:figureurl_1", "figureurl_1");

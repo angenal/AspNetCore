@@ -3,8 +3,21 @@ namespace Microsoft.AspNetCore.Authentication.QQ
     /// <summary>
     /// Default values for QQ authentication.
     /// </summary>
-    internal class QQAuthenticationDefaults
+    public static class QQAuthenticationDefaults
     {
+        /// <summary>
+        /// Configuration Section in appsettings.json
+        /// </summary>
+        public const string AppSettings = "OAuth:QQ";
+        /*
+          "OAuth": {
+              "QQ": {
+                "ClientId": "{AppId}",
+                "ClientSecret": "{Secret}"
+              }
+          }
+        */
+
         /// <summary>
         /// Default value for <see cref="AuthenticationOptions.DefaultAuthenticateScheme"/>.
         /// </summary>

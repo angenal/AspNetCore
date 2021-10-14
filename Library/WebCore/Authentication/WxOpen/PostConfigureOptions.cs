@@ -18,7 +18,7 @@ namespace Microsoft.AspNetCore.Authentication.WxOpen
         /// <summary></summary>
         public void PostConfigure(string name, WxOpenLoginOptions options)
         {
-            options.DataProtectionProvider ??= _dp;
+            if (options.DataProtectionProvider == null) options.DataProtectionProvider = _dp;
             if (options.Backchannel != null) return;
 
             options.Backchannel = new HttpClient(options.BackchannelHttpHandler ?? new HttpClientHandler());
