@@ -21,21 +21,20 @@ namespace WebCore
         /// Gets all the assemblies referenced specified type with a custom attribute.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="assembly"></param>
+        /// <param name="assembly">Assembly.GetEntryAssembly()</param>
         /// <returns></returns>
-        public static IEnumerable<Assembly> GetCustomAttributeAssemblies<T>(this Assembly assembly) where T : Attribute
+        public static IEnumerable<Assembly> GetReferencedAssembliesHasAttribute<T>(this Assembly assembly) where T : Attribute
         {
-            //var assemblies = System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies;
-            var assemblies = assembly.GetReferencedAssemblies().Select(Assembly.Load);
-            return assemblies.GetCustomAttributeAssemblies<T>();
+            return assembly.GetReferencedAssemblies().Select(Assembly.Load).HasAttribute<T>();
         }
+
         /// <summary>
-        /// Gets some assemblies referenced specified type with a custom attribute.
+        /// Filtering the assemblies referenced specified type with a custom attribute.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="assemblies"></param>
+        /// <param name="assemblies">System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies</param>
         /// <returns></returns>
-        public static IEnumerable<Assembly> GetCustomAttributeAssemblies<T>(this IEnumerable<Assembly> assemblies) where T : Attribute
+        public static IEnumerable<Assembly> HasAttribute<T>(this IEnumerable<Assembly> assemblies) where T : Attribute
         {
             return assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.GetCustomAttribute<T>() != null));
         }

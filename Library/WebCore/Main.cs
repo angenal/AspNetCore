@@ -42,6 +42,11 @@ namespace WebCore
         /// Gets all the assemblies is loaded into our current application domain.
         /// </summary>
         public static ICollection<Assembly> Assemblies = new List<Assembly>() { Assembly.GetEntryAssembly() };
-        private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args) { Assemblies.Add(args.LoadedAssembly); }
+        private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
+        {
+            var assembly = args.LoadedAssembly;
+            if (Assemblies.Contains(assembly)) Assemblies.Remove(assembly);
+            Assemblies.Add(assembly);
+        }
     }
 }
