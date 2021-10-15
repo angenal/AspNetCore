@@ -74,13 +74,13 @@ namespace WebCore
 
         // https://github.com/mgravell/fast-member
         /// <summary>Fast access to fields/properties.</summary>
-        public static void Set<T>(this T obj, string propName, object value)
+        public static void SetProperty<T>(this T obj, string propName, object value)
         {
             var accessor = FastMember.TypeAccessor.Create(typeof(T));
             accessor[obj, propName] = value;
         }
         /// <summary>Fast access to fields/properties.</summary>
-        public static void Set<T>(this IEnumerable<T> objs, string propName, IEnumerable<object> values)
+        public static void SetProperty<T>(this IEnumerable<T> objs, string propName, IEnumerable<object> values)
         {
             var accessor = FastMember.TypeAccessor.Create(typeof(T));
             var arr1 = objs.ToArray();
@@ -88,19 +88,19 @@ namespace WebCore
             for (int i = 0; i < arr1.Length; i++) accessor[arr1[i], propName] = arr2[i];
         }
         /// <summary>Fast access to fields/properties.</summary>
-        public static object Get(this object obj, string propName)
+        public static object GetProperty(this object obj, string propName)
         {
             var wrapped = FastMember.ObjectAccessor.Create(obj);
             return wrapped[propName];
         }
         /// <summary>Fast access to fields/properties.</summary>
-        public static object Get(this object obj, string propName, bool allowNonPublicAccessors)
+        public static object GetProperty(this object obj, string propName, bool allowNonPublicAccessors)
         {
             var wrapped = FastMember.ObjectAccessor.Create(obj, allowNonPublicAccessors);
             return wrapped[propName];
         }
         /// <summary>Fast access to fields/properties.</summary>
-        public static IEnumerable<object> Get<T>(this IEnumerable<T> objs, string propName)
+        public static IEnumerable<object> GetProperty<T>(this IEnumerable<T> objs, string propName)
         {
             var accessor = FastMember.TypeAccessor.Create(typeof(T));
             var arr1 = objs.ToArray();

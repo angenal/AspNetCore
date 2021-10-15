@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using WebControllers.Models.DTO;
 using WebCore;
-using WebCore.Data;
+using WebCore.Cache;
 using WebCore.Platform;
 using WebFramework;
 using WebInterface;
@@ -35,6 +35,8 @@ namespace WebControllers.Controllers
             this.crypto = crypto;
             this.cache = cache;
         }
+
+        #region 系统
 
         /// <summary>
         /// 系统状态
@@ -80,6 +82,10 @@ namespace WebControllers.Controllers
             return Ok(new { id, pid = Environment.ProcessId });
         }
 
+        #endregion
+
+        #region 文本Base64编码解码
+
         /// <summary>
         /// 文本Base64编码 = btoa(encodeURIComponent(text))
         /// </summary>
@@ -109,6 +115,10 @@ namespace WebControllers.Controllers
             };
             return Ok(result);
         }
+
+        #endregion
+
+        #region 文本加密解密
 
         /// <summary>
         /// 文本加密 (authenticated encryption)
@@ -300,13 +310,15 @@ namespace WebControllers.Controllers
             return Ok(result);
         }
 
-        #region Hashtable
+        #endregion
 
-        static readonly FastHashtable<string, EncodeTextOutputDto> hashtable;
+        #region 文本存储Hashtable
+
+        static readonly Hashtable<string, EncodeTextOutputDto> hashtable;
         static DataController()
         {
-            hashtable = new FastHashtable<string, EncodeTextOutputDto>("App_Data");
-            Main.OnExit.Add(() => hashtable.Dispose().Wait());
+            hashtable = new Hashtable<string, EncodeTextOutputDto>("App_Data");
+            Exit.Actions.Add(() => hashtable.Dispose().Wait());
         }
 
         /// <summary>
@@ -321,7 +333,7 @@ namespace WebControllers.Controllers
             if (string.IsNullOrEmpty(key))
                 return Error("参数错误!");
 
-            var result = hashtable.GetValue(key) ?? new EncodeTextOutputDto();
+            var result = hashtable.Get(key) ?? new EncodeTextOutputDto();
             return Ok(result);
         }
 
@@ -338,7 +350,7 @@ namespace WebControllers.Controllers
             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(input?.Text))
                 return Error("参数错误!");
 
-            var result = hashtable.SetValue(key, new EncodeTextOutputDto { Text = input.Text }, true);
+            var result = hashtable.Set(key, new EncodeTextOutputDto { Text = input.Text });
             return Ok(result);
         }
 

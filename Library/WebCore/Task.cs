@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebCore
@@ -6,6 +9,28 @@ namespace WebCore
     /// <summary>Provides task helper methods. </summary>
     public static class TaskUtilities
     {
+        /// <summary></summary>
+        public static Task ConvertToTask(this Action action, TimeSpan timeout)
+        {
+            return Task.Factory.StartNew(action, new CancellationTokenSource(timeout).Token);
+        }
+        /// <summary></summary>
+        public static Task[] ConvertToTask(this Action[] actions, TimeSpan timeout)
+        {
+            var len = actions.Length;
+            var tasks = new Task[len];
+            for (int i = 0; i < len; i++) tasks[i] = Task.Factory.StartNew(actions[i], new CancellationTokenSource(timeout).Token);
+            return tasks;
+        }
+        /// <summary></summary>
+        public static Task[] ConvertToTask(this IEnumerable<Action> actions, TimeSpan timeout)
+        {
+            var len = actions.Count();
+            var tasks = new Task[len];
+            for (int i = 0; i < len; i++) tasks[i] = Task.Factory.StartNew(actions.ElementAt(i), new CancellationTokenSource(timeout).Token);
+            return tasks;
+        }
+
         private static Task _completedTask = null;
 
         /// <summary>Gets a completed task without result type. </summary>
