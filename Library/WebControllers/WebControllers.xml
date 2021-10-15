@@ -130,6 +130,19 @@
             文本解密 (RSA动态解密)
             </summary>
         </member>
+        <member name="M:WebControllers.Controllers.DataController.Text(System.String)">
+            <summary>
+            文本存储读取
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:WebControllers.Controllers.DataController.Text(System.String,WebControllers.Models.DTO.EncodeTextInputDto)">
+            <summary>
+            文本存储写入
+            </summary>
+            <param name="key"></param>
+            <param name="input"></param>
+        </member>
         <member name="T:WebControllers.Controllers.FileController">
             <summary>
             文件

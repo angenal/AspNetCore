@@ -1,7 +1,10 @@
 using FluentScheduler;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebCore
 {
@@ -31,6 +34,22 @@ namespace WebCore
             // Use UTC time rather than local time. It's recommended to call this method before
             // any other library interaction to avoid mixed dates.
             JobManager.UseUtcTime();
+
+            // Occurs when the default application domain's parent process exits.
+            AppDomain.CurrentDomain.ProcessExit += Exit;
+        }
+        /// <summary>
+        /// 应用程序退出前执行
+        /// </summary>
+        public static readonly ICollection<Action> OnExit = new List<Action>();
+        /// <summary>
+        /// https://docs.microsoft.com/en-us/dotnet/api/system.appdomain.processexit
+        /// </summary>
+        private static void Exit(object sender, EventArgs e)
+        {
+            const int seconds = 2;
+            foreach (Action action in OnExit) Task.Factory.StartNew(action, new CancellationTokenSource(TimeSpan.FromSeconds(seconds)).Token);
+            JobManager.StopAndBlock();
         }
     }
 }

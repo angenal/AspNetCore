@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using WebControllers.Models.DTO;
 using WebCore;
+using WebCore.Data;
 using WebCore.Platform;
 using WebFramework;
 using WebInterface;
@@ -41,7 +42,7 @@ namespace WebControllers.Controllers
         [HttpGet]
         [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public ActionResult AppStatus()
+        public IActionResult AppStatus()
         {
             return Ok(new
             {
@@ -61,7 +62,7 @@ namespace WebControllers.Controllers
         [HttpGet]
         [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public ActionResult DeviceId()
+        public IActionResult DeviceId()
         {
             var id = OS.GetDeviceId();
             return Ok(new { id });
@@ -73,7 +74,7 @@ namespace WebControllers.Controllers
         [HttpGet]
         [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public ActionResult ThreadId()
+        public IActionResult ThreadId()
         {
             var id = OS.GetCurrentThreadId();
             return Ok(new { id, pid = Environment.ProcessId });
@@ -298,5 +299,49 @@ namespace WebControllers.Controllers
             var result = new EncodeTextOutputDto() { Text = text };
             return Ok(result);
         }
+
+        #region Hashtable
+
+        static readonly FastHashtable<string, EncodeTextOutputDto> hashtable;
+        static DataController()
+        {
+            hashtable = new FastHashtable<string, EncodeTextOutputDto>("App_Data");
+            Main.OnExit.Add(() => hashtable.Dispose().Wait());
+        }
+
+        /// <summary>
+        /// 文本存储读取
+        /// </summary>
+        /// <param name="key"></param>
+        [HttpGet]
+        [Produces(Produces.JSON)]
+        [ProducesResponseType(typeof(EncodeTextOutputDto), (int)HttpStatusCode.OK)]
+        public IActionResult Text([FromQuery] string key)
+        {
+            if (string.IsNullOrEmpty(key))
+                return Error("参数错误!");
+
+            var result = hashtable.GetValue(key) ?? new EncodeTextOutputDto();
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 文本存储写入
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="input"></param>
+        [HttpPost]
+        [Produces(Produces.JSON)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.OK)]
+        public IActionResult Text([FromQuery] string key, [FromBody] EncodeTextInputDto input)
+        {
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(input?.Text))
+                return Error("参数错误!");
+
+            var result = hashtable.SetValue(key, new EncodeTextOutputDto { Text = input.Text }, true);
+            return Ok(result);
+        }
+
+        #endregion
     }
 }
