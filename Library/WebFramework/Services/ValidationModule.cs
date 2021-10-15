@@ -24,7 +24,8 @@ namespace WebFramework.Services
                 {
                     //c.LocalizationEnabled = true;
                     //c.DisableDataAnnotationsValidation = true; // 关闭系统自带模型验证(否则先进行系统自带模型验证,再进行第三方库FluentValidation)
-                    //c.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                    //c.RunDefaultMvcValidationAfterFluentValidationExecutes = false; // [Obsolete]
+                    // Registers all validators derived from AbstractValidator within the specified assemblies
                     c.RegisterValidatorsFromAssemblies(System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies.HasAttribute<ApiControllerAttribute>());
                 });
                 return;

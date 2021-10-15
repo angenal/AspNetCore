@@ -41,28 +41,34 @@ namespace WebCore
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="entities"></param>
-        /// <param name="excludes"></param>
+        /// <param name="members"></param>
         /// <returns></returns>
-        public static DataTable ToDataTable<T>(this IEnumerable<T> entities, params string[] excludes) where T : new()
+        public static DataTable ToDataTable<T>(this IEnumerable<T> entities, params string[] members) where T : new()
         {
-            if (Activator.CreateInstance(typeof(T)) == null) return null;
-            var ps = typeof(T).GetProperties(ReflectionExtensions.PublicBindingAttr).Where(p => !excludes.Any(u => u.Equals(p.Name, StringComparison.OrdinalIgnoreCase))).ToArray();
             var table = new DataTable();
-            for (var i = 0; i < ps.Length; i++)
+            //if (Activator.CreateInstance(typeof(T)) == null) return null;
+            //var ps = typeof(T).GetProperties(ReflectionExtensions.PublicBindingAttr).Where(p => !excludes.Any(u => u.Equals(p.Name, StringComparison.OrdinalIgnoreCase))).ToArray();
+            //for (var i = 0; i < ps.Length; i++)
+            //{
+            //    var p = ps[i];
+            //    Type newType = p.PropertyType;
+            //    if (newType.IsGenericType && newType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            //        newType = new NullableConverter(newType).UnderlyingType;
+            //    table.Columns.Add(new DataColumn(p.Name, newType));
+            //}
+            //foreach (var entity in entities)
+            //{
+            //    if (entity == null) continue;
+            //    var values = new object[ps.Length];
+            //    for (var i = 0; i < ps.Length; i++)
+            //        values[i] = ps[i].GetValue(entity);
+            //    table.Rows.Add(values);
+            //}
+
+            // https://github.com/mgravell/fast-member
+            using (var reader = FastMember.ObjectReader.Create(entities, members))
             {
-                var p = ps[i];
-                Type newType = p.PropertyType;
-                if (newType.IsGenericType && newType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-                    newType = new NullableConverter(newType).UnderlyingType;
-                table.Columns.Add(new DataColumn(p.Name, newType));
-            }
-            foreach (var entity in entities)
-            {
-                if (entity == null) continue;
-                var values = new object[ps.Length];
-                for (var i = 0; i < ps.Length; i++)
-                    values[i] = ps[i].GetValue(entity);
-                table.Rows.Add(values);
+                table.Load(reader);
             }
             return table;
         }

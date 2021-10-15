@@ -27,7 +27,7 @@ namespace WebCore
         /// 驼峰命名(首字母小写)
         /// </summary>
         public static Func<JsonSerializerSettings> CamelCaseJsonSerializerSettings => () => new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-        /// <summary></summary>
+        /// <summary>首字母大写</summary>
         public static Func<JsonSerializerSettings> DefaultJsonSerializerSettings => () => new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() };
 
         /// <summary>
@@ -70,6 +70,43 @@ namespace WebCore
         {
             JsonConvert.DefaultSettings = camelCasePropertyNames ? CamelCaseJsonSerializerSettings : DefaultJsonSerializerSettings;
             return JsonConvert.DeserializeObject<T>(s);
+        }
+
+        // https://github.com/mgravell/fast-member
+        /// <summary>Fast access to fields/properties.</summary>
+        public static void Set<T>(this T obj, string propName, object value)
+        {
+            var accessor = FastMember.TypeAccessor.Create(typeof(T));
+            accessor[obj, propName] = value;
+        }
+        /// <summary>Fast access to fields/properties.</summary>
+        public static void Set<T>(this IEnumerable<T> objs, string propName, IEnumerable<object> values)
+        {
+            var accessor = FastMember.TypeAccessor.Create(typeof(T));
+            var arr1 = objs.ToArray();
+            var arr2 = values.ToArray();
+            for (int i = 0; i < arr1.Length; i++) accessor[arr1[i], propName] = arr2[i];
+        }
+        /// <summary>Fast access to fields/properties.</summary>
+        public static object Get(this object obj, string propName)
+        {
+            var wrapped = FastMember.ObjectAccessor.Create(obj);
+            return wrapped[propName];
+        }
+        /// <summary>Fast access to fields/properties.</summary>
+        public static object Get(this object obj, string propName, bool allowNonPublicAccessors)
+        {
+            var wrapped = FastMember.ObjectAccessor.Create(obj, allowNonPublicAccessors);
+            return wrapped[propName];
+        }
+        /// <summary>Fast access to fields/properties.</summary>
+        public static IEnumerable<object> Get<T>(this IEnumerable<T> objs, string propName)
+        {
+            var accessor = FastMember.TypeAccessor.Create(typeof(T));
+            var arr1 = objs.ToArray();
+            var list = new List<object>();
+            for (int i = 0; i < arr1.Length; i++) list.Add(accessor[arr1[i], propName]);
+            return list;
         }
 
 
@@ -184,7 +221,7 @@ namespace WebCore
 
         public static bool IsGrouping(this Type type)
         {
-            return ObjectExtensions.IsGrouping(type.GetTypeInfo());
+            return IsGrouping(type.GetTypeInfo());
         }
 
         private static bool IsGrouping(TypeInfo type)
