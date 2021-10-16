@@ -118,19 +118,30 @@ namespace WebCore.Cache
         }
 
         /// <summary>
-        /// Hashtable dispose and wait for ongoing checkpoint to complete
+        /// Save snapshot and wait for ongoing checkpoint to complete
         /// </summary>
+        /// <param name="dispose"></param>
         /// <returns>Checkpoint token</returns>
-        public async Task<Guid> Dispose()
+        public async Task<Guid> SaveSnapshot(bool dispose = true)
         {
             fht.TakeFullCheckpoint(out Guid token);
             await fht.CompleteCheckpointAsync();
             var filename = Path.Combine(path, $"{size}.checkpoint");
             File.WriteAllText(filename, token.ToString(), System.Text.Encoding.UTF8);
+            if (!dispose) return token;
             fht.Dispose();
             log.Dispose();
             obj.Dispose();
             return token;
+        }
+
+        /// <summary>
+        /// Hashtable dispose and wait for ongoing checkpoint to complete
+        /// </summary>
+        /// <returns>Checkpoint token</returns>
+        public async Task<Guid> Dispose()
+        {
+            return await SaveSnapshot(true);
         }
     }
 }

@@ -22,6 +22,17 @@ namespace WebCore
         /// </summary>
         public static int ActionTimeoutSeconds = 2;
 
+        /// <summary>Adds a action detecting process exit.</summary>
+        public static void AddAction(Action action) { Actions.Add(action); }
+        /// <summary>Adds a action detecting process exit.</summary>
+        public static void AddAction(Task task) { Actions.Add(() => task.Wait()); }
+        /// <summary>Adds a action detecting process exit.</summary>
+        public static void AddAction<T>(Task<T> task) { Actions.Add(() => task.Wait()); }
+        /// <summary>Adds a action detecting process exit.</summary>
+        public static void AddAction(Func<Task> task) { Actions.Add(() => task.Invoke().Wait()); }
+        /// <summary>Adds a action detecting process exit.</summary>
+        public static void AddAction<T>(Func<Task<T>> task) { Actions.Add(() => task.Invoke().Wait()); }
+
         /// <summary>
         /// Detecting process exit from the application.
         /// </summary>

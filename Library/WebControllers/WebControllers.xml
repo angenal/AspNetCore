@@ -143,6 +143,11 @@
             <param name="key"></param>
             <param name="input"></param>
         </member>
+        <member name="M:WebControllers.Controllers.DataController.TextSnapshot(System.String)">
+            <summary>
+            文本存储快照
+            </summary>
+        </member>
         <member name="T:WebControllers.Controllers.FileController">
             <summary>
             文件

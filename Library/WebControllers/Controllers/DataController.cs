@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using WebControllers.Models.DTO;
 using WebCore;
 using WebCore.Cache;
@@ -318,7 +319,7 @@ namespace WebControllers.Controllers
         static DataController()
         {
             hashtable = new Hashtable<string, EncodeTextOutputDto>("App_Data");
-            Exit.Actions.Add(() => hashtable.Dispose().Wait());
+            Exit.AddAction(hashtable.Dispose);
         }
 
         /// <summary>
@@ -351,6 +352,18 @@ namespace WebControllers.Controllers
                 return Error("参数错误!");
 
             var result = hashtable.Set(key, new EncodeTextOutputDto { Text = input.Text });
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 文本存储快照
+        /// </summary>
+        [HttpPost("{dispose=0}")]
+        [Produces(Produces.JSON)]
+        [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> TextSnapshot([FromQuery] string dispose)
+        {
+            var result = await hashtable.SaveSnapshot("0" != dispose && "false" != dispose);
             return Ok(result);
         }
 
