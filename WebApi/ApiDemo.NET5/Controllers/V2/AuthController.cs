@@ -103,13 +103,13 @@ namespace ApiDemo.NET5.Controllers.V2
 
                 var o = c.Query().Where(q => q.Id == d.Id).Select(q => new Session
                 {
-                    Id = q.Id.ToString(),
+                    Id = q.Id,
                     UserName = q.UserName,
                     PhoneNumber = q.PhoneNumber,
                     IdCard = q.IdCard,
                     Email = q.Email,
-                    Type = q.Type.ToString(),
-                    Role = q.Role.ToString(),
+                    Type = q.Type,
+                    Role = q.Role,
                     Name = q.Name,
                     Nickname = q.Nickname,
                     Avatar = q.Avatar,

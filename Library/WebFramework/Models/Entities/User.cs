@@ -94,11 +94,11 @@ namespace WebFramework.Models.Entities
         /// <summary>
         /// 用户类型
         /// </summary>
-        public virtual int Type { get; set; }
+        public virtual string Type { get; set; }
         /// <summary>
         /// 用户角色
         /// </summary>
-        public virtual int Role { get; set; }
+        public virtual string Role { get; set; }
         /// <summary>
         /// 用户菜单
         /// </summary>
