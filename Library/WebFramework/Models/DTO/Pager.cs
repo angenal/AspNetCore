@@ -1,14 +1,16 @@
+using LiteDB;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace WebFramework.Models.DTO
 {
     /// <summary>
-    /// 数据库分页查询
+    /// 数据库分页查询 SqlSugar
     /// </summary>
-    public static class SqlSugarExtensions
+    public static class SqlSugarPagerExtensions
     {
         /// <summary></summary>
         public static PageOutputDto<T> ToPage<T>(this ISugarQueryable<T> query, PagerInputDto input)
@@ -25,6 +27,24 @@ namespace WebFramework.Models.DTO
             int pageIndex = Math.Max(1, input.PageIndex), pageSize = Math.Min(1000, Math.Max(1, input.PageSize));
             var data = await query.ToOffsetPageAsync(pageIndex, pageSize, totalNumber);
             var result = new PageOutputDto<T>(data, pageIndex, pageSize, totalNumber.Value);
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// 数据库分页查询 LiteDb
+    /// </summary>
+    public static class LiteDbPagerEExtensions
+    {
+        /// <summary></summary>
+        public static PageOutputDto<K> ToPage<T, K>(this ILiteQueryable<T> query, PagerInputDto input, Expression<Func<T, K>> selector)
+        {
+            int pageIndex = Math.Max(1, input.PageIndex), pageSize = Math.Min(1000, Math.Max(1, input.PageSize)), totalNumber = query.Count();
+            var result = new PageOutputDto<K>(pageIndex, pageSize)
+            {
+                Data = totalNumber == 0 ? Array.Empty<K>() : query.Select<K>(selector).Skip(pageSize * (pageIndex - 1)).Limit(pageSize).ToList(),
+                PageNumber = (int)Math.Ceiling((double)totalNumber / input.PageSize),
+            };
             return result;
         }
     }

@@ -1377,15 +1377,23 @@
             编号列表
             </summary>
         </member>
-        <member name="T:WebFramework.Models.DTO.SqlSugarExtensions">
+        <member name="T:WebFramework.Models.DTO.SqlSugarPagerExtensions">
             <summary>
-            数据库分页查询
+            数据库分页查询 SqlSugar
             </summary>
         </member>
-        <member name="M:WebFramework.Models.DTO.SqlSugarExtensions.ToPage``1(SqlSugar.ISugarQueryable{``0},WebFramework.Models.DTO.PagerInputDto)">
+        <member name="M:WebFramework.Models.DTO.SqlSugarPagerExtensions.ToPage``1(SqlSugar.ISugarQueryable{``0},WebFramework.Models.DTO.PagerInputDto)">
             <summary></summary>
         </member>
-        <member name="M:WebFramework.Models.DTO.SqlSugarExtensions.ToPageAsync``1(SqlSugar.ISugarQueryable{``0},WebFramework.Models.DTO.PagerInputDto)">
+        <member name="M:WebFramework.Models.DTO.SqlSugarPagerExtensions.ToPageAsync``1(SqlSugar.ISugarQueryable{``0},WebFramework.Models.DTO.PagerInputDto)">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Models.DTO.LiteDbPagerEExtensions">
+            <summary>
+            数据库分页查询 LiteDb
+            </summary>
+        </member>
+        <member name="M:WebFramework.Models.DTO.LiteDbPagerEExtensions.ToPage``2(LiteDB.ILiteQueryable{``0},WebFramework.Models.DTO.PagerInputDto,System.Linq.Expressions.Expression{System.Func{``0,``1}})">
             <summary></summary>
         </member>
         <member name="T:WebFramework.Models.DTO.PagerInputDto">
