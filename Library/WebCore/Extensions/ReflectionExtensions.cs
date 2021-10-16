@@ -39,6 +39,19 @@ namespace WebCore
             return assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.GetCustomAttribute<T>() != null));
         }
 
+        /// <summary>
+        /// 获取继承至某个类的Assemblies
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assemblies">System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies</param>
+        /// <param name="excludes"></param>
+        /// <returns></returns>
+        public static IEnumerable<Assembly> GetAssembliesIsSubclassOf<T>(this IEnumerable<Assembly> assemblies, params string[] excludes) where T : class
+        {
+            foreach (Assembly assembly in assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && t.IsSubclassOf(typeof(T)) && !excludes.Any(u => u.Equals(t.Name, StringComparison.OrdinalIgnoreCase)))))
+                yield return assembly;
+        }
+
         #endregion
 
         #region Type
@@ -351,10 +364,12 @@ namespace WebCore
         /// 获取继承至某个类的所有公开类
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="assemblies">System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies</param>
+        /// <param name="excludes"></param>
         /// <returns></returns>
-        public static IEnumerable<Type> GetTypesOf<T>(this AppDomain domain, params string[] excludes) where T : class
+        public static IEnumerable<Type> GetTypesOf<T>(this IEnumerable<Assembly> assemblies, params string[] excludes) where T : class
         {
-            foreach (Assembly assembly in domain.GetAssemblies())
+            foreach (Assembly assembly in assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && t.IsSubclassOf(typeof(T)))))
                 foreach (Type t in assembly.GetTypes().Where(t => t.IsPublic && t.IsClass && t.IsSubclassOf(typeof(T)) && !excludes.Any(u => u.Equals(t.Name, StringComparison.OrdinalIgnoreCase))))
                     yield return t;
         }

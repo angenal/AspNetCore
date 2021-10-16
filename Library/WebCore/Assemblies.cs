@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace WebCore
@@ -10,6 +11,8 @@ namespace WebCore
     {
         #region Construction
 
+        /// <summary>System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies</summary>
+        public static IEnumerable<Assembly> All = Array.Empty<Assembly>();
         /// <summary></summary>
         public static readonly List<Assembly> LoadedAssemblies = new List<Assembly>();
         /// <summary></summary>
@@ -20,7 +23,7 @@ namespace WebCore
         static Assemblies()
         {
             // Gets the assemblies that have been loaded into the execution context of this application domain.
-            LoadedAssemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies());
+            LoadedAssemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic));
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
         }
         /// <summary></summary>

@@ -40,6 +40,8 @@ namespace WebFramework
         /// <summary></summary>
         public static void Run<TStartup>(string[] args) where TStartup : Startup
         {
+            // 初始化
+            Assemblies.All = System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies;
             // 系统入口:初始化
             Main.Init();
             // 系统应用:初始化

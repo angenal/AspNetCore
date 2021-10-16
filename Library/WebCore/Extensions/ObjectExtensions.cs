@@ -392,8 +392,7 @@ namespace WebCore
             {
                 return null;
             }
-            object result;
-            if (!ObjectExtensions._commonTypeDictionary.TryGetValue(type, out result))
+            if (!_commonTypeDictionary.TryGetValue(type, out object result))
             {
                 return Activator.CreateInstance(type);
             }

@@ -96,7 +96,7 @@ namespace WebFramework.Services
 
 
             // AutoMapper
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(Assemblies.All.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && t.IsSubclassOf(typeof(AutoMapper.Profile)))));
 
 
             // Crypto services
