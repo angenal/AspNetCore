@@ -71,8 +71,10 @@ namespace WebFramework
                 .ConfigureLogging()
                 .ConfigureWebHostDefaults(builder => builder.UseStartup<TStartup>().UseSentryMonitor())
                 .Build();
-
-            host.Run();
+            // Starts the host synchronously.
+            host.Start();
+            // Block the calling thread until shutdown is triggered via Ctrl+C or SIGTERM.
+            host.WaitForShutdown();
         }
 
         /// <summary></summary>

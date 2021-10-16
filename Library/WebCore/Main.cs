@@ -1,11 +1,7 @@
 using FluentScheduler;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace WebCore
 {
@@ -37,9 +33,16 @@ namespace WebCore
             JobManager.UseUtcTime();
 
             // Occurs when the default application domain's parent process exits.
-            if (Platform.OS.IsWindows) WebCore.Exit.Wait();
-            else AppDomain.CurrentDomain.ProcessExit += Exit;
+            AppDomain.CurrentDomain.ProcessExit += Exit;
             WebCore.Exit.Actions.Add(JobManager.StopAndBlock);
+        }
+
+        /// <summary>
+        /// Occurs when the default application domain's parent process exits.
+        /// </summary>
+        public static void Wait()
+        {
+            if (Platform.OS.IsWindows) WebCore.Exit.Wait();
         }
 
         /// <summary>
