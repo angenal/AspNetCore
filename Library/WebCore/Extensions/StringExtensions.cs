@@ -132,7 +132,46 @@ namespace WebCore
         }
 
         /// <summary>
-        /// Formats the string with input args.
+        /// 连接多个字符串
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static string Concat(this string value, params string[] values)
+        {
+            var s = new List<string> { value };
+            s.AddRange(values);
+            return string.Concat(s);
+        }
+        /// <summary>
+        /// 连接多个字符串
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static string Concat(this string value, IEnumerable<string> values)
+        {
+            var s = new List<string> { value };
+            s.AddRange(values);
+            return string.Concat(s);
+        }
+        /// <summary>
+        /// 连接多个字符串(使用分隔符)
+        /// </summary>
+        /// <param name="separator"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static string Join(this string separator, IEnumerable<string> values) => string.Join(separator, values);
+        /// <summary>
+        /// 连接多个字符串(使用分隔符)
+        /// </summary>
+        /// <param name="separator"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static string Join(this string separator, params object[] values) => string.Join(separator, values);
+
+        /// <summary>
+        /// 格式化字符串
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
@@ -173,6 +212,19 @@ namespace WebCore
         /// 截断字符串长度
         /// </summary>
         public static string Substr(this string str, int maxlength) => str == null || maxlength <= 0 || str.Length <= maxlength ? str : str.Substring(0, maxlength);
+
+        /// <summary>
+        /// 判断是否为空字符串
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsNullOrEmpty(this string value) => string.IsNullOrEmpty(value);
+        /// <summary>
+        /// 判断是否为空白字符串
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsNullOrWhiteSpace(this string value) => string.IsNullOrWhiteSpace(value);
 
         /// <summary>
         /// 判断一个数字是否在指定数组中
