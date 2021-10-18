@@ -313,17 +313,17 @@ namespace WebControllers.Controllers
 
         #endregion
 
-        #region 文本存储Hashtable
+        #region 文本存储KV
 
-        static readonly Hashtable<string, EncodeTextOutputDto> hashtable;
+        static readonly KV<string, EncodeTextOutputDto> hashtable;
         static DataController()
         {
-            hashtable = new Hashtable<string, EncodeTextOutputDto>("App_Data");
+            hashtable = new KV<string, EncodeTextOutputDto>("App_Data");
             Exit.AddAction(hashtable.Dispose);
         }
 
         /// <summary>
-        /// 文本存储读取
+        /// 文本存储KV读取
         /// </summary>
         /// <param name="key"></param>
         [HttpGet]
@@ -339,7 +339,7 @@ namespace WebControllers.Controllers
         }
 
         /// <summary>
-        /// 文本存储写入
+        /// 文本存储KV写入
         /// </summary>
         /// <param name="key"></param>
         /// <param name="input"></param>
@@ -356,7 +356,7 @@ namespace WebControllers.Controllers
         }
 
         /// <summary>
-        /// 文本存储快照
+        /// 文本存储KV快照
         /// </summary>
         [HttpPost("{dispose=0}")]
         [Produces(Produces.JSON)]

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 namespace WebCore.Cache
 {
     /// <summary>
-    /// Faster Hashtable
+    /// Faster Key/Value is a fast concurrent persistent log and key-value store with cache for larger-than-memory data.
     /// https://github.com/microsoft/FASTER
     /// </summary>
     /// <typeparam name="TKey">Recommend string</typeparam>
     /// <typeparam name="TValue">Custom class</typeparam>
-    public class Hashtable<TKey, TValue> where TValue : new()
+    public class KV<TKey, TValue> where TValue : new()
     {
         private readonly long size;
         private readonly string path;
@@ -26,14 +26,14 @@ namespace WebCore.Cache
         public static SerializerSettings<TKey, TValue> SerializerSettings = null;
 
         /// <summary>
-        /// Faster Hashtable
+        /// Faster Key/Value cache
         /// </summary>
         /// <param name="path">Path to file that will store the log</param>
         /// <param name="sizeBytes">Size of index in #cache lines (64 bytes each) 1 << 20 = 340M snapshot file</param>
         /// <param name="pageSizeBits">Size of a segment (group of pages), in bits</param>
         /// <param name="memorySizeBits">Total size of in-memory part of log, in bits</param>
         /// <param name="mutableFraction">Fraction of log marked as mutable (in-place updates)</param>
-        public Hashtable(string path, long sizeBytes = 1 << 20, int pageSizeBits = 22, int memorySizeBits = 30, double mutableFraction = 0.1, Guid? fullCheckpointToken = null)
+        public KV(string path, long sizeBytes = 1 << 20, int pageSizeBits = 22, int memorySizeBits = 30, double mutableFraction = 0.1, Guid? fullCheckpointToken = null)
         {
             size = sizeBytes;
             var dirname = typeof(TValue).Name;
