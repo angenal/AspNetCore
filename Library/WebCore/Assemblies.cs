@@ -7,14 +7,15 @@ using System.Reflection;
 namespace WebCore
 {
     /// <summary>CurrentDomain.Assemblies</summary>
-    public sealed class Assemblies
+    public static class Assemblies
     {
-        #region Construction
-
         /// <summary>System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies</summary>
         public static IEnumerable<Assembly> All = Array.Empty<Assembly>();
-        /// <summary></summary>
+        /// <summary>System.AppDomain.CurrentDomain.GetAssemblies()</summary>
         public static readonly List<Assembly> LoadedAssemblies = new List<Assembly>();
+
+
+        #region Construction
         /// <summary></summary>
         public static readonly SubClassTypeListCollection LoadedSubClassTypeListCollection = new SubClassTypeListCollection();
         /// <summary></summary>

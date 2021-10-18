@@ -6,6 +6,37 @@ namespace WebCore
     /// <summary>Provides methods to handle lambda expressions. </summary>
     public static class ExpressionExtensions
     {
+        /// <summary>Applies to.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="itemToFilter">The item to filter.</param>
+        /// <returns></returns>
+        public static bool ApplyTo<T>(this Predicate<T> predicate, T itemToFilter)
+        {
+            if (predicate == null) return true;
+
+            foreach (var filterDelegate in predicate.GetInvocationList())
+            {
+                var filter = (Predicate<T>)filterDelegate;
+                if (filter(itemToFilter) == false) return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>Ands the specified additional predicate.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="existingPredicate">The existing predicate.</param>
+        /// <param name="additionalPredicate">The additional predicate.</param>
+        /// <returns></returns>
+        public static Predicate<T> And<T>(this Predicate<T> existingPredicate, Predicate<T> additionalPredicate)
+        {
+            Check.NotNull(existingPredicate, nameof(existingPredicate));
+
+            existingPredicate += additionalPredicate;
+            return existingPredicate;
+        }
+
         /// <summary>Returns the property name of the property specified in the given lambda (e.g. GetPropertyName(i => i.MyProperty)). </summary>
         /// <typeparam name="TClass">The type of the class with the property. </typeparam>
         /// <typeparam name="TProperty">The property type. </typeparam>

@@ -1,21 +1,77 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Text;
 using WebCore.Annotations;
 
 namespace WebCore
 {
-    /// <summary>Provides additional reflection methods. </summary>
+    /// <summary>Provides additional reflection methods.</summary>
     [DebuggerStepThrough]
     public static class ReflectionExtensions
     {
         #region Assembly
+
+        /// <summary>
+        /// 获取继承至某个类或接口的 Assemblies
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="currentDomain"></param>
+        /// <param name="excludes"></param>
+        /// <returns></returns>
+        public static IEnumerable<Assembly> GetAssembliesIs<T>(this AppDomain currentDomain, params string[] excludes) where T : class
+        {
+            var assemblies = Assemblies.All.Any() ? Assemblies.All : currentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && typeof(T).IsAssignableFrom(t) && !excludes.Any(u => u.Equals(t.Name, StringComparison.OrdinalIgnoreCase)))))
+                yield return assembly;
+        }
+
+        /// <summary>
+        /// 获取继承至某个父类的 Assemblies
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="currentDomain"></param>
+        /// <param name="excludes"></param>
+        /// <returns></returns>
+        public static IEnumerable<Assembly> GetAssembliesIsSubclassOf<T>(this AppDomain currentDomain, params string[] excludes) where T : class
+        {
+            var assemblies = Assemblies.All.Any() ? Assemblies.All : currentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && t.IsSubclassOf(typeof(T)) && !excludes.Any(u => u.Equals(t.Name, StringComparison.OrdinalIgnoreCase)))))
+                yield return assembly;
+        }
+
+        /// <summary>
+        /// 获取继承至某个类或接口的 Assemblies
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assemblies"></param>
+        /// <param name="excludes"></param>
+        /// <returns></returns>
+        public static IEnumerable<Assembly> GetAssembliesIs<T>(this IEnumerable<Assembly> assemblies, params string[] excludes) where T : class
+        {
+            foreach (Assembly assembly in assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && typeof(T).IsAssignableFrom(t) && !excludes.Any(u => u.Equals(t.Name, StringComparison.OrdinalIgnoreCase)))))
+                yield return assembly;
+        }
+
+        /// <summary>
+        /// 获取继承至某个父类的 Assemblies
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assemblies">System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies</param>
+        /// <param name="excludes"></param>
+        /// <returns></returns>
+        public static IEnumerable<Assembly> GetAssembliesIsSubclassOf<T>(this IEnumerable<Assembly> assemblies, params string[] excludes) where T : class
+        {
+            foreach (Assembly assembly in assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && t.IsSubclassOf(typeof(T)) && !excludes.Any(u => u.Equals(t.Name, StringComparison.OrdinalIgnoreCase)))))
+                yield return assembly;
+        }
 
         /// <summary>
         /// Gets all the assemblies referenced specified type with a custom attribute.
@@ -39,22 +95,61 @@ namespace WebCore
             return assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.GetCustomAttribute<T>() != null));
         }
 
-        /// <summary>
-        /// 获取继承至某个类的Assemblies
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="assemblies">System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies</param>
-        /// <param name="excludes"></param>
-        /// <returns></returns>
-        public static IEnumerable<Assembly> GetAssembliesIsSubclassOf<T>(this IEnumerable<Assembly> assemblies, params string[] excludes) where T : class
-        {
-            foreach (Assembly assembly in assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && t.IsSubclassOf(typeof(T)) && !excludes.Any(u => u.Equals(t.Name, StringComparison.OrdinalIgnoreCase)))))
-                yield return assembly;
-        }
-
         #endregion
 
         #region Type
+
+        /// <summary>The factories</summary>
+        private static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> Factories = new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
+
+        /// <summary>Creates the instance.</summary>
+        /// <typeparam name="TBase">The type of the base.</typeparam>
+        /// <param name="subtypeofTBase">The subtypeof t base.</param>
+        /// <param name="ctorArgs">The ctor arguments.</param>
+        /// <returns></returns>
+        public static TBase CreateInstance<TBase>(this Type subtypeofTBase, params object[] args)
+        {
+            EnsureIsAssignable<TBase>(subtypeofTBase);
+
+            return Instantiate<TBase>(subtypeofTBase, args ?? new object[0]);
+        }
+
+        /// <summary>Instantiates an object of a generic type. </summary>
+        /// <param name="type">The type. </param>
+        /// <param name="innerType">The first generic type. </param>
+        /// <param name="args">The constructor parameters. </param>
+        /// <returns>The instantiated object. </returns>
+        public static object CreateGenericObject(this Type type, Type innerType, params object[] args)
+        {
+            var specificType = type.MakeGenericType(new[] { innerType });
+            return Activator.CreateInstance(specificType, args);
+        }
+
+        /// <summary>Instantiates the specified ctor arguments.</summary>
+        /// <param name="ctor">The ctor.</param>
+        /// <param name="ctorArgs">The ctor arguments.</param>
+        /// <returns></returns>
+        public static object Instantiate(this ConstructorInfo ctor, object[] ctorArgs)
+        {
+            Func<object[], object> factory;
+
+            factory = Factories.GetOrAdd(ctor, BuildFactory);
+
+            return factory.Invoke(ctorArgs);
+        }
+
+        /// <summary>Determines whether [is].</summary>
+        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <param name="type">The type.</param>
+        /// <returns>
+        ///     <c>true</c> if [is] [the specified type]; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool Is<TType>(this Type type)
+        {
+            return typeof(TType).IsAssignableFrom(type);
+        }
+
+
         /// <summary>Gets the name of the type (without namespace or assembly version). </summary>
         /// <param name="type">The type. </param>
         /// <returns>The name of the type. </returns>
@@ -83,17 +178,6 @@ namespace WebCore
                 baseType = GetBaseType(baseType);
             }
             return false;
-        }
-
-        /// <summary>Instantiates an object of a generic type. </summary>
-        /// <param name="type">The type. </param>
-        /// <param name="innerType">The first generic type. </param>
-        /// <param name="args">The constructor parameters. </param>
-        /// <returns>The instantiated object. </returns>
-        public static object CreateGenericObject(this Type type, Type innerType, params object[] args)
-        {
-            var specificType = type.MakeGenericType(new[] { innerType });
-            return Activator.CreateInstance(specificType, args);
         }
 
         /// <summary>Merges a given source object into a target object (no deep copy!). </summary>
@@ -184,6 +268,88 @@ namespace WebCore
         }
 
 #endif
+
+
+        /// <summary>Builds the factory.</summary>
+        /// <param name="ctor">The ctor.</param>
+        /// <returns></returns>
+        private static Func<object[], object> BuildFactory(ConstructorInfo ctor)
+        {
+            var parameterInfos = ctor.GetParameters();
+            var parameterExpressions = new Expression[parameterInfos.Length];
+            var argument = Expression.Parameter(typeof(object[]), "parameters");
+            for (var i = 0; i < parameterExpressions.Length; i++)
+                parameterExpressions[i] = Expression.Convert(
+                    Expression.ArrayIndex(argument, Expression.Constant(i, typeof(int))),
+                    parameterInfos[i].ParameterType.IsByRef
+                        ? parameterInfos[i].ParameterType.GetElementType()
+                        : parameterInfos[i].ParameterType);
+
+            return Expression.Lambda<Func<object[], object>>(
+                Expression.New(ctor, parameterExpressions),
+                argument).Compile();
+        }
+
+        /// <summary>Instantiates the specified subtypeof t base.</summary>
+        /// <typeparam name="TBase">The type of the base.</typeparam>
+        /// <param name="subtypeofTBase">The subtypeof t base.</param>
+        /// <param name="ctorArgs">The ctor arguments.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException"></exception>
+        /// <exception cref="System.Exception"></exception>
+        private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
+        {
+            ctorArgs = ctorArgs ?? new object[0];
+            var types = ctorArgs.ConvertAll(a => a == null ? typeof(object) : a.GetType());
+            var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
+            if (constructor != null) return (TBase)Instantiate(constructor, ctorArgs);
+
+            try
+            {
+                return (TBase)Activator.CreateInstance(subtypeofTBase, ctorArgs);
+            }
+            catch (MissingMethodException ex)
+            {
+                string message;
+                if (ctorArgs.Length == 0)
+                {
+                    message =
+                        $"Type {subtypeofTBase.FullName} does not have a public default constructor and could not be instantiated.";
+                }
+                else
+                {
+                    var messageBuilder = new StringBuilder();
+                    messageBuilder.AppendLine(
+                        $"Type {subtypeofTBase.FullName} does not have a public constructor matching arguments of the following types:");
+                    foreach (var type in ctorArgs.Select(o => o.GetType())) messageBuilder.AppendLine(type.FullName);
+
+                    message = messageBuilder.ToString();
+                }
+
+                throw new ArgumentException(message, ex);
+            }
+            catch (Exception ex)
+            {
+                var message = $"Could not instantiate {subtypeofTBase.FullName}.";
+                throw new Exception(message, ex);
+            }
+        }
+
+        /// <summary>Ensures the is assignable.</summary>
+        /// <typeparam name="TBase">The type of the base.</typeparam>
+        /// <param name="subtypeofTBase">The subtypeof t base.</param>
+        /// <exception cref="System.InvalidCastException"></exception>
+        private static void EnsureIsAssignable<TBase>(Type subtypeofTBase)
+        {
+            if (subtypeofTBase.Is<TBase>()) return;
+
+            var message = typeof(TBase).IsInterface
+                ? $"Type {subtypeofTBase.FullName} does not implement the interface {typeof(TBase).FullName}."
+                : $"Type {subtypeofTBase.FullName} does not inherit from {typeof(TBase).FullName}.";
+
+            throw new InvalidCastException(message);
+        }
+
         #endregion
 
         #region PropertyInfo

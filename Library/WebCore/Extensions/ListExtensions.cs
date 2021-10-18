@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -24,6 +25,11 @@ namespace WebCore
         public static bool ContainsKeysAny(this IFormCollection form, params string[] keys)
         {
             return keys.Any(key => form.ContainsKey(key));
+        }
+
+        public static TResult[] ConvertAll<T, TResult>(this T[] items, Converter<T, TResult> transformation)
+        {
+            return Array.ConvertAll(items, transformation);
         }
 
         public static T AddAndReturn<T>(this IList<T> list, T item)
@@ -61,6 +67,39 @@ namespace WebCore
                 action(key, value.ToString(), description);
             }
             return arr.Length;
+        }
+
+
+        /// <summary>Checks whether or not collection is null or empty. Assumes colleciton can be safely enumerated multiple times.</summary>
+        /// <param name="this">The this.</param>
+        /// <returns>
+        ///     <c>true</c> if [is null or empty] [the specified this]; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsNullOrEmpty(this IEnumerable @this)
+        {
+            if (@this != null) return !@this.GetEnumerator().MoveNext();
+
+            return true;
+        }
+
+        /// <summary>Finds the specified predicate.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items">The items.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns></returns>
+        public static T Find<T>(this T[] items, Predicate<T> predicate)
+        {
+            return Array.Find(items, predicate);
+        }
+
+        /// <summary>Finds all.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items">The items.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns></returns>
+        public static T[] FindAll<T>(this T[] items, Predicate<T> predicate)
+        {
+            return Array.FindAll(items, predicate);
         }
 
 

@@ -9,6 +9,27 @@ namespace WebCore
     [DebuggerStepThrough]
     public static class Check : object
     {
+        public static IEnumerable<T> NotNullOrEmpty<T>(IEnumerable<T> value, string parameterName)
+        {
+            if (value == null || value.Any() == false)
+                throw new ArgumentException(AbstractionsStrings.CollectionArgumentIsEmpty(parameterName));
+            return value;
+        }
+
+        public static string NotNullOrEmpty(string value, [InvokerParameterName, NotNull] string parameterName)
+        {
+            if (string.IsNullOrEmpty(value))
+                throw new ArgumentException(AbstractionsStrings.ArgumentIsEmpty(parameterName));
+            return value;
+        }
+
+        public static string NotNullOrWhiteSpace(string value, string parameterName)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException(AbstractionsStrings.ArgumentIsEmpty(parameterName));
+            return value;
+        }
+
         [ContractAnnotation("value:null => halt")]
         public static T NotNull<T>([NoEnumeration] T value, [InvokerParameterName, NotNull] string parameterName)
         {

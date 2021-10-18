@@ -7,6 +7,17 @@ namespace WebCore
     /// <summary>Provides extension methods for enumerations. </summary>
     public static class EnumerableExtensions
     {
+        /// <summary>Casts the specified this.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="this">The this.</param>
+        /// <returns></returns>
+        public static T As<T>(this object @this) where T : class
+        {
+            Check.NotNull(@this, nameof(@this));
+
+            return (T)@this;
+        }
+
         /// <summary>
         /// 自定义Distinct扩展方法 p => p.Id 或 p => new { p.Id, p.Name }
         /// </summary>
@@ -36,6 +47,25 @@ namespace WebCore
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
             return source.GroupBy(keySelector).Select(g => g.First());
+        }
+
+        /// <summary>Whereifies the specified predicate funcs.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="this">The this.</param>
+        /// <param name="predicateFuncs">The predicate funcs.</param>
+        /// <returns></returns>
+        public static IEnumerable<T> Whereif<T>(this IEnumerable<T> @this, IEnumerable<Func<T, bool>> predicateFuncs)
+        {
+            using (var enumerator = @this.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    var currentObject = enumerator.Current;
+
+                    if (predicateFuncs.As<IEnumerable<Func<T, bool>>>().All(x => x.Invoke(currentObject)))
+                        yield return currentObject;
+                }
+            }
         }
 
         /// <summary>Provides ordering by two expressions. Use this method instaed of OrderBy(...).ThenBy(...) as it calls ThenBy only if necessary. </summary>
