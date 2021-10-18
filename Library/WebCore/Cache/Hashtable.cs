@@ -124,7 +124,7 @@ namespace WebCore.Cache
         /// <returns>Checkpoint token</returns>
         public async Task<Guid> SaveSnapshot(bool dispose = true)
         {
-            fht.TakeFullCheckpoint(out Guid token);
+            if (!fht.TakeFullCheckpoint(out Guid token)) CompletePending(true, true);
             await fht.CompleteCheckpointAsync();
             var filename = Path.Combine(path, $"{size}.checkpoint");
             File.WriteAllText(filename, token.ToString(), System.Text.Encoding.UTF8);
