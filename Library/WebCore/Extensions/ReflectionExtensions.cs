@@ -533,6 +533,20 @@ namespace WebCore
         /// <param name="assemblies">System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies</param>
         /// <param name="excludes"></param>
         /// <returns></returns>
+        public static IEnumerable<Type> GetTypesIs<T>(this IEnumerable<Assembly> assemblies, params string[] excludes) where T : class
+        {
+            foreach (Assembly assembly in assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && typeof(T).IsAssignableFrom(t))))
+                foreach (Type t in assembly.GetTypes().Where(t => t.IsPublic && t.IsClass && typeof(T).IsAssignableFrom(t) && !excludes.Any(u => u.Equals(t.Name, StringComparison.OrdinalIgnoreCase))))
+                    yield return t;
+        }
+
+        /// <summary>
+        /// 获取继承至某个类的所有公开类
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assemblies">System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies</param>
+        /// <param name="excludes"></param>
+        /// <returns></returns>
         public static IEnumerable<Type> GetTypesOf<T>(this IEnumerable<Assembly> assemblies, params string[] excludes) where T : class
         {
             foreach (Assembly assembly in assemblies.Where(a => !a.IsDynamic && a.ExportedTypes.Any(t => t.IsClass && t.IsSubclassOf(typeof(T)))))

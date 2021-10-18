@@ -65,7 +65,7 @@ namespace WebFramework.Services
             var excludes = new List<string> { controller };
             if (controllerBaseClasses.Length == 0) controllerBaseClasses = ControllerBaseClasses;
             excludes.AddRange(controllerBaseClasses.Where(c => !string.IsNullOrEmpty(c)));
-            var controllers = Assemblies.All.HasAttribute<ApiControllerAttribute>().GetTypesOf<ControllerBase>(excludes.ToArray()).Where(c => c.GetCustomAttribute<ApiControllerAttribute>() != null);
+            var controllers = Assemblies.All.GetTypesOf<ControllerBase>(excludes.ToArray()).Where(c => c.GetCustomAttribute<ApiControllerAttribute>() != null);
             foreach (Type type in controllers)
             {
                 var c = new SwaggerApiController
