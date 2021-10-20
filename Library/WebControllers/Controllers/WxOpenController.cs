@@ -17,6 +17,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebCore;
 using WebFramework;
+using WebFramework.Weixins.Data;
+using WebFramework.Weixins.MessageHandlers;
 using WebFramework.Weixins.MessageHandlers.WxOpenMessageHandlers;
 using WebFramework.Weixins.MessageTemplate.WxOpen;
 using WebInterface;
@@ -62,15 +64,15 @@ namespace WebControllers.Controllers
         [HttpPost]
         [Produces(Produces.XML)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Post([FromQuery] PostModel postModel)
+        public async Task<IActionResult> Post(PostModel postModel)
         {
             string error = "<root><errcode>{0}</errcode><errmsg>{1}</errmsg></root>";
             if (!CheckSignature.Check(postModel.Signature, postModel.Timestamp, postModel.Nonce, setting.WxOpenToken))
                 return Content(error.Format(400, "参数错误"), Produces.XML);
 
-            postModel.AppId = setting.WxOpenAppId;//根据自己后台的设置保持一致
-            postModel.Token = setting.WxOpenToken;//根据自己后台的设置保持一致
-            postModel.EncodingAESKey = setting.EncodingAESKey;//根据自己后台的设置保持一致
+            postModel.AppId = setting.WxOpenAppId;
+            postModel.Token = setting.WxOpenToken;
+            postModel.EncodingAESKey = setting.EncodingAESKey;
 
             //v4.2.2之后的版本，可以设置每个人上下文消息储存的最大数量，防止内存占用过多，如果该参数小于等于0，则不限制
             var maxRecordCount = 10;
@@ -80,27 +82,18 @@ namespace WebControllers.Controllers
 
             //如果需要添加消息去重功能，只需打开OmitRepeatedMessage功能，SDK会自动处理。
             //收到重复消息通常是因为微信服务器没有及时收到响应，会持续发送2-5条不等的相同内容的RequestMessage
-            //messageHandler.OmitRepeatedMessage = true;
+            messageHandler.OmitRepeatedMessage = true;
 
-            try
-            {
-                //测试时可开启此记录，帮助跟踪数据，使用前请确保App_Data文件夹存在，且有读写权限。
-                if (Config.IsDebug) messageHandler.SaveRequestMessageLog(WebFramework.Weixins.Data.WxOpen.RootPath);//记录 Request 日志（可选）
+            //测试时可开启此记录，帮助跟踪数据，使用前请确保App_Data文件夹存在，且有读写权限。
+            if (setting.IsDebug) messageHandler.SaveRequestMessageLog(WxOpen.RootPath);//记录 Request 日志（可选）
 
-                await messageHandler.ExecuteAsync(new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);//执行微信处理过程（关键）
-                if (messageHandler.ResponseDocument == null) return Content(error.Format(400, "消息去重"), Produces.XML);
+            await messageHandler.ExecuteAsync(new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);//执行微信处理过程（关键）
+            if (messageHandler.ResponseDocument == null) return Content(error.Format(400, "消息去重"), Produces.XML);
 
-                if (Config.IsDebug) messageHandler.SaveResponseMessageLog(WebFramework.Weixins.Data.WxOpen.RootPath);//记录 Response 日志（可选）
+            if (setting.IsDebug) messageHandler.SaveResponseMessageLog(WxOpen.RootPath);//记录 Response 日志（可选）
 
-                var s = messageHandler.ResponseDocument.ToString();
-                return Content(s, Produces.XML);
-            }
-            catch (Exception ex)
-            {
-                var s = $" [Post]WxOpen [异常]：{ex.Message}";
-                WeixinTrace.Log(s);
-                return Content(error.Format(1, ex.Message), Produces.XML);
-            }
+            //return Content(messageHandler.ResponseDocument.ToString(), Produces.XML);
+            return new FixWeixinBugWeixinResult(messageHandler);
         }
 
 

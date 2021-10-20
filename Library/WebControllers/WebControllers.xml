@@ -296,6 +296,48 @@
         <member name="M:WebControllers.Controllers.TimeJob.Execute">
             <summary>执行消息推送</summary>
         </member>
+        <member name="T:WebControllers.Controllers.WxController">
+            <summary>
+            微信公众号
+            </summary>
+        </member>
+        <member name="M:WebControllers.Controllers.WxController.#ctor(Microsoft.Extensions.Options.IOptions{Senparc.Weixin.Entities.SenparcWeixinSetting},EasyCaching.Core.IEasyCachingProviderFactory,WebInterface.ILiteDb,WebInterface.ICrypto,WebFramework.IJwtGenerator)">
+            <summary></summary>
+        </member>
+        <member name="M:WebControllers.Controllers.WxController.Get(Senparc.Weixin.MP.Entities.Request.PostModel,System.String)">
+            <summary>
+            [配置]微信后台验证地址“接口配置信息”的Url填写如 https://YourDomainName/Wx
+            </summary>
+        </member>
+        <member name="M:WebControllers.Controllers.WxController.Post(Senparc.Weixin.MP.Entities.Request.PostModel)">
+            <summary>
+            [配置]用户发送消息后，微信平台自动Post一个请求到这里，并等待响应XML
+            </summary>
+        </member>
+        <member name="M:WebControllers.Controllers.WxController.Openid(System.String,System.String,System.String)">
+            <summary>
+            微信授权获取openid
+            </summary>
+            <param name="code">客户端获取到的参数,会被传递至微信服务器进行验证.</param>
+            <param name="state">通过该随机KEY值缓存openid(选填)</param>
+            <param name="returnUrl">跳转URL(选填)</param>
+        </member>
+        <member name="M:WebControllers.Controllers.WxController.Userinfo(System.String,System.String,System.String,System.String)">
+            <summary>
+            微信授权获取userinfo
+            </summary>
+            <param name="code">客户端获取到的参数,会被传递至微信服务器进行验证.</param>
+            <param name="state">通过该随机KEY值缓存userinfo(选填)</param>
+            <param name="openid">通过openid获取userinfo(选填)</param>
+            <param name="returnUrl">跳转URL(选填)</param>
+        </member>
+        <member name="M:WebControllers.Controllers.WxController.Subscribeinfo(System.String,System.String)">
+            <summary>
+            无微信授权获取userinfo(检测用户是否订阅)
+            </summary>
+            <param name="state">通过该随机KEY值缓存openid</param>
+            <param name="openid">通过openid获取userinfo</param>
+        </member>
         <member name="T:WebControllers.Controllers.WxOpenController">
             <summary>
             微信小程序

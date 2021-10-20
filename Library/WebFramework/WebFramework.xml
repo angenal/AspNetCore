@@ -710,6 +710,28 @@
             Get redis db instance
             </summary>
         </member>
+        <member name="M:WebFramework.Data.RedisExtensions.GetAsync``1(EasyCaching.Core.IRedisCachingProvider,System.String,System.Boolean)">
+            <summary>
+            获取缓存对象
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="redis"></param>
+            <param name="cacheKey"></param>
+            <param name="camelCasePropertyNames">驼峰命名(首字母小写)</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebFramework.Data.RedisExtensions.SetAsync``1(EasyCaching.Core.IRedisCachingProvider,System.String,``0,System.Nullable{System.TimeSpan},System.Boolean)">
+            <summary>
+            存储缓存对象
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="redis"></param>
+            <param name="cacheKey"></param>
+            <param name="cacheValue"></param>
+            <param name="expiration"></param>
+            <param name="camelCasePropertyNames">驼峰命名(首字母小写)</param>
+            <returns></returns>
+        </member>
         <member name="T:WebFramework.Data.SQLServerDb">
             <summary></summary>
         </member>
@@ -3306,6 +3328,21 @@
             </summary>
             <param name="requestMessage"></param>
             <returns></returns>
+        </member>
+        <member name="T:WebFramework.Weixins.MessageHandlers.FixWeixinBugWeixinResult">
+            <summary>这个类型只用于特殊阶段：目前IOS版本微信有换行的bug，\r\n会识别为2行</summary>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.FixWeixinBugWeixinResult.#ctor(Senparc.NeuChar.MessageHandlers.IMessageHandlerDocument)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.FixWeixinBugWeixinResult.#ctor(System.String)">
+            <summary></summary>
+        </member>
+        <member name="P:WebFramework.Weixins.MessageHandlers.FixWeixinBugWeixinResult.Content">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.Weixins.MessageHandlers.FixWeixinBugWeixinResult.ExecuteResultAsync(Microsoft.AspNetCore.Mvc.ActionContext)">
+            <summary></summary>
         </member>
         <member name="T:WebFramework.Weixins.MessageHandlers.WxOpenMessageHandlers.CustomWxOpenMessageContext">
             <summary></summary>

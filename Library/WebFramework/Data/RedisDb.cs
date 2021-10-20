@@ -85,7 +85,7 @@ namespace WebFramework.Data
         /// <summary>
         /// Get redis db instance
         /// </summary>
-        private static IDatabase Redis => Data.RedisManager.GetDatabase();
+        private static IDatabase Redis => RedisManager.GetDatabase();
 
         private const string IncrementKeyTail = "C";
     }
