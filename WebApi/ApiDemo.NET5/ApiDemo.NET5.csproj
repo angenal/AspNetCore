@@ -130,6 +130,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\Cert\ApiDemo.NET5.pfx" Link="ApiDemo.NET5.pfx" />
     <None Include="..\..\Cert\PdfCert.pfx" Link="PdfCert.pfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -148,4 +149,7 @@
     <Folder Include="wwwroot\temp\" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist &quot;$(SolutionDir)Cert\$(PackageId).pfx&quot; (dotnet dev-certs https -ep &quot;$(SolutionDir)Cert\$(PackageId).pfx&quot; -p 123456 -t &amp;&amp; dotnet dev-certs https --clean -i &quot;$(SolutionDir)Cert\$(PackageId).pfx&quot; -p 123456)" />
+  </Target>
 </Project>

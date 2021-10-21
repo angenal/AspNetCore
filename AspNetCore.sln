@@ -14,9 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDotnetCore.db.sqlservr.y
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cert", "Cert", "{A9B91010-CD2C-4945-AB6B-CA0430F4A340}"
 	ProjectSection(SolutionItems) = preProject
+		Cert\ApiDemo.NET5.pfx = Cert\ApiDemo.NET5.pfx
 		Cert\PdfCert.pfx = Cert\PdfCert.pfx
-		Cert\WebRootCA.cer = Cert\WebRootCA.cer
-		Cert\WebRootCA.pfx = Cert\WebRootCA.pfx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{20646B03-B915-48D7-9118-58AFE02FDC0C}"
@@ -81,7 +80,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NATS.Services", "Microservi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebMVC", "WebMVC", "{5E64D8FA-6645-4EE1-845F-A09DA37F2482}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebControllers", "Library\WebControllers\WebControllers.csproj", "{33F6BAA8-651F-4C17-A6E8-0E8BE0E3DC68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebControllers", "Library\WebControllers\WebControllers.csproj", "{33F6BAA8-651F-4C17-A6E8-0E8BE0E3DC68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
