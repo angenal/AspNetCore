@@ -63,6 +63,7 @@
     <PackageReference Include="Minio" Version="3.1.13" />
     <PackageReference Include="Minio.AspNetCore" Version="3.1.21" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
     <PackageReference Include="Senparc.Weixin" Version="6.9.501" />
     <PackageReference Include="Senparc.Weixin.Cache.Redis" Version="2.10.501" />

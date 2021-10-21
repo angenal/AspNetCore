@@ -109,6 +109,7 @@ namespace WebFramework.Services
                 options.WorkerCount = Environment.ProcessorCount * 5; // 并发任务数
             });
 
+            services.AddSingleton<Nito.AsyncEx.AsyncLock>(); // 异步锁
 
             return services;
         }
