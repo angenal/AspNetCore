@@ -182,8 +182,9 @@ dotnet nuget push -s http://nuget.xxx.com/v3/index.json -k {ApiKey} {PackageId}.
 
  * 快速开发解决方案
     - [Bootstrap Blazor 组件库](https://www.blazor.zone)、[`前后端C#`开源代码](https://gitee.com/LongbowEnterprise/BootstrapBlazor)
-    - [NetModular后端Api](https://github.com/iamoldli/NetModular)、[前端UI](https://github.com/iamoldli/NetModular.UI)
-    - [Admin后台](https://github.com/zhontai/Admin.Core) + [演示](https://www.admin.zhontai.net) + [文档](https://www.zhontai.net)
+    - [NetModular 后端Api](https://github.com/iamoldli/NetModular)、[前端UI](https://github.com/iamoldli/NetModular.UI)
+    - [Furion 基于.NET5/6平台 `推荐`](https://dotnetchina.gitee.io/furion/)
+    - [Admin 后台](https://github.com/zhontai/Admin.Core) + [演示](https://www.admin.zhontai.net) + [文档](https://www.zhontai.net)
 
 ----
 
