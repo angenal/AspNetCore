@@ -163,12 +163,18 @@ dotnet nuget push -s http://nuget.xxx.com/v3/index.json -k {ApiKey} {PackageId}.
  * 实时应用
     - [.NET Core SignalR 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/signalr)
 
- * 界面 UI 桌面软件(WinFrom、WPF、DotnetCore^3)
+
+ * `界面`UI`桌面软件`(WinFrom、WPF、DotnetCore^3)
     - [开源WPF控件库`MaterialDesignInXAML`](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)、[`PanuonUI`](https://github.com/Panuon/PanuonUI)、[`HandyControl`](https://github.com/HandyOrg/HandyControl)、[Beautiful WPF Control UI](https://github.com/aduskin/AduSkin)
     - [.NET Core Blazor 官方文档](https://docs.microsoft.com/zh-cn/aspnet/core/blazor)
     - [Ant Design 的 Blazor 组件库 `推荐`服务于企业级后台产品](https://ant-design-blazor.gitee.io/zh-CN/docs/i18n)
     - [Bootstrap 的 Blazor 组件库 `推荐`](https://gitee.com/LongbowEnterprise/BootstrapBlazor)、[官方文档](https://www.blazor.zone/)
     - [DevExpress 控件库,工具,框架 `推荐`](https://www.baidu.com/s?wd=devexpress%20%E7%A0%B4%E8%A7%A3)、[示例代码](https://github.com/DevExpress-Examples)
+    - [`安装`制作 WiX Toolset & Visual Studio Extension](https://wixtoolset.org/releases/)
+    - [`部署`发布 ClickOnce 应用程序](https://docs.microsoft.com/zh-cn/visualstudio/deployment/publishing-clickonce-applications?view=vs-2019)
+    - [`工具` Advanced Installer v18.8](https://www.board4all.biz/threads/advanced-installer-architect-v18-8.860572/)
+    - [`工具` setup factory v9.5.3 汉化版](http://www.xz7.com/downinfo/493875.html)
+
 
 * 物联网应用
     - [UHF RFID「超高频射频识别&标签读取器」二次开发](https://gitee.com/angenal/RFID-Toolkit)
