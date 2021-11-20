@@ -136,6 +136,7 @@ dotnet nuget push -s http://nuget.xxx.com/v3/index.json -k {ApiKey} {PackageId}.
     - [缓存 EasyCaching](https://github.com/dotnetcore/EasyCaching)
     - [事件总线 CAP](https://github.com/dotnetcore/CAP)
     - [二维码 QRCoder](https://github.com/codebude/QRCoder)
+    - [开源OCR .Net wrapper](https://github.com/charlesw/tesseract) for [tesseract-ocr](https://github.com/tesseract-ocr/tesseract)
     - [开源Office组件`NPOI`](https://techbrij.com/export-excel-xls-xlsx-asp-net-npoi-epplus)
     - [破解Office组件`Spire`](https://www.board4all.biz/threads/e-iceblue-spire-office-platinum-v5-3-7-net4-0-netcore-netstandard-wpf-license-key.849643/)[`推荐`](https://www.board4all.biz/tags/e-iceblue-spireoffice/)、[破解Office组件`Aspose`](https://www.board4all.biz/threads/aspose-cells-words-slides-pdf-for-net.849528/)[`推荐`](https://www.board4all.biz/tags/aspose/)
     - [破解Office组件`DevExpress(推荐)`](https://github.com/angenalZZZ/AspNet/tree/master/src/Office),[下载`DevExpress`for`.doc,docx,txt,rtf,mht,odt,xml,epub,html`,`excel`,`pdf`](https://github.com/angenalZZZ/doc-zip/commit/7b8b2276f5cc07c587b433ef9b26e09f0ef04bfe)
