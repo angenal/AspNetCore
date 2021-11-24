@@ -7,6 +7,7 @@ ASP.NET Core 是一个跨平台的高性能开源框架，用于生成基于云�
 #! 安装工具
    dotnet tool install -g csharprepl # csharp console playground
    dotnet tool install -g dotnet-ef  # dotnet ef database-migrations tool
+   dotnet tool install -g dotnet-trace # 监控.NET程序的GC; 获取所有进程: dotnet trace ps 诊断指定程序: dotnet gcmon -p 1024
 
 #! 安装模板，创建项目
    dotnet new console                # Common/Console
