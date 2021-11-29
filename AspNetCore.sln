@@ -82,6 +82,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebMVC", "WebMVC", "{5E64D8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebControllers", "Library\WebControllers\WebControllers.csproj", "{33F6BAA8-651F-4C17-A6E8-0E8BE0E3DC68}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiSwagger", "Library\WebApiSwagger\WebApiSwagger.csproj", "{C775AE9C-D6E1-48FA-8032-108EC7BFCC41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,12 @@ Global
 		{33F6BAA8-651F-4C17-A6E8-0E8BE0E3DC68}.Release|Any CPU.Build.0 = Release|Any CPU
 		{33F6BAA8-651F-4C17-A6E8-0E8BE0E3DC68}.Validate|Any CPU.ActiveCfg = Debug|Any CPU
 		{33F6BAA8-651F-4C17-A6E8-0E8BE0E3DC68}.Validate|Any CPU.Build.0 = Debug|Any CPU
+		{C775AE9C-D6E1-48FA-8032-108EC7BFCC41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C775AE9C-D6E1-48FA-8032-108EC7BFCC41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C775AE9C-D6E1-48FA-8032-108EC7BFCC41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C775AE9C-D6E1-48FA-8032-108EC7BFCC41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C775AE9C-D6E1-48FA-8032-108EC7BFCC41}.Validate|Any CPU.ActiveCfg = Debug|Any CPU
+		{C775AE9C-D6E1-48FA-8032-108EC7BFCC41}.Validate|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -199,6 +207,7 @@ Global
 		{38F2C68E-9D8A-4EC2-8BB9-B746B254C5E8} = {40634868-C78D-4B2B-B08C-4E987CFF2A97}
 		{6618171F-A2F7-4013-B893-A632AE96605A} = {40A3A782-CB2E-45EF-AB7A-5ACCC1D54A9D}
 		{33F6BAA8-651F-4C17-A6E8-0E8BE0E3DC68} = {20646B03-B915-48D7-9118-58AFE02FDC0C}
+		{C775AE9C-D6E1-48FA-8032-108EC7BFCC41} = {20646B03-B915-48D7-9118-58AFE02FDC0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45294AD6-9FCA-4349-830D-F7C62E6E68DD}
