@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
+using WebApiSwagger.Internals;
 
 namespace WebApiSwagger.Filters.Parameters
 {

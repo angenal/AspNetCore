@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -8,6 +9,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using WebApiSwagger.Core.Authorization;
 using WebApiSwagger.Internals;
 
 namespace WebApiSwagger
@@ -15,7 +17,7 @@ namespace WebApiSwagger
     /// <summary>
     /// Swagger服务扩展
     /// </summary>
-    public static partial class Extensions
+    public static partial class SwaggerDocService
     {
         /// <summary>
         /// 注册Swagger扩展
@@ -58,34 +60,19 @@ namespace WebApiSwagger
                     c.UseInlineDefinitionsForEnums();
 
                     //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>(){{"oauth2", new string[] { }}});
-
-                    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
+                    string scheme = "oauth2", queryName = "apiKey";
+                    c.AddSecurityDefinition(scheme, new OpenApiSecurityScheme()
                     {
                         Name = "X-API-KEY",
-                        Scheme = "oauth2",
                         Description = "API KEY",
                         In = ParameterLocation.Cookie,
                         Type = SecuritySchemeType.ApiKey
                     });
-                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Id = "oauth2", Type = ReferenceType.SecurityScheme
-                                },
-                                Name = "apiKey", Scheme = "oauth2", In = ParameterLocation.Cookie
-                            },
-                            Array.Empty<string>()
-                        }
-                    });
-
-                    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                    scheme = "Bearer"; queryName = "token";
+                    c.AddSecurityDefinition(scheme, new OpenApiSecurityScheme()
                     {
                         Name = "Authorization",
-                        Scheme = "Bearer",
+                        Scheme = scheme,
                         BearerFormat = "JWT",
                         Description = "JWT Authorization header using the Bearer scheme.",
                         In = ParameterLocation.Header,
@@ -98,9 +85,9 @@ namespace WebApiSwagger
                             {
                                 Reference = new OpenApiReference
                                 {
-                                    Id = "Bearer", Type = ReferenceType.SecurityScheme
+                                    Id = scheme, Type = ReferenceType.SecurityScheme
                                 },
-                                Name = "token", Scheme = "Bearer", In = ParameterLocation.Header
+                                Name = queryName, Scheme = scheme, In = ParameterLocation.Header
                             },
                             Array.Empty<string>()
                         }
@@ -186,5 +173,22 @@ namespace WebApiSwagger
         /// </summary>
         /// <param name="services">服务集合</param>
         public static IServiceCollection AddSwaggerCaching(this IServiceCollection services) => services.Replace(ServiceDescriptor.Transient<ISwaggerProvider, CachingSwaggerProvider>());
+
+
+        /// <summary>
+        /// 启用Swagger扩展
+        /// </summary>
+        /// <param name="app">应用构建器</param>
+        /// <param name="setupAction">配置操作</param>
+        public static IApplicationBuilder UseSwaggerDoc(this IApplicationBuilder app, Action<SwaggerDocOptions> setupAction = null)
+        {
+            BuildContext.Instance.ServiceProvider = app.ApplicationServices;
+            setupAction?.Invoke(BuildContext.Instance.ExOptions);
+            // 启用 Swagger 授权中间件
+            if (BuildContext.Instance.ExOptions.EnableAuthorization()) app.UseMiddleware<SwaggerAuthorizeMiddleware>();
+            // 启用 Swagger UI
+            app.UseSwagger(o => BuildContext.Instance.ExOptions.InitSwaggerOptions(o)).UseSwaggerUI(o => BuildContext.Instance.ExOptions.InitSwaggerUiOptions(o));
+            return app;
+        }
     }
 }

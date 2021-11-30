@@ -1,8 +1,7 @@
 using System;
 using System.Text;
-using Enum = WebApiSwagger.Internals.Enum;
 
-namespace WebApiSwagger
+namespace WebApiSwagger.Internals
 {
     /// <summary>
     /// 枚举处理基类
