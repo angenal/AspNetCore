@@ -21,11 +21,9 @@ namespace WebApiSwagger
         /// 注册Swagger扩展
         /// </summary>
         /// <param name="services">服务集合</param>
-        /// <param name="setupAction">操作配置</param>
-        public static IServiceCollection AddSwaggerDoc(this IServiceCollection services)
+        /// <param name="enableApiVersion">启用接口版本</param>
+        public static IServiceCollection AddSwaggerDoc(this IServiceCollection services, bool enableApiVersion = true)
         {
-            // 接口版本
-            bool enableApiVersion = true;
             if (enableApiVersion)
             {
                 services.AddApiVersioning(o =>
