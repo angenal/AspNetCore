@@ -78,9 +78,9 @@
     <PackageReference Include="Serilog.Sinks.RavenDB" Version="3.0.0" />
     <PackageReference Include="SkiaSharp" Version="1.68.3" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.2.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.2.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.1.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.5" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="5.2.10" />
     <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="5.2.10" />

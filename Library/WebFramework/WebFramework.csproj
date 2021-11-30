@@ -81,9 +81,9 @@
     <PackageReference Include="Serilog.Sinks.RavenDB" Version="3.0.0" />
     <PackageReference Include="SqlSugarCore" Version="5.0.4" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.2.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.2.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.1.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.5" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="tusdotnet" Version="2.4.0" />
   </ItemGroup>
