@@ -1,0 +1,336 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebSwaggerDemo.NET5</name>
+    </assembly>
+    <members>
+        <member name="T:WebSwaggerDemo.NET5.Controllers.DemoController">
+            <summary>
+            案例 控制器
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.DemoController.Upload(WebSwaggerDemo.NET5.Models.UploadSample)">
+            <summary>
+            上传文件
+            </summary>
+            <param name="sample">上传信息</param>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.DemoController.Query(WebSwaggerDemo.NET5.Models.QuerySample)">
+            <summary>
+            查询
+            </summary>
+            <param name="sample">查询</param>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.DemoController.GetDefaultValue(System.String,System.Int32,System.Int32,WebSwaggerDemo.NET5.Models.EnumSample)">
+            <summary>
+            获取默认值
+            </summary>
+            <param name="q">字符串</param>
+            <param name="page">页索引</param>
+            <param name="pageSize">每页记录数</param>
+            <param name="enumSample">枚举例子</param>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.DemoController.Post(WebSwaggerDemo.NET5.Models.QuerySample)">
+            <summary>
+            提交
+            </summary>
+            <param name="sample">查询例子</param>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Controllers.lowercaseController">
+            <summary>
+            小写控制器
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Controllers.SwaggerResourcesController">
+            <summary>
+            Swagger资源控制器
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerResourcesController.GetList">
+            <summary>
+            获取接口列表
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerResourcesController.GetUIConfig">
+            <summary>
+            获取UI配置
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Controllers.SwaggerTestController">
+            <summary>
+            Swagger测试信息
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.Get">
+            <summary>
+            获取所有信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.Get(System.Int32)">
+            <summary>
+            根据ID获取信息
+            </summary>
+            <param name="id">系统编号</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.Post(System.String)">
+            <summary>
+            Post一个数据信息
+            </summary>
+            <param name="value">值</param>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.Put(System.Int32,System.String)">
+            <summary>
+            根据ID put数据
+            </summary>
+            <param name="id">系统编号</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.Delete(System.Int32)">
+            <summary>
+            根据ID删除数据
+            </summary>
+            <param name="id">系统编号</param>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.Test(WebSwaggerDemo.NET5.Controllers.SampleNameValue)">
+            <summary>
+            复杂数据操作
+            </summary>
+            <param name="info">样例信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.Test2(WebSwaggerDemo.NET5.Controllers.SampleNameValue)">
+            <summary>
+            复杂数据操作2
+            </summary>
+            <param name="info">样例信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.TestUpload">
+            <summary>
+            上传文件
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.TestAuthorizeInfo">
+            <summary>
+            授权信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.TestRequestHeader">
+            <summary>
+            请求头
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.TestResponseHeader">
+            <summary>
+            响应头
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.SwaggerTestController.TestPostJsonProperty(WebSwaggerDemo.NET5.Models.PostJsonPropertyRequest)">
+            <summary>
+            测试 Post Json属性
+            </summary>
+            <param name="request">请求</param>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Controllers.SampleNameValue">
+            <summary>
+            名称-值 样例
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Controllers.SampleNameValue.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Controllers.SampleNameValue.Value">
+            <summary>
+            值
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Models.GroupSample">
+            <summary>
+            分组例子
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Models.GroupSample.Login">
+            <summary>
+            登录
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Models.GroupSample.Test">
+            <summary>
+            测试
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Models.GroupSample.Demo">
+            <summary>
+            案例
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Models.PostJsonPropertyRequest">
+            <summary>
+            Post Json属性请求
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.PostJsonPropertyRequest.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.PostJsonPropertyRequest.OtherName">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.PostJsonPropertyRequest.SerializeName">
+            <summary>
+            Json属性名
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.PostJsonPropertyRequest.Child">
+            <summary>
+            子属性
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Models.PostJsonPropertyChildRequest">
+            <summary>
+            Post Json子属性请求
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.PostJsonPropertyChildRequest.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.PostJsonPropertyChildRequest.OtherName">
+            <summary>
+            昵称
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.PostJsonPropertyChildRequest.SerializeName">
+            <summary>
+            Json属性名
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Models.QuerySample">
+            <summary>
+            查询例子
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.QuerySample.Id">
+            <summary>
+            编号
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.QuerySample.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.QuerySample.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.QuerySample.Gender">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.QuerySample.CreateTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.QuerySample.EnumSample">
+            <summary>
+            枚举例子
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Models.EnumSample">
+            <summary>
+            枚举例子
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Models.EnumSample.One">
+            <summary>
+            老大
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Models.EnumSample.Two">
+            <summary>
+            老二
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Models.EnumSample.Three">
+            <summary>
+            老三
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Models.Result">
+            <summary>
+            结果
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.Result.Code">
+            <summary>
+            编码
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.Result.Message">
+            <summary>
+            消息
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.Result.Data">
+            <summary>
+            返回消息
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Models.Result.Success(System.Object)">
+            <summary>
+            请求成功
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Models.Result.Fail(System.Int32,System.String)">
+            <summary>
+            请求失败
+            </summary>
+            <param name="code"></param>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Models.UploadSample">
+            <summary>
+            上传文件
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.UploadSample.File">
+            <summary>
+            文件
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.UploadSample.TwoFile">
+            <summary>
+            第二个文件
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.UploadSample.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Models.UploadSample.Size">
+            <summary>
+            尺寸大小
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -26,7 +26,7 @@ namespace WebSwaggerDemo.NET5
             //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebSwaggerDemo.NET5", Version = "v1" });
             //});
             // 注册Swagger扩展
-            services.AddSwaggerDoc(true);
+            services.AddSwaggerDoc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,12 +2,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using WebSwagger.Core.Authorization;
@@ -25,28 +23,14 @@ namespace WebSwagger
         /// </summary>
         /// <param name="services">服务集合</param>
         /// <param name="enableApiVersion">启用接口版本</param>
-        public static IServiceCollection AddSwaggerDoc(this IServiceCollection services, bool enableApiVersion = true)
+        public static IServiceCollection AddSwaggerDoc(this IServiceCollection services)
         {
-            if (enableApiVersion)
-            {
-                services.AddApiVersioning(o =>
-                {
-                    o.AssumeDefaultVersionWhenUnspecified = true;
-                    o.ReportApiVersions = false;
-                });
-                services.AddVersionedApiExplorer(o =>
-                {
-                    o.GroupNameFormat = "'v'VVVV";
-                    o.SubstituteApiVersionInUrl = true;
-                    o.AssumeDefaultVersionWhenUnspecified = true;
-                });
-            }
             // 启用 Swagger
             services.AddSwaggerDoc(o =>
             {
                 o.ProjectName = "接口文档";
                 o.RoutePrefix = "swagger";
-                o.EnableApiVersion = enableApiVersion;
+                o.EnableApiVersion = true;
                 o.EnableCustomIndex = true;
                 o.AddSwaggerGenAction = c =>
                 {
@@ -61,11 +45,11 @@ namespace WebSwagger
                     c.UseInlineDefinitionsForEnums();
 
                     //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>(){{"oauth2", new string[] { }}});
-                    string scheme = "oauth2", queryName = "apiKey";
+                    string scheme = "ApiKey", queryName = "apiKey";
                     c.AddSecurityDefinition(scheme, new OpenApiSecurityScheme()
                     {
                         Name = "X-API-KEY",
-                        Description = "API KEY",
+                        Description = "API 密钥",
                         In = ParameterLocation.Cookie,
                         Type = SecuritySchemeType.ApiKey
                     });
@@ -95,15 +79,15 @@ namespace WebSwagger
                     });
 
                     // 添加通用参数
-                    c.AddCommonParameter(new List<OpenApiParameter>()
-                    {
-                        new OpenApiParameter()
-                        {
-                            Name = "X-API-VERSION",
-                            In = ParameterLocation.Header,
-                            Schema = new OpenApiSchema() { Type = "string", Default = new OpenApiString("v1") }
-                        }
-                    });
+                    //c.AddCommonParameter(new List<OpenApiParameter>()
+                    //{
+                    //    new OpenApiParameter()
+                    //    {
+                    //        Name = "X-API-VERSION",
+                    //        In = ParameterLocation.Header,
+                    //        Schema = new OpenApiSchema() { Type = "string", Default = new OpenApiString("v1") }
+                    //    }
+                    //});
 
                     // 启用请求头过滤器。显示Swagger自定义请求头
                     c.EnableRequestHeader();
@@ -138,6 +122,18 @@ namespace WebSwagger
                     //config.ShowAuthorizeInfo();
                 };
             });
+            // 启用 Version
+            services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.ReportApiVersions = false;
+            });
+            services.AddVersionedApiExplorer(o =>
+            {
+                o.GroupNameFormat = "'v'VVVV";
+                o.SubstituteApiVersionInUrl = true;
+                o.AssumeDefaultVersionWhenUnspecified = true;
+            });
             // 启用 JSON.NET
             return services.AddSwaggerGenNewtonsoftSupport();
         }
@@ -147,7 +143,7 @@ namespace WebSwagger
         /// </summary>
         /// <param name="services">服务集合</param>
         /// <param name="setupAction">操作配置</param>
-        public static IServiceCollection AddSwaggerDoc(this IServiceCollection services, Action<SwaggerDocOptions> setupAction = null)
+        public static IServiceCollection AddSwaggerDoc(this IServiceCollection services, Action<SwaggerDocOptions> setupAction)
         {
             setupAction?.Invoke(BuildContext.Instance.ExOptions);
             if (BuildContext.Instance.ExOptions.EnableCached)
@@ -199,10 +195,10 @@ namespace WebSwagger
                     c.UseDefaultSwaggerUI();
 
                     // 使用自定义首页
-                    //c.UseCustomSwaggerIndex();
+                    c.UseCustomSwaggerIndex();
 
                     // 使用翻译
-                    //c.UseTranslate();
+                    c.UseTranslate();
 
                     // 启用Token存储
                     c.UseTokenStorage("oauth2");

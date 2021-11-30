@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System;
+using System.IO;
 using System.Linq;
 using WebSwagger.Internals;
 
@@ -36,8 +38,15 @@ namespace WebSwagger
         /// <param name="options">SwaggerUI选项</param>
         public static void UseCustomSwaggerIndex(this SwaggerUIOptions options)
         {
-            options.IndexStream = () => SwaggerDocService.Assembly.GetManifestResourceStream($"WebSwagger.Resources.index.html");
+            if (customSwaggerIndexPath != null) return;
+            customSwaggerIndexPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "swagger", "index.html");
+            options.IndexStream = () =>
+            {
+                if (File.Exists(customSwaggerIndexPath)) return File.OpenRead(customSwaggerIndexPath);
+                return SwaggerDocService.Assembly.GetManifestResourceStream($"WebSwagger.Resources.index.html");
+            };
         }
+        private static string customSwaggerIndexPath;
 
         /// <summary>
         /// 使用令牌存储。解决刷新页面导致令牌丢失问题，前提必须使用 <see cref="UseCustomSwaggerIndex"/> 方法

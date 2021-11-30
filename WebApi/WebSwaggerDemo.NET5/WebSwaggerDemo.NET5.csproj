@@ -4,12 +4,20 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Swagger\index.html" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>WebSwaggerDemo.NET5.xml</DocumentationFile>
+    <NoWarn>1701;1702;CS1591</NoWarn>
+  </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Swagger\index.html" />
+    <Compile Remove="V1\**" />
+    <Compile Remove="V2\**" />
+    <Content Remove="V1\**" />
+    <Content Remove="V2\**" />
+    <EmbeddedResource Remove="V1\**" />
+    <EmbeddedResource Remove="V2\**" />
+    <None Remove="V1\**" />
+    <None Remove="V2\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +28,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Library\WebSwagger\WebSwagger.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="swagger\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="WebSwaggerDemo.NET5.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
