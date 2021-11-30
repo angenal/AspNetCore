@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using System.Reflection;
 
 // ReSharper disable once CheckNamespace
 namespace WebApiSwagger
@@ -16,8 +15,7 @@ namespace WebApiSwagger
         /// <param name="page">页面名称</param>
         public static void WriteSwaggerPage(this HttpResponse response, string page)
         {
-            var assembly = typeof(SwaggerDocOptions).GetTypeInfo().Assembly;
-            var stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.Resources.{page}.html");
+            var stream = SwaggerDocService.Assembly.GetManifestResourceStream($"WebApiSwagger.Resources.{page}.html");
             if (stream == null) return;
             byte[] buffer = new byte[stream.Length];
             stream.Read(buffer, 0, buffer.Length);

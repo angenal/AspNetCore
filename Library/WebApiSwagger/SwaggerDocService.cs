@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using WebApiSwagger.Core.Authorization;
 using WebApiSwagger.Internals;
 
@@ -174,6 +175,40 @@ namespace WebApiSwagger
         /// <param name="services">服务集合</param>
         public static IServiceCollection AddSwaggerCaching(this IServiceCollection services) => services.Replace(ServiceDescriptor.Transient<ISwaggerProvider, CachingSwaggerProvider>());
 
+        /// <summary>
+        /// 启用Swagger扩展
+        /// </summary>
+        /// <param name="app">应用构建器</param>
+        /// <param name="setupAction">配置操作</param>
+        public static IApplicationBuilder UseSwaggerDoc(this IApplicationBuilder app)
+        {
+            return app.UseSwaggerDoc(o =>
+            {
+                o.UseSwaggerAction = c =>
+                {
+                    c.SerializeAsV2 = true;
+                };
+                o.UseSwaggerUIAction = c =>
+                {
+                    //config.SwaggerEndpoint("/swagger/v1/swagger.json", "接口文档 v1");
+
+                    // 使用内部资源
+                    c.UseInternalResources();
+
+                    // 使用默认SwaggerUI
+                    c.UseDefaultSwaggerUI();
+
+                    // 使用自定义首页
+                    //c.UseCustomSwaggerIndex();
+
+                    // 使用翻译
+                    //c.UseTranslate();
+
+                    // 启用Token存储
+                    c.UseTokenStorage("oauth2");
+                };
+            });
+        }
 
         /// <summary>
         /// 启用Swagger扩展
@@ -190,5 +225,7 @@ namespace WebApiSwagger
             app.UseSwagger(o => BuildContext.Instance.ExOptions.InitSwaggerOptions(o)).UseSwaggerUI(o => BuildContext.Instance.ExOptions.InitSwaggerUiOptions(o));
             return app;
         }
+
+        public static Assembly Assembly => typeof(SwaggerDocService).GetTypeInfo().Assembly;
     }
 }

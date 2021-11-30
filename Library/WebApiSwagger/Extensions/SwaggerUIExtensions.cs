@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Linq;
-using System.Reflection;
 using WebApiSwagger.Internals;
 
 // ReSharper disable once CheckNamespace
@@ -37,9 +36,7 @@ namespace WebApiSwagger
         /// <param name="options">SwaggerUI选项</param>
         public static void UseCustomSwaggerIndex(this SwaggerUIOptions options)
         {
-            var currentAssembly = typeof(SwaggerDocOptions).GetTypeInfo().Assembly;
-            options.IndexStream = () =>
-                currentAssembly.GetManifestResourceStream($"WebApiSwagger.Resources.index.html");
+            options.IndexStream = () => SwaggerDocService.Assembly.GetManifestResourceStream($"WebApiSwagger.Resources.index.html");
         }
 
         /// <summary>
