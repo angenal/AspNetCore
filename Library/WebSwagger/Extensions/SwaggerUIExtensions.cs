@@ -40,6 +40,7 @@ namespace WebSwagger
         {
             if (customSwaggerIndexPath != null) return;
             customSwaggerIndexPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "swagger", "index.html");
+
             options.IndexStream = () =>
             {
                 if (File.Exists(customSwaggerIndexPath)) return File.OpenRead(customSwaggerIndexPath);

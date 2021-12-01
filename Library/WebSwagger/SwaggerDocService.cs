@@ -53,6 +53,20 @@ namespace WebSwagger
                         In = ParameterLocation.Cookie,
                         Type = SecuritySchemeType.ApiKey
                     });
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = scheme, Type = ReferenceType.SecurityScheme
+                                },
+                                Name = queryName, In = ParameterLocation.Query
+                            },
+                            Array.Empty<string>()
+                        }
+                    });
                     scheme = "Bearer"; queryName = "token";
                     c.AddSecurityDefinition(scheme, new OpenApiSecurityScheme()
                     {
