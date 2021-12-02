@@ -19,6 +19,7 @@ var resource_globalization = {
     "ResponseHeaders": "响应头",
     "Schemas": "Schemas",
     "Authorize": "授权",
+    "Logout": "退出",
     "AvailableAuth": "设置",
     "MediaType": "媒体类型",
     "Download": "下载",

@@ -84,12 +84,7 @@
 
     <div id="swagger-ui"></div>
 
-    <script>
-        if (window.navigator.userAgent.indexOf("Edge") > -1) {
-            //console.log("Removing native Edge fetch in favor of swagger-ui's polyfill");
-            window.fetch = undefined;
-        }
-    </script>
+    <script>if (window.navigator.userAgent.indexOf("Edge") > -1) window.fetch = undefined;</script>
     <script src="./swagger-ui-bundle.js"></script>
     <script src="./swagger-ui-standalone-preset.js"></script>
     <script>
@@ -100,56 +95,107 @@
             configObject.dom_id = "#swagger-ui";
             configObject.presets = [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset];
             configObject.layout = "StandaloneLayout";
-            configObject.requestInterceptor = (request) => {
-                var csrfTokenCookie = getCookieValue('X-CSRF-TOKEN');
-                if (csrfTokenCookie !== undefined && csrfTokenCookie !== null) {
-                    request.headers['X-CSRF-TOKEN'] = csrfTokenCookie;
-                }
-                console.log(request.headers);
-                return request;
-            };
-            // Add Plugins
-            // 如果未指定oauth2RedirectUrl，则使用内置默认值
+            if (!configObject.hasOwnProperty("validatorUrl")) configObject.validatorUrl = null;
+            configObject.urls.forEach(function (item) {
+                if (item.url.startsWith("http") || item.url.startsWith("/")) return;
+                item.url = window.location.href.replace("index.html", item.url).split('#')[0];
+            });
             if (!configObject.hasOwnProperty("oauth2RedirectUrl")) {
                 //configObject.oauth2RedirectUrl = window.location + "oauth2-redirect.html"; // use the built-in default
                 configObject.oauth2RedirectUrl = window.location.href.replace("index.html", "oauth2-redirect.html");
             }
-            // Build a system
-            const ui = SwaggerUIBundle(configObject);
+            // Init Token or Cookie
+            initTokenCookiesStorage(configObject);
+            // End Swagger UI call region
+            window.ui = SwaggerUIBundle(configObject);
             // Apply OAuth config
-            ui.initOAuth(oauthConfigObject);
-            //console.log(ui);
+            window.ui.initOAuth(oauthConfigObject);
+            //console.log('ui', ui);
             custom_translate(configObject);
-        };
-
-        var getCookieValue = function (key) {
-            var equalities = document.cookie.split('; ');
-            for (var i = 0; i < equalities.length; i++) {
-                if (!equalities[i]) {
-                    continue;
-                }
-                var splitted = equalities[i].split('=');
-                if (splitted.length !== 2) {
-                    continue;
-                }
-                if (decodeURIComponent(splitted[0]) === key) {
-                    return decodeURIComponent(splitted[1] || '');
-                }
-            }
-            return null;
         };
 
         function custom_translate(configObject) {
             window.swagger_config = configObject;
             //document.getElementsByTagName('span')[0].innerText = document.getElementsByTagName('span')[0].innerText.replace('swagger', '接口文档');
-            //document.getElementsByTagName('span')[1].innerText = document.getElementsByTagName('span')[1].innerText.replace('Select a definition', '版本选择');
+            //document.getElementsByTagName('span')[1].innerText = document.getElementsByTagName('span')[1].innerText.replace('Select a definition', resource_globalization.SelectDefinition);
             if (configObject.customAuth) {
                 var logOutEle = document.createElement('button');
                 logOutEle.className = "btn ";
-                logOutEle.innerText = "退出";
+                logOutEle.innerText = resource_globalization.Logout; // 退出button
                 logOutEle.onclick = function () { location.href = configObject.logoutUrl; };
                 document.getElementsByClassName('topbar-wrapper')[0].appendChild(logOutEle);
             }
+        }
+
+        function initTokenCookiesStorage(configObject) {
+            // Init Cookie
+            if (!configObject.token_storage) {
+                configObject.requestInterceptor = (request) => {
+                    var token = getCookieValue('CSRF-TOKEN');
+                    if (token) request.headers.Authorization = "Bearer " + token;
+                    var csrfTokenCookie = getCookieValue('X-CSRF-TOKEN');
+                    if (csrfTokenCookie !== undefined && csrfTokenCookie !== null) request.headers['X-CSRF-TOKEN'] = csrfTokenCookie;
+                    return request;
+                };
+                return;
+            }
+            // Init Token
+            configObject.onComplete = () => {
+                var result = getTokenStorage(configObject);
+                if (result === undefined || result === null || result === "") return;
+                ui.preauthorizeApiKey(configObject.token_storage.securityDefinition, result);
+            };
+            configObject.requestInterceptor = (request) => {
+                request.headers.Authorization = getTokenStorage(configObject);
+                return request;
+            };
+            addAuthorizeListener(configObject);
+        }
+
+        function addAuthorizeListener(configObject) {
+            var authWrapper = document.querySelector(".scheme-container .auth-wrapper");
+            if (authWrapper === undefined || authWrapper === null) {
+                return setTimeout(function () { addAuthorizeListener(configObject); }, 1000);
+            }
+            console.log("初始化 Authorize 按钮监听");
+            authWrapper.addEventListener("click", function (e) {
+                if (e.type === "click" && e.srcElement.tagName === "BUTTON") {
+                    var txt = e.srcElement.innerText;
+                    if (txt === "Authorize" || txt === resource_globalization.Authorize) {
+                        var el = document.querySelector(".auth-container .wrapper input");
+                        if (el === undefined || el === null) return;
+                        setTokenStorage(configObject, el.value);
+                    } else if (txt === "Logout" || txt === resource_globalization.Logout) {
+                        removeTokenStorage(configObject);
+                    }
+                }
+            }, false);
+        }
+
+        function getCookieValue(key) {
+            var equalities = document.cookie.split('; ');
+            for (var i = 0; i < equalities.length; i++) {
+                if (!equalities[i]) continue;
+                var splitted = equalities[i].split('=');
+                if (splitted.length !== 2) continue;
+                if (decodeURIComponent(splitted[0]) === key) return decodeURIComponent(splitted[1] || '');
+            }
+            return null;
+        }
+
+        function getTokenStorage(configObject) {
+            var key = configObject.token_storage.securityDefinition;
+            return configObject.token_storage.cacheType.toLowerCase().indexOf("local") == -1 ? sessionStorage.getItem(key) : localStorage.getItem(key);
+        }
+
+        function setTokenStorage(configObject, value) {
+            var key = configObject.token_storage.securityDefinition;
+            return configObject.token_storage.cacheType.toLowerCase().indexOf("local") == -1 ? sessionStorage.setItem(key, value) : localStorage.setItem(key, value);
+        }
+
+        function removeTokenStorage(configObject) {
+            var key = configObject.token_storage.securityDefinition;
+            localStorage.removeItem(key); sessionStorage.removeItem(key);
         }
     </script>
 </body>
