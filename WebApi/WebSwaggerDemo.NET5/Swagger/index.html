@@ -158,46 +158,53 @@
             var scheme1 = "ApiKey", queryName1 = "apiKey";
             var scheme2 = "Bearer", queryName2 = "token";
             authWrapper.addEventListener("click", function (e) {
-                if (e.type === "click" && e.srcElement.tagName === "BUTTON") {
-                    var btn0 = e.srcElement, txt = btn0.innerText, cls = btn0.className;
-                    if (!cls) return false;
-                    // btn authorize locked
-                    if (cls.indexOf('authorize') != -1 && forms == null) {
+                if (e.type !== "click") return;
+                var btn = e.srcElement, tagName = "BUTTON";
+                if (btn.tagName !== tagName) {
+                    if (btn.parentNode.tagName === tagName) btn = btn.parentNode;
+                    else if (btn.parentNode.parentNode.tagName === tagName) btn = btn.parentNode.parentNode;
+                }
+                if (btn.tagName === tagName) {
+                    var txt = btn.innerText, cls = btn.className;
+                    if (!txt || !cls) return;
+                    // authorize button
+                    if (cls.indexOf('btn authorize') == 0) {
+                        if (forms != null) return;
+                        console.log('click authorize button');
                         forms = $('.scheme-container .auth-container');
-                        console.log('forms.length:', forms.length);
                         if (forms.length == 0) setTimeout(function () {
                             forms = $('.scheme-container .auth-container');
-                            console.log('forms.length:', forms.length);
                             // scheme1 form
                             var formApiKey = forms.filter(function (i, v) { return v.innerText.indexOf(scheme1) == 0; });
                             if (formApiKey.length == 1) {
                                 console.log('scheme1 form:', scheme1);
                                 var el = formApiKey.find('input'), bts = formApiKey.find('button.auth');
                                 //if (el.length == 1 && tokenValue) { el.val(tokenValue); bts.eq(0).trigger('click'); }
-                                bts.eq(0).addClass(scheme1).text(el.length == 0 ? txt2[1] : txt1[1]);
+                                bts.eq(0).attr('scheme', scheme1).text(el.length == 0 ? txt2[1] : txt1[1]);
                             }
                             // scheme2 form
                             var formBearer = forms.filter(function (i, v) { return v.innerText.indexOf(scheme2) == 0; });
                             if (formBearer.length == 1) { }
                         }, 500);
                     }
-                    // btn modal-btn auth button
-                    if (cls.indexOf('auth') != -1) {
-                        var form0 = $(btn0).parent().parent();
+                    // modal auth button
+                    if (cls.indexOf('btn modal-btn auth') == 0) {
+                        console.log('click modal auth button');
+                        var form0 = $(btn).parent().parent(), scheme = $(btn).attr('scheme');
                         // scheme1 button
-                        if (cls.indexOf(scheme1) != -1) {
+                        if (scheme === scheme1) {
                             if (txt1.indexOf(txt) != -1) {
                                 var el = form0.find("input");
                                 if (el.length == 0) return;
                                 setTokenStorage(configObject, el.val());
-                                btn0.innerText = resource_globalization.Logout;
+                                btn.innerText = resource_globalization.Logout;
                             } else if (txt2.indexOf(txt) != -1) {
                                 removeTokenStorage(configObject);
-                                btn0.innerText = resource_globalization.Authorize;
+                                btn.innerText = resource_globalization.Authorize;
                             }
                         }
                         // scheme2 button
-                        if (cls.indexOf(scheme2) != -1) {
+                        if (scheme === scheme2) {
                         }
                     }
                 }
