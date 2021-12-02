@@ -20,9 +20,9 @@ namespace WebSwagger.Internals
         private static readonly object Lock = new object();
 
         /// <summary>
-        /// Swagger扩展选项配置
+        /// Swagger选项配置
         /// </summary>
-        public SwaggerDocOptions ExOptions { get; set; } = new SwaggerDocOptions();
+        public SwaggerDocOptions DocOptions { get; set; } = new SwaggerDocOptions();
 
         /// <summary>
         /// 服务提供程序
@@ -95,7 +95,7 @@ namespace WebSwagger.Internals
                 lock (Lock)
                 {
                     Debug.WriteLine($"Build Swagger Document Key: {info.Key}");
-                    ExOptions.SwaggerGenOptions.SwaggerGeneratorOptions.SwaggerDocs[info.Key] = info.Value;
+                    DocOptions.SwaggerGenOptions.SwaggerGeneratorOptions.SwaggerDocs[info.Key] = info.Value;
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace WebSwagger.Internals
         private void BuildSwaggerEndpoint(ApiGroupContext context)
         {
             foreach (var endpoint in context.GetEndpoints())
-                ExOptions.SwaggerUiOptions.AddInfo(endpoint.Key, endpoint.Value);
+                DocOptions.SwaggerUiOptions.AddInfo(endpoint.Key, endpoint.Value);
         }
 
         /// <summary>
@@ -126,11 +126,11 @@ namespace WebSwagger.Internals
         /// </summary>
         private void BuildDocInclusionPredicateByApiGroup()
         {
-            if(ExOptions.EnableApiVersion)
+            if(DocOptions.EnableApiVersion)
                 return;
-            if(!ExOptions.EnableApiGroup())
+            if(!DocOptions.EnableApiGroup())
                 return;
-            ExOptions.SwaggerGenOptions.DocInclusionPredicate((docName, apiDescription) =>
+            DocOptions.SwaggerGenOptions.DocInclusionPredicate((docName, apiDescription) =>
             {
                 if (docName == "NoGroup")
                 {
@@ -155,11 +155,11 @@ namespace WebSwagger.Internals
         /// </summary>
         private void BuildDocInclusionPredicateByApiVersion()
         {
-            if (ExOptions.EnableApiGroup())
+            if (DocOptions.EnableApiGroup())
                 return;
-            if (!ExOptions.EnableApiVersion)
+            if (!DocOptions.EnableApiVersion)
                 return;
-            ExOptions.SwaggerGenOptions.DocInclusionPredicate((docName, apiDescription) => docName == apiDescription.GroupName);
+            DocOptions.SwaggerGenOptions.DocInclusionPredicate((docName, apiDescription) => docName == apiDescription.GroupName);
         }
 
         /// <summary>
@@ -167,11 +167,11 @@ namespace WebSwagger.Internals
         /// </summary>
         private void BuildDocInclusionPredicateByApiVersionWithGroup()
         {
-            if(!ExOptions.EnableApiGroup())
+            if(!DocOptions.EnableApiGroup())
                 return;
-            if(!ExOptions.EnableApiVersion)
+            if(!DocOptions.EnableApiVersion)
                 return;
-            ExOptions.SwaggerGenOptions.DocInclusionPredicate((docName, apiDescription) =>
+            DocOptions.SwaggerGenOptions.DocInclusionPredicate((docName, apiDescription) =>
             {
                 // 无分组处理
                 if (docName.StartsWith("NoGroup"))

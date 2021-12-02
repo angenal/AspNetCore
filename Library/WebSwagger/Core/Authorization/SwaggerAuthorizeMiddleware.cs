@@ -33,7 +33,7 @@ namespace WebSwagger.Core.Authorization
         public SwaggerAuthorizeMiddleware(RequestDelegate next)
         {
             _next = next;
-            _options = BuildContext.Instance.ExOptions;
+            _options = BuildContext.Instance.DocOptions;
         }
 
         /// <summary>

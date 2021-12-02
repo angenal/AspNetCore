@@ -107,23 +107,23 @@
             // Init Token or Cookie
             initTokenCookiesStorage(configObject);
             // End Swagger UI call region
-            window.ui = SwaggerUIBundle(configObject);
+            var ui = SwaggerUIBundle(configObject);
             // Apply OAuth config
-            window.ui.initOAuth(oauthConfigObject);
+            ui.initOAuth(oauthConfigObject);
             //console.log('ui', ui);
             custom_translate(configObject);
         };
 
         function custom_translate(configObject) {
-            window.swagger_config = configObject;
             //document.getElementsByTagName('span')[0].innerText = document.getElementsByTagName('span')[0].innerText.replace('swagger', '接口文档');
             //document.getElementsByTagName('span')[1].innerText = document.getElementsByTagName('span')[1].innerText.replace('Select a definition', resource_globalization.SelectDefinition);
-            if (configObject.customAuth) {
-                var logOutEle = document.createElement('button');
-                logOutEle.className = "btn ";
-                logOutEle.innerText = resource_globalization.Logout; // 退出button
-                logOutEle.onclick = function () { location.href = configObject.logoutUrl; };
-                document.getElementsByClassName('topbar-wrapper')[0].appendChild(logOutEle);
+            if (configObject.customAuth && configObject.logoutUrl) {
+                console.log('初始化 Authorize 退出 button');
+                var btn = document.createElement('button');
+                btn.className = "btn ";
+                btn.innerText = resource_globalization.Logout;
+                btn.onclick = function () { location.href = configObject.logoutUrl; };
+                document.getElementsByClassName('topbar-wrapper')[0].appendChild(btn);
             }
         }
 
@@ -157,7 +157,7 @@
             if (authWrapper === undefined || authWrapper === null) {
                 return setTimeout(function () { addAuthorizeListener(configObject); }, 1000);
             }
-            console.log("初始化 Authorize 按钮监听");
+            console.log("初始化 Authorize 授权 button");
             authWrapper.addEventListener("click", function (e) {
                 if (e.type === "click" && e.srcElement.tagName === "BUTTON") {
                     var txt = e.srcElement.innerText;

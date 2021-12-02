@@ -32,17 +32,17 @@ namespace WebSwagger.Core.Groups
         /// <param name="buildContext">构建上下文</param>
         private void BuildGroup(ApiGroupContext context, BuildContext buildContext)
         {
-            if (!buildContext.ExOptions.EnableApiGroup())
+            if (!buildContext.DocOptions.EnableApiGroup())
                 return;
-            if (!buildContext.ExOptions.ApiGroupType.IsEnum)
+            if (!buildContext.DocOptions.ApiGroupType.IsEnum)
                 return;
-            buildContext.ExOptions.ApiGroupType.GetFields().Skip(1).ToList().ForEach(x =>
+            buildContext.DocOptions.ApiGroupType.GetFields().Skip(1).ToList().ForEach(x =>
             {
                 var attribute = x.GetCustomAttributes(typeof(SwaggerApiGroupInfoAttribute), false)
                     .OfType<SwaggerApiGroupInfoAttribute>().FirstOrDefault();
                 if (attribute == null)
                 {
-                    if (buildContext.ExOptions.EnableApiVersion)
+                    if (buildContext.DocOptions.EnableApiVersion)
                     {
                         context.AddGroup(x.Name);
                         return;
@@ -51,7 +51,7 @@ namespace WebSwagger.Core.Groups
                     return;
                 }
 
-                if (buildContext.ExOptions.EnableApiVersion)
+                if (buildContext.DocOptions.EnableApiVersion)
                 {
                     context.AddGroup(attribute.Title, x.Name, attribute.Description);
                     return;
@@ -67,11 +67,11 @@ namespace WebSwagger.Core.Groups
         /// <param name="buildContext">构建上下文</param>
         private void BuildCustomVersion(ApiGroupContext context, BuildContext buildContext)
         {
-            if (buildContext.ExOptions.EnableApiGroup() || buildContext.ExOptions.EnableApiVersion)
+            if (buildContext.DocOptions.EnableApiGroup() || buildContext.DocOptions.EnableApiVersion)
                 return;
-            if (!buildContext.ExOptions.HasCustomVersion())
+            if (!buildContext.DocOptions.HasCustomVersion())
                 return;
-            foreach (var apiVersion in buildContext.ExOptions.ApiVersions)
+            foreach (var apiVersion in buildContext.DocOptions.ApiVersions)
                 context.AddApiGroup(apiVersion.Version, apiVersion.Description);
         }
 
@@ -82,12 +82,12 @@ namespace WebSwagger.Core.Groups
         /// <param name="buildContext">构建上下文</param>
         private void BuildApiVersion(ApiGroupContext context, BuildContext buildContext)
         {
-            if (!buildContext.ExOptions.EnableApiVersion)
+            if (!buildContext.DocOptions.EnableApiVersion)
                 return;
             var provider = buildContext.ServiceProvider.GetService<IApiVersionDescriptionProvider>();
             foreach (var description in provider.ApiVersionDescriptions)
             {
-                if (buildContext.ExOptions.EnableApiGroup())
+                if (buildContext.DocOptions.EnableApiGroup())
                 {
                     context.AddApiVersion(description.GroupName, description.ApiVersion.ToString());
                     continue;
@@ -104,9 +104,9 @@ namespace WebSwagger.Core.Groups
         /// <param name="buildContext">构建上下文</param>
         private void BuildNoGroup(ApiGroupContext context, BuildContext buildContext)
         {
-            if (!buildContext.ExOptions.EnableApiGroup())
+            if (!buildContext.DocOptions.EnableApiGroup())
                 return;
-            if (buildContext.ExOptions.EnableApiVersion)
+            if (buildContext.DocOptions.EnableApiVersion)
                 context.AddNoGroup();
             else
                 context.AddNoGroupWithVersion();

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.IO;
 using System.Reflection;
@@ -19,7 +20,7 @@ namespace WebSwagger
     public static partial class SwaggerDocService
     {
         /// <summary>
-        /// 注册Swagger扩展
+        /// 注册Swagger
         /// </summary>
         /// <param name="services">服务集合</param>
         /// <param name="enableApiVersion">启用接口版本</param>
@@ -34,7 +35,7 @@ namespace WebSwagger
                 o.EnableCustomIndex = true;
                 o.AddSwaggerGenAction = c =>
                 {
-                    //config.SwaggerDoc("v1", new Info() { Title = "接口文档", Version = "v1" });
+                    //c.SwaggerDoc("v1", new Info() { Title = "接口文档", Version = "v1" });
 
                     // 添加 XML 接口描述文档
                     foreach (string filePath in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml"))
@@ -44,8 +45,9 @@ namespace WebSwagger
 
                     c.UseInlineDefinitionsForEnums();
 
+                    // 添加 身份验证 安全方案
                     //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>(){{"oauth2", new string[] { }}});
-                    string scheme = "ApiKey", queryName = "apiKey";
+                    string scheme = SecuritySchemeType.ApiKey.ToString(), queryName = "apiKey";
                     c.AddSecurityDefinition(scheme, new OpenApiSecurityScheme()
                     {
                         Name = "X-API-KEY",
@@ -73,7 +75,7 @@ namespace WebSwagger
                         Name = "Authorization",
                         Scheme = scheme,
                         BearerFormat = "JWT",
-                        Description = "JWT Authorization header using the Bearer scheme.",
+                        Description = "JWT 认证授权",
                         In = ParameterLocation.Header,
                         Type = SecuritySchemeType.ApiKey
                     });
@@ -153,27 +155,27 @@ namespace WebSwagger
         }
 
         /// <summary>
-        /// 注册Swagger扩展
+        /// 注册Swagger
         /// </summary>
         /// <param name="services">服务集合</param>
         /// <param name="setupAction">操作配置</param>
         public static IServiceCollection AddSwaggerDoc(this IServiceCollection services, Action<SwaggerDocOptions> setupAction)
         {
-            setupAction?.Invoke(BuildContext.Instance.ExOptions);
-            if (BuildContext.Instance.ExOptions.EnableCached)
+            setupAction?.Invoke(BuildContext.Instance.DocOptions);
+            if (BuildContext.Instance.DocOptions.EnableCached)
             {
                 services.AddSwaggerGen();
                 services.AddSwaggerCaching();
                 services.ConfigureSwaggerGen(o =>
                 {
-                    BuildContext.Instance.ExOptions.InitSwaggerGenOptions(o);
+                    BuildContext.Instance.DocOptions.InitSwaggerGenOptions(o);
                     BuildContext.Instance.Build();
                 });
                 return services;
             }
             services.AddSwaggerGen(o =>
             {
-                BuildContext.Instance.ExOptions.InitSwaggerGenOptions(o);
+                BuildContext.Instance.DocOptions.InitSwaggerGenOptions(o);
                 BuildContext.Instance.Build();
             });
             return services;
@@ -186,7 +188,7 @@ namespace WebSwagger
         public static IServiceCollection AddSwaggerCaching(this IServiceCollection services) => services.Replace(ServiceDescriptor.Transient<ISwaggerProvider, CachingSwaggerProvider>());
 
         /// <summary>
-        /// 启用Swagger扩展
+        /// 启用Swagger
         /// </summary>
         /// <param name="app">应用构建器</param>
         /// <param name="setupAction">配置操作</param>
@@ -211,29 +213,54 @@ namespace WebSwagger
                     // 使用自定义首页
                     c.UseCustomSwaggerIndex();
 
+                    // 启用Token存储localStorage
+                    c.UseTokenStorage(SecuritySchemeType.ApiKey.ToString(), WebCacheType.Local);
+
                     // 使用翻译
                     c.UseTranslate();
-
-                    // 启用Token存储
-                    c.UseTokenStorage("oauth2");
                 };
             });
         }
 
         /// <summary>
-        /// 启用Swagger扩展
+        /// 启用Swagger
         /// </summary>
         /// <param name="app">应用构建器</param>
         /// <param name="setupAction">配置操作</param>
         public static IApplicationBuilder UseSwaggerDoc(this IApplicationBuilder app, Action<SwaggerDocOptions> setupAction = null)
         {
             BuildContext.Instance.ServiceProvider = app.ApplicationServices;
-            setupAction?.Invoke(BuildContext.Instance.ExOptions);
+            setupAction?.Invoke(BuildContext.Instance.DocOptions);
             // 启用 Swagger 授权中间件
-            if (BuildContext.Instance.ExOptions.EnableAuthorization()) app.UseMiddleware<SwaggerAuthorizeMiddleware>();
+            if (BuildContext.Instance.DocOptions.EnableAuthorization()) app.UseMiddleware<SwaggerAuthorizeMiddleware>();
             // 启用 Swagger UI
-            app.UseSwagger(o => BuildContext.Instance.ExOptions.InitSwaggerOptions(o)).UseSwaggerUI(o => BuildContext.Instance.ExOptions.InitSwaggerUiOptions(o));
+            app.UseSwagger(o => BuildContext.Instance.DocOptions.InitSwaggerOptions(o)).UseSwaggerUI(o => BuildContext.Instance.DocOptions.InitSwaggerUi(o));
             return app;
+        }
+
+        /// <summary>
+        /// 初始化SwaggerUI
+        /// </summary>
+        /// <param name="options">Swagger 接口文档选项配置</param>
+        /// <param name="swaggerUiOptions">Swagger 选项配置</param>
+        public static void InitSwaggerUi(this SwaggerDocOptions options, SwaggerUIOptions swaggerUiOptions)
+        {
+            options.SwaggerUiOptions = swaggerUiOptions;
+            swaggerUiOptions.RoutePrefix = options.RoutePrefix;
+            swaggerUiOptions.DocumentTitle = options.ProjectName;
+            if (options.EnableCustomIndex) swaggerUiOptions.UseCustomSwaggerIndex();
+            if (options.EnableAuthorization())
+            {
+                swaggerUiOptions.ConfigObject.AdditionalItems["customAuth"] = true;
+                swaggerUiOptions.ConfigObject.AdditionalItems["loginUrl"] = $"/{options.RoutePrefix}/login.html";
+                swaggerUiOptions.ConfigObject.AdditionalItems["logoutUrl"] = $"/{options.RoutePrefix}/logout";
+            }
+            if (options.ApiVersions == null)
+            {
+                options.UseSwaggerUIAction?.Invoke(swaggerUiOptions);
+                return;
+            }
+            options.UseSwaggerUIAction?.Invoke(swaggerUiOptions);
         }
 
         public static Assembly Assembly => typeof(SwaggerDocService).GetTypeInfo().Assembly;

@@ -1,6 +1,5 @@
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Linq;
 
 // ReSharper disable once CheckNamespace
@@ -49,31 +48,6 @@ namespace WebSwagger
         {
             options.SwaggerOptions = swaggerOptions;
             options.UseSwaggerAction?.Invoke(swaggerOptions);
-        }
-
-        /// <summary>
-        /// 初始化SwaggerUI选项配置
-        /// </summary>
-        /// <param name="options">Swagger 接口文档选项配置</param>
-        /// <param name="swaggerUiOptions">Swagger 选项配置</param>
-        public static void InitSwaggerUiOptions(this SwaggerDocOptions options, SwaggerUIOptions swaggerUiOptions)
-        {
-            options.SwaggerUiOptions = swaggerUiOptions;
-            swaggerUiOptions.RoutePrefix = options.RoutePrefix;
-            swaggerUiOptions.DocumentTitle = options.ProjectName;
-            if (options.EnableCustomIndex) swaggerUiOptions.UseCustomSwaggerIndex();
-            if (options.EnableAuthorization())
-            {
-                swaggerUiOptions.ConfigObject.AdditionalItems["customAuth"] = true;
-                swaggerUiOptions.ConfigObject.AdditionalItems["loginUrl"] = $"/{options.RoutePrefix}/login.html";
-                swaggerUiOptions.ConfigObject.AdditionalItems["logoutUrl"] = $"/{options.RoutePrefix}/logout";
-            }
-            if (options.ApiVersions == null)
-            {
-                options.UseSwaggerUIAction?.Invoke(swaggerUiOptions);
-                return;
-            }
-            options.UseSwaggerUIAction?.Invoke(swaggerUiOptions);
         }
     }
 }
