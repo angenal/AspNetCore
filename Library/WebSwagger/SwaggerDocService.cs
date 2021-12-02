@@ -131,8 +131,8 @@ namespace WebSwagger
                     // 隐藏属性
                     c.SchemaFilter<Filters.Schemas.IgnorePropertySchemaFilter>();
 
-                    // 自定义操作标识
-                    c.CustomOperationIds(apiDesc => apiDesc.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name : null);
+                    // 自定义操作标识或权限ID
+                    c.CustomOperationIds(apiDesc => apiDesc.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.ToUpper() : null);
 
                     // 显示授权信息
                     //config.ShowAuthorizeInfo();
@@ -188,6 +188,29 @@ namespace WebSwagger
         public static IServiceCollection AddSwaggerCaching(this IServiceCollection services) => services.Replace(ServiceDescriptor.Transient<ISwaggerProvider, CachingSwaggerProvider>());
 
         /// <summary>
+        /// 添加SwaggerUI
+        /// </summary>
+        /// <param name="options">Swagger 接口文档选项配置</param>
+        /// <param name="swaggerUiOptions">Swagger 选项配置</param>
+        public static void AddSwaggerUi(this SwaggerDocOptions options, SwaggerUIOptions swaggerUiOptions)
+        {
+            options.SwaggerUiOptions = swaggerUiOptions;
+            swaggerUiOptions.RoutePrefix = options.RoutePrefix ?? "swagger";
+            swaggerUiOptions.DocumentTitle = options.ProjectName ?? "REST API";
+            if (options.EnableCustomIndex) swaggerUiOptions.UseCustomSwaggerIndex(); // 使用自定义首页
+            if (options.EnableAuthorization())
+            {
+                swaggerUiOptions.ConfigObject.AdditionalItems["customAuth"] = true;
+                swaggerUiOptions.ConfigObject.AdditionalItems["loginUrl"] = $"/{options.RoutePrefix}/login.html";
+                swaggerUiOptions.ConfigObject.AdditionalItems["logoutUrl"] = $"/{options.RoutePrefix}/logout";
+            }
+            if (options.ApiVersions == null)
+            {
+            }
+            options.UseSwaggerUIAction?.Invoke(swaggerUiOptions);
+        }
+
+        /// <summary>
         /// 启用Swagger
         /// </summary>
         /// <param name="app">应用构建器</param>
@@ -210,9 +233,6 @@ namespace WebSwagger
                     // 使用默认SwaggerUI
                     c.UseDefaultSwaggerUI();
 
-                    // 使用自定义首页
-                    c.UseCustomSwaggerIndex();
-
                     // 启用Token存储localStorage
                     c.UseTokenStorage(SecuritySchemeType.ApiKey.ToString(), WebCacheType.Local);
 
@@ -234,33 +254,7 @@ namespace WebSwagger
             // 启用 Swagger 授权中间件
             if (BuildContext.Instance.DocOptions.EnableAuthorization()) app.UseMiddleware<SwaggerAuthorizeMiddleware>();
             // 启用 Swagger UI
-            app.UseSwagger(o => BuildContext.Instance.DocOptions.InitSwaggerOptions(o)).UseSwaggerUI(o => BuildContext.Instance.DocOptions.InitSwaggerUi(o));
-            return app;
-        }
-
-        /// <summary>
-        /// 初始化SwaggerUI
-        /// </summary>
-        /// <param name="options">Swagger 接口文档选项配置</param>
-        /// <param name="swaggerUiOptions">Swagger 选项配置</param>
-        public static void InitSwaggerUi(this SwaggerDocOptions options, SwaggerUIOptions swaggerUiOptions)
-        {
-            options.SwaggerUiOptions = swaggerUiOptions;
-            swaggerUiOptions.RoutePrefix = options.RoutePrefix;
-            swaggerUiOptions.DocumentTitle = options.ProjectName;
-            if (options.EnableCustomIndex) swaggerUiOptions.UseCustomSwaggerIndex();
-            if (options.EnableAuthorization())
-            {
-                swaggerUiOptions.ConfigObject.AdditionalItems["customAuth"] = true;
-                swaggerUiOptions.ConfigObject.AdditionalItems["loginUrl"] = $"/{options.RoutePrefix}/login.html";
-                swaggerUiOptions.ConfigObject.AdditionalItems["logoutUrl"] = $"/{options.RoutePrefix}/logout";
-            }
-            if (options.ApiVersions == null)
-            {
-                options.UseSwaggerUIAction?.Invoke(swaggerUiOptions);
-                return;
-            }
-            options.UseSwaggerUIAction?.Invoke(swaggerUiOptions);
+            return app.UseSwagger(o => BuildContext.Instance.DocOptions.InitSwaggerOptions(o)).UseSwaggerUI(o => BuildContext.Instance.DocOptions.AddSwaggerUi(o));
         }
 
         public static Assembly Assembly => typeof(SwaggerDocService).GetTypeInfo().Assembly;

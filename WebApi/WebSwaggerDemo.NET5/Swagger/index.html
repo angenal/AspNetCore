@@ -92,24 +92,24 @@
             var configObject = JSON.parse('%(ConfigObject)');
             var oauthConfigObject = JSON.parse('%(OAuthConfigObject)');
             // Apply mandatory parameters
-            configObject.dom_id = "#swagger-ui";
+            configObject.dom_id = '#swagger-ui';
             configObject.presets = [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset];
-            configObject.layout = "StandaloneLayout";
-            if (!configObject.hasOwnProperty("validatorUrl")) configObject.validatorUrl = null;
+            configObject.layout = 'StandaloneLayout';
             configObject.urls.forEach(function (item) {
-                if (item.url.startsWith("http") || item.url.startsWith("/")) return;
-                item.url = window.location.href.replace("index.html", item.url).split('#')[0];
+                if (item.url.startsWith('http') || item.url.startsWith('/')) return;
+                item.url = window.location.href.replace('index.html', item.url).split('#')[0];
             });
-            if (!configObject.hasOwnProperty("oauth2RedirectUrl")) {
-                //configObject.oauth2RedirectUrl = window.location + "oauth2-redirect.html"; // use the built-in default
-                configObject.oauth2RedirectUrl = window.location.href.replace("index.html", "oauth2-redirect.html");
+            //if (!configObject.hasOwnProperty('validatorUrl')) configObject.validatorUrl = null;
+            if (!configObject.hasOwnProperty('oauth2RedirectUrl')) {
+                //configObject.oauth2RedirectUrl = window.location + 'oauth2-redirect.html'; // use the built-in default
+                configObject.oauth2RedirectUrl = window.location.href.replace('index.html', 'oauth2-redirect.html');
             }
             // Init Token or Cookie
             initTokenCookiesStorage(configObject);
             // End Swagger UI call region
-            var ui = SwaggerUIBundle(configObject);
+            window.swagger_ui = SwaggerUIBundle(configObject);
             // Apply OAuth config
-            ui.initOAuth(oauthConfigObject);
+            swagger_ui.initOAuth(oauthConfigObject);
             //console.log('ui', ui);
             custom_translate(configObject);
         };
@@ -120,7 +120,7 @@
             if (configObject.customAuth && configObject.logoutUrl) {
                 console.log('初始化 Authorize 退出 button');
                 var btn = document.createElement('button');
-                btn.className = "btn ";
+                btn.className = 'btn ';
                 btn.innerText = resource_globalization.Logout;
                 btn.onclick = function () { location.href = configObject.logoutUrl; };
                 document.getElementsByClassName('topbar-wrapper')[0].appendChild(btn);
@@ -128,22 +128,21 @@
         }
 
         function initTokenCookiesStorage(configObject) {
-            // Init Cookie
             if (!configObject.token_storage) {
+                console.log('初始化 Authorize 使用 Cookie');
                 configObject.requestInterceptor = (request) => {
                     var token = getCookieValue('CSRF-TOKEN');
-                    if (token) request.headers.Authorization = "Bearer " + token;
+                    if (token) request.headers.Authorization = 'Bearer ' + token;
                     var csrfTokenCookie = getCookieValue('X-CSRF-TOKEN');
                     if (csrfTokenCookie !== undefined && csrfTokenCookie !== null) request.headers['X-CSRF-TOKEN'] = csrfTokenCookie;
                     return request;
                 };
                 return;
             }
-            // Init Token
+            console.log('初始化 Authorize 使用 Storage');
             configObject.onComplete = () => {
-                var result = getTokenStorage(configObject);
-                if (result === undefined || result === null || result === "") return;
-                ui.preauthorizeApiKey(configObject.token_storage.securityDefinition, result);
+                var tokenValue = getTokenStorage(configObject);
+                if (tokenValue) swagger_ui.preauthorizeApiKey(configObject.token_storage.securityDefinition, tokenValue);
             };
             configObject.requestInterceptor = (request) => {
                 request.headers.Authorization = getTokenStorage(configObject);
@@ -154,19 +153,52 @@
 
         function addAuthorizeListener(configObject) {
             var authWrapper = document.querySelector(".scheme-container .auth-wrapper");
-            if (authWrapper === undefined || authWrapper === null) {
-                return setTimeout(function () { addAuthorizeListener(configObject); }, 1000);
-            }
-            console.log("初始化 Authorize 授权 button");
+            if (authWrapper === undefined || authWrapper === null) return setTimeout(function () { addAuthorizeListener(configObject); }, 1000);
+            var forms = null, txt1 = ['Authorize', resource_globalization.Authorize], txt2 = ["Logout", resource_globalization.Logout];
+            var scheme1 = "ApiKey", queryName1 = "apiKey";
+            var scheme2 = "Bearer", queryName2 = "token";
             authWrapper.addEventListener("click", function (e) {
                 if (e.type === "click" && e.srcElement.tagName === "BUTTON") {
-                    var txt = e.srcElement.innerText;
-                    if (txt === "Authorize" || txt === resource_globalization.Authorize) {
-                        var el = document.querySelector(".auth-container .wrapper input");
-                        if (el === undefined || el === null) return;
-                        setTokenStorage(configObject, el.value);
-                    } else if (txt === "Logout" || txt === resource_globalization.Logout) {
-                        removeTokenStorage(configObject);
+                    var btn0 = e.srcElement, txt = btn0.innerText, cls = btn0.className;
+                    if (!cls) return false;
+                    // btn authorize locked
+                    if (cls.indexOf('authorize') != -1 && forms == null) {
+                        forms = $('.scheme-container .auth-container');
+                        console.log('forms.length:', forms.length);
+                        if (forms.length == 0) setTimeout(function () {
+                            forms = $('.scheme-container .auth-container');
+                            console.log('forms.length:', forms.length);
+                            // scheme1 form
+                            var formApiKey = forms.filter(function (i, v) { return v.innerText.indexOf(scheme1) == 0; });
+                            if (formApiKey.length == 1) {
+                                console.log('scheme1 form:', scheme1);
+                                var el = formApiKey.find('input'), bts = formApiKey.find('button.auth');
+                                //if (el.length == 1 && tokenValue) { el.val(tokenValue); bts.eq(0).trigger('click'); }
+                                bts.eq(0).addClass(scheme1).text(el.length == 0 ? txt2[1] : txt1[1]);
+                            }
+                            // scheme2 form
+                            var formBearer = forms.filter(function (i, v) { return v.innerText.indexOf(scheme2) == 0; });
+                            if (formBearer.length == 1) { }
+                        }, 500);
+                    }
+                    // btn modal-btn auth button
+                    if (cls.indexOf('auth') != -1) {
+                        var form0 = $(btn0).parent().parent();
+                        // scheme1 button
+                        if (cls.indexOf(scheme1) != -1) {
+                            if (txt1.indexOf(txt) != -1) {
+                                var el = form0.find("input");
+                                if (el.length == 0) return;
+                                setTokenStorage(configObject, el.val());
+                                btn0.innerText = resource_globalization.Logout;
+                            } else if (txt2.indexOf(txt) != -1) {
+                                removeTokenStorage(configObject);
+                                btn0.innerText = resource_globalization.Authorize;
+                            }
+                        }
+                        // scheme2 button
+                        if (cls.indexOf(scheme2) != -1) {
+                        }
                     }
                 }
             }, false);
@@ -185,12 +217,12 @@
 
         function getTokenStorage(configObject) {
             var key = configObject.token_storage.securityDefinition;
-            return configObject.token_storage.cacheType.toLowerCase().indexOf("local") == -1 ? sessionStorage.getItem(key) : localStorage.getItem(key);
+            return configObject.token_storage.cacheType.toLowerCase().indexOf('local') == -1 ? sessionStorage.getItem(key) : localStorage.getItem(key);
         }
 
         function setTokenStorage(configObject, value) {
             var key = configObject.token_storage.securityDefinition;
-            return configObject.token_storage.cacheType.toLowerCase().indexOf("local") == -1 ? sessionStorage.setItem(key, value) : localStorage.setItem(key, value);
+            return configObject.token_storage.cacheType.toLowerCase().indexOf('local') == -1 ? sessionStorage.setItem(key, value) : localStorage.setItem(key, value);
         }
 
         function removeTokenStorage(configObject) {
