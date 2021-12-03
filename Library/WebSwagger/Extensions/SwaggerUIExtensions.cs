@@ -57,7 +57,7 @@ namespace WebSwagger
         /// <param name="cacheType">缓存类型</param>
         public static void UseTokenStorage(this SwaggerUIOptions options, string securityDefinition, WebCacheType cacheType = WebCacheType.Session)
         {
-            options.ConfigObject.AdditionalItems["token_storage"] = new TokenStorageParameter
+            options.ConfigObject.AdditionalItems[$"{securityDefinition}Storage"] = new TokenStorageParameter
             {
                 CacheType = cacheType,
                 SecurityDefinition = securityDefinition

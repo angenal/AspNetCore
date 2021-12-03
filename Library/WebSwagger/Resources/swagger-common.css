@@ -104,9 +104,14 @@
     background: #fff;
 }
 
-.swagger-ui .auth-container .wrapper code {
+.swagger-ui .auth-container code {
     font-size: 12px;
 }
+
+.swagger-ui .auth-container input[type=text] {
+    width: 100%;
+}
+
 
 .selectBox {
     margin: 50px auto;

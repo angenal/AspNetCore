@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>%(DocumentTitle)</title>
-    <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">-->
     <link rel="stylesheet" type="text/css" href="./swagger-ui.css">
     <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+    <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">-->
     <style>html { box-sizing: border-box; overflow: auto; overflow-y: scroll; } *, *:before, *:after { box-sizing: inherit; } body { margin: 0; background: #fafafa; }</style>
     %(HeadContent)
 </head>
@@ -62,7 +62,7 @@
                 if (item.url.startsWith('http') || item.url.startsWith('/')) return;
                 item.url = location.href.replace('index.html', item.url).split('#')[0];
             });
-            //if (!configObject.hasOwnProperty('validatorUrl')) configObject.validatorUrl = null;
+            if (!configObject.hasOwnProperty('validatorUrl')) configObject.validatorUrl = null;
             if (!configObject.hasOwnProperty('oauth2RedirectUrl')) {
                 //configObject.oauth2RedirectUrl = window.location + 'oauth2-redirect.html'; // use the built-in default
                 configObject.oauth2RedirectUrl = location.href.replace('index.html', 'oauth2-redirect.html');
@@ -71,9 +71,8 @@
             initTokenCookiesStorage(configObject);
             // End Swagger UI call region
             window.swagger_ui = SwaggerUIBundle(configObject);
-            // Apply OAuth config
             swagger_ui.initOAuth(oauthConfigObject);
-            //console.log('ui', ui);
+            window.swagger_config = configObject;
             custom_translate(configObject);
         };
 
@@ -107,7 +106,7 @@
         }
 
         function initTokenCookiesStorage(configObject) {
-            if (!configObject.token_storage) {
+            if (!configObject.ApiKeyStorage) {
                 console.log('Init Authorize Use Cookie');
                 configObject.requestInterceptor = (request) => {
                     var token = getCookieValue('CSRF-TOKEN');
@@ -119,12 +118,12 @@
                 return;
             }
             console.log('init authorize local or session storage');
-            configObject.token_storage.authorized = false;
+            configObject.ApiKeyStorage.authorized = false;
             configObject.onComplete = () => {
                 var tokenValue = getTokenStorage(configObject);
                 if (!tokenValue) return;
-                configObject.token_storage.authorized = true;
-                swagger_ui.preauthorizeApiKey(configObject.token_storage.securityDefinition, tokenValue);
+                configObject.ApiKeyStorage.authorized = true;
+                swagger_ui.preauthorizeApiKey(configObject.ApiKeyStorage.securityDefinition, tokenValue);
             };
             configObject.requestInterceptor = (request) => {
                 request.headers.Authorization = getTokenStorage(configObject);
@@ -160,7 +159,7 @@
                             if (form1.length == 1) {
                                 var btnQ = form1.find('.modal-btn').eq(0);
                                 var tokenValue = getTokenStorage(configObject), authorized = !!tokenValue;
-                                configObject.token_storage.authorized = authorized;
+                                configObject.ApiKeyStorage.authorized = authorized;
                                 btnQ.attr('scheme', scheme1).text(authorized ? txtLogout[1] : txtAuthorize[1]);
                                 if (authorized) btnQ.addClass(clsName); else btnQ.removeClass(clsName);
                                 form1.find('h4').html(form1.find('h4 code').html());
@@ -189,12 +188,12 @@
                                 var el = form1.find('input');
                                 if (el.length == 0) return;
                                 if ($.trim(el.val()) == '') return alert('输入内容不能为空');
-                                configObject.token_storage.authorized = true;
+                                configObject.ApiKeyStorage.authorized = true;
                                 var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form1.find('h6').hide(); };
                                 setTimeout(authfn, 10); setTimeout(authfn, 20);
                                 setTokenStorage(configObject, el.val());
                             } else if (txtLogout.indexOf(txt) != -1) {
-                                configObject.token_storage.authorized = false;
+                                configObject.ApiKeyStorage.authorized = false;
                                 var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form1.find('h6').hide(); };
                                 setTimeout(authfn, 10); setTimeout(authfn, 20);
                                 removeTokenStorage(configObject);
@@ -220,17 +219,17 @@
         }
 
         function getTokenStorage(configObject) {
-            var key = configObject.token_storage.securityDefinition;
-            return configObject.token_storage.cacheType.toLowerCase().indexOf('local') == -1 ? sessionStorage.getItem(key) : localStorage.getItem(key);
+            var key = configObject.ApiKeyStorage.securityDefinition;
+            return configObject.ApiKeyStorage.cacheType.toLowerCase().indexOf('local') == -1 ? sessionStorage.getItem(key) : localStorage.getItem(key);
         }
 
         function setTokenStorage(configObject, value) {
-            var key = configObject.token_storage.securityDefinition;
-            return configObject.token_storage.cacheType.toLowerCase().indexOf('local') == -1 ? sessionStorage.setItem(key, value) : localStorage.setItem(key, value);
+            var key = configObject.ApiKeyStorage.securityDefinition;
+            return configObject.ApiKeyStorage.cacheType.toLowerCase().indexOf('local') == -1 ? sessionStorage.setItem(key, value) : localStorage.setItem(key, value);
         }
 
         function removeTokenStorage(configObject) {
-            var key = configObject.token_storage.securityDefinition;
+            var key = configObject.ApiKeyStorage.securityDefinition;
             localStorage.removeItem(key); sessionStorage.removeItem(key);
         }
     </script>

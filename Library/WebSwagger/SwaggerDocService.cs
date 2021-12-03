@@ -45,54 +45,8 @@ namespace WebSwagger
 
                     c.UseInlineDefinitionsForEnums();
 
-                    // 添加 身份验证 安全方案
-                    //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>(){{"oauth2", new string[] { }}});
-                    string scheme = SecuritySchemeType.ApiKey.ToString(), queryName = "apiKey";
-                    c.AddSecurityDefinition(scheme, new OpenApiSecurityScheme()
-                    {
-                        Name = "X-API-KEY",
-                        Description = "API 密钥",
-                        In = ParameterLocation.Cookie,
-                        Type = SecuritySchemeType.ApiKey
-                    });
-                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Id = scheme, Type = ReferenceType.SecurityScheme
-                                },
-                                Name = queryName, In = ParameterLocation.Query
-                            },
-                            Array.Empty<string>()
-                        }
-                    });
-                    scheme = "Bearer"; queryName = "token";
-                    c.AddSecurityDefinition(scheme, new OpenApiSecurityScheme()
-                    {
-                        Name = "Authorization",
-                        Scheme = scheme,
-                        BearerFormat = "JWT",
-                        Description = "JWT 认证授权",
-                        In = ParameterLocation.Header,
-                        Type = SecuritySchemeType.ApiKey
-                    });
-                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Id = scheme, Type = ReferenceType.SecurityScheme
-                                },
-                                Name = queryName, Scheme = scheme, In = ParameterLocation.Header
-                            },
-                            Array.Empty<string>()
-                        }
-                    });
+                    // 添加身份验证
+                    c.AddSwaggerSecurityDefinition();
 
                     // 添加通用参数
                     //c.AddCommonParameter(new List<OpenApiParameter>()
@@ -211,6 +165,77 @@ namespace WebSwagger
         }
 
         /// <summary>
+        /// 添加Swagger身份验证
+        /// </summary>
+        /// <param name="c"></param>
+        private static void AddSwaggerSecurityDefinition(this SwaggerGenOptions c)
+        {
+            //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>(){{"oauth2", new string[] { }}});
+
+            string scheme = "ApiKey", queryName = "apiKey";
+            var scheme1 = new OpenApiSecurityScheme()
+            {
+                Name = "X-API-KEY",
+                Description = "API 密钥",
+                In = ParameterLocation.Cookie,
+                Type = SecuritySchemeType.ApiKey
+            };
+
+            c.AddSecurityDefinition(scheme, scheme1);
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Id = scheme, Type = ReferenceType.SecurityScheme
+                        },
+                        Name = queryName, In = ParameterLocation.Query
+                    },
+                    Array.Empty<string>()
+                }
+            });
+
+            scheme = "Bearer"; queryName = "token";
+            var scheme2 = new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Scheme = scheme,
+                BearerFormat = "JWT",
+                Description = "JWT 认证授权",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey
+            };
+
+            c.AddSecurityDefinition(scheme, scheme2);
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Id = scheme, Type = ReferenceType.SecurityScheme
+                        },
+                        Name = queryName, Scheme = scheme, In = ParameterLocation.Header
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        }
+
+        /// <summary>
+        /// Swagger使用localStorage存储Token
+        /// </summary>
+        /// <param name="c"></param>
+        private static void UseSwaggerSecurityStorage(this SwaggerUIOptions c)
+        {
+            c.UseTokenStorage("ApiKey", WebCacheType.Local);
+            c.UseTokenStorage("Bearer", WebCacheType.Session);
+        }
+
+        /// <summary>
         /// 启用Swagger
         /// </summary>
         /// <param name="app">应用构建器</param>
@@ -233,8 +258,8 @@ namespace WebSwagger
                     // 使用默认SwaggerUI
                     c.UseDefaultSwaggerUI();
 
-                    // 启用Token存储localStorage
-                    c.UseTokenStorage(SecuritySchemeType.ApiKey.ToString(), WebCacheType.Local);
+                    // 使用localStorage存储Token
+                    c.UseSwaggerSecurityStorage();
 
                     // 使用翻译
                     c.UseTranslate();
