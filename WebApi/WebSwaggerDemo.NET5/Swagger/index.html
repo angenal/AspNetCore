@@ -3,55 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>%(DocumentTitle)</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">
+    <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">-->
     <link rel="stylesheet" type="text/css" href="./swagger-ui.css">
     <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
-    <style>
-        html {
-            box-sizing: border-box;
-            overflow: auto;
-            overflow-y: scroll;
-        }
-
-        *,
-        *:before,
-        *:after {
-            box-sizing: inherit;
-        }
-
-        body {
-            margin: 0;
-            background: #fafafa;
-        }
-
-        .swagger-ui .auth-wrapper .auth {
-            width: 75px;
-            max-width: 75px;
-            padding-right: 20px;
-            margin-right: 10px;
-        }
-
-        .swagger-ui .opblock-body select {
-            min-width: 6em;
-        }
-
-        .swagger-ui table tbody tr td:first-of-type {
-            min-width: 10em;
-        }
-
-        .swagger-ui .parameters-col_description input[type=number] {
-            font-weight: bold;
-            width: 100%;
-            max-width: 340px;
-            min-width: 100px;
-            margin: 5px 0;
-            padding: 8px 10px;
-            border: 1px solid #d9d9d9;
-            border-radius: 4px;
-            background: #fff;
-        }
-    </style>
+    <style>html { box-sizing: border-box; overflow: auto; overflow-y: scroll; } *, *:before, *:after { box-sizing: inherit; } body { margin: 0; background: #fafafa; }</style>
     %(HeadContent)
 </head>
 <body>
@@ -104,12 +60,12 @@
             configObject.layout = 'StandaloneLayout';
             configObject.urls.forEach(function (item) {
                 if (item.url.startsWith('http') || item.url.startsWith('/')) return;
-                item.url = window.location.href.replace('index.html', item.url).split('#')[0];
+                item.url = location.href.replace('index.html', item.url).split('#')[0];
             });
             //if (!configObject.hasOwnProperty('validatorUrl')) configObject.validatorUrl = null;
             if (!configObject.hasOwnProperty('oauth2RedirectUrl')) {
                 //configObject.oauth2RedirectUrl = window.location + 'oauth2-redirect.html'; // use the built-in default
-                configObject.oauth2RedirectUrl = window.location.href.replace('index.html', 'oauth2-redirect.html');
+                configObject.oauth2RedirectUrl = location.href.replace('index.html', 'oauth2-redirect.html');
             }
             // Init Token or Cookie
             initTokenCookiesStorage(configObject);
@@ -122,8 +78,8 @@
         };
 
         function custom_translate(configObject) {
-            //document.getElementsByTagName('span')[0].innerText = document.getElementsByTagName('span')[0].innerText.replace('swagger', '接口文档');
-            //document.getElementsByTagName('span')[1].innerText = document.getElementsByTagName('span')[1].innerText.replace('Select a definition', resource_globalization.SelectDefinition);
+            $('.swagger-ui .topbar a').attr('target', 'self').attr('href', location.href);
+            $('.swagger-ui .topbar .download-url-wrapper .select-label span').text(resource_globalization.SelectDefinition);
             if (configObject.customAuth && configObject.logoutUrl) {
                 console.log('Init Authorize Exit button');
                 var btn = document.createElement('button');
@@ -132,6 +88,16 @@
                 btn.onclick = function () { location.href = configObject.logoutUrl; };
                 document.getElementsByClassName('topbar-wrapper')[0].appendChild(btn);
             }
+            setTimeout(function () {
+                var filters = $('.swagger-ui .filter-container');
+                filters.find('.operation-filter-input').attr('placeholder', '筛选/过滤');
+                var fbutton = $('<section class="filter-btn block"><button class="btn">展开</button></section>');
+                fbutton.find('button').click(function () {
+                    var o = $(this), txt = o.text(), topen = txt == '展开';
+                    o.text(topen ? '折叠' : '展开');
+                });
+                filters.append(fbutton);
+            }, 100);
         }
 
         function initTokenCookiesStorage(configObject) {

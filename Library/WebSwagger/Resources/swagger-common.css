@@ -1,51 +1,134 @@
-﻿/** {
+.swagger-ui .wrapper {
+    width: 100%;
+    max-width: 1460px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.swagger-ui .info {
+    margin: 20px 0;
+}
+
+.swagger-ui .scheme-container {
     margin: 0;
+    padding: 10px 0;
+    background: #fff;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.15);
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label {
+    display: flex;
+    align-items: center;
+    min-width: 250px;
+    max-width: 600px;
+    margin: 0;
+    color: #f0f0f0;
+}
+
+.swagger-ui .filter-container {
+    display: inline-table;
+    width: 98%;
+}
+
+.swagger-ui .filter-container section.filter {
+    float: left;
+    max-width: 1270px;
+}
+
+.swagger-ui .filter-container section.filter-btn {
+    float: right;
+    width: 56px;
+    margin: 9px auto;
     padding: 0;
-}*/
+}
+
+.swagger-ui .filter-container section.filter-btn button {
+    padding: 5px 10px;
+}
+
+.swagger-ui .filter .operation-filter-input {
+    width: 98%;
+    margin: 8px auto;
+    display: block;
+    padding: 6px;
+    border: 2px solid #d8dde7;
+}
+
+.swagger-ui .btn.authorize span {
+    float: left;
+    padding: 4px 6px 0 0;
+}
+
+.swagger-ui .auth-wrapper .auth {
+    width: 75px;
+    max-width: 75px;
+    padding-right: 20px;
+    margin-right: 10px;
+}
+
+.swagger-ui .opblock-body select {
+    min-width: 6em;
+}
+
+.swagger-ui table tbody tr td:first-of-type {
+    min-width: 10em;
+}
+
+.swagger-ui .parameters-col_description input[type=number] {
+    font-weight: bold;
+    width: 100%;
+    max-width: 340px;
+    min-width: 100px;
+    margin: 5px 0;
+    padding: 8px 10px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background: #fff;
+}
 
 .selectBox {
-    margin: 50px auto; /*居中*/
+    margin: 50px auto;
     width: 180px;
     text-align: center;
 }
+.selectBox a {
+    color: #fff;
+    text-decoration: none;
+}
 
-    .selectBox a {
-        color: #fff;
-        text-decoration: none;
-    }
+.selectBox ul, .selectBox li {
+    list-style: none;
+}
 
-    .selectBox ul, .selectBox li {
-        list-style: none;
-    }
+.selectBox span {
+    line-height: 46px;
+    background-color: #41b1d9;
+    display: block;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+    border-radius: 5px;
+    -webkit-transition: all .2s ease-in;
+    transition: all .2s ease-in;
+}
 
-    .selectBox span {
-        line-height: 46px;
-        background-color: #41b1d9;
-        display: block;
-        margin-bottom: 20px;
-        position: relative;
-        z-index: 2;
-        border-radius: 5px;
-        -webkit-transition: all .2s ease-in;
-        transition: all .2s ease-in;
-    }
+.selectBox span a:after {
+    content: " ";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+    border-bottom: solid 6px #fff;
+    border-left: solid 4px transparent;
+    border-right: solid 4px transparent;
+    vertical-align: 3px;
+    margin-left: 10px;
+    -webkit-transition: all .2s ease-in;
+    transition: all .2s ease-in;
+}
 
-        .selectBox span a:after {
-            content: " ";
-            display: inline-block;
-            width: 0;
-            height: 0;
-            font-size: 0;
-            line-height: 0;
-            border-bottom: solid 6px #fff;
-            border-left: solid 4px transparent;
-            border-right: solid 4px transparent;
-            vertical-align: 3px;
-            margin-left: 10px;
-            -webkit-transition: all .2s ease-in;
-            transition: all .2s ease-in;
-        }
-/*给以整体的阴影和圆角 但是不能overflow*/
 .drop {
     left: 0;
     right: 0;
@@ -54,21 +137,21 @@
     border-radius: 5px;
     position: absolute;
     z-index: 1;
-    -webkit-transform: translateY(-50px); /*y轴方向平移*/
+    -webkit-transform: translateY(-50px);
     transform: translateY(-50px);
     opacity: 0;
-    -webkit-transition: all .2s ease-in; /*平移时间0.2s*/
+    -webkit-transition: all .2s ease-in;
     transition: all .2s ease-in;
 }
-/*给送个下拉助攻*/
+
 .selectBox:hover span {
     background-color: #1f93bc;
 }
 
-    .selectBox:hover span a:after {
-        -webkit-transform: rotate(180deg); /*旋转180度*/
-        transform: rotate(180deg);
-    }
+.selectBox:hover span a:after {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
 
 .selectBox:hover .drop {
     position: static;
@@ -76,22 +159,22 @@
     -webkit-transform: translateY(0);
     transform: translateY(0);
 }
-/*一个很重要的三角形*/
+
 .drop li:first-child:before {
     content: " ";
     font-size: 0;
     line-height: 0;
-    margin: 0 auto; /*居中*/
-    display: block; /*独占一行*/
-    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2); /*配合整体一样的投影*/
+    margin: 0 auto;
+    display: block;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
     background-color: #fff;
     width: 10px;
     height: 10px;
     -webkit-transform: rotate(45deg);
-    transform: rotate(45deg); /*一个正方形倾斜四十五度就是三角了但是要把下半部分藏起来*/
+    transform: rotate(45deg);
     position: relative;
-    top: -5px; /*果断的露出上半部分*/
-    z-index: 1; /*果断的隐藏下半部分*/
+    top: -5px;
+    z-index: 1;
     -webkit-transition: all .2s ease-in;
     transition: all .2s ease-in;
 }
@@ -102,13 +185,13 @@
     border-bottom: solid 1px #eee;
     font-size: 14px;
     display: block;
-    background-color: #fff; /*要有背景色才能盖住呀*/
+    background-color: #fff;
     position: relative;
-    z-index: 2; /*这里很重要 要挡住三角形的下半部分*/
+    z-index: 2;
     -webkit-transition: all .2s ease-in;
     transition: all .2s ease-in;
 }
-/*以下两块：控制第一个和最后一个li要圆角，因为最外边的div没有overflow 也不可以overflow*/
+
 .drop li:first-child a {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -120,7 +203,7 @@
     border-bottom-right-radius: 5px;
     border-bottom: none;
 }
-/*hover事件给了li，先改变三角 再改变a*/
+
 .drop li:hover:before {
     background-color: #41b1d9;
 }
