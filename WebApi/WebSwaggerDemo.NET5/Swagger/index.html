@@ -25,6 +25,13 @@
             background: #fafafa;
         }
 
+        .swagger-ui .auth-wrapper .auth {
+            width: 75px;
+            max-width: 75px;
+            padding-right: 20px;
+            margin-right: 10px;
+        }
+
         .swagger-ui .opblock-body select {
             min-width: 6em;
         }
@@ -118,7 +125,7 @@
             //document.getElementsByTagName('span')[0].innerText = document.getElementsByTagName('span')[0].innerText.replace('swagger', '接口文档');
             //document.getElementsByTagName('span')[1].innerText = document.getElementsByTagName('span')[1].innerText.replace('Select a definition', resource_globalization.SelectDefinition);
             if (configObject.customAuth && configObject.logoutUrl) {
-                console.log('初始化 Authorize 退出 button');
+                console.log('Init Authorize Exit button');
                 var btn = document.createElement('button');
                 btn.className = 'btn ';
                 btn.innerText = resource_globalization.Logout;
@@ -129,7 +136,7 @@
 
         function initTokenCookiesStorage(configObject) {
             if (!configObject.token_storage) {
-                console.log('初始化 Authorize 使用 Cookie');
+                console.log('Init Authorize Use Cookie');
                 configObject.requestInterceptor = (request) => {
                     var token = getCookieValue('CSRF-TOKEN');
                     if (token) request.headers.Authorization = 'Bearer ' + token;
@@ -139,10 +146,13 @@
                 };
                 return;
             }
-            console.log('初始化 Authorize 使用 Storage');
+            console.log('Init Authorize Use Storage');
+            configObject.token_storage.verified = false;
             configObject.onComplete = () => {
                 var tokenValue = getTokenStorage(configObject);
-                if (tokenValue) swagger_ui.preauthorizeApiKey(configObject.token_storage.securityDefinition, tokenValue);
+                if (!tokenValue) return;
+                configObject.token_storage.verified = true;
+                swagger_ui.preauthorizeApiKey(configObject.token_storage.securityDefinition, tokenValue);
             };
             configObject.requestInterceptor = (request) => {
                 request.headers.Authorization = getTokenStorage(configObject);
@@ -154,7 +164,7 @@
         function addAuthorizeListener(configObject) {
             var authWrapper = document.querySelector(".scheme-container .auth-wrapper");
             if (authWrapper === undefined || authWrapper === null) return setTimeout(function () { addAuthorizeListener(configObject); }, 1000);
-            var forms = null, txt1 = ['Authorize', resource_globalization.Authorize], txt2 = ["Logout", resource_globalization.Logout];
+            var forms = null, txtAuthorize = ['Authorize', resource_globalization.Authorize], txtLogout = ["Logout", resource_globalization.Logout];
             var scheme1 = "ApiKey", queryName1 = "apiKey";
             var scheme2 = "Bearer", queryName2 = "token";
             authWrapper.addEventListener("click", function (e) {
@@ -175,35 +185,44 @@
                         if (forms.length == 0) setTimeout(function () {
                             forms = $('.scheme-container .auth-container');
                             // scheme1 form
-                            var formApiKey = forms.filter(function (i, v) { return v.innerText.indexOf(scheme1) == 0; });
-                            if (formApiKey.length == 1) {
-                                console.log('scheme1 form:', scheme1);
-                                var el = formApiKey.find('input'), bts = formApiKey.find('button.auth');
-                                //if (el.length == 1 && tokenValue) { el.val(tokenValue); bts.eq(0).trigger('click'); }
-                                bts.eq(0).attr('scheme', scheme1).text(el.length == 0 ? txt2[1] : txt1[1]);
+                            var form1 = forms.filter(function (i, v) { return v.innerText.indexOf(scheme1) == 0; });
+                            if (form1.length == 1) {
+                                console.log('found authorize form-scheme:', scheme1);
+                                var btns = form1.find('.modal-btn'), el = form1.find('input');
+                                //if (el.length == 1 && tokenValue) { el.val(tokenValue); btns.eq(0).trigger('click'); }
+                                btns.eq(0).attr('scheme', scheme1).text(configObject.token_storage.verified ? txtLogout[1] : txtAuthorize[1]);
                             }
                             // scheme2 form
-                            var formBearer = forms.filter(function (i, v) { return v.innerText.indexOf(scheme2) == 0; });
-                            if (formBearer.length == 1) { }
-                        }, 500);
+                            var form2 = forms.filter(function (i, v) { return v.innerText.indexOf(scheme2) == 0; });
+                            if (form2.length == 1) {
+                                console.log('found authorize form-scheme:', scheme2);
+                                var btns = form2.find('.modal-btn'), el = form2.find('input');
+                                //if (el.length == 1 && tokenValue) { el.val(tokenValue); btns.eq(0).trigger('click'); }
+                                btns.eq(0).attr('scheme', scheme2);
+                            }
+                        }, 50);
                     }
-                    // modal auth button
-                    if (cls.indexOf('btn modal-btn auth') == 0) {
-                        console.log('click modal auth button');
-                        var form0 = $(btn).parent().parent(), scheme = $(btn).attr('scheme');
-                        // scheme1 button
+                    // authorize form auth button
+                    if (cls.indexOf('btn modal-btn') == 0) {
+                        var btnQ = $(btn), scheme = btnQ.attr('scheme');
+                        console.log('click authorize form-button:', scheme);
+                        // scheme1 form button
                         if (scheme === scheme1) {
-                            if (txt1.indexOf(txt) != -1) {
-                                var el = form0.find("input");
+                            var form1 = btnQ.parents('form');
+                            if (txtAuthorize.indexOf(txt) != -1) {
+                                var el = form1.find("input");
                                 if (el.length == 0) return;
+                                if ($.trim(el.val()) == '') return alert("输入内容不能为空。");
+                                setTimeout(function () { btnQ.text(txtLogout[1]); }, 10);
+                                configObject.token_storage.verified = true;
                                 setTokenStorage(configObject, el.val());
-                                btn.innerText = resource_globalization.Logout;
-                            } else if (txt2.indexOf(txt) != -1) {
+                            } else if (txtLogout.indexOf(txt) != -1) {
+                                setTimeout(function () { btnQ.text(txtAuthorize[1]); }, 10);
+                                configObject.token_storage.verified = false;
                                 removeTokenStorage(configObject);
-                                btn.innerText = resource_globalization.Authorize;
                             }
                         }
-                        // scheme2 button
+                        // scheme2 form button
                         if (scheme === scheme2) {
                         }
                     }
