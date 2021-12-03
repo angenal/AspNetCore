@@ -1,3 +1,7 @@
+.swagger-ui {
+    margin-bottom: 6em;
+}
+
 .swagger-ui .wrapper {
     width: 100%;
     max-width: 1460px;
@@ -18,41 +22,54 @@
 }
 
 .swagger-ui .topbar .download-url-wrapper .select-label {
+    color: #f0f0f0;
     display: flex;
     align-items: center;
-    min-width: 250px;
-    max-width: 600px;
+    max-width: 300px;
     margin: 0;
-    color: #f0f0f0;
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label span {
+    flex: none;
+    font-size: 15px;
+    padding: 0px 6px 0 0;
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label select {
+    flex: 1;
+    border: 2px solid #62a03f;
+    outline: none;
+    box-shadow: none;
 }
 
 .swagger-ui .filter-container {
-    display: inline-table;
-    width: 98%;
+    padding: 0 10px;
+    width: 100%;
 }
 
 .swagger-ui .filter-container section.filter {
-    float: left;
-    max-width: 1270px;
-}
-
-.swagger-ui .filter-container section.filter-btn {
-    float: right;
-    width: 56px;
-    margin: 9px auto;
+    display: flex;
     padding: 0;
 }
 
-.swagger-ui .filter-container section.filter-btn button {
-    padding: 5px 10px;
+.swagger-ui .filter-container section.filter button {
+    flex: auto;
+    width: 50px;
+    margin: 9px 4px;
+    padding: 5px 8px;
 }
 
-.swagger-ui .filter .operation-filter-input {
-    width: 98%;
+.swagger-ui .filter-container section.filter .operation-filter-input {
+    flex: 1 auto;
     margin: 8px auto;
     display: block;
     padding: 6px;
     border: 2px solid #d8dde7;
+}
+
+.swagger-ui .btn.authorized {
+    border: 2px solid red;
+    color: red;
 }
 
 .swagger-ui .btn.authorize span {
@@ -85,6 +102,10 @@
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     background: #fff;
+}
+
+.swagger-ui .auth-container .wrapper code {
+    font-size: 12px;
 }
 
 .selectBox {

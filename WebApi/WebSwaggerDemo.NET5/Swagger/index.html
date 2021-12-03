@@ -88,16 +88,22 @@
                 btn.onclick = function () { location.href = configObject.logoutUrl; };
                 document.getElementsByClassName('topbar-wrapper')[0].appendChild(btn);
             }
-            setTimeout(function () {
-                var filters = $('.swagger-ui .filter-container');
-                filters.find('.operation-filter-input').attr('placeholder', '筛选/过滤');
-                var fbutton = $('<section class="filter-btn block"><button class="btn">展开</button></section>');
-                fbutton.find('button').click(function () {
-                    var o = $(this), txt = o.text(), topen = txt == '展开';
-                    o.text(topen ? '折叠' : '展开');
+            var filterl = [], filterf = function () {
+                filterl = $('.filter-container');
+                if (filterl.length == 0) return setTimeout(filterf, 50);
+                filterl.parent().addClass('wrapper');
+                filterl.find('.operation-filter-input').attr('placeholder', '筛选 / 过滤');
+                var fbutton = $('<button class="btn">展开</button>').click(function () {
+                    var btn = $(this), txt = btn.text(), topen = txt == '展开';
+                    btn.text(topen ? '折叠' : '展开');
+                    $('.opblock-tag-section').each(function (i, v) {
+                        var v1 = $(v), v2 = v1.hasClass('is-open');
+                        if (topen) { if (!v2) v1.find('h4').trigger('click'); }
+                        else { if (v2) v1.find('h4').trigger('click'); }
+                    });
                 });
-                filters.append(fbutton);
-            }, 100);
+                filterl.find('section.filter').append(fbutton);
+            }; filterf();
         }
 
         function initTokenCookiesStorage(configObject) {
@@ -112,12 +118,12 @@
                 };
                 return;
             }
-            console.log('Init Authorize Use Storage');
-            configObject.token_storage.verified = false;
+            console.log('init authorize local or session storage');
+            configObject.token_storage.authorized = false;
             configObject.onComplete = () => {
                 var tokenValue = getTokenStorage(configObject);
                 if (!tokenValue) return;
-                configObject.token_storage.verified = true;
+                configObject.token_storage.authorized = true;
                 swagger_ui.preauthorizeApiKey(configObject.token_storage.securityDefinition, tokenValue);
             };
             configObject.requestInterceptor = (request) => {
@@ -128,14 +134,14 @@
         }
 
         function addAuthorizeListener(configObject) {
-            var authWrapper = document.querySelector(".scheme-container .auth-wrapper");
+            var authWrapper = document.querySelector('.scheme-container .auth-wrapper');
             if (authWrapper === undefined || authWrapper === null) return setTimeout(function () { addAuthorizeListener(configObject); }, 1000);
-            var forms = null, txtAuthorize = ['Authorize', resource_globalization.Authorize], txtLogout = ["Logout", resource_globalization.Logout];
+            var txtAuthorize = ['Authorize', resource_globalization.Authorize], txtLogout = ['Logout', resource_globalization.Logout];
             var scheme1 = "ApiKey", queryName1 = "apiKey";
             var scheme2 = "Bearer", queryName2 = "token";
-            authWrapper.addEventListener("click", function (e) {
-                if (e.type !== "click") return;
-                var btn = e.srcElement, tagName = "BUTTON";
+            authWrapper.addEventListener('click', function (e) {
+                if (e.type !== 'click') return;
+                var btn = e.srcElement, tagName = 'BUTTON', clsName = 'authorized';
                 if (btn.tagName !== tagName) {
                     if (btn.parentNode.tagName === tagName) btn = btn.parentNode;
                     else if (btn.parentNode.parentNode.tagName === tagName) btn = btn.parentNode.parentNode;
@@ -145,46 +151,52 @@
                     if (!txt || !cls) return;
                     // authorize button
                     if (cls.indexOf('btn authorize') == 0) {
-                        if (forms != null) return;
-                        console.log('click authorize button');
-                        forms = $('.scheme-container .auth-container');
-                        if (forms.length == 0) setTimeout(function () {
-                            forms = $('.scheme-container .auth-container');
+                        //console.log('click authorize button');
+                        var formf = function () {
+                            var forms = $('.scheme-container .auth-container');
+                            if (forms.length == 0) setTimeout(formf, 20);
                             // scheme1 form
                             var form1 = forms.filter(function (i, v) { return v.innerText.indexOf(scheme1) == 0; });
                             if (form1.length == 1) {
-                                console.log('found authorize form-scheme:', scheme1);
-                                var btns = form1.find('.modal-btn'), el = form1.find('input');
-                                //if (el.length == 1 && tokenValue) { el.val(tokenValue); btns.eq(0).trigger('click'); }
-                                btns.eq(0).attr('scheme', scheme1).text(configObject.token_storage.verified ? txtLogout[1] : txtAuthorize[1]);
+                                var btnQ = form1.find('.modal-btn').eq(0);
+                                var tokenValue = getTokenStorage(configObject), authorized = !!tokenValue;
+                                configObject.token_storage.authorized = authorized;
+                                btnQ.attr('scheme', scheme1).text(authorized ? txtLogout[1] : txtAuthorize[1]);
+                                if (authorized) btnQ.addClass(clsName); else btnQ.removeClass(clsName);
+                                form1.find('h4').html(form1.find('h4 code').html());
+                                form1.find('h6').hide();
                             }
                             // scheme2 form
                             var form2 = forms.filter(function (i, v) { return v.innerText.indexOf(scheme2) == 0; });
                             if (form2.length == 1) {
-                                console.log('found authorize form-scheme:', scheme2);
-                                var btns = form2.find('.modal-btn'), el = form2.find('input');
+                                //var btns = form2.find('.modal-btn'), el = form2.find('input');
                                 //if (el.length == 1 && tokenValue) { el.val(tokenValue); btns.eq(0).trigger('click'); }
-                                btns.eq(0).attr('scheme', scheme2);
+                                var btnQ = form2.find('.modal-btn').eq(0);
+                                btnQ.attr('scheme', scheme2);
+                                form2.find('h4').html(form2.find('h4 code').html());
+                                form2.find('h6').hide();
                             }
-                        }, 50);
+                        }; formf();
                     }
                     // authorize form auth button
                     if (cls.indexOf('btn modal-btn') == 0) {
                         var btnQ = $(btn), scheme = btnQ.attr('scheme');
-                        console.log('click authorize form-button:', scheme);
+                        //console.log('click authorize form-button:', scheme);
                         // scheme1 form button
                         if (scheme === scheme1) {
                             var form1 = btnQ.parents('form');
                             if (txtAuthorize.indexOf(txt) != -1) {
-                                var el = form1.find("input");
+                                var el = form1.find('input');
                                 if (el.length == 0) return;
-                                if ($.trim(el.val()) == '') return alert("输入内容不能为空。");
-                                setTimeout(function () { btnQ.text(txtLogout[1]); }, 10);
-                                configObject.token_storage.verified = true;
+                                if ($.trim(el.val()) == '') return alert('输入内容不能为空');
+                                configObject.token_storage.authorized = true;
+                                var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form1.find('h6').hide(); };
+                                setTimeout(authfn, 10); setTimeout(authfn, 20);
                                 setTokenStorage(configObject, el.val());
                             } else if (txtLogout.indexOf(txt) != -1) {
-                                setTimeout(function () { btnQ.text(txtAuthorize[1]); }, 10);
-                                configObject.token_storage.verified = false;
+                                configObject.token_storage.authorized = false;
+                                var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form1.find('h6').hide(); };
+                                setTimeout(authfn, 10); setTimeout(authfn, 20);
                                 removeTokenStorage(configObject);
                             }
                         }
