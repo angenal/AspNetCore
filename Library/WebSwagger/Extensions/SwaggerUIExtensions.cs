@@ -70,7 +70,7 @@ namespace WebSwagger
         /// <param name="options">SwaggerUI选项</param>
         public static void UseInternalResources(this SwaggerUIOptions options)
         {
-            options.InjectJavascript("resources?name=jquery-3.3.1.min.js");
+            options.InjectJavascript("https://cdn.bootcdn.net/ajax/libs/jquery/2.1.4/jquery.min.js");
             options.InjectJavascript("resources?name=jquery.initialize.min.js");
             //options.InjectJavascript("/swagger/resources?name=export.js");
             options.InjectStylesheet("resources?name=swagger-common.css");

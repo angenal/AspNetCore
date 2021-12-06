@@ -7,7 +7,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\export.js" />
     <EmbeddedResource Include="Resources\index.html" />
-    <EmbeddedResource Include="Resources\jquery-3.3.1.min.js" />
     <EmbeddedResource Include="Resources\jquery.initialize.min.js" />
     <EmbeddedResource Include="Resources\lang\zh-cn.js" />
     <EmbeddedResource Include="Resources\login.html" />
