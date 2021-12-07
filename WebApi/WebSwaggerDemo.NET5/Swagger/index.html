@@ -77,6 +77,7 @@
                 btn.onclick = function () { location.href = configObject.logoutUrl; };
                 document.getElementsByClassName('topbar-wrapper')[0].appendChild(btn);
             }
+            // filter function
             var filterl = [], filterf = function () {
                 filterl = $('.filter-container');
                 if (filterl.length == 0) return setTimeout(filterf, 50);
@@ -93,6 +94,30 @@
                 });
                 filterl.find('section.filter').append(fbutton);
             }; filterf();
+            // opblock function
+            var opblocks = [], opblockf = function () {
+                opblocks = document.querySelector('.opblock-tag-section');
+                if (opblocks.length == 0) return setTimeout(opblockf, 50);
+                console.log('opblock tag section count:' + opblocks.length);
+                opblocks.addEventListener('click', function (e) {
+                    if (e.type !== 'click') return;
+                    var div = e.srcElement, tagName = div.tagName, clsName = div.className;
+                    if ('DIV' !== tagName || !clsName || clsName.indexOf('is-open') == -1) return;
+                    console.log('click opblock tag section');
+                    $(div).find('.opblock').each(function (i, opblock) {
+                        opblock.addEventListener('click', function (e1) {
+                            if (e1.type !== 'click') return;
+                            var div1 = e1.srcElement, tagName = div1.tagName, clsName = div1.className;
+                            if ('DIV' !== tagName || !clsName || clsName.indexOf('is-open') == -1) return;
+                            console.log('click opblock section item');
+                            var sel1 = $(div1).find('select.content-type');
+                            if (sel1.length != 1) return;
+                            var ops = {}, items = []; sel1.find('option').each(function (i1, v1) { ops[v1.value] = v1.text; items.push(v1.value); });
+                            sel1.html(''); items.sort().forEach(function (item) { sel1.append($('<option value="' + item + '">' + ops[item] + '</option>')); });
+                        });
+                    });
+                });
+            };
         }
 
         function initTokenCookiesStorage(configObject) {

@@ -17,6 +17,7 @@ var resource_globalization = {
     "RequestBody": "请求体",
     "ResponseBody": "响应体",
     "ResponseHeaders": "响应头",
+    "ResponseContentType": "输出格式",
     "Schemas": "Schemas",
     "Authorize": "授权",
     "Logout": "退出",
