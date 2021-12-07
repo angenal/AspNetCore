@@ -21,7 +21,12 @@ namespace WebSwagger
         /// <summary>
         /// 项目名称
         /// </summary>
-        public string ProjectName { get; set; } = "REST API";
+        public string ProjectName { get; set; }
+
+        /// <summary>
+        /// 项目描述
+        /// </summary>
+        public string ProjectDescription { get; set; }
 
         /// <summary>
         /// 路由前缀。默认：swagger
@@ -47,6 +52,10 @@ namespace WebSwagger
         /// 是否启用API版本号
         /// </summary>
         public bool EnableApiVersion { get; set; }
+        /// <summary></summary>
+        public string HeaderApiVersion { get; set; } = "X-Api-Version";
+        /// <summary></summary>
+        public string QueryApiVersion { get; set; } = "version";
 
         /// <summary>
         /// Api分组类型

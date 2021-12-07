@@ -67,10 +67,10 @@
         };
 
         function custom_translate(configObject) {
-            $('.swagger-ui .topbar a').attr('target', 'self').attr('href', location.href);
+            $('.swagger-ui .topbar a').attr('href', location.href);
             $('.swagger-ui .topbar .download-url-wrapper .select-label span').text(resource_globalization.SelectDefinition);
             if (configObject.customAuth && configObject.logoutUrl) {
-                console.log('Init authorize exit button');
+                //console.log('Init authorize exit button');
                 var btn = document.createElement('button');
                 btn.className = 'btn ';
                 btn.innerText = resource_globalization.Logout;
@@ -97,7 +97,7 @@
 
         function initTokenCookiesStorage(configObject) {
             if (configObject.ApiKeyStorage || configObject.BearerStorage) {
-                console.log('init authorize local or session storage');
+                //console.log('init authorize local or session storage');
                 if (configObject.ApiKeyStorage) configObject.ApiKeyStorage.authorized = false;
                 if (configObject.BearerStorage) configObject.BearerStorage.authorized = false;
                 configObject.onComplete = () => {
@@ -127,7 +127,7 @@
                 };
                 addAuthorizeListener(configObject);
             } else {
-                console.log('Init authorize cookie storage');
+                //console.log('Init authorize cookie storage');
                 configObject.requestInterceptor = (request) => {
                     var token = getCookieValue('CSRF-TOKEN');
                     if (token) request.headers.Authorization = 'Bearer ' + token;

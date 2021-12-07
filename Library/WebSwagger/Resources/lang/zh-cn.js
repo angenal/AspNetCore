@@ -4,7 +4,7 @@ var resource_globalization = {
     "SelectDefinition": "选择",
     "TryItOut": "试一下",
     "Cancel": "取消",
-    "Execute:": "执行",
+    "Execute": "执行",
     "Clear": "重置",
     "AvailableValues": "可选项",
     "ExampleValue": "示例",

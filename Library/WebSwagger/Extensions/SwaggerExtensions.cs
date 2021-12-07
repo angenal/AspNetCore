@@ -15,7 +15,7 @@ namespace WebSwagger
         /// <param name="page">页面名称</param>
         public static void WriteSwaggerPage(this HttpResponse response, string page)
         {
-            var stream = SwaggerDocService.Assembly.GetManifestResourceStream($"WebSwagger.Resources.{page}.html");
+            var stream = SwaggerDocServices.Assembly.GetManifestResourceStream($"WebSwagger.Resources.{page}.html");
             if (stream == null) return;
             byte[] buffer = new byte[stream.Length];
             stream.Read(buffer, 0, buffer.Length);

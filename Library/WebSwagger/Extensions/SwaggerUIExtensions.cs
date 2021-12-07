@@ -45,7 +45,7 @@ namespace WebSwagger
             options.IndexStream = () =>
             {
                 if (File.Exists(customSwaggerIndexPath)) return File.OpenRead(customSwaggerIndexPath);
-                return SwaggerDocService.Assembly.GetManifestResourceStream($"WebSwagger.Resources.index.html");
+                return SwaggerDocServices.Assembly.GetManifestResourceStream($"WebSwagger.Resources.index.html");
             };
         }
         private static string customSwaggerIndexPath;
@@ -125,7 +125,7 @@ namespace WebSwagger
         {
             if (options?.ConfigObject?.Urls == null)
                 return false;
-            return options.ConfigObject.Urls.Any(x => x.Name == name || x.Url == url);
+            return options.ConfigObject.Urls.Any(x => x.Name == name || x.Name == "版本" + name || x.Url == url);
         }
     }
 }

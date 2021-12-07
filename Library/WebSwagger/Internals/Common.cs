@@ -16,7 +16,7 @@ namespace WebSwagger.Internals
         /// <param name="resourceFile">资源文件</param>
         public static async Task<string> LoadContentAsync(string resourceFile)
         {
-            var stream = SwaggerDocService.Assembly.GetManifestResourceStream($"WebSwagger.Resources.{resourceFile}");
+            var stream = SwaggerDocServices.Assembly.GetManifestResourceStream($"WebSwagger.Resources.{resourceFile}");
             if (stream == null) return string.Empty;
             var sr = new StreamReader(stream, Encoding.UTF8);
             var rs = await sr.ReadToEndAsync();
@@ -30,7 +30,7 @@ namespace WebSwagger.Internals
         /// <param name="language">语言</param>
         public static async Task<string> GetLanguageAsync(string language = "zh-cn")
         {
-            var stream = SwaggerDocService.Assembly.GetManifestResourceStream($"WebSwagger.Resources.lang.{language.ToLower()}.js");
+            var stream = SwaggerDocServices.Assembly.GetManifestResourceStream($"WebSwagger.Resources.lang.{language.ToLower()}.js");
             if (stream == null) return string.Empty;
             var sr = new StreamReader(stream, Encoding.UTF8);
             var rs = await sr.ReadToEndAsync();
