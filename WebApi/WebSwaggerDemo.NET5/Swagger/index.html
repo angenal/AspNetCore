@@ -70,7 +70,7 @@
             $('.swagger-ui .topbar a').attr('target', 'self').attr('href', location.href);
             $('.swagger-ui .topbar .download-url-wrapper .select-label span').text(resource_globalization.SelectDefinition);
             if (configObject.customAuth && configObject.logoutUrl) {
-                console.log('Init Authorize Exit button');
+                console.log('Init authorize exit button');
                 var btn = document.createElement('button');
                 btn.className = 'btn ';
                 btn.innerText = resource_globalization.Logout;
@@ -101,13 +101,28 @@
                 if (configObject.ApiKeyStorage) configObject.ApiKeyStorage.authorized = false;
                 if (configObject.BearerStorage) configObject.BearerStorage.authorized = false;
                 configObject.onComplete = () => {
-                    var tokenValue = configObject.ApiKeyStorage ? getApiKeyStorage(configObject) : getBearerStorage(configObject);
-                    if (!tokenValue) return;
-                    configObject.ApiKeyStorage.authorized = true;
-                    swagger_ui.preauthorizeApiKey(configObject.ApiKeyStorage.securityDefinition, tokenValue);
+                    if (configObject.ApiKeyStorage) {
+                        var token = getApiKeyStorage(configObject), authorized = !!token;
+                        configObject.ApiKeyStorage.authorized = authorized;
+                        if (authorized) swagger_ui.preauthorizeApiKey(configObject.ApiKeyStorage.securityDefinition, token);
+                    }
+                    if (configObject.BearerStorage) {
+                        var token = getBearerStorage(configObject), authorized = !!token;
+                        configObject.BearerStorage.authorized = authorized;
+                        if (authorized) swagger_ui.preauthorizeApiKey(configObject.BearerStorage.securityDefinition, token);
+                    }
                 };
                 configObject.requestInterceptor = (request) => {
-                    request.headers.Authorization = getApiKeyStorage(configObject);
+                    if (configObject.ApiKeyStorage) {
+                        var token = getApiKeyStorage(configObject);
+                        if (token && configObject.ApiKeyStorage.securityScheme['in'] == 'header')
+                            request.headers[configObject.ApiKeyStorage.securityScheme.name] = token;
+                    }
+                    if (configObject.BearerStorage) {
+                        var token = getBearerStorage(configObject);
+                        if (token && configObject.BearerStorage.securityScheme['in'] == 'header')
+                            request.headers[configObject.BearerStorage.securityScheme.name] = 'Bearer ' + token;
+                    }
                     return request;
                 };
                 addAuthorizeListener(configObject);
@@ -127,8 +142,7 @@
             var authWrapper = document.querySelector('.scheme-container .auth-wrapper');
             if (authWrapper === undefined || authWrapper === null) return setTimeout(function () { addAuthorizeListener(configObject); }, 1000);
             var txtAuthorize = ['Authorize', resource_globalization.Authorize], txtLogout = ['Logout', resource_globalization.Logout];
-            var scheme1 = "ApiKey", queryName1 = "apiKey";
-            var scheme2 = "Bearer", queryName2 = "token";
+            var scheme1 = "ApiKey", scheme2 = "Bearer", queryName1 = "apiKey", queryName2 = "token";
             authWrapper.addEventListener('click', function (e) {
                 if (e.type !== 'click') return;
                 var btn = e.srcElement, tagName = 'BUTTON', clsName = 'authorized';
@@ -149,7 +163,7 @@
                             var form1 = forms.filter(function (i, v) { return v.innerText.indexOf(scheme1) == 0; });
                             if (form1.length == 1) {
                                 var btnQ = form1.find('.modal-btn').eq(0);
-                                var tokenValue = getApiKeyStorage(configObject), authorized = !!tokenValue;
+                                var token = getApiKeyStorage(configObject), authorized = !!token;
                                 configObject.ApiKeyStorage.authorized = authorized;
                                 btnQ.attr('scheme', scheme1).text(authorized ? txtLogout[1] : txtAuthorize[1]);
                                 if (authorized) btnQ.addClass(clsName); else btnQ.removeClass(clsName);
@@ -162,7 +176,10 @@
                                 //var btns = form2.find('.modal-btn'), el = form2.find('input');
                                 //if (el.length == 1 && tokenValue) { el.val(tokenValue); btns.eq(0).trigger('click'); }
                                 var btnQ = form2.find('.modal-btn').eq(0);
-                                btnQ.attr('scheme', scheme2);
+                                var token = getBearerStorage(configObject), authorized = !!token;
+                                configObject.BearerStorage.authorized = authorized;
+                                btnQ.attr('scheme', scheme2).text(authorized ? txtLogout[1] : txtAuthorize[1]);
+                                if (authorized) btnQ.addClass(clsName); else btnQ.removeClass(clsName);
                                 form2.find('h4').html(form2.find('h4 code').html());
                                 form2.find('h6').hide();
                             }
@@ -192,6 +209,21 @@
                         }
                         // scheme2 form button
                         if (scheme === scheme2) {
+                            var form2 = btnQ.parents('form');
+                            if (txtAuthorize.indexOf(txt) != -1) {
+                                var el = form2.find('input');
+                                if (el.length == 0) return;
+                                if ($.trim(el.val()) == '') return alert('输入内容不能为空');
+                                configObject.BearerStorage.authorized = true;
+                                var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form2.find('h6').hide(); };
+                                setTimeout(authfn, 10); setTimeout(authfn, 20);
+                                setBearerStorage(configObject, el.val());
+                            } else if (txtLogout.indexOf(txt) != -1) {
+                                configObject.BearerStorage.authorized = false;
+                                var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form2.find('h6').hide(); };
+                                setTimeout(authfn, 10); setTimeout(authfn, 20);
+                                removeBearerStorage(configObject);
+                            }
                         }
                     }
                 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.IO;
@@ -54,13 +55,25 @@ namespace WebSwagger
         /// </summary>
         /// <param name="options">SwaggerUI选项</param>
         /// <param name="securityDefinition">授权定义。对应于 AddSecurityDefinition 中的 name</param>
+        /// <param name="securityScheme">授权方式</param>
         /// <param name="cacheType">缓存类型</param>
-        public static void UseTokenStorage(this SwaggerUIOptions options, string securityDefinition, WebCacheType cacheType = WebCacheType.Session)
+        public static void UseTokenStorage(this SwaggerUIOptions options, string securityDefinition, TokenDefinitionParameter securityScheme, WebCacheType cacheType = WebCacheType.Session)
         {
             options.ConfigObject.AdditionalItems[$"{securityDefinition}Storage"] = new TokenStorageParameter
             {
                 CacheType = cacheType,
-                SecurityDefinition = securityDefinition
+                SecurityDefinition = securityDefinition,
+                SecurityScheme = securityScheme
+            };
+        }
+        internal static TokenDefinitionParameter ConvertToTDP(this OpenApiSecurityScheme scheme)
+        {
+            return new TokenDefinitionParameter
+            {
+                Name = scheme.Name,
+                Description = scheme.Description,
+                In = scheme.In,
+                Type = scheme.Type
             };
         }
 

@@ -7,6 +7,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using WebSwagger.Core.Authorization;
@@ -165,6 +166,34 @@ namespace WebSwagger
         }
 
         /// <summary>
+        /// 初始化Swagger身份验证
+        /// </summary>
+        private static void InitSwaggerSecurityDefinition()
+        {
+            string scheme = "ApiKey";
+            var scheme1 = new OpenApiSecurityScheme()
+            {
+                Name = "X-API-KEY",
+                Description = "API 密钥",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey
+            };
+            SecurityDefinitions.Add(scheme, scheme1);
+
+            scheme = "Bearer";
+            var scheme2 = new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Scheme = scheme,
+                BearerFormat = "JWT",
+                Description = "JWT 认证授权",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey
+            };
+            SecurityDefinitions.Add(scheme, scheme2);
+        }
+
+        /// <summary>
         /// 添加Swagger身份验证
         /// </summary>
         /// <param name="c"></param>
@@ -173,15 +202,7 @@ namespace WebSwagger
             //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>(){{"oauth2", new string[] { }}});
 
             string scheme = "ApiKey", queryName = "apiKey";
-            var scheme1 = new OpenApiSecurityScheme()
-            {
-                Name = "X-API-KEY",
-                Description = "API 密钥",
-                In = ParameterLocation.Cookie,
-                Type = SecuritySchemeType.ApiKey
-            };
-
-            c.AddSecurityDefinition(scheme, scheme1);
+            c.AddSecurityDefinition(scheme, SecurityDefinitions[scheme]);
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -198,17 +219,7 @@ namespace WebSwagger
             });
 
             scheme = "Bearer"; queryName = "token";
-            var scheme2 = new OpenApiSecurityScheme()
-            {
-                Name = "Authorization",
-                Scheme = scheme,
-                BearerFormat = "JWT",
-                Description = "JWT 认证授权",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey
-            };
-
-            c.AddSecurityDefinition(scheme, scheme2);
+            c.AddSecurityDefinition(scheme, SecurityDefinitions[scheme]);
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -231,8 +242,11 @@ namespace WebSwagger
         /// <param name="c"></param>
         private static void UseSwaggerSecurityStorage(this SwaggerUIOptions c)
         {
-            c.UseTokenStorage("ApiKey", WebCacheType.Local);
-            c.UseTokenStorage("Bearer", WebCacheType.Session);
+            InitSwaggerSecurityDefinition();
+            string scheme = "ApiKey";
+            c.UseTokenStorage(scheme, SecurityDefinitions[scheme].ConvertToTDP(), WebCacheType.Local);
+            scheme = "Bearer";
+            c.UseTokenStorage(scheme, SecurityDefinitions[scheme].ConvertToTDP(), WebCacheType.Session);
         }
 
         /// <summary>
@@ -282,6 +296,7 @@ namespace WebSwagger
             return app.UseSwagger(o => BuildContext.Instance.DocOptions.InitSwaggerOptions(o)).UseSwaggerUI(o => BuildContext.Instance.DocOptions.AddSwaggerUi(o));
         }
 
+        public static readonly Dictionary<string, OpenApiSecurityScheme> SecurityDefinitions = new Dictionary<string, OpenApiSecurityScheme>();
         public static Assembly Assembly => typeof(SwaggerDocService).GetTypeInfo().Assembly;
     }
 }

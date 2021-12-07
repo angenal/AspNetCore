@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -116,9 +117,25 @@ namespace WebSwagger
         public string SecurityDefinition { get; set; }
 
         /// <summary>
+        /// 授权方式
+        /// </summary>
+        public TokenDefinitionParameter SecurityScheme { get; set; }
+
+        /// <summary>
         /// 网页缓存类型
         /// </summary>
         public WebCacheType CacheType { get; set; }
+    }
+
+    /// <summary>
+    /// 授权方式
+    /// </summary>
+    public class TokenDefinitionParameter
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public ParameterLocation In { get; set; }
+        public SecuritySchemeType Type { get; set; }
     }
 
     /// <summary>
