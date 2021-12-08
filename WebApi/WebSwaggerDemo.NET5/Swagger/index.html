@@ -96,28 +96,36 @@
             }; filterf();
             // opblock function
             var opblocks = [], opblockf = function () {
-                opblocks = document.querySelector('.opblock-tag-section');
+                opblocks = $('.opblock-tag-section');
                 if (opblocks.length == 0) return setTimeout(opblockf, 50);
-                console.log('opblock tag section count:' + opblocks.length);
-                opblocks.addEventListener('click', function (e) {
-                    if (e.type !== 'click') return;
-                    var div = e.srcElement, tagName = div.tagName, clsName = div.className;
-                    if ('DIV' !== tagName || !clsName || clsName.indexOf('is-open') == -1) return;
-                    console.log('click opblock tag section');
-                    $(div).find('.opblock').each(function (i, opblock) {
-                        opblock.addEventListener('click', function (e1) {
-                            if (e1.type !== 'click') return;
-                            var div1 = e1.srcElement, tagName = div1.tagName, clsName = div1.className;
-                            if ('DIV' !== tagName || !clsName || clsName.indexOf('is-open') == -1) return;
-                            console.log('click opblock section item');
-                            var sel1 = $(div1).find('select.content-type');
-                            if (sel1.length != 1) return;
-                            var ops = {}, items = []; sel1.find('option').each(function (i1, v1) { ops[v1.value] = v1.text; items.push(v1.value); });
-                            sel1.html(''); items.sort().forEach(function (item) { sel1.append($('<option value="' + item + '">' + ops[item] + '</option>')); });
-                        });
+                console.log('found opblock tag section:', opblocks.length);
+                opblocks.each(function (i0, opblock0) {
+                    opblock0.addEventListener('click', function (e) {
+                        if (e.type !== 'click') return;
+                        var btn = $(e.srcElement).parents('h4.opblock-tag').parent(), ops = btn.find('.opblock');
+                        if (ops.length > 0) return;
+                        setTimeout(function () {
+                            ops = btn.find('.opblock');
+                            console.log('found opblock tag section item:', ops.length);
+                            ops.each(function (i1, opblock) {
+                                opblock.addEventListener('click', function (e1) {
+                                    if (e1.type !== 'click') return;
+                                    var div1 = e1.srcElement, cls1 = div1.className, sel1 = [];
+                                    if (!cls1 || cls1.indexOf('opblock ') != 0) {
+                                        div1 = $(div1).parents('.opblock');
+                                        if (div1.length == 0) return;
+                                    }
+                                    sel1 = $(div1).find('select.content-type');
+                                    if (sel1.length == 0) return;
+                                    var ops = {}, vs = []; sel1.find('option').each(function (i1, v1) { ops[v1.value] = v1.text; vs.push(v1.value); });
+                                    var opt = ''; vs.sort().forEach(function (v) { opt += '<option value="' + v + '">' + ops[v] + '</option>'; });
+                                    sel1.html(opt);
+                                });
+                            });
+                        }, 50);
                     });
                 });
-            };
+            }; opblockf();
         }
 
         function initTokenCookiesStorage(configObject) {
@@ -165,9 +173,9 @@
 
         function addAuthorizeListener(configObject) {
             var authWrapper = document.querySelector('.scheme-container .auth-wrapper');
-            if (authWrapper === undefined || authWrapper === null) return setTimeout(function () { addAuthorizeListener(configObject); }, 1000);
+            if (!authWrapper) return setTimeout(function () { addAuthorizeListener(configObject); }, 50);
             var txtAuthorize = ['Authorize', resource_globalization.Authorize], txtLogout = ['Logout', resource_globalization.Logout];
-            var scheme1 = "ApiKey", scheme2 = "Bearer", queryName1 = "apiKey", queryName2 = "token";
+            var scheme1 = "ApiKey", scheme2 = "Bearer";// queryName1 = "apiKey", queryName2 = "token";
             authWrapper.addEventListener('click', function (e) {
                 if (e.type !== 'click') return;
                 var btn = e.srcElement, tagName = 'BUTTON', clsName = 'authorized';
