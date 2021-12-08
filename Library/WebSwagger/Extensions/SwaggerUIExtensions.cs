@@ -125,7 +125,7 @@ namespace WebSwagger
         {
             if (options?.ConfigObject?.Urls == null)
                 return false;
-            return options.ConfigObject.Urls.Any(x => x.Name == name || x.Name == "版本" + name || x.Url == url);
+            return options.ConfigObject.Urls.Any(x => x.Name == name || x.Url == url);
         }
     }
 }

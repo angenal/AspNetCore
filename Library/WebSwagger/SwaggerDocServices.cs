@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -27,12 +25,13 @@ namespace WebSwagger
         /// Swagger 接口文档选项配置(默认)
         /// </summary>
         /// <param name="options"></param>
-        public static void AddDefaltDocOptions(SwaggerDocOptions options)
+        public static void AddDefaltDocOptions(SwaggerDocOptions options, Type apiGroupType = null)
         {
             options.ProjectName = "REST API";
             options.RoutePrefix = "swagger";
-            options.EnableApiVersion = true;
             options.EnableCustomIndex = true;
+            options.EnableApiVersion = apiGroupType == null;
+            options.ApiGroupType = apiGroupType;
             options.AddSwaggerGenAction = c =>
             {
                 // 添加 XML 接口描述文档
@@ -96,10 +95,10 @@ namespace WebSwagger
         /// </summary>
         /// <param name="services">服务集合</param>
         /// <param name="setupAction">操作配置</param>
-        public static IServiceCollection AddSwaggerDoc(this IServiceCollection services, Action<SwaggerDocOptions> setupAction = null)
+        public static IServiceCollection AddSwaggerDoc(this IServiceCollection services, Action<SwaggerDocOptions> setupAction = null, Type apiGroupType = null)
         {
             // Setup the Swagger generation options.
-            AddDefaltDocOptions(BuildContext.Instance.DocOptions);
+            AddDefaltDocOptions(BuildContext.Instance.DocOptions, apiGroupType);
             setupAction?.Invoke(BuildContext.Instance.DocOptions);
             if (BuildContext.Instance.DocOptions.EnableApiVersion)
             {
@@ -126,8 +125,6 @@ namespace WebSwagger
             }
             // Setup JSON.NET
             services.AddSwaggerGenNewtonsoftSupport();
-            // Configures the Swagger generation options.
-            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerGenConfigureOptions>();
             if (BuildContext.Instance.DocOptions.EnableCached)
             {
                 services.AddSwaggerGen();
@@ -192,20 +189,6 @@ namespace WebSwagger
                     c.ConfigObject.SupportedSubmitMethods = new SubmitMethod[] { SubmitMethod.Get, SubmitMethod.Put, SubmitMethod.Post, SubmitMethod.Delete, SubmitMethod.Options };
                     c.ConfigObject.ShowCommonExtensions = true;
                     c.ConfigObject.ValidatorUrl = null;
-
-                    if (BuildContext.Instance.DocOptions.EnableApiVersion)
-                    {
-                        // build a swagger endpoint for each discovered API version
-                        var provider = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
-                        foreach (var description in provider.ApiVersionDescriptions)
-                        {
-                            c.SwaggerEndpoint($"{description.GroupName}/swagger.json", $"版本{description.GroupName}");
-                        }
-                    }
-                    else
-                    {
-                        c.SwaggerEndpoint("v1/swagger.json", "版本v1");
-                    }
 
                     // 使用内部资源
                     c.UseInternalResources();

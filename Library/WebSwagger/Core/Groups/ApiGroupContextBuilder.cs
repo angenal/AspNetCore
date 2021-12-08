@@ -61,7 +61,7 @@ namespace WebSwagger.Core.Groups
         }
 
         /// <summary>
-        /// 构建自定版本
+        /// 构建自定义版本
         /// </summary>
         /// <param name="context">Api分组上下文</param>
         /// <param name="buildContext">构建上下文</param>
@@ -92,8 +92,8 @@ namespace WebSwagger.Core.Groups
                     context.AddApiVersion(description.GroupName, description.ApiVersion.ToString());
                     continue;
                 }
-                context.AddApiGroup(description.GroupName, description.GroupName, string.Empty, description.GroupName,
-                    description.ApiVersion.ToString());
+                context.AddApiGroup(buildContext.DocOptions.SwaggerUiOptions.DocumentTitle,
+                    description.GroupName, string.Empty, description.GroupName, description.ApiVersion.ToString());
             }
         }
 

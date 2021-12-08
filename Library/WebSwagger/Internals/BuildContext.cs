@@ -183,7 +183,6 @@ namespace WebSwagger.Internals
                     return false;
                 }
                 // 有分组处理
-
                 foreach (var obj in apiDescription.ActionDescriptor.EndpointMetadata)
                 {
                     if (!(obj is SwaggerApiGroupAttribute swaggerApiGroup))

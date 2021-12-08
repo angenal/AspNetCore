@@ -129,7 +129,7 @@ namespace WebSwagger.Core.Groups
             {
                 if (!apiGroup.IsCustomGroup)
                     continue;
-                apiGroup.AddItem(name,version);
+                apiGroup.AddItem(name, version);
             }
         }
 
@@ -150,7 +150,7 @@ namespace WebSwagger.Core.Groups
                 exists = false;
             }
             setupAction?.Invoke(apiGroup);
-            if(!exists)
+            if (!exists)
                 ApiGroups.Add(apiGroup);
         }
 

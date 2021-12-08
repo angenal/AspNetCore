@@ -10,7 +10,7 @@
     <style>html { box-sizing: border-box; overflow: auto; overflow-y: scroll; } *, *:before, *:after { box-sizing: inherit; } body { margin: 0; background: #fafafa; }</style>
     %(HeadContent)
 </head>
-<body>
+<body onload="bodyLoaded()">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="position:absolute;width:0;height:0">
         <defs>
             <symbol viewBox="0 0 20 20" id="unlocked">
@@ -41,7 +41,7 @@
     <script src="./swagger-ui-bundle.js"></script>
     <script src="./swagger-ui-standalone-preset.js"></script>
     <script>
-        window.onload = function () {
+        function bodyLoaded() {
             var configObject = JSON.parse('%(ConfigObject)');
             var oauthConfigObject = JSON.parse('%(OAuthConfigObject)');
             // Apply mandatory parameters
@@ -60,16 +60,19 @@
             // Init Token or Cookie
             initTokenCookiesStorage(configObject);
             // End Swagger UI call region
-            window.swagger_ui = SwaggerUIBundle(configObject);
-            swagger_ui.initOAuth(oauthConfigObject);
-            window.swagger_config = configObject;
-            custom_translate(configObject);
+            if (location.href.indexOf('?urls.') == -1) {
+                window.swagger_ui = SwaggerUIBundle(configObject);
+                swagger_ui.initOAuth(oauthConfigObject);
+                window.swagger_config = configObject;
+            }
+            customTranslate(configObject);
         };
 
-        function custom_translate(configObject) {
-            $('.swagger-ui .information-container').hide();
-            $('.swagger-ui .topbar a').attr('href', location.href.split('#')[0]);
-            if (resource_globalization) $('.swagger-ui .topbar .download-url-wrapper .select-label span').text(resource_globalization.SelectDefinition);
+        function customTranslate(configObject) {
+            $('.swagger-ui .topbar a').attr('href', location.href.split('#')[0].split('?')[0]);
+            var sels = $('.swagger-ui .topbar .download-url-wrapper .select-label');
+            if (resource_globalization) sels.find('span').text(resource_globalization.SelectDefinition);
+            if (location.href.indexOf('?urls.') == -1) sels.find('select').each(function (i, sel) { sel.addEventListener('change', function() { setTimeout(bodyLoaded, 200); }); });
             if (configObject.customAuth && configObject.logoutUrl) {
                 //console.log('Init authorize exit button');
                 var btn = document.createElement('button');
@@ -82,9 +85,8 @@
             var filterl = [], filterf = function () {
                 filterl = $('.filter-container');
                 if (filterl.length == 0) return setTimeout(filterf, 50);
-                $('.swagger-ui .information-container').hide();
-                $('.swagger-ui .topbar a').attr('href', location.href.split('#')[0]);
-                if (resource_globalization) $('.swagger-ui .topbar .download-url-wrapper .select-label span').text(resource_globalization.SelectDefinition);
+                //$('.swagger-ui .information-container').hide();
+                if (filterl.find('section.filter button').length > 0) return;
                 filterl.parent().addClass('wrapper');
                 filterl.find('.operation-filter-input').attr('placeholder', ' 筛选 / 过滤');
                 var fbutton = $('<button class="btn">展开</button>').click(function () {
