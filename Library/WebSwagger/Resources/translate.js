@@ -1,8 +1,10 @@
-$(document).ready(function () {
+
+function swagger_translate() {
     var res = resource_globalization;
 
-    $.initialize('.swagger-ui .topbar .download-url-wrapper', function () {
-        $(this).find('.select-label span').html(res["SelectDefinition"]);
+    $.initialize('.swagger-ui .topbar .download-url-wrapper .select-label', function () {
+        $(this).find('span').html(res["SelectDefinition"]);
+        //$(this).find('select').each(function (i, sel) { sel.addEventListener('change', function () { setTimeout(select_change, 200); }); });
     });
 
     $.initialize('section.models.is-open', function () {
@@ -18,7 +20,6 @@ $(document).ready(function () {
     });
 
     $.initialize('table.parameters', function () {
-
         $(this).find('th.parameters-col_name').html(res["Name"]);
         $(this).find('th.parameters-col_description').html(res["Description"]);
     });
@@ -104,4 +105,4 @@ $(document).ready(function () {
         $(this).find('i').html(res["NoLinks"]);
     });
 
-});
+}
