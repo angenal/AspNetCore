@@ -42,6 +42,10 @@
     <script src="./swagger-ui-standalone-preset.js"></script>
     <script>
         function bodyLoaded() {
+            if (swagger_config) {
+                customTranslate(swagger_config);
+                return;
+            }
             var configObject = JSON.parse('%(ConfigObject)');
             var oauthConfigObject = JSON.parse('%(OAuthConfigObject)');
             // Apply mandatory parameters
@@ -60,13 +64,10 @@
             // Init Token or Cookie
             initTokenCookiesStorage(configObject);
             // End Swagger UI call region
-            if (location.href.indexOf('?urls.') == -1) {
-                window.swagger_ui = SwaggerUIBundle(configObject);
-                swagger_ui.initOAuth(oauthConfigObject);
-                window.swagger_config = configObject;
-            }
-            customTranslate(configObject);
-        };
+            window.swagger_ui = SwaggerUIBundle(configObject);
+            swagger_ui.initOAuth(oauthConfigObject);
+            window.swagger_config = configObject;
+        }
 
         function customTranslate(configObject) {
             $('.swagger-ui .topbar a').attr('href', location.href.split('#')[0].split('?')[0]);
