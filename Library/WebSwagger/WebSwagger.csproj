@@ -5,8 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Resources\export.js" />
-    <EmbeddedResource Include="Resources\index.html" />
+    <EmbeddedResource Include="Resources\index.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <Page Include="Resources\index.html" />
     <EmbeddedResource Include="Resources\jquery.initialize.min.js" />
     <EmbeddedResource Include="Resources\lang\zh-cn.js" />
     <EmbeddedResource Include="Resources\login.html" />
@@ -19,12 +26,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.6.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Resources\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

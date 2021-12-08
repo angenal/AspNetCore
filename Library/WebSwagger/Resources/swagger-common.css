@@ -92,6 +92,11 @@
     min-width: 10em;
 }
 
+.swagger-ui .parameters-col_description {
+    width: 89%;
+    margin-bottom: 2em;
+}
+
 .swagger-ui .parameters-col_description input[type=number] {
     font-weight: bold;
     width: 100%;

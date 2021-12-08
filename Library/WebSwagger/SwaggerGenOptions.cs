@@ -51,13 +51,14 @@ namespace WebSwagger
                         info.Description += " This API version has been deprecated.";
                     }
 
+                    docs.ApiVersions.Add(new ApiVersion { Version = info.Version, Description = info.Description ?? info.Title });
                     options.SwaggerDoc(description.GroupName, info);
                     hasSwaggerDoc = true;
                 }
             }
             if (!hasSwaggerDoc)
             {
-                var v1Info = new OpenApiInfo
+                var info = new OpenApiInfo
                 {
                     Title = docs.ProjectName,
                     Description = docs.ProjectDescription,
@@ -65,7 +66,8 @@ namespace WebSwagger
                     Contact = contact,
                     License = license,
                 };
-                options.SwaggerDoc("v1", v1Info);
+                docs.ApiVersions.Add(new ApiVersion { Version = info.Version, Description = info.Description });
+                options.SwaggerDoc("v1", info);
             }
         }
     }

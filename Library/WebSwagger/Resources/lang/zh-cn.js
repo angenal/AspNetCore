@@ -2,11 +2,8 @@ var resource_globalization = {
     "Name": "名称",
     "Description": "描述",
     "SelectDefinition": "选择",
-    "TryItOut": "试一下",
-    "Cancel": "取消",
-    "Execute": "执行",
-    "Clear": "重置",
     "AvailableValues": "可选项",
+    "DefaultValue": "默认值",
     "ExampleValue": "示例",
     "Schema": "模型",
     "Responses": "响应消息",
@@ -25,6 +22,10 @@ var resource_globalization = {
     "MediaType": "媒体类型",
     "Download": "下载",
     "Close": "关闭",
+    "TryItOut": "Try it out",
+    "Cancel": "Cancel",
+    "Execute": "Execute",
+    "Clear": "Clear",
     "Links": "Links",
     "NoLinks": "No links"
 };

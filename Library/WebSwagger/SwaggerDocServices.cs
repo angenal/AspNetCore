@@ -161,17 +161,14 @@ namespace WebSwagger
         public static void AddSwaggerUi(this SwaggerDocOptions options, SwaggerUIOptions swaggerUiOptions)
         {
             options.SwaggerUiOptions = swaggerUiOptions;
-            swaggerUiOptions.RoutePrefix = options.RoutePrefix ?? "swagger";
-            swaggerUiOptions.DocumentTitle = options.ProjectName ?? "REST API";
+            swaggerUiOptions.RoutePrefix = !string.IsNullOrEmpty(options.RoutePrefix) ? options.RoutePrefix : "swagger";
+            swaggerUiOptions.DocumentTitle = !string.IsNullOrEmpty(options.ProjectName) ? options.ProjectName : "REST API";
             if (options.EnableCustomIndex) swaggerUiOptions.UseCustomSwaggerIndex();
             if (options.EnableAuthorization())
             {
                 swaggerUiOptions.ConfigObject.AdditionalItems["customAuth"] = true;
                 swaggerUiOptions.ConfigObject.AdditionalItems["loginUrl"] = $"/{options.RoutePrefix}/login.html";
                 swaggerUiOptions.ConfigObject.AdditionalItems["logoutUrl"] = $"/{options.RoutePrefix}/logout";
-            }
-            if (options.ApiVersions == null)
-            {
             }
             options.UseSwaggerUIAction?.Invoke(swaggerUiOptions);
         }
@@ -191,6 +188,7 @@ namespace WebSwagger
                 };
                 o.UseSwaggerUIAction = c =>
                 {
+                    c.DocumentTitle = !string.IsNullOrEmpty(c.DocumentTitle) ? c.DocumentTitle : "REST API";
                     c.ConfigObject.SupportedSubmitMethods = new SubmitMethod[] { SubmitMethod.Get, SubmitMethod.Put, SubmitMethod.Post, SubmitMethod.Delete, SubmitMethod.Options };
                     c.ConfigObject.ShowCommonExtensions = true;
                     c.ConfigObject.ValidatorUrl = null;

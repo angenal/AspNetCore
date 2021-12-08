@@ -67,19 +67,24 @@
         };
 
         function custom_translate(configObject) {
-            $('.swagger-ui .topbar a').attr('href', location.href);
-            $('.swagger-ui .topbar .download-url-wrapper .select-label span').text(resource_globalization.SelectDefinition);
+            $('.swagger-ui .information-container').hide();
+            $('.swagger-ui .topbar a').attr('href', location.href.split('#')[0]);
+            if (resource_globalization) $('.swagger-ui .topbar .download-url-wrapper .select-label span').text(resource_globalization.SelectDefinition);
             if (configObject.customAuth && configObject.logoutUrl) {
                 //console.log('Init authorize exit button');
                 var btn = document.createElement('button');
-                btn.className = 'btn ';
-                btn.innerText = resource_globalization.Logout;
+                btn.className = 'btn '; btn.innerText = 'Logout';
+                if (resource_globalization) btn.innerText = resource_globalization.Logout;
                 btn.onclick = function () { location.href = configObject.logoutUrl; };
                 document.getElementsByClassName('topbar-wrapper')[0].appendChild(btn);
             }
+            // filter operation
             var filterl = [], filterf = function () {
                 filterl = $('.filter-container');
                 if (filterl.length == 0) return setTimeout(filterf, 50);
+                $('.swagger-ui .information-container').hide();
+                $('.swagger-ui .topbar a').attr('href', location.href.split('#')[0]);
+                if (resource_globalization) $('.swagger-ui .topbar .download-url-wrapper .select-label span').text(resource_globalization.SelectDefinition);
                 filterl.parent().addClass('wrapper');
                 filterl.find('.operation-filter-input').attr('placeholder', ' 筛选 / 过滤');
                 var fbutton = $('<button class="btn">展开</button>').click(function () {
@@ -140,9 +145,10 @@
 
         function addAuthorizeListener(configObject) {
             var authWrapper = document.querySelector('.scheme-container .auth-wrapper');
-            if (authWrapper === undefined || authWrapper === null) return setTimeout(function () { addAuthorizeListener(configObject); }, 1000);
-            var txtAuthorize = ['Authorize', resource_globalization.Authorize], txtLogout = ['Logout', resource_globalization.Logout];
-            var scheme1 = "ApiKey", scheme2 = "Bearer", queryName1 = "apiKey", queryName2 = "token";
+            if (!authWrapper) return setTimeout(function () { addAuthorizeListener(configObject); }, 50);
+            var txtAuthorize = ['Authorize', resource_globalization ? resource_globalization.Authorize : '授权'];
+            var txtLogout = ['Logout', resource_globalization ? resource_globalization.Logout : '退出'];
+            var scheme1 = "ApiKey", scheme2 = "Bearer";// queryName1 = "apiKey", queryName2 = "token";
             authWrapper.addEventListener('click', function (e) {
                 if (e.type !== 'click') return;
                 var btn = e.srcElement, tagName = 'BUTTON', clsName = 'authorized';
