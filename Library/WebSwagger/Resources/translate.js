@@ -61,7 +61,7 @@ function swagger_translate() {
 
     $.initialize('button.authorize.modal-btn.auth', function () {
         $(this).html(resource_globalization["Authorize"]);
-        $(this).closest('.modal-ux-inner').find('.modal-ux-header > h3').html(resource_globalization["AvailableAuth"]);
+        //$(this).closest('.modal-ux-inner').find('.modal-ux-header > h3').html(resource_globalization["AvailableAuth"]);
     });
 
     $.initialize('.btn-done.modal-btn.auth', function () {

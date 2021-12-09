@@ -99,6 +99,7 @@ function addAuthorizeListener(configObject) {
                 var formf = function () {
                     var forms = $('.scheme-container .auth-container');
                     if (forms.length == 0) setTimeout(formf, 20);
+                    $('.scheme-container .modal-ux-header > h3').html(resource_globalization["AvailableAuth"]);
                     // scheme1 form
                     var form1 = forms.filter(function (i, v) { return v.innerText.indexOf(scheme1) == 0; });
                     if (form1.length == 1) {
