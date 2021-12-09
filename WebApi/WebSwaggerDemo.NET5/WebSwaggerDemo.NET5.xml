@@ -4,6 +4,260 @@
         <name>WebSwaggerDemo.NET5</name>
     </assembly>
     <members>
+        <member name="T:WebSwaggerDemo.NET5.Common.JwtAuthenticationService">
+            <summary>
+            JWT authentication service.
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.JwtAuthenticationService.AddJwtAuthentication(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Register JWT token authentication service.
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Common.JwtGenerator">
+            <summary>
+            JWT generator and appsettings.
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Common.JwtGenerator.Settings">
+            <summary>
+            JWT settings.
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.JwtGenerator.Generate(System.Func{System.Collections.Generic.IEnumerable{System.Security.Claims.Claim}})">
+            <summary>
+            JWT token generator.
+            </summary>
+            <param name="generator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.JwtGenerator.Generate(System.Collections.Generic.IEnumerable{System.Security.Claims.Claim})">
+            <summary></summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Common.IJwtGenerator">
+            <summary>
+            JWT generator interface.
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.IJwtGenerator.Generate(System.Collections.Generic.IEnumerable{System.Security.Claims.Claim})">
+            <summary></summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.IJwtGenerator.Generate(System.Func{System.Collections.Generic.IEnumerable{System.Security.Claims.Claim}})">
+            <summary></summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Common.JwtSettings">
+            <summary>
+            JWT settings.
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Common.JwtSettings.Instance">
+            <summary>
+            Default Instance.
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Common.JwtSettings.AppSettings">
+            <summary>
+            Configuration Section in appsettings.json
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Common.JwtSettings.EnvSecretKey">
+            <summary>
+            EnvironmentVariable: SecretKey
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Common.JwtSettings.EnvEncryptionKey">
+            <summary>
+            EnvironmentVariable: EncryptionKey
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Common.JwtSettings.HttpRequestQuery">
+            <summary>
+            HttpRequest Query Variable
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Common.JwtSettings.NameClaimType">
+            <summary>
+            Gets or sets a System.String that defines the System.Security.Claims.ClaimsIdentity.NameClaimType.
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Common.JwtSettings.RoleClaimType">
+            <summary>
+            Gets or sets the System.String that defines the System.Security.Claims.ClaimsIdentity.RoleClaimType.
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.JwtSettings.Issuer">
+            <summary>
+            谁颁发?
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.JwtSettings.Audience">
+            <summary>
+            哪些客户端用?
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.JwtSettings.SecretKey">
+            <summary>
+            签名密钥?
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.JwtSettings.EncryptionKey">
+            <summary>
+            加密密钥?
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.JwtSettings.ExpireMinutes">
+            <summary>
+            过期(分钟数)?
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.JwtSettings.ClockSkew">
+            <summary>
+            时钟偏移(默认5分钟"00:05:00")
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Common.Session">
+            <summary>
+            用户会话 by Jwt Token
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Session.#ctor">
+            <summary>
+            用户会话
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Session.#ctor(System.String)">
+            <summary>
+            用户会话
+            </summary>
+            <param name="userName"></param>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Session.#ctor(System.String,System.String)">
+            <summary>
+            用户会话
+            </summary>
+            <param name="id">主键ID</param>
+            <param name="userName">唯一账号</param>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.Session.Type">
+            <summary>
+            类别
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.Session.Role">
+            <summary>
+            角色
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.Session.Name">
+            <summary>
+            姓名
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.Session.Nickname">
+            <summary>
+            别名
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.Session.IdCard">
+            <summary>
+            身份证号码
+            </summary>
+        </member>
+        <member name="P:WebSwaggerDemo.NET5.Common.Session.Avatar">
+            <summary>
+            头像
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Common.SessionExtensions">
+            <summary>
+            用户会话帮助 by Jwt Token
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.SessionExtensions.GetSession(Microsoft.AspNetCore.Mvc.ControllerBase)">
+            <summary>
+            获取当前会话信息
+            </summary>
+            <param name="controller"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.SessionExtensions.Session(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            转换登录身份信息为当前会话信息
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.SessionExtensions.Claims(WebSwaggerDemo.NET5.Common.Session)">
+            <summary>
+            转换当前会话信息为登录身份信息
+            </summary>
+            <param name="session"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.ToDateString(System.DateTime,System.String)">
+            <summary>
+            Convert To Date String
+            </summary>
+            <param name="dt"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.ToTimeString(System.DateTime,System.String)">
+            <summary>
+            Convert To Time String
+            </summary>
+            <param name="dt"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.IsZeroTime(System.DateTime)">
+            <summary>
+            Convert To Time String Equals 00:00:00
+            </summary>
+            <param name="dt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.ToDateTimeString(System.DateTime,System.String)">
+            <summary>
+            Convert To DateTime String
+            </summary>
+            <param name="dt"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.TaskTimeout(System.TimeSpan,System.Action)">
+            <summary>
+            超时任务
+            </summary>
+            <param name="timeout"></param>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.ToTimestampHex(System.DateTime,System.Boolean,System.String)">
+            <summary>
+            时间戳 DateTime 转化十六进制
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.x8(System.DateTime,System.Boolean)">
+            <summary>
+            时间戳 Seconds 转化十六进制 小写
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.X8(System.DateTime,System.Boolean)">
+            <summary>
+            时间戳 Seconds 转化十六进制 大写
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.ToDateTime(System.Int64,System.Boolean)">
+            <summary>
+            时间戳 Seconds 转化时间值
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.Time.ToTimestamp(System.DateTime)">
+            <summary>
+            时间戳 Milliseconds 即自1970年1月1日UTC以来经过的毫秒数
+            </summary>
+        </member>
         <member name="T:WebSwaggerDemo.NET5.Controllers.DemoController">
             <summary>
             案例 控制器
@@ -39,6 +293,22 @@
         <member name="T:WebSwaggerDemo.NET5.Controllers.lowercaseController">
             <summary>
             小写控制器
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.lowercaseController.Delete(System.Int32)">
+            <summary>
+            删除记录
+            </summary>
+            <param name="id">唯一标识</param>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.lowercaseController.Login">
+            <summary>
+            登录接口
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.lowercaseController.TestSession">
+            <summary>
+            会话状态
             </summary>
         </member>
         <member name="T:WebSwaggerDemo.NET5.Controllers.SwaggerResourcesController">
@@ -151,6 +421,22 @@
             <summary>
             值
             </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Filters.AsyncSessionFilter">
+            <summary>
+            用户会话处理 by Jwt Token
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Filters.AsyncSessionFilter.user">
+            <summary>
+            当前用户会话
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Filters.AsyncSessionFilter.#ctor(WebSwaggerDemo.NET5.Common.Session)">
+            <summary></summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Filters.AsyncSessionFilter.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary></summary>
         </member>
         <member name="T:WebSwaggerDemo.NET5.Models.GroupSample">
             <summary>

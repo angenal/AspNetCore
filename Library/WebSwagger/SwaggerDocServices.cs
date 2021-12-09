@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -10,7 +11,9 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using WebSwagger.Core.Authorization;
 using WebSwagger.Internals;
 
@@ -82,8 +85,41 @@ namespace WebSwagger
                 // 隐藏属性
                 c.SchemaFilter<Filters.Schemas.IgnorePropertySchemaFilter>();
 
-                // 自定义操作标识或权限ID
-                c.CustomOperationIds(apiDesc => apiDesc.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.ToUpper() : null);
+                // 自定义操作权限
+                c.CustomOperationIds(apiDesc =>
+                {
+                    var attributes = apiDesc.CustomAttributes();
+                    if (attributes.Any(t => t is AllowAnonymousAttribute))
+                    {
+                        return "匿名访问 ";
+                    }
+                    var attribute = attributes.FirstOrDefault(t => t is AuthorizeAttribute);
+                    if (attribute != null)
+                    {
+                        var s = new StringBuilder();
+                        if (attribute is OperationAttribute)
+                        {
+                            var operationAttribute = (OperationAttribute)attribute;
+                            if (!string.IsNullOrEmpty(operationAttribute.Roles))
+                                s.AppendFormat("角色: {0} ", operationAttribute.Roles);
+                            if (!string.IsNullOrEmpty(operationAttribute.Permissions))
+                                s.AppendFormat("权限: {0} ", operationAttribute.Permissions);
+                            if (!string.IsNullOrEmpty(operationAttribute.Policy))
+                                s.AppendFormat("策略: {0} ", operationAttribute.Policy);
+                        }
+                        else
+                        {
+                            var authorizeAttribute = (AuthorizeAttribute)attribute;
+                            if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
+                                s.AppendFormat("角色: {0} ", authorizeAttribute.Roles);
+                            if (!string.IsNullOrEmpty(authorizeAttribute.Policy))
+                                s.AppendFormat("策略: {0} ", authorizeAttribute.Policy);
+                        }
+                        return s.Length == 0 ? "授权访问 " : s.ToString();
+                    }
+                    return " ";
+                    //return apiDesc.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.ToUpper() : null;
+                });
 
                 // 显示授权信息
                 //config.ShowAuthorizeInfo();

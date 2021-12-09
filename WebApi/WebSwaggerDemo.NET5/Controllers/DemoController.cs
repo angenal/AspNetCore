@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebSwagger.Attributes;
 using WebSwaggerDemo.NET5.Models;
@@ -17,6 +18,7 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// </summary>
         /// <param name="sample">上传信息</param>
         [HttpPost]
+        [AllowAnonymous]
         public Result Upload([FromForm] UploadSample sample)
         {
             return Result.Success(sample.Name);
