@@ -5,17 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\index.html" />
-    <None Remove="Resources\index.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Resources\export.js" />
-    <EmbeddedResource Include="Resources\index.html">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\index.html" />
     <EmbeddedResource Include="Resources\index.js" />
-    <Page Include="Resources\index.html" />
     <EmbeddedResource Include="Resources\jquery.initialize.min.js" />
     <EmbeddedResource Include="Resources\lang\zh-cn.js" />
     <EmbeddedResource Include="Resources\login.html" />

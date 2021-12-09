@@ -20,13 +20,6 @@ namespace WebSwaggerDemo.NET5.Controllers
             {
                 new
                 {
-                    name="0.9默认接口",
-                    url="/swagger/v0.9/swagger.json",
-                    swaggerVersion="2.0",
-                    location="/swagger/v0.9/swagger.json"
-                },
-                new
-                {
                     name="默认接口",
                     url="/swagger/v1.0/swagger.json",
                     swaggerVersion="2.0",
@@ -34,14 +27,14 @@ namespace WebSwaggerDemo.NET5.Controllers
                 },
                 new
                 {
-                    name="2.0默认接口",
+                    name="2.0接口",
                     url="/swagger/v2.0/swagger.json",
                     swaggerVersion="2.0",
                     location="/swagger/v2.0/swagger.json"
                 },
                 new
                 {
-                    name="3.0默认接口",
+                    name="3.0接口",
                     url="/swagger/v3.0/swagger.json",
                     swaggerVersion="2.0",
                     location="/swagger/v3.0/swagger.json"
