@@ -117,6 +117,9 @@
     width: 100%;
 }
 
+.swagger-ui .markdown p, .swagger-ui .markdown pre, .swagger-ui .renderedMarkdown p, .swagger-ui .renderedMarkdown pre {
+    margin: 0 auto;
+}
 
 .selectBox {
     margin: 50px auto;

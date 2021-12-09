@@ -25,13 +25,13 @@ namespace WebSwagger
         /// Swagger 接口文档选项配置(默认)
         /// </summary>
         /// <param name="options"></param>
-        public static void AddDefaltDocOptions(SwaggerDocOptions options, Type apiGroupType = null)
+        public static void AddDefaltDocOptions(SwaggerDocOptions options, Type apiGroupType)
         {
-            options.ProjectName = "REST API";
+            options.ProjectName = "API";
             options.RoutePrefix = "swagger";
-            options.EnableCustomIndex = true;
-            options.EnableApiVersion = apiGroupType == null;
             options.ApiGroupType = apiGroupType;
+            options.EnableApiVersion = apiGroupType == null;
+            options.EnableCustomIndex = true;
             options.AddSwaggerGenAction = c =>
             {
                 // 添加 XML 接口描述文档
@@ -95,10 +95,10 @@ namespace WebSwagger
         /// </summary>
         /// <param name="services">服务集合</param>
         /// <param name="setupAction">操作配置</param>
-        public static IServiceCollection AddSwaggerDoc(this IServiceCollection services, Action<SwaggerDocOptions> setupAction = null, Type apiGroupType = null)
+        public static IServiceCollection AddSwaggerDoc<T>(this IServiceCollection services, Action<SwaggerDocOptions> setupAction = null)
         {
             // Setup the Swagger generation options.
-            AddDefaltDocOptions(BuildContext.Instance.DocOptions, apiGroupType);
+            AddDefaltDocOptions(BuildContext.Instance.DocOptions, typeof(T));
             setupAction?.Invoke(BuildContext.Instance.DocOptions);
             if (BuildContext.Instance.DocOptions.EnableApiVersion)
             {
@@ -159,7 +159,7 @@ namespace WebSwagger
         {
             options.SwaggerUiOptions = swaggerUiOptions;
             swaggerUiOptions.RoutePrefix = !string.IsNullOrEmpty(options.RoutePrefix) ? options.RoutePrefix : "swagger";
-            swaggerUiOptions.DocumentTitle = !string.IsNullOrEmpty(options.ProjectName) ? options.ProjectName : "REST API";
+            swaggerUiOptions.DocumentTitle = !string.IsNullOrEmpty(options.ProjectName) ? options.ProjectName : "API";
             if (options.EnableCustomIndex) swaggerUiOptions.UseCustomSwaggerIndex();
             if (options.EnableAuthorization())
             {
@@ -185,7 +185,7 @@ namespace WebSwagger
                 };
                 o.UseSwaggerUIAction = c =>
                 {
-                    c.DocumentTitle = !string.IsNullOrEmpty(c.DocumentTitle) ? c.DocumentTitle : "REST API";
+                    c.DocumentTitle = !string.IsNullOrEmpty(c.DocumentTitle) ? c.DocumentTitle : "API";
                     c.ConfigObject.SupportedSubmitMethods = new SubmitMethod[] { SubmitMethod.Get, SubmitMethod.Put, SubmitMethod.Post, SubmitMethod.Delete, SubmitMethod.Options };
                     c.ConfigObject.ShowCommonExtensions = true;
                     c.ConfigObject.ValidatorUrl = null;

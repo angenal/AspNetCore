@@ -74,14 +74,14 @@ namespace WebSwagger.Core.Groups
             });
 
         /// <summary>
-        /// 添加无分组
+        /// 添加未分组
         /// </summary>
-        public void AddNoGroup() => AddGroup("无分组", "NoGroup", string.Empty);
+        public void AddNoGroup() => AddGroup("未分组", "NoGroup", string.Empty);
 
         /// <summary>
-        /// 添加无分组，带API版本
+        /// 添加未分组，带API版本
         /// </summary>
-        public void AddNoGroupWithVersion() => AddApiGroupByCustomGroup("无分组", "NoGroup", string.Empty, "NoGroup", string.Empty);
+        public void AddNoGroupWithVersion() => AddApiGroupByCustomGroup("未分组", "NoGroup", string.Empty, "NoGroup", string.Empty);
 
         /// <summary>
         /// 添加API分组

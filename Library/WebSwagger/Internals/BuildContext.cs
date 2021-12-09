@@ -173,7 +173,7 @@ namespace WebSwagger.Internals
                 return;
             DocOptions.SwaggerGenOptions.DocInclusionPredicate((docName, apiDescription) =>
             {
-                // 无分组处理
+                // 未分组处理
                 if (docName.StartsWith("NoGroup"))
                 {
                     if(ExistsApiGroupAttribute(apiDescription.ActionDescriptor))

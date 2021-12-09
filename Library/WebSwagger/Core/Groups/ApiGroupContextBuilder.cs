@@ -98,7 +98,7 @@ namespace WebSwagger.Core.Groups
         }
 
         /// <summary>
-        /// 构建无分组
+        /// 构建未分组
         /// </summary>
         /// <param name="context">Api分组上下文</param>
         /// <param name="buildContext">构建上下文</param>

@@ -87,6 +87,7 @@ namespace WebSwagger
             options.InjectJavascript("resources?name=jquery.initialize.min.js");
             //options.InjectJavascript("/swagger/resources?name=export.js");
             options.InjectStylesheet("resources?name=swagger-common.css");
+            options.InjectJavascript("resources?name=index.js");
         }
 
         /// <summary>
