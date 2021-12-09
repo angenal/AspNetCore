@@ -61,8 +61,12 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// <param name="id">唯一标识</param>
         [HttpDelete("{id}")]
         [SwaggerApiGroup(GroupSample.Login), Operation("Administrator", "Manager|Delete")]
+        [SwaggerResponseHeader(403, "异常", "", "未授权访问")]
         public void Delete(int id)
         {
+            var user = this.GetSession();
+            string uid = user.Id;
+            //根据用户ID获取权限
         }
 
         /// <summary>
@@ -72,13 +76,13 @@ namespace WebSwaggerDemo.NET5.Controllers
         [AllowAnonymous]
         [Produces("application/json")]
         [SwaggerApiGroup(GroupSample.Login)]
-        [SwaggerResponseHeader(200, "OK", nameof(Object), "登录成功")]
+        [SwaggerResponseHeader(200, "正常", "{ token }", "登录成功后")]
         public ActionResult Login()
         {
             var o = new Session(Guid.NewGuid().ToString(), "User" + new Random().Next(100, 999))
             {
                 Name = "测试",
-                Role = "test",
+                Role = "Administrator",
             };
             var claims = o.Claims();
             var session = new JObject();
@@ -86,30 +90,28 @@ namespace WebSwaggerDemo.NET5.Controllers
             session["token"] = token;
 
             byte[] message = Encoding.ASCII.GetBytes(token), key = Encoding.ASCII.GetBytes(JwtGenerator.Settings.SecretKey.Substring(0, 32));
-            var refreshToken = Encoding.ASCII.GetString(Sodium.SecretKeyAuth.Sign(message, key));
+            var refreshToken = Convert.ToBase64String(Sodium.SecretKeyAuth.Sign(message, key));
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(7), // one week expiry time
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
-
             return Ok(session);
         }
 
         /// <summary>
-        /// 会话状态
+        /// 登录状态
         /// </summary>
-        [HttpGet]
+        [HttpGet("session")]
         [Authorize]
         [Produces("application/json")]
-        [SwaggerResponseHeader(200, "OK", nameof(Session), "已登录")]
-        [ProducesResponseType(401)]
+        [SwaggerResponseHeader(200, "正常", "{ user }", "登录成功后")]
         [SwaggerApiGroup(GroupSample.Login)]
-        public ActionResult TestSession()
+        public ActionResult Session()
         {
             var user = this.GetSession();
-            return Ok(new { userid = User.Identity.Name, user });
+            return Ok(new { user });
         }
     }
 }
