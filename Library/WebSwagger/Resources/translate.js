@@ -10,6 +10,11 @@ function swagger_translate() {
         $(this).find('h4 > span').html(resource_globalization["Schemas"]);
     });
 
+    $.initialize('.opblock-summary', function () {
+        var s = $.trim($(this).find('.opblock-summary-operation-id').text());
+        if (!s || s === '匿名访问') $(this).find('.authorization__btn').hide();
+    });
+
     $.initialize('h4.opblock-title:not(.parameter__name)', function () {
         $(this).find('span').html(resource_globalization["Description"]);
     });
