@@ -29,12 +29,12 @@ namespace WebSwagger.Filters.Operations
                     var response = operation.Responses.FirstOrDefault(x => x.Key == statusCode.ToString(CultureInfo.InvariantCulture)).Value;
                     if (response == null)
                     {
-                        operation.Responses.Add(statusCode.ToString(CultureInfo.InvariantCulture), new OpenApiResponse()
+                        response = new OpenApiResponse()
                         {
                             Description = EnumsNET.Enums.GetName(typeof(HttpStatusCode), statusCode),
                             Content = new Dictionary<string, OpenApiMediaType> { { "application/json", null } }
-                        });
-                        continue;
+                        };
+                        operation.Responses.Add(statusCode.ToString(CultureInfo.InvariantCulture), response);
                     }
                     if (string.IsNullOrEmpty(attr.Name))
                         continue;
