@@ -88,10 +88,11 @@ namespace WebSwagger
                 // 自定义操作权限
                 c.CustomOperationIds(apiDesc =>
                 {
+                    var name = apiDesc.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name : null;
                     var attributes = apiDesc.CustomAttributes();
                     if (attributes.Any(t => t is AllowAnonymousAttribute))
                     {
-                        return "匿名访问 ";
+                        return $"匿名访问 \"{name}\"";
                     }
                     var attribute = attributes.FirstOrDefault(t => t is AuthorizeAttribute);
                     if (attribute != null)
@@ -115,14 +116,13 @@ namespace WebSwagger
                             if (!string.IsNullOrEmpty(authorizeAttribute.Policy))
                                 s.AppendFormat("策略: {0} ", authorizeAttribute.Policy);
                         }
-                        return s.Length == 0 ? "授权访问 " : s.ToString();
+                        return s.Length == 0 ? $"授权访问 \"{name}\"" : $"{s} \"{name}\"";
                     }
-                    return " ";
-                    //return apiDesc.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.ToUpper() : null;
+                    return name;
                 });
 
                 // 显示授权信息
-                //config.ShowAuthorizeInfo();
+                //c.ShowAuthorizeInfo();
             };
         }
 

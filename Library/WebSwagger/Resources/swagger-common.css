@@ -246,3 +246,13 @@
     background-color: #41b1d9;
     color: #fff;
 }
+
+.headers-wrapper h4.headers__title {
+    display: none;
+}
+.swagger-ui .responses-inner th:nth-child(1), .swagger-ui .responses-inner th:nth-child(1) {
+    width: 25%;
+}
+.swagger-ui .responses-inner th:nth-child(2), .swagger-ui .responses-inner th:nth-child(2) {
+    width: 50%;
+}

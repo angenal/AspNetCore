@@ -35,7 +35,7 @@ namespace WebSwagger.Filters.Operations
                         new OpenApiHeader()
                         {
                             Description = attr.Description,
-                            Schema = new OpenApiSchema {Description = attr.Description, Type = attr.Type, Format = attr.Format}
+                            Schema = new OpenApiSchema { Description = attr.Description, Type = attr.Type, Format = attr.Format }
                         });
                 }
             }

@@ -22,7 +22,7 @@ namespace WebSwagger.Filters.Operations
         /// </summary>
         /// <param name="includeUnauthorizedAndForbiddenResponses">是否包含未授权401或被禁止403的响应，如果为true,则将为每个操作添加401、403响应</param>
         /// <param name="securitySchemaName">安全架构名称</param>
-        public SecurityRequirementsOperationFilter(bool includeUnauthorizedAndForbiddenResponses = true, string securitySchemaName = "oauth2")
+        public SecurityRequirementsOperationFilter(bool includeUnauthorizedAndForbiddenResponses = true, string securitySchemaName = "ApiKey")
         {
             Func<IEnumerable<AuthorizeAttribute>, IEnumerable<string>> policySelector = authAttributes =>
                 authAttributes.Where(x => !string.IsNullOrEmpty(x.Policy))
@@ -68,7 +68,7 @@ namespace WebSwagger.Filters.Operations
         /// <param name="includeUnauthorizedAndForbiddenResponses">是否包含未授权401或被禁止403的响应，如果为true,则将为每个操作添加401、403响应</param>
         /// <param name="securitySchemaName">安全架构名称</param>
         public SecurityRequirementsOperationFilter(Func<IEnumerable<TAttribute>, IEnumerable<string>> policySelector,
-            bool includeUnauthorizedAndForbiddenResponses = true, string securitySchemaName = "oauth2")
+            bool includeUnauthorizedAndForbiddenResponses = true, string securitySchemaName = "ApiKey")
         {
             _policySelector = policySelector;
             _includeUnauthorizedAndForbiddenResponses = includeUnauthorizedAndForbiddenResponses;

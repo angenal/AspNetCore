@@ -42,7 +42,7 @@ namespace WebSwagger
         /// <param name="c"></param>
         private static void AddSwaggerSecurityDefinition(this SwaggerGenOptions c)
         {
-            //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>(){{"oauth2", new string[] { }}});
+            //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>(){{"ApiKey", new string[] { }}});
 
             string scheme = "ApiKey", queryName = "apiKey";
             c.AddSecurityDefinition(scheme, SecurityDefinitions[scheme]);

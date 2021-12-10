@@ -11,8 +11,9 @@ function swagger_translate() {
     });
 
     $.initialize('.opblock-summary', function () {
-        var s = $.trim($(this).find('.opblock-summary-operation-id').text());
-        if (!s || s === '匿名访问') $(this).find('.authorization__btn').hide();
+        var s = $(this).find('.opblock-summary-operation-id').text(), btn = $(this).find('.authorization__btn');
+        if (!s || s.indexOf('匿名访问') == 0 || s.substring(s.length - 1) !== '"') btn.css('visibility', 'hidden');
+        btn.click(function () { return false });
     });
 
     $.initialize('h4.opblock-title:not(.parameter__name)', function () {
@@ -26,6 +27,18 @@ function swagger_translate() {
     $.initialize('table.parameters', function () {
         $(this).find('th.parameters-col_name').html(resource_globalization["Name"]);
         $(this).find('th.parameters-col_description').html(resource_globalization["Description"]);
+    });
+
+    $.initialize('.parameters-container', function () {
+        $(this).find('.opblock-description-wrapper').hide();
+    });
+
+    $.initialize('table.headers', function () {
+        var th = $(this).find('th');
+        if (th.length != 3) return;
+        th.eq(0).html(resource_globalization["ResponseHeaderName"]);
+        th.eq(1).html(resource_globalization["ResponseHeaderDescription"]);
+        th.eq(2).html(resource_globalization["ResponseHeaderType"]);
     });
 
     $.initialize('.try-out button', function () {
