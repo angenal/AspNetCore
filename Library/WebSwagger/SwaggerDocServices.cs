@@ -92,7 +92,7 @@ namespace WebSwagger
                     var attributes = apiDesc.CustomAttributes();
                     if (attributes.Any(t => t is AllowAnonymousAttribute))
                     {
-                        return $"匿名访问 \"{name}\"";
+                        return $"\"{name}\"：匿名访问";
                     }
                     var attribute = attributes.FirstOrDefault(t => t is AuthorizeAttribute);
                     if (attribute != null)
@@ -102,21 +102,21 @@ namespace WebSwagger
                         {
                             var operationAttribute = (OperationAttribute)attribute;
                             if (!string.IsNullOrEmpty(operationAttribute.Roles))
-                                s.AppendFormat("角色: {0} ", operationAttribute.Roles);
+                                s.AppendFormat("角色\"{0}\"", operationAttribute.Roles);
                             if (!string.IsNullOrEmpty(operationAttribute.Permissions))
-                                s.AppendFormat("权限: {0} ", operationAttribute.Permissions);
+                                s.AppendFormat("权限\"{0}\"", operationAttribute.Permissions);
                             if (!string.IsNullOrEmpty(operationAttribute.Policy))
-                                s.AppendFormat("策略: {0} ", operationAttribute.Policy);
+                                s.AppendFormat("策略\"{0}\"", operationAttribute.Policy);
                         }
                         else
                         {
                             var authorizeAttribute = (AuthorizeAttribute)attribute;
                             if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
-                                s.AppendFormat("角色: {0} ", authorizeAttribute.Roles);
+                                s.AppendFormat("角色\"{0}\"", authorizeAttribute.Roles);
                             if (!string.IsNullOrEmpty(authorizeAttribute.Policy))
-                                s.AppendFormat("策略: {0} ", authorizeAttribute.Policy);
+                                s.AppendFormat("策略\"{0}\"", authorizeAttribute.Policy);
                         }
-                        return s.Length == 0 ? $"授权访问 \"{name}\"" : $"{s} \"{name}\"";
+                        return s.Length == 0 ? $"\"{name}\"：授权访问" : $"\"{name}\"：{s}";
                     }
                     return name;
                 });

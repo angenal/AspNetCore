@@ -12,7 +12,7 @@ function swagger_translate() {
 
     $.initialize('.opblock-summary', function () {
         var div = $(this), s = div.find('.opblock-summary-operation-id').text(), btn = div.find('.authorization__btn');
-        if (!s || s.indexOf('匿名访问') == 0 || s.substring(s.length - 1) !== '"') btn.css('visibility', 'hidden');
+        if (!s || s.indexOf('匿名访问') != -1 || s.substring(0, 1) !== '"') btn.css('visibility', 'hidden');
         btn.click(function () { return false });
     });
 
@@ -119,7 +119,9 @@ function swagger_translate() {
     });
 
     $.initialize('.model-box', function () {
-        $(this).find('table.model tr.description td:first').html(resource_globalization["ResponseTypeFields"]);
+        var td = $(this).find('table.model tr.description td'), p = td.find('p');
+        td.eq(0).html(resource_globalization["ResponseTypeFields"]);
+        if (p.length == 1 && !$.trim(p.text())) p.html(resource_globalization["Description"]);
         $(this).find('table.model tr:last:not(.property-row)').remove();
     });
 

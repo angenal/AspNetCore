@@ -61,7 +61,7 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// <param name="id">唯一标识</param>
         [HttpDelete("{id}")]
         [SwaggerApiGroup(GroupSample.Login), Operation("Administrator", "Manager|Delete")]
-        [SwaggerResponseHeader(403, "异常", "", "未授权访问")]
+        [SwaggerResponseHeader(403, "异常", "未授权访问")]
         public void Delete(int id)
         {
             var user = this.GetSession();
