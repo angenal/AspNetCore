@@ -11,7 +11,7 @@ function swagger_translate() {
     });
 
     $.initialize('.opblock-summary', function () {
-        var s = $(this).find('.opblock-summary-operation-id').text(), btn = $(this).find('.authorization__btn');
+        var div = $(this), s = div.find('.opblock-summary-operation-id').text(), btn = div.find('.authorization__btn');
         if (!s || s.indexOf('匿名访问') == 0 || s.substring(s.length - 1) !== '"') btn.css('visibility', 'hidden');
         btn.click(function () { return false });
     });
@@ -116,6 +116,11 @@ function swagger_translate() {
     $.initialize('table.responses-table:not(.live-responses-table)', function () {
         $(this).find('tr.responses-header > td.response-col_status').html(resource_globalization["Code"]);
         $(this).find('tr.responses-header > td.response-col_description').html(resource_globalization["Description"]);
+    });
+
+    $.initialize('.model-box', function () {
+        $(this).find('table.model tr.description td:first').html(resource_globalization["ResponseTypeFields"]);
+        $(this).find('table.model tr:last:not(.property-row)').remove();
     });
 
     $.initialize('.response-control-media-type__title', function () {

@@ -75,7 +75,7 @@ namespace WebSwaggerDemo.NET5.Controllers
         [HttpPost("login")]
         [AllowAnonymous]
         [Produces("application/json")]
-        [SwaggerApiGroup(GroupSample.Login), SwaggerResponseHeader(200, "正常", "{ token }", "登录成功后")]
+        [SwaggerApiGroup(GroupSample.Login), SwaggerResponseHeader(200, "正常", "登录成功后", "{ token }")]
         public ActionResult Login()
         {
             var o = new Session(Guid.NewGuid().ToString(), "User" + new Random().Next(100, 999))
@@ -105,11 +105,10 @@ namespace WebSwaggerDemo.NET5.Controllers
         [HttpGet("session")]
         [Authorize]
         [Produces("application/json")]
-        [SwaggerApiGroup(GroupSample.Login), SwaggerResponseHeader(new int[] { 200, 401 }, "正常", "{ user }", "登录成功后")]
-        public ActionResult Session()
+        [SwaggerApiGroup(GroupSample.Login), SwaggerResponseHeader(200, 401)]
+        public Session Session()
         {
-            var user = this.GetSession();
-            return Ok(new { user });
+            return this.GetSession();
         }
     }
 }

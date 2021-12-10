@@ -121,6 +121,42 @@
     margin: 0 auto;
 }
 
+.swagger-ui table.model tbody tr td {
+    vertical-align: bottom;
+    border-bottom: 1px dotted #bdb5b5;
+}
+
+.swagger-ui table.model tr.property-row td:first-child {
+    padding-right: .5em;
+}
+
+.swagger-ui table.model tbody tr td:first-of-type {
+    width: auto;
+    padding: 1em 0 0 1em;
+}
+
+.swagger-ui .model tr.description td:nth-child(1) {
+    color: #228b22;
+}
+
+.swagger-ui .model .description .markdown p {
+    color: #228b22;
+    font-weight: 700;
+}
+
+.swagger-ui .model .prop .markdown p {
+    color: #228b22;
+    font-weight: normal;
+}
+
+.swagger-ui .responses-inner th:nth-child(1), .swagger-ui .responses-inner th:nth-child(1) {
+    width: 25%;
+}
+
+.swagger-ui .responses-inner th:nth-child(2), .swagger-ui .responses-inner th:nth-child(2) {
+    width: 50%;
+}
+
 .selectBox {
     margin: 50px auto;
     width: 180px;
@@ -249,10 +285,4 @@
 
 .headers-wrapper h4.headers__title {
     display: none;
-}
-.swagger-ui .responses-inner th:nth-child(1), .swagger-ui .responses-inner th:nth-child(1) {
-    width: 25%;
-}
-.swagger-ui .responses-inner th:nth-child(2), .swagger-ui .responses-inner th:nth-child(2) {
-    width: 50%;
 }

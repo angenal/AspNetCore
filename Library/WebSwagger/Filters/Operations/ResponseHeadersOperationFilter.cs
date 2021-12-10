@@ -3,6 +3,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using WebSwagger.Attributes;
 
@@ -25,18 +26,25 @@ namespace WebSwagger.Filters.Operations
             {
                 foreach (var statusCode in attr.StatusCodes)
                 {
-                    var response = operation.Responses
-                        .FirstOrDefault(x => x.Key == (statusCode).ToString(CultureInfo.InvariantCulture)).Value;
+                    var response = operation.Responses.FirstOrDefault(x => x.Key == statusCode.ToString(CultureInfo.InvariantCulture)).Value;
                     if (response == null)
+                    {
+                        operation.Responses.Add(statusCode.ToString(CultureInfo.InvariantCulture), new OpenApiResponse()
+                        {
+                            Description = EnumsNET.Enums.GetName(typeof(HttpStatusCode), statusCode),
+                            Content = new Dictionary<string, OpenApiMediaType> { { "application/json", null } }
+                        });
+                        continue;
+                    }
+                    if (string.IsNullOrEmpty(attr.Name))
                         continue;
                     if (response.Headers == null)
                         response.Headers = new Dictionary<string, OpenApiHeader>();
-                    response.Headers.Add(attr.Name,
-                        new OpenApiHeader()
-                        {
-                            Description = attr.Description,
-                            Schema = new OpenApiSchema { Description = attr.Description, Type = attr.Type, Format = attr.Format }
-                        });
+                    response.Headers.Add(attr.Name, new OpenApiHeader()
+                    {
+                        Description = attr.Description,
+                        Schema = new OpenApiSchema { Type = attr.Type, Format = attr.Format }
+                    });
                 }
             }
         }

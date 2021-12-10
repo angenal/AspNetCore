@@ -124,7 +124,7 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("testResponseHeader")]
-        [SwaggerResponseHeader(200, "正常", "tt", "成功响应")]
+        [SwaggerResponseHeader(200, "正常", "成功响应")]
         public IActionResult TestResponseHeader()
         {
             return new JsonResult("成功操作");

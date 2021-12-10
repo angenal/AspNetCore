@@ -13,15 +13,15 @@ namespace WebSwagger.Attributes
         /// </summary>
         /// <param name="statusCode">状态码</param>
         /// <param name="name">名称</param>
-        /// <param name="type">类型</param>
         /// <param name="description">描述</param>
+        /// <param name="type">类型</param>
         /// <param name="format">格式化</param>
-        public SwaggerResponseHeaderAttribute(int statusCode, string name, string type, string description, string format = "")
+        public SwaggerResponseHeaderAttribute(int statusCode, string name, string description, string type, string format = "")
         {
             StatusCodes = new[] { statusCode };
             Name = name;
-            Type = type;
             Description = description;
+            Type = type;
             Format = format;
         }
 
@@ -33,13 +33,52 @@ namespace WebSwagger.Attributes
         /// <param name="type">类型</param>
         /// <param name="description">描述</param>
         /// <param name="format">格式化</param>
-        public SwaggerResponseHeaderAttribute(int[] statusCode, string name, string type, string description, string format = "")
+        public SwaggerResponseHeaderAttribute(int statusCode, string name, string description)
+        {
+            StatusCodes = new[] { statusCode };
+            Name = name;
+            Description = description;
+        }
+
+        /// <summary>
+        /// 初始化一个<see cref="SwaggerResponseHeaderAttribute"/>类型的实例
+        /// </summary>
+        /// <param name="statusCode">状态码</param>
+        /// <param name="name">名称</param>
+        /// <param name="description">描述</param>
+        /// <param name="type">类型</param>
+        /// <param name="format">格式化</param>
+        public SwaggerResponseHeaderAttribute(int[] statusCode, string name, string description, string type, string format = "")
         {
             StatusCodes = statusCode;
             Name = name;
-            Type = type;
             Description = description;
+            Type = type;
             Format = format;
+        }
+
+        /// <summary>
+        /// 初始化一个<see cref="SwaggerResponseHeaderAttribute"/>类型的实例
+        /// </summary>
+        /// <param name="statusCode">状态码</param>
+        /// <param name="name">名称</param>
+        /// <param name="type">类型</param>
+        /// <param name="description">描述</param>
+        /// <param name="format">格式化</param>
+        public SwaggerResponseHeaderAttribute(int[] statusCode, string name, string description)
+        {
+            StatusCodes = statusCode;
+            Name = name;
+            Description = description;
+        }
+
+        /// <summary>
+        /// 初始化一个<see cref="SwaggerResponseHeaderAttribute"/>类型的实例
+        /// </summary>
+        /// <param name="statusCode">状态码</param>
+        public SwaggerResponseHeaderAttribute(params int[] statusCode)
+        {
+            StatusCodes = statusCode;
         }
 
         /// <summary>
