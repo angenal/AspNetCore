@@ -5,7 +5,7 @@ var resource_globalization = {
     "AvailableValues": "可选项",
     "DefaultValue": "默认值",
     "ExampleValue": "示例",
-    "Schema": "模型",
+    "Schema": "模型(查看字段说明)",
     "Parameters": "请求参数",
     "Responses": "响应消息",
     "RequestUrl": "请求网址",
