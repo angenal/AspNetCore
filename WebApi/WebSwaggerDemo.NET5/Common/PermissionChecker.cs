@@ -32,7 +32,7 @@ namespace WebSwaggerDemo.NET5.Common
         }
 
         /// <summary></summary>
-        private async Task<bool> GetAsync(string permissions, string[] allPermissions)
+        private static async Task<bool> GetAsync(string permissions, string[] allPermissions)
         {
             bool result = LogicExpression.Eval(permissions, allPermissions);
             return await Task.FromResult(result);

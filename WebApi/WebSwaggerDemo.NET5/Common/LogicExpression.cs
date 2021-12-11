@@ -13,6 +13,11 @@ namespace WebSwaggerDemo.NET5.Common
         /// <returns></returns>
         public static bool Eval(string expression, string[] data)
         {
+            if (expression.Contains("&") && !expression.Contains("&&"))
+                expression = expression.Replace("&", "&&");
+            if (expression.Contains("|") && !expression.Contains("||"))
+                expression = expression.Replace("|", "||");
+
             //去除空格括号等
             string temp = expression.Replace(" ", "").Replace("(", "").Replace(")", "");
 
@@ -22,7 +27,7 @@ namespace WebSwaggerDemo.NET5.Common
             //将逻辑表达式中的所有条件名称取出
             string[] variables = variable.Split(',');
 
-            //条件名称替换成其对应的bool值
+            //条件名称替换成其对应的值
             for (int i = 0; i < variables.Length; i++)
             {
                 string item = variables[i];
@@ -30,12 +35,12 @@ namespace WebSwaggerDemo.NET5.Common
                 {
                     string str = item.Substring(1);
                     bool value = data.Any(v => v.Equals(str, StringComparison.OrdinalIgnoreCase));
-                    expression = expression.Replace(item, (!value).ToString());
+                    expression = expression.Replace(item, !value ? "1" : "0");
                 }
                 else
                 {
                     bool value = data.Any(v => v.Equals(item, StringComparison.OrdinalIgnoreCase));
-                    expression = expression.Replace(item, value.ToString());
+                    expression = expression.Replace(item, value ? "1" : "0");
                 }
             }
 
@@ -70,8 +75,8 @@ namespace WebSwaggerDemo.NET5.Common
                 }
 
                 string logicExpression = expression.Substring(lasttLeftBracketIndex + 1, firstRightBracketIndex - lasttLeftBracketIndex - 1);
-                bool logicResult = LogicOperate(logicExpression);
-                expression = expression.Replace("(" + logicExpression + ")", logicResult.ToString());
+                bool result = LogicOperate(logicExpression);
+                expression = expression.Replace("(" + logicExpression + ")", result ? "1" : "0");
             }
             return LogicOperate(expression);
         }
@@ -81,30 +86,29 @@ namespace WebSwaggerDemo.NET5.Common
         /// </summary>
         private static bool LogicOperate(string expression)
         {
-            //获取所有的条件的bool值
-            string[] arrLogicValue = expression.Split(',');
+            //去除空格
+            string temp = expression.Replace(" ", "");
+
+            //获取所有的条件的值
+            string[] arrLogicValue = temp.Replace("&&", ",").Replace("||", ",").Split(',');
 
             //获取表达式的逻辑运算符
-            string logicExpressionOperator = expression
-                .Replace("True", ",", StringComparison.OrdinalIgnoreCase)
-                .Replace("False", ",", StringComparison.OrdinalIgnoreCase)
-                .Remove(0, 1);
-            logicExpressionOperator = logicExpressionOperator.Remove(logicExpressionOperator.Length - 1, 1);
-            string[] arrOperator = logicExpressionOperator.Split(',');
+            string logicExpressionOperator = temp.Replace("0", ",").Replace("1", ",").Remove(0, 1);
+            string[] arrOperator = logicExpressionOperator.Remove(logicExpressionOperator.Length - 1, 1).Split(',');
 
             //最终运算结果
-            bool result = Convert.ToBoolean(arrLogicValue[0]);
+            bool result = arrLogicValue[0] == "1";
 
-            //更具逻辑运算符的数量通过循环进行运算(不包含!)
+            //更具逻辑运算符的数量通过循环进行运算
             for (int i = 0; i < arrOperator.Length; i++)
             {
                 if (arrOperator[i] == "&&")
                 {
-                    result = result && Convert.ToBoolean(arrLogicValue[i + 1]);
+                    result = result && arrLogicValue[i + 1] == "1";
                 }
                 else if (arrOperator[i] == "||")
                 {
-                    result = result || Convert.ToBoolean(arrLogicValue[i + 1]);
+                    result = result || arrLogicValue[i + 1] == "1";
                 }
             }
             return result;

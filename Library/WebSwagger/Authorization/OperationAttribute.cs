@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -39,11 +38,15 @@ namespace Microsoft.AspNetCore.Authorization
         /// </summary>
         public string Permissions { get; set; }
 
+        /// <summary>
+        /// Called early in the filter pipeline to confirm request is authorized.
+        /// </summary>
+        /// <param name="context">The Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext.</param>
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            // 如果不是一个控制器方法，则直接返回
-            if (!(context.ActionDescriptor is ControllerActionDescriptor))
-                return;
+            //// 如果不是一个控制器方法，则直接返回
+            //if (!(context.ActionDescriptor is ControllerActionDescriptor))
+            //    return;
             // 如果不存在权限检查服务，则直接返回
             IPermissionChecker permissionChecker = context.HttpContext.RequestServices.GetService<IPermissionChecker>();
             if (permissionChecker == null)
