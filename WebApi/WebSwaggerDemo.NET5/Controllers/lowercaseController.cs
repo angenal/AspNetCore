@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using WebSwagger.Attributes;
 using WebSwaggerDemo.NET5.Common;
 using WebSwaggerDemo.NET5.Models;
@@ -22,10 +23,12 @@ namespace WebSwaggerDemo.NET5.Controllers
     public class lowercaseController : ControllerBase
     {
         private readonly IJwtGenerator jwtToken;
+        private readonly IPermissionChecker permissionChecker;
 
-        public lowercaseController(IJwtGenerator jwtToken)
+        public lowercaseController(IJwtGenerator jwtToken, IPermissionChecker permissionChecker)
         {
             this.jwtToken = jwtToken;
+            this.permissionChecker = permissionChecker;
         }
 
         // GET api/values
@@ -73,11 +76,12 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// <summary>
         /// 登录接口
         /// </summary>
+        /// <param name="permissions">指定需要的权限</param>
         [HttpPost("login")]
         [AllowAnonymous]
         [Produces("application/json")]
         [SwaggerApiGroup(GroupSample.Login), SwaggerResponseHeader(200, "正常", "登录成功后", "{ token }")]
-        public ActionResult Login()
+        public async Task<ActionResult> Login(string permissions)
         {
             var o = new Session(Guid.NewGuid().ToString(), "User" + new Random().Next(100, 999))
             {
@@ -97,6 +101,10 @@ namespace WebSwaggerDemo.NET5.Controllers
                 Expires = DateTime.UtcNow.AddDays(7), // one week expiry time
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+
+            if (!string.IsNullOrWhiteSpace(permissions))
+                await permissionChecker.SetAsync(permissions.Split(',', ' '), o.Id);
+
             return Ok(session);
         }
 

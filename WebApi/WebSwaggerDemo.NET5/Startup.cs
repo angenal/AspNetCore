@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -72,7 +73,7 @@ namespace WebSwaggerDemo.NET5
                 options.AddPolicy("User", policy => policy.RequireAssertion(context =>
                     context.User.HasClaim(c => c.Type == "role" && c.Value.StartsWith("User")) ||
                     context.User.HasClaim(c => c.Type == "name" && c.Value.StartsWith("User"))));
-            });
+            }).AddSingleton<IPermissionChecker, PermissionChecker>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

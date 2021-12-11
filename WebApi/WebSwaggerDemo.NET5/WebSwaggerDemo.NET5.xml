@@ -115,6 +115,43 @@
             时钟偏移(默认5分钟"00:05:00")
             </summary>
         </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.LogicExpression.Eval(System.String,System.String[])">
+            <summary>
+            分析计算表达式
+            </summary>
+            <param name="expression">表达式如: (A || B)</param>
+            <param name="data">数据如: [A,B,C]</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.LogicExpression.DealBrackets(System.String)">
+            <summary>
+            处理括号
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.LogicExpression.LogicOperate(System.String)">
+            <summary>
+            逻辑运算
+            </summary>
+        </member>
+        <member name="T:WebSwaggerDemo.NET5.Common.PermissionChecker">
+            <summary>
+            检查用户操作权限
+            </summary>
+        </member>
+        <member name="F:WebSwaggerDemo.NET5.Common.PermissionChecker.Permissions">
+            <summary>
+            所有登录用户的权限集合
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.PermissionChecker.AuthorizeAsync(System.String,System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.PermissionChecker.SetAsync(System.String[],System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.PermissionChecker.GetAsync(System.String,System.String[])">
+            <summary></summary>
+        </member>
         <member name="T:WebSwaggerDemo.NET5.Common.Session">
             <summary>
             用户会话 by Jwt Token
@@ -301,10 +338,11 @@
             </summary>
             <param name="id">唯一标识</param>
         </member>
-        <member name="M:WebSwaggerDemo.NET5.Controllers.lowercaseController.Login">
+        <member name="M:WebSwaggerDemo.NET5.Controllers.lowercaseController.Login(System.String)">
             <summary>
             登录接口
             </summary>
+            <param name="permissions">指定需要的权限</param>
         </member>
         <member name="M:WebSwaggerDemo.NET5.Controllers.lowercaseController.Session">
             <summary>
