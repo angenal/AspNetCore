@@ -1,10 +1,35 @@
+using DynamicExpresso;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace WebSwaggerDemo.NET5.Common
 {
     public class LogicExpression
     {
+        /// <summary>
+        /// 分析计算表达式 https://github.com/dynamicexpresso/DynamicExpresso
+        /// </summary>
+        /// <param name="expression">表达式如: (A || B)</param>
+        /// <param name="data">数据如: [A,B,C]</param>
+        /// <returns></returns>
+        public static bool Parse(string expression, string[] data)
+        {
+            var target = new Interpreter();
+            var parameters = new List<Parameter>();
+            string temp = Regex.Replace(expression.Replace(" ", ""), @"\W+", ",");
+            string[] variables = temp.Split(',');
+            foreach (string variable in variables)
+            {
+                if (variable.Length == 0 || !char.IsLetter(variable[0]))
+                    return false;
+                bool value = data.Any(v => v.Equals(variable, StringComparison.OrdinalIgnoreCase));
+                parameters.Add(new Parameter(variable, value.GetType(), value));
+            }
+            return target.Eval<bool>(expression, parameters.ToArray());
+        }
+
         /// <summary>
         /// 分析计算表达式
         /// </summary>

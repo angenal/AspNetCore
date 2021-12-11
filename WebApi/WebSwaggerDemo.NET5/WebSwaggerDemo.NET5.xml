@@ -115,6 +115,14 @@
             时钟偏移(默认5分钟"00:05:00")
             </summary>
         </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.LogicExpression.Parse(System.String,System.String[])">
+            <summary>
+            分析计算表达式 https://github.com/dynamicexpresso/DynamicExpresso
+            </summary>
+            <param name="expression">表达式如: (A || B)</param>
+            <param name="data">数据如: [A,B,C]</param>
+            <returns></returns>
+        </member>
         <member name="M:WebSwaggerDemo.NET5.Common.LogicExpression.Eval(System.String,System.String[])">
             <summary>
             分析计算表达式
