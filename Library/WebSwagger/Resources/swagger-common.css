@@ -121,6 +121,10 @@
     margin: 0 auto;
 }
 
+.swagger-ui table.headers tbody td {
+    font-weight: normal;
+}
+
 .swagger-ui table.model tbody tr td {
     vertical-align: bottom;
     border-bottom: 1px dotted #bdb5b5;

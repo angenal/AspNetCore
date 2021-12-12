@@ -43,7 +43,11 @@ namespace WebSwagger
                     if (File.Exists(filePath.Substring(0, filePath.Length - 4) + ".dll")) c.IncludeXmlComments(filePath, true);
                 }
 
+                c.IgnoreObsoleteActions();
                 c.UseInlineDefinitionsForEnums();
+
+                // 显示枚举描述
+                c.ShowEnumDescription();
 
                 // 添加身份验证
                 c.AddSwaggerSecurityDefinition();
@@ -73,9 +77,6 @@ namespace WebSwagger
                 c.ShowFileParameter();
                 c.MapType<IFormFile>(() => new OpenApiSchema() { Type = "file" });
 
-                // 显示枚举描述
-                c.ShowEnumDescription();
-
                 // 控制器排序
                 c.OrderByController();
 
@@ -85,14 +86,14 @@ namespace WebSwagger
                 // 隐藏属性
                 c.SchemaFilter<Filters.Schemas.IgnorePropertySchemaFilter>();
 
-                // 自定义操作权限
+                // 自定义操作Id 导航 Controller's Action
                 c.CustomOperationIds(apiDesc =>
                 {
                     var name = apiDesc.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name : null;
                     var attributes = apiDesc.CustomAttributes();
                     if (attributes.Any(t => t is AllowAnonymousAttribute))
                     {
-                        return $"\"{name}\"：匿名访问";
+                        return $"匿名访问{name}";
                     }
                     var attribute = attributes.FirstOrDefault(t => t is AuthorizeAttribute);
                     if (attribute != null)
@@ -102,21 +103,21 @@ namespace WebSwagger
                         {
                             var operationAttribute = (AllowUserAttribute)attribute;
                             if (!string.IsNullOrEmpty(operationAttribute.Roles))
-                                s.AppendFormat("角色\"{0}\"", operationAttribute.Roles);
+                                s.AppendFormat("角色{0}", operationAttribute.Roles);
                             if (!string.IsNullOrEmpty(operationAttribute.Permissions))
-                                s.AppendFormat("权限\"{0}\"", operationAttribute.Permissions);
+                                s.AppendFormat("权限{0}", operationAttribute.Permissions);
                             if (!string.IsNullOrEmpty(operationAttribute.Policy))
-                                s.AppendFormat("策略\"{0}\"", operationAttribute.Policy);
+                                s.AppendFormat("策略{0}", operationAttribute.Policy);
                         }
                         else
                         {
                             var authorizeAttribute = (AuthorizeAttribute)attribute;
                             if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
-                                s.AppendFormat("角色\"{0}\"", authorizeAttribute.Roles);
+                                s.AppendFormat("角色{0}", authorizeAttribute.Roles);
                             if (!string.IsNullOrEmpty(authorizeAttribute.Policy))
-                                s.AppendFormat("策略\"{0}\"", authorizeAttribute.Policy);
+                                s.AppendFormat("策略{0}", authorizeAttribute.Policy);
                         }
-                        return s.Length == 0 ? $"\"{name}\"：授权访问" : $"\"{name}\"：{s}";
+                        return s.Length == 0 ? $"授权访问{name}" : $"授权访问{name}{s}";
                     }
                     return name;
                 });

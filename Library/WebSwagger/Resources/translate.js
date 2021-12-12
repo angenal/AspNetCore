@@ -12,7 +12,7 @@ function swagger_translate() {
 
     $.initialize('.opblock-summary', function () {
         var div = $(this), s = div.find('.opblock-summary-operation-id').text(), btn = div.find('.authorization__btn');
-        if (!s || s.indexOf('匿名访问') != -1 || s.substring(0, 1) !== '"') btn.css('visibility', 'hidden');
+        if (!s || s.indexOf('匿名访问') != -1 || s.indexOf('授权访问') == -1) btn.css('visibility', 'hidden');
         btn.click(function () { return false });
     });
 
