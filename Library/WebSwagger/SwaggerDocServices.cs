@@ -98,9 +98,9 @@ namespace WebSwagger
                     if (attribute != null)
                     {
                         var s = new StringBuilder();
-                        if (attribute is OperationAttribute)
+                        if (attribute is AllowUserAttribute)
                         {
-                            var operationAttribute = (OperationAttribute)attribute;
+                            var operationAttribute = (AllowUserAttribute)attribute;
                             if (!string.IsNullOrEmpty(operationAttribute.Roles))
                                 s.AppendFormat("角色\"{0}\"", operationAttribute.Roles);
                             if (!string.IsNullOrEmpty(operationAttribute.Permissions))

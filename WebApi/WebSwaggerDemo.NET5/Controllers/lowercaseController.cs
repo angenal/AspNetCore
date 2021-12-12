@@ -63,14 +63,14 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// </summary>
         /// <param name="id">唯一标识</param>
         [HttpDelete("{id}")]
-        [SwaggerApiGroup(GroupSample.Login), Operation("Administrator", "Manager|Delete")]
+        [SwaggerApiGroup(GroupSample.Login), AllowUser("Administrator", "Manager|Delete")]
         [SwaggerResponseHeader(401, "未经授权", "未登录或登录过期")]
-        [SwaggerResponseHeader(403, "禁止访问", "未授权或账号异常")]
+        [SwaggerResponseHeader(403, "禁止访问", "无权限或账号异常")]
         public void Delete(int id)
         {
             var user = this.GetSession();
+            //根据用户ID获取待删除记录
             string uid = user.Id;
-            //根据用户ID获取权限
         }
 
         /// <summary>
@@ -78,9 +78,9 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// </summary>
         /// <param name="permissions">指定需要的权限</param>
         [HttpPost("login")]
-        [AllowAnonymous]
         [Produces("application/json")]
-        [SwaggerApiGroup(GroupSample.Login), SwaggerResponseHeader(200, "正常", "登录成功后", "{ token }")]
+        [SwaggerApiGroup(GroupSample.Login), AllowAnonymous]
+        [SwaggerResponseHeader(200, "正常", "登录成功后", "{ token }")]
         public async Task<ActionResult> Login(string permissions)
         {
             var o = new Session(Guid.NewGuid().ToString(), "User" + new Random().Next(100, 999))
@@ -112,9 +112,9 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// 登录状态
         /// </summary>
         [HttpGet("session")]
-        [Authorize]
         [Produces("application/json")]
-        [SwaggerApiGroup(GroupSample.Login), SwaggerResponseHeader(200, 401)]
+        [SwaggerApiGroup(GroupSample.Login), AllowUser]
+        [SwaggerResponseHeader(401, "未经授权", "未登录或登录过期")]
         public Session Session()
         {
             return this.GetSession();

@@ -2,6 +2,9 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authorization
 {
+    /// <summary>
+    /// Permission check function. Used with controller or action's <see cref="AllowUserAttribute"/> properties.
+    /// </summary>
     public interface IPermissionChecker
     {
         /// <summary>
