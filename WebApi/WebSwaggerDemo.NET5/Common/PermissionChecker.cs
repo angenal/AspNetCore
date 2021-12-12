@@ -5,13 +5,11 @@ using System.Threading.Tasks;
 namespace WebSwaggerDemo.NET5.Common
 {
     /// <summary>
-    /// 检查用户操作权限
+    /// 检查用户权限
     /// </summary>
     public class PermissionChecker : IPermissionChecker
     {
-        /// <summary>
-        /// 所有登录用户的权限集合
-        /// </summary>
+        /// <summary></summary>
         private static readonly ConcurrentDictionary<string, string[]> Permissions = new ConcurrentDictionary<string, string[]>();
 
         /// <summary></summary>
@@ -21,21 +19,29 @@ namespace WebSwaggerDemo.NET5.Common
                 return true;
             if (string.IsNullOrEmpty(userIdentityName) || !Permissions.ContainsKey(userIdentityName))
                 return false;
-            return await GetAsync(permissions, Permissions[userIdentityName]);
+            string[] allPermissions = Permissions[userIdentityName];
+            return await AuthorizeAsync(permissions, allPermissions);
+        }
+
+        /// <summary></summary>
+        private static async Task<bool> AuthorizeAsync(string permissions, string[] allPermissions)
+        {
+            bool result = LogicExpression.Eval(permissions, allPermissions);
+            return await Task.FromResult(result);
         }
 
         /// <summary></summary>
         public async Task SetAsync(string[] permissions, string userIdentityName)
         {
-            Permissions.AddOrUpdate(userIdentityName, u => permissions, (u, v) => permissions);
+            Permissions[userIdentityName] = permissions;
             await Task.CompletedTask;
         }
 
         /// <summary></summary>
-        private static async Task<bool> GetAsync(string permissions, string[] allPermissions)
+        public async Task<string[]> GetAsync(string userIdentityName)
         {
-            bool result = LogicExpression.Eval(permissions, allPermissions);
-            return await Task.FromResult(result);
+            string[] permissions = Permissions.ContainsKey(userIdentityName) ? Permissions[userIdentityName] : System.Array.Empty<string>();
+            return await Task.FromResult(permissions);
         }
     }
 }

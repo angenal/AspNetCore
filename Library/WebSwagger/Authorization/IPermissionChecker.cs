@@ -21,5 +21,11 @@ namespace Microsoft.AspNetCore.Authorization
         /// <param name="userIdentityName">the name of the current user.</param>
         /// <returns></returns>
         Task SetAsync(string[] permissions, string userIdentityName);
+        /// <summary>
+        /// Get permissions for the current user.
+        /// </summary>
+        /// <param name="userIdentityName">the name of the current user.</param>
+        /// <returns>The list of permissions.</returns>
+        Task<string[]> GetAsync(string userIdentityName);
     }
 }

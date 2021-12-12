@@ -143,21 +143,22 @@
         </member>
         <member name="T:WebSwaggerDemo.NET5.Common.PermissionChecker">
             <summary>
-            检查用户操作权限
+            检查用户权限
             </summary>
         </member>
         <member name="F:WebSwaggerDemo.NET5.Common.PermissionChecker.Permissions">
-            <summary>
-            所有登录用户的权限集合
-            </summary>
+            <summary></summary>
         </member>
         <member name="M:WebSwaggerDemo.NET5.Common.PermissionChecker.AuthorizeAsync(System.String,System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Common.PermissionChecker.AuthorizeAsync(System.String,System.String[])">
             <summary></summary>
         </member>
         <member name="M:WebSwaggerDemo.NET5.Common.PermissionChecker.SetAsync(System.String[],System.String)">
             <summary></summary>
         </member>
-        <member name="M:WebSwaggerDemo.NET5.Common.PermissionChecker.GetAsync(System.String,System.String[])">
+        <member name="M:WebSwaggerDemo.NET5.Common.PermissionChecker.GetAsync(System.String)">
             <summary></summary>
         </member>
         <member name="T:WebSwaggerDemo.NET5.Common.Session">
