@@ -139,6 +139,20 @@
     padding: 1em 0 0 1em;
 }
 
+.swagger-ui table.live-responses-table th, .swagger-ui table.live-responses-table td {
+    padding-left: 1em;
+}
+
+.swagger-ui table.live-responses-table tbody tr td:first-of-type {
+    padding-left: 1em;
+    font-weight: 700;
+}
+
+.swagger-ui table.live-responses-table {
+    border-radius: 4px;
+    background: rgba(0,0,0,.1);
+}
+
 .swagger-ui .model tr.description td:nth-child(1) {
     color: #228b22;
 }
