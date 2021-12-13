@@ -13,6 +13,7 @@ function swagger_translate() {
     $.initialize('.opblock-summary', function () {
         var div = $(this), s = div.find('.opblock-summary-operation-id').text(), btn = div.find('.authorization__btn');
         if (!s || s.indexOf('匿名访问') != -1 || s.indexOf('授权访问') == -1) btn.css('visibility', 'hidden');
+        if (div.parent().hasClass('opblock-deprecated')) div.click(function () { return false }).parent().click(function () { return false });
         btn.click(function () { return false });
     });
 
