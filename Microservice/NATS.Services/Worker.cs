@@ -31,7 +31,7 @@ namespace NATS.Services
             while (!stoppingToken.IsCancellationRequested && status == 0)
             {
                 _logger.LogInformation("正在进行: {time}", DateTimeOffset.Now);
-                await Task.Delay(3000, stoppingToken);
+                await Task.Delay(5000, stoppingToken); // 间隔5秒打印一次
             }
         }
 
