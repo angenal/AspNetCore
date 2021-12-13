@@ -47,7 +47,7 @@ namespace WebSwagger.Core.Groups
                         context.AddGroup(x.Name);
                         return;
                     }
-                    context.AddApiGroupByCustomGroup(x.Name);
+                    context.AddApiGroupByCustomGroup(attribute.Title, x.Name, attribute.Description, x.Name, ApiVersion.DefaultGroupName);
                     return;
                 }
 
@@ -56,7 +56,7 @@ namespace WebSwagger.Core.Groups
                     context.AddGroup(attribute.Title, x.Name, attribute.Description);
                     return;
                 }
-                context.AddApiGroupByCustomGroup(attribute.Title, x.Name, attribute.Description, x.Name, x.Name);
+                context.AddApiGroupByCustomGroup(attribute.Title, x.Name, attribute.Description, x.Name, ApiVersion.DefaultGroupName);
             });
         }
 

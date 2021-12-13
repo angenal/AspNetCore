@@ -81,7 +81,7 @@ namespace WebSwagger.Core.Groups
         /// <summary>
         /// 添加未分组，带API版本
         /// </summary>
-        public void AddNoGroupWithVersion() => AddApiGroupByCustomGroup("未分组", "NoGroup", string.Empty, "NoGroup", string.Empty);
+        public void AddNoGroupWithVersion() => AddApiGroupByCustomGroup("未分组", "NoGroup", string.Empty, "NoGroup", ApiVersion.DefaultGroupName);
 
         /// <summary>
         /// 添加API分组

@@ -113,6 +113,8 @@ namespace WebSwagger
         /// 描述
         /// </summary>
         public string Description { get; set; }
+
+        public const string DefaultGroupName = "v1";
     }
 
     /// <summary>
