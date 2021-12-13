@@ -1,12 +1,12 @@
 using System;
 
-namespace WebSwagger.Attributes
+namespace Microsoft.AspNetCore.Mvc
 {
     /// <summary>
     /// Swagger: 上传，用于标识接口是否包含上传信息参数
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class SwaggerUploadAttribute : Attribute
+    public class UploadFileAttribute : Attribute
     {
         /// <summary>
         /// 清空其它参数

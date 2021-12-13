@@ -51,7 +51,7 @@
                 configObject.layout = 'StandaloneLayout';
                 configObject.urls.forEach(function (item) {
                     if (item.url.startsWith('http') || item.url.startsWith('/')) return;
-                    item.url = location.href.replace('index.html', item.url).split('#')[0];
+                    item.url = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1) + item.url;
                 });
                 if (!configObject.hasOwnProperty('validatorUrl')) configObject.validatorUrl = null;
                 if (!configObject.hasOwnProperty('oauth2RedirectUrl')) {

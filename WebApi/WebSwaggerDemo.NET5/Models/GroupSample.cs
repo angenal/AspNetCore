@@ -1,4 +1,4 @@
-using WebSwagger.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebSwaggerDemo.NET5.Models
 {
@@ -10,17 +10,17 @@ namespace WebSwaggerDemo.NET5.Models
         /// <summary>
         /// 登录
         /// </summary>
-        [SwaggerApiGroupInfo(Title = "登录模块", Description = "登录相关接口")]
+        [Display(Name = "登录模块", Description = "登录相关接口")]
         Login,
         /// <summary>
         /// 测试
         /// </summary>
-        [SwaggerApiGroupInfo(Title = "测试模块", Description = "测试相关接口")]
+        [Display(Name = "测试模块", Description = "测试相关接口")]
         Test,
         /// <summary>
         /// 案例
         /// </summary>
-        [SwaggerApiGroupInfo(Title = "Demo模块", Description = "案例相关接口")]
+        [Display(Name = "Demo模块", Description = "案例相关接口")]
         Demo
     }
 }

@@ -1,10 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using WebSwagger.Attributes;
 using WebSwagger.Core.Groups;
 
 namespace WebSwagger.Internals
@@ -141,7 +141,7 @@ namespace WebSwagger.Internals
                     
                 foreach (var obj in apiDescription.ActionDescriptor.EndpointMetadata)
                 {
-                    if (!(obj is SwaggerApiGroupAttribute swaggerApiGroup))
+                    if (!(obj is ApiGroupAttribute swaggerApiGroup))
                         continue;
                     if (swaggerApiGroup.GroupName == docName)
                         return true;
@@ -185,7 +185,7 @@ namespace WebSwagger.Internals
                 // 有分组处理
                 foreach (var obj in apiDescription.ActionDescriptor.EndpointMetadata)
                 {
-                    if (!(obj is SwaggerApiGroupAttribute swaggerApiGroup))
+                    if (!(obj is ApiGroupAttribute swaggerApiGroup))
                         continue;
                     if ($"{swaggerApiGroup.GroupName}{apiDescription.GroupName}" == docName)
                         return true;
@@ -199,6 +199,6 @@ namespace WebSwagger.Internals
         /// 是否存在Api分组特性
         /// </summary>
         /// <param name="actionDescriptor">操作描述器</param>
-        private bool ExistsApiGroupAttribute(ActionDescriptor actionDescriptor) => actionDescriptor.EndpointMetadata.OfType<SwaggerApiGroupAttribute>().Any();
+        private bool ExistsApiGroupAttribute(ActionDescriptor actionDescriptor) => actionDescriptor.EndpointMetadata.OfType<ApiGroupAttribute>().Any();
     }
 }

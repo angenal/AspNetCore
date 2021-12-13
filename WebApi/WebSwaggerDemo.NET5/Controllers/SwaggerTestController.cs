@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using WebSwagger.Attributes;
 using WebSwaggerDemo.NET5.Models;
 
 namespace WebSwaggerDemo.NET5.Controllers
@@ -10,7 +9,7 @@ namespace WebSwaggerDemo.NET5.Controllers
     /// Swagger测试信息
     /// </summary>
     [ApiController]
-    [SwaggerApiGroup(GroupSample.Test)]
+    [ApiGroup(GroupSample.Test)]
     [Route("api/[controller]")]
     public class SwaggerTestController: Controller
     {
@@ -91,7 +90,7 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("testUpload")]
-        [SwaggerUpload]
+        [UploadFile]
         public IActionResult TestUpload()
         {
             return new JsonResult("成功操作");
@@ -113,7 +112,7 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("testRequesHeader")]
-        [SwaggerRequestHeader("Refrence", "引用")]
+        [RequestHeader("Refrence", "引用")]
         public IActionResult TestRequestHeader()
         {
             return new JsonResult("成功操作");
@@ -124,7 +123,7 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("testResponseHeader")]
-        [SwaggerResponseHeader(200, "正常", "成功响应")]
+        [ResponseHeader(200, "正常", "成功响应")]
         public IActionResult TestResponseHeader()
         {
             return new JsonResult("成功操作");

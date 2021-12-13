@@ -1,12 +1,12 @@
 using System;
 
-namespace WebSwagger.Attributes
+namespace Microsoft.AspNetCore.Mvc
 {
     /// <summary>
     /// Swagger: 请求头，用于标识接口请求头参数信息
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-    public class SwaggerRequestHeaderAttribute : Attribute
+    public class RequestHeaderAttribute : Attribute
     {
         /// <summary>
         /// 名称
@@ -29,11 +29,11 @@ namespace WebSwagger.Attributes
         public object Default { get; set; }
 
         /// <summary>
-        /// 初始化一个<see cref="SwaggerRequestHeaderAttribute"/>类型的实例
+        /// 初始化一个<see cref="RequestHeaderAttribute"/>类型的实例
         /// </summary>
         /// <param name="name">名称</param>
         /// <param name="description">备注</param>
-        public SwaggerRequestHeaderAttribute(string name, string description = null)
+        public RequestHeaderAttribute(string name, string description = null)
         {
             Name = name;
             Description = description;

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebSwagger.Attributes;
 using WebSwaggerDemo.NET5.Models;
 
 namespace WebSwaggerDemo.NET5.Controllers
@@ -9,7 +8,7 @@ namespace WebSwaggerDemo.NET5.Controllers
     /// 案例 控制器
     /// </summary>
     [ApiController]
-    [SwaggerApiGroup(GroupSample.Demo)]
+    [ApiGroup(GroupSample.Demo)]
     [Route("api/[controller]/[action]")]
     public class DemoController : Controller
     {

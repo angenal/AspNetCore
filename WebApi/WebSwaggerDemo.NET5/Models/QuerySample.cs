@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel;
-using WebSwagger.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebSwaggerDemo.NET5.Models
 {
@@ -23,7 +23,7 @@ namespace WebSwaggerDemo.NET5.Models
         /// <summary>
         /// 密码
         /// </summary>
-        [SwaggerIgnoreProperty]
+        [IgnoreSwagger]
         public string Password { get; set; }
 
         /// <summary>

@@ -1,9 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
-using WebSwagger.Attributes;
 
 namespace WebSwagger.Filters.Operations
 {
@@ -17,7 +17,7 @@ namespace WebSwagger.Filters.Operations
         /// </summary>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var swaggerRequestHeaders = context.GetControllerAndActionAttributes<SwaggerRequestHeaderAttribute>().ToList();
+            var swaggerRequestHeaders = context.GetControllerAndActionAttributes<RequestHeaderAttribute>().ToList();
             if (!swaggerRequestHeaders.Any())
                 return;
             foreach (var requestHeader in swaggerRequestHeaders)

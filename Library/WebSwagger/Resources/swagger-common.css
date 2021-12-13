@@ -139,6 +139,9 @@
     padding: 1em 0 0 1em;
 }
 
+.swagger-ui table.live-responses-table tr.responses-header th, .swagger-ui table.live-responses-table tr.responses-header td {
+}
+
 .swagger-ui table.live-responses-table th, .swagger-ui table.live-responses-table td {
     padding-left: 1em;
 }

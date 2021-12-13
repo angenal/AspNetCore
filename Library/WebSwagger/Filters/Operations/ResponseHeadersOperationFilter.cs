@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
@@ -5,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using WebSwagger.Attributes;
 
 namespace WebSwagger.Filters.Operations
 {
@@ -19,7 +19,7 @@ namespace WebSwagger.Filters.Operations
         /// </summary>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var actionAttributes = context.MethodInfo.GetCustomAttributes<SwaggerResponseHeaderAttribute>();
+            var actionAttributes = context.MethodInfo.GetCustomAttributes<ResponseHeaderAttribute>();
             if (!actionAttributes.Any())
                 return;
             foreach (var attr in actionAttributes)

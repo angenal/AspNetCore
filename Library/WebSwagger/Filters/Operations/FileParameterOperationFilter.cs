@@ -1,15 +1,15 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using WebSwagger.Attributes;
 
 namespace WebSwagger.Filters.Operations
 {
     /// <summary>
-    /// 添加文件参数 操作过滤器。支持<see cref="SwaggerUploadAttribute"/>特性
+    /// 添加文件参数 操作过滤器。支持<see cref="UploadFileAttribute"/>特性
     /// </summary>
     public class FileParameterOperationFilter : IOperationFilter
     {
@@ -33,7 +33,7 @@ namespace WebSwagger.Filters.Operations
         /// <param name="context">操作过滤器上下文</param>
         private void UploadByAttribute(OpenApiOperation operation, OperationFilterContext context)
         {
-            var swaggerUpload = context.MethodInfo.GetCustomAttributes<SwaggerUploadAttribute>().FirstOrDefault();
+            var swaggerUpload = context.MethodInfo.GetCustomAttributes<UploadFileAttribute>().FirstOrDefault();
             if (swaggerUpload == null)
                 return;
             var requestBody = operation.RequestBody;

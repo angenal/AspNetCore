@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using WebSwagger.Attributes;
 using WebSwagger.Internals;
 
 namespace WebSwagger.Core.Groups
@@ -38,8 +38,7 @@ namespace WebSwagger.Core.Groups
                 return;
             buildContext.DocOptions.ApiGroupType.GetFields().Skip(1).ToList().ForEach(x =>
             {
-                var attribute = x.GetCustomAttributes(typeof(SwaggerApiGroupInfoAttribute), false)
-                    .OfType<SwaggerApiGroupInfoAttribute>().FirstOrDefault();
+                var attribute = x.GetCustomAttributes(typeof(DisplayAttribute), false).OfType<DisplayAttribute>().FirstOrDefault();
                 if (attribute == null)
                 {
                     if (buildContext.DocOptions.EnableApiVersion)
@@ -47,16 +46,16 @@ namespace WebSwagger.Core.Groups
                         context.AddGroup(x.Name);
                         return;
                     }
-                    context.AddApiGroupByCustomGroup(attribute.Title, x.Name, attribute.Description, x.Name, ApiVersion.DefaultGroupName);
+                    context.AddApiGroupByCustomGroup(attribute.Name, x.Name, attribute.Description, x.Name, ApiVersion.DefaultGroupName);
                     return;
                 }
 
                 if (buildContext.DocOptions.EnableApiVersion)
                 {
-                    context.AddGroup(attribute.Title, x.Name, attribute.Description);
+                    context.AddGroup(attribute.Name, x.Name, attribute.Description);
                     return;
                 }
-                context.AddApiGroupByCustomGroup(attribute.Title, x.Name, attribute.Description, x.Name, ApiVersion.DefaultGroupName);
+                context.AddApiGroupByCustomGroup(attribute.Name, x.Name, attribute.Description, x.Name, ApiVersion.DefaultGroupName);
             });
         }
 

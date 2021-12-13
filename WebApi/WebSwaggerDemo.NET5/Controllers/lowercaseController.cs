@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using WebSwagger.Attributes;
 using WebSwaggerDemo.NET5.Common;
 using WebSwaggerDemo.NET5.Models;
 
@@ -17,8 +16,8 @@ namespace WebSwaggerDemo.NET5.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [SwaggerApiGroup(GroupSample.Demo)]
-    [SwaggerApiGroup(GroupSample.Test)]
+    [ApiGroup(GroupSample.Demo)]
+    [ApiGroup(GroupSample.Test)]
     // ReSharper disable once InconsistentNaming
     public class lowercaseController : ControllerBase
     {
@@ -63,9 +62,9 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// </summary>
         /// <param name="id">唯一标识</param>
         [HttpDelete("{id}")]
-        [SwaggerApiGroup(GroupSample.Login), AllowUser("Administrator", "Manager|Delete")]
-        [SwaggerResponseHeader(401, "未经授权", "未登录或登录过期")]
-        [SwaggerResponseHeader(403, "禁止访问", "无权限或账号异常")]
+        [ApiGroup(GroupSample.Login), AllowUser("Administrator", "Manager|Delete")]
+        [ResponseHeader(401, "未经授权", "未登录或登录过期")]
+        [ResponseHeader(403, "禁止访问", "无权限或账号异常")]
         public void Delete(int id)
         {
             var user = this.GetSession();
@@ -79,8 +78,8 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// <param name="permissions">指定需要的权限</param>
         [HttpPost("login")]
         [Produces("application/json")]
-        [SwaggerApiGroup(GroupSample.Login), AllowAnonymous]
-        [SwaggerResponseHeader(200, "正常", "登录成功后", "{ token }")]
+        [ApiGroup(GroupSample.Login), AllowAnonymous]
+        [ResponseHeader(200, "正常", "登录成功后", "{ token }")]
         public async Task<ActionResult> Login(string permissions)
         {
             var o = new Session(Guid.NewGuid().ToString(), "User" + new Random().Next(100, 999))
@@ -113,8 +112,8 @@ namespace WebSwaggerDemo.NET5.Controllers
         /// </summary>
         [HttpGet("session")]
         [Produces("application/json")]
-        [SwaggerApiGroup(GroupSample.Login), AllowUser]
-        [SwaggerResponseHeader(401, "未经授权", "未登录或登录过期")]
+        [ApiGroup(GroupSample.Login), AllowUser]
+        [ResponseHeader(401, "未经授权", "未登录或登录过期")]
         public Session Session()
         {
             return this.GetSession();
