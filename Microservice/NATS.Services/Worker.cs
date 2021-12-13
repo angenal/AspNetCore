@@ -41,7 +41,6 @@ namespace NATS.Services
         public void OnStopping()
         {
             status = 1;
-
             _logger.LogInformation("正在退出");
         }
 
