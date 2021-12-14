@@ -12,7 +12,7 @@ namespace WebCore.Cache
     /// <remarks>
     /// 依赖库 https://www.nuget.org/packages/CSRedisCore
     /// </remarks>
-    public class RedisCache : Cache
+    public class Redis : Cache
     {
         #region 属性
         public CSRedis.CSRedisClient CSRedis { get; set; }
@@ -20,16 +20,18 @@ namespace WebCore.Cache
 
         #region 静态默认实现
         /// <summary>默认缓存</summary>
-        public static ICache Instance { get; set; } = new RedisCache("127.0.0.1:6379");
+        public static ICache Instance { get; set; } = new Redis("127.0.0.1:6379");
         #endregion
 
         #region 构造
-        public RedisCache(string connectionstring)
+        public Redis(string connectionstring)
         {
+            Name = nameof(Redis);
             CSRedis = new CSRedis.CSRedisClient(connectionstring);
         }
-        public RedisCache(string masterConnectionstring, string[] sentinels, bool readOnly = false)
+        public Redis(string masterConnectionstring, string[] sentinels, bool readOnly = false)
         {
+            Name = nameof(Redis);
             CSRedis = new CSRedis.CSRedisClient(masterConnectionstring, sentinels, readOnly);
         }
         /// <summary>
@@ -48,11 +50,12 @@ namespace WebCore.Cache
         /// <param name="testcluster">是否尝试集群模式,阿里云,腾讯云集群需要设置此选项为 false</param>
         /// <param name="name">连接名称,使用客户端列表命令查看</param>
         /// <param name="prefix">key前辍,所有方法都会附带此前辍, redis.Set(prefix + "key", 111);</param>
-        public RedisCache(string server, string password = "", int defaultDatabase = 0,
+        public Redis(string server, string password = "", int defaultDatabase = 0,
             int poolsize = 50, int preheat = 5, int tryit = 0,
             int idleTimeout = 20000, int connectTimeout = 5000, int syncTimeout = 10000,
             bool ssl = false, bool testcluster = true, string name = "", string prefix = "")
         {
+            Name = nameof(Redis);
             var s = new StringBuilder(server);
             if (!string.IsNullOrEmpty(password)) s.Append($",password={password}");
             s.Append($",defaultDatabase={defaultDatabase}");

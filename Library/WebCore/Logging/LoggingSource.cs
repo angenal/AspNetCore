@@ -611,11 +611,11 @@ namespace WebCore.Logging
 
             public readonly ForwardingStream ForwardingStream;
 
-            public readonly SingleProducerSingleConsumerCircularQueue<WebSocketMessageEntry> Free =
-                new SingleProducerSingleConsumerCircularQueue<WebSocketMessageEntry>(1024);
+            public readonly CircularQueue<WebSocketMessageEntry> Free =
+                new CircularQueue<WebSocketMessageEntry>(1024);
 
-            public readonly SingleProducerSingleConsumerCircularQueue<WebSocketMessageEntry> Full =
-                new SingleProducerSingleConsumerCircularQueue<WebSocketMessageEntry>(1024);
+            public readonly CircularQueue<WebSocketMessageEntry> Full =
+                new CircularQueue<WebSocketMessageEntry>(1024);
 
             public readonly StreamWriter Writer;
 

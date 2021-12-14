@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using WebCore.Json;
 
-namespace WebCore
+namespace WebCore.Json
 {
     public class PeepingTomStream : IDisposable
     {

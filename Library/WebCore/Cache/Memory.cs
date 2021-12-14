@@ -13,7 +13,7 @@ namespace WebCore.Cache
     /// <summary>
     /// 内存缓存(字典缓存)
     /// </summary>
-    public class MemoryCache : Cache
+    public class Memory : Cache
     {
         #region 属性
         /// <summary>缓存核心</summary>
@@ -31,14 +31,14 @@ namespace WebCore.Cache
 
         #region 静态默认实现
         /// <summary>默认缓存</summary>
-        public static ICache Instance { get; set; } = new MemoryCache();
+        public static ICache Instance { get; set; } = new Memory();
         #endregion
 
         #region 构造
         /// <summary>实例化一个内存字典缓存</summary>
-        public MemoryCache()
+        public Memory()
         {
-            Init(null);
+            Init(Name = nameof(Memory));
         }
         #endregion
 

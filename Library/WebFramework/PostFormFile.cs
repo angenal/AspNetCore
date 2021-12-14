@@ -28,7 +28,7 @@ namespace WebFramework
         public static async Task<string> GetUploadedTextFile(ModelStateDictionary modelState, IFormFile file, int maximumLength, bool autoConvertToUtf8 = false)
         {
             string fContent = "";
-            var (Checked, kErr, vErr) = CheckUploadedFile(modelState, file, FileSomeType.Text, new Size[] { Size.Zero, new Size(maximumLength) }, new string[] { "text/plain" }, "文本文件");
+            var (Checked, kErr, vErr) = CheckUploadedFile(modelState, file, FileType.Text, new Size[] { Size.Zero, new Size(maximumLength) }, new string[] { "text/plain" }, "文本文件");
             if (Checked)
             {
                 try
@@ -77,7 +77,7 @@ namespace WebFramework
         /// <returns></returns>
         public static async Task<bool> SaveUploadedTextFile(ModelStateDictionary modelState, IFormFile file, string filePath, int maximumLength)
         {
-            var (Checked, kErr, vErr) = CheckUploadedFile(modelState, file, FileSomeType.Text, new Size[] { Size.Zero, new Size(maximumLength) }, new string[] { "text/plain" }, "文本文件");
+            var (Checked, kErr, vErr) = CheckUploadedFile(modelState, file, FileType.Text, new Size[] { Size.Zero, new Size(maximumLength) }, new string[] { "text/plain" }, "文本文件");
             if (Checked)
             {
                 try
@@ -106,7 +106,7 @@ namespace WebFramework
         /// <returns></returns>
         public static async Task<bool> SaveUploadedImageFile(ModelStateDictionary modelState, IFormFile file, string filePath, Size[] sizes)
         {
-            var (Checked, kErr, vErr) = CheckUploadedFile(modelState, file, FileSomeType.Image, sizes, new string[] { "image/jpeg", "image/png" }, "jpg|png图片");
+            var (Checked, kErr, vErr) = CheckUploadedFile(modelState, file, FileType.Image, sizes, new string[] { "image/jpeg", "image/png" }, "jpg|png图片");
             if (Checked)
             {
                 try
@@ -127,7 +127,7 @@ namespace WebFramework
 
 
         /// <summary></summary>
-        internal static (bool Checked, string kErr, string vErr) CheckUploadedFile(ModelStateDictionary modelState, IFormFile file, FileSomeType fileType, Size[] sizes, string[] fileTypes, string fileTypeName)
+        internal static (bool Checked, string kErr, string vErr) CheckUploadedFile(ModelStateDictionary modelState, IFormFile file, FileType fileType, Size[] sizes, string[] fileTypes, string fileTypeName)
         {
             bool _Checked = modelState.IsValid;
             string _kErr = file.Name, _vErr = "";
@@ -156,7 +156,7 @@ namespace WebFramework
                     long minL = sizes[0].GetValue(sizeUnit), maxL = sizes[1].GetValue(sizeUnit);
                     if (0 < minL && file.Length < minL)
                     {
-                        if (fileType == FileSomeType.Text)
+                        if (fileType == FileType.Text)
                             modelState.AddModelError(_kErr, $"{_vErr}不能少于{minL}字");
                         else
                             modelState.AddModelError(_kErr, $"{_vErr}不能小于{new Size(minL, sizeUnit).ToString()}");
@@ -164,7 +164,7 @@ namespace WebFramework
                     }
                     else if (0 < maxL && file.Length > maxL)
                     {
-                        if (fileType == FileSomeType.Text)
+                        if (fileType == FileType.Text)
                             modelState.AddModelError(_kErr, $"{_vErr}不能多于{maxL}字");
                         else
                             modelState.AddModelError(_kErr, $"{_vErr}不能大于{new Size(maxL, sizeUnit).ToString()}");

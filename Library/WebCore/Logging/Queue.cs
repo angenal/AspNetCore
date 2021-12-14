@@ -19,20 +19,14 @@ namespace WebCore.Logging
         }
     }
 
-    public class SingleProducerSingleConsumerCircularQueue<T>
+    public class CircularQueue<T>
     {
         private readonly T[] _data;
-        // private readonly MemoryStream[] _data;
-        // private readonly List<WebSocket>[]  _webSocketsList;
         private readonly int _queueSize;
         private volatile uint _readPos;
-#pragma warning disable 169 // unused field
-        // cache line padding
-        private long _p1, _p2, _p3, _p4, _p5, _p6, _p7;
-#pragma warning restore 169
         private volatile uint _writePos;
 
-        public SingleProducerSingleConsumerCircularQueue(int queueSize)
+        public CircularQueue(int queueSize)
         {
             _queueSize = queueSize;
             _data = new T[_queueSize];

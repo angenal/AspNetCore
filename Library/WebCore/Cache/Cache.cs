@@ -8,7 +8,7 @@ namespace WebCore.Cache
     public abstract class Cache : ICache
     {
         /// <summary>默认缓存</summary>
-        public static ICache Default { get; set; } = new MemoryCache();
+        public static ICache Default { get; set; } = new Memory();
 
         #region 属性
         /// <summary>名称</summary>
@@ -31,7 +31,7 @@ namespace WebCore.Cache
 
         #region 构造
         /// <summary>构造函数</summary>
-        protected Cache() => Name = GetType().Name.TrimEnd("Cache");
+        protected Cache() { }
         #endregion
 
         #region 基础操作

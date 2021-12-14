@@ -220,8 +220,8 @@ namespace WebFramework.Auth
         /// <returns></returns>
         private async Task ReturnNoAuthorized(HttpContext context)
         {
-            context.Response.StatusCode = 401;
-            var response = WebCore.Data.DTO.Results.Res(401, "not authorized");
+            var response = WebCore.Data.DTO.Results.Unauthorized;
+            context.Response.StatusCode = response.Code;
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
         /// <summary>
@@ -231,8 +231,8 @@ namespace WebFramework.Auth
         /// <returns></returns>
         private async Task ReturnTimeOut(HttpContext context)
         {
-            context.Response.StatusCode = 408;
-            var response = WebCore.Data.DTO.Results.Res(408, "timeout");
+            var response = WebCore.Data.DTO.Results.Timeout;
+            context.Response.StatusCode = response.Code;
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
 

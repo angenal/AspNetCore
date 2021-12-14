@@ -80,15 +80,15 @@ namespace NATS.Services.V8Script
         private static string GetCache(CacheType cacheType, string key)
         {
             return cacheType == CacheType.Memory
-                ? MemoryCache.Instance.Get<string>(key)
-                : RedisCache.Instance.Get<string>(key);
+                ? WebCore.Cache.Memory.Instance.Get<string>(key)
+                : WebCore.Cache.Redis.Instance.Get<string>(key);
         }
 
         private static bool SetCache(CacheType cacheType, string key, string value)
         {
             return cacheType == CacheType.Memory
-                ? MemoryCache.Instance.Set(key, value)
-                : RedisCache.Instance.Set(key, value);
+                ? WebCore.Cache.Memory.Instance.Set(key, value)
+                : WebCore.Cache.Redis.Instance.Set(key, value);
         }
 
         /// <summary>

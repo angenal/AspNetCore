@@ -1,19 +1,18 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using WebCore.Logging;
 
-namespace WebCore
+namespace WebCore.Logging
 {
-    public class ContentionLoggingLocker
+    public class Locker
     {
         private readonly Logger _logger;
         private readonly string _name;
         private readonly object _locker = new object();
         private bool _lockTaken;
 
-        public ContentionLoggingLocker(Logger logger, string name)
+        public Locker(Logger logger, string name)
         {
             _logger = logger;
             _name = name;
@@ -21,9 +20,9 @@ namespace WebCore
 
         public struct Release : IDisposable
         {
-            private readonly ContentionLoggingLocker _parent;
+            private readonly Locker _parent;
 
-            public Release(ContentionLoggingLocker parent)
+            public Release(Locker parent)
             {
                 _parent = parent;
             }
