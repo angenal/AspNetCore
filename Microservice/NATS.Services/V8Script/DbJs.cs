@@ -7,6 +7,9 @@ using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebCore;
+using WebCore.Cache;
+using WebInterface;
 
 namespace NATS.Services.V8Script
 {
@@ -74,6 +77,20 @@ namespace NATS.Services.V8Script
             return Db.Ado.CommandTimeOut;
         }
 
+        private static string GetCache(CacheType cacheType, string key)
+        {
+            return cacheType == CacheType.Memory
+                ? MemoryCache.Instance.Get<string>(key)
+                : RedisCache.Instance.Get<string>(key);
+        }
+
+        private static bool SetCache(CacheType cacheType, string key, string value)
+        {
+            return cacheType == CacheType.Memory
+                ? MemoryCache.Instance.Set(key, value)
+                : RedisCache.Instance.Set(key, value);
+        }
+
         /// <summary>
         /// $db.q: return ResultObject or Array of all rows
         /// $db.q('select * from table1 where id=@id',{id:1})
@@ -92,10 +109,10 @@ namespace NATS.Services.V8Script
 
             string code = null;
 
-            var cacheType = CacheObject.Types.Default;
+            var cacheType = CacheType.Memory;
             var cacheEnabled = args.Length > 2 && Enum.TryParse(args[2].ToString(), out cacheType);
             var cacheKey = cacheEnabled ? (sql + p.ToStr()).Md5() : null;
-            if (cacheEnabled) code = CacheObject.Get(cacheType, cacheKey);
+            if (cacheEnabled) code = GetCache(cacheType, cacheKey);
 
             if (string.IsNullOrEmpty(code))
             {
@@ -103,8 +120,8 @@ namespace NATS.Services.V8Script
                 if (dt == null || dt.Rows.Count == 0)
                     return null;
 
-                code = JsonConvert.SerializeObject(dt, Extensions.JsonConverters);
-                if (cacheEnabled) CacheObject.Set(cacheType, cacheKey, code);
+                code = JsonConvert.SerializeObject(dt, NewtonsoftJson.Converters);
+                if (cacheEnabled) SetCache(cacheType, cacheKey, code);
             }
 
             var obj = Engine.Evaluate(JS.SecurityCode(code));
@@ -128,7 +145,7 @@ namespace NATS.Services.V8Script
 
             Dictionary<string, object> p = args.Length > 2 ? (args[2] as ScriptObject)?.ToDictionary() : null;
 
-            Enum.TryParse(args[0].ToString(), out CacheObject.Types cacheType);
+            Enum.TryParse(args[0].ToString(), out CacheType cacheType);
             var cacheKey = (sql + p.ToStr()).Md5();
             var code = CacheObject.Get(cacheType, cacheKey);
 
@@ -138,7 +155,7 @@ namespace NATS.Services.V8Script
                 if (dt == null || dt.Rows.Count == 0)
                     return null;
 
-                code = JsonConvert.SerializeObject(dt, Extensions.JsonConverters);
+                code = JsonConvert.SerializeObject(dt, NewtonsoftJson.Converters);
                 CacheObject.Set(cacheType, cacheKey, code);
             }
 
@@ -181,7 +198,7 @@ namespace NATS.Services.V8Script
                 if (obj == null || obj == DBNull.Value)
                     return null;
 
-                if (cacheEnabled) CacheObject.Set(cacheType, cacheKey, JsonConvert.SerializeObject(obj, Extensions.JsonConverters));
+                if (cacheEnabled) CacheObject.Set(cacheType, cacheKey, JsonConvert.SerializeObject(obj, NewtonsoftJson.Converters));
             }
             return obj;
         }
@@ -217,7 +234,7 @@ namespace NATS.Services.V8Script
                 if (obj == null || obj == DBNull.Value)
                     return null;
 
-                CacheObject.Set(cacheType, cacheKey, JsonConvert.SerializeObject(obj, Extensions.JsonConverters));
+                CacheObject.Set(cacheType, cacheKey, JsonConvert.SerializeObject(obj, NewtonsoftJson.Converters));
             }
             return obj;
         }

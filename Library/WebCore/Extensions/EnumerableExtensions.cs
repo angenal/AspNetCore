@@ -11,7 +11,7 @@ namespace WebCore
         /// <typeparam name="T"></typeparam>
         /// <param name="this">The this.</param>
         /// <returns></returns>
-        public static T As<T>(this object @this) where T : class
+        public static T As<T>(this object @this)
         {
             Check.NotNull(@this, nameof(@this));
 

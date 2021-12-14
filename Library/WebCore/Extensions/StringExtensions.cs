@@ -214,6 +214,64 @@ namespace WebCore
         public static string Substr(this string str, int maxlength) => str == null || maxlength <= 0 || str.Length <= maxlength ? str : str.Substring(0, maxlength);
 
         /// <summary>
+        /// 从当前字符串开头结尾移除另一字符串，不区分大小写，循环多次匹配前缀
+        /// </summary>
+        /// <param name="str">当前字符串</param>
+        /// <param name="trim">另一字符串</param>
+        /// <returns></returns>
+        public static string Trim(this string str, params string[] trim) => str.TrimStart(trim).TrimEnd(trim);
+
+        /// <summary>
+        /// 从当前字符串开头移除另一字符串，不区分大小写，循环多次匹配前缀
+        /// </summary>
+        /// <param name="str">当前字符串</param>
+        /// <param name="starts">另一字符串</param>
+        /// <returns></returns>
+        public static string TrimStart(this string str, params string[] starts)
+        {
+            if (string.IsNullOrEmpty(str)) return str;
+            if (starts == null || starts.Length < 1 || string.IsNullOrEmpty(starts[0])) return str;
+
+            for (var i = 0; i < starts.Length; i++)
+            {
+                if (str.StartsWith(starts[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    str = str.Substring(starts[i].Length);
+                    if (string.IsNullOrEmpty(str)) break;
+
+                    // 从头开始
+                    i = -1;
+                }
+            }
+            return str;
+        }
+
+        /// <summary>
+        /// 从当前字符串结尾移除另一字符串，不区分大小写，循环多次匹配后缀
+        /// </summary>
+        /// <param name="str">当前字符串</param>
+        /// <param name="ends">另一字符串</param>
+        /// <returns></returns>
+        public static string TrimEnd(this string str, params string[] ends)
+        {
+            if (string.IsNullOrEmpty(str)) return str;
+            if (ends == null || ends.Length < 1 || string.IsNullOrEmpty(ends[0])) return str;
+
+            for (var i = 0; i < ends.Length; i++)
+            {
+                if (str.EndsWith(ends[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    str = str.Substring(0, str.Length - ends[i].Length);
+                    if (string.IsNullOrEmpty(str)) break;
+
+                    // 从头开始
+                    i = -1;
+                }
+            }
+            return str;
+        }
+
+        /// <summary>
         /// 判断是否为空字符串
         /// </summary>
         /// <param name="value"></param>

@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
+    <PackageReference Include="CSRedisCore" Version="3.6.6" />
     <PackageReference Include="Esprima" Version="2.0.3" />
     <PackageReference Include="FastMember" Version="1.5.0" />
     <PackageReference Include="FluentScheduler" Version="5.5.1" />

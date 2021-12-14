@@ -22,8 +22,15 @@ namespace WebFramework.Services
 
             // Caching: a non distributed in memory implementation
             services.AddMemoryCache(); // IMemoryCache cache
+
             // Caching: a distributed in memory implementation
-            services.AddDistributedMemoryCache(); // IDistributedCache cache
+            // IDistributedCache cache#1
+            services.AddDistributedMemoryCache();
+            // Caching: a distributed in redis implementation
+            // IDistributedCache cache#2 Caching.CSRedis
+            //RedisHelper.Initialization(csredis);
+            //services.AddSingleton<IDistributedCache>(new CSRedisCache(RedisHelper.Instance));
+
             // Caching: response caching services, replaced by EasyCaching.ResponseCaching
             if (!UseEasyCaching) return services.AddResponseCaching();
 
