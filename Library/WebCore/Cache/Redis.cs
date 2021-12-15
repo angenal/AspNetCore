@@ -115,7 +115,109 @@ namespace WebCore.Cache
         public override TimeSpan GetExpire(string key) => TimeSpan.FromSeconds(CSRedis.Ttl(key));
         #endregion
 
+        #region 高级操作
+        /// <summary>添加，已存在时不更新</summary>
+        /// <typeparam name="T">值类型</typeparam>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
+        /// <returns></returns>
+        public override bool Add<T>(string key, T value, int expire = -1)
+        {
+            if (expire < 0) expire = Expire;
+
+            // 没有有效期，直接使用SETNX
+            if (expire <= 0) return CSRedis.SetNx(key, value);
+
+            // 带有有效期
+            return CSRedis.SetNx(key, value) && CSRedis.Expire(key, expire);
+        }
+
+        /// <summary>设置新值并获取旧值，原子操作</summary>
+        /// <typeparam name="T">值类型</typeparam>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        public override T Replace<T>(string key, T value) => CSRedis.GetSet<T>(key, value);
+
+        /// <summary>尝试获取指定键，返回是否包含值。有可能缓存项刚好是默认值，或者只是反序列化失败</summary>
+        /// <remarks>
+        /// 在 Redis 中，可能有key（此时TryGet返回true），但是因为反序列化失败，从而得不到value。
+        /// </remarks>
+        /// <typeparam name="T">值类型</typeparam>
+        /// <param name="key">键</param>
+        /// <param name="value">值。即使有值也不一定能够返回，可能缓存项刚好是默认值，或者只是反序列化失败</param>
+        /// <returns>返回是否包含值，即使反序列化失败</returns>
+        public override bool TryGetValue<T>(string key, out T value)
+        {
+            T v0 = default, v1 = CSRedis.Get<T>(key);
+            value = v1;
+            return !Equals(v0, v1);
+        }
+
+        /// <summary>获取 或 添加 缓存数据，在数据不存在时执行委托请求数据</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="callback"></param>
+        /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
+        /// <returns></returns>
+        public override T GetOrAdd<T>(string key, Func<string, T> callback, int expire = -1)
+        {
+            if (!TryGetValue<T>(key, out T value))
+            {
+                value = callback.Invoke(key);
+                if (value != null) Add<T>(key, value, expire);
+            }
+            return value;
+        }
+
+        /// <summary>累加，原子操作</summary>
+        /// <param name="key">键</param>
+        /// <param name="value">变化量</param>
+        /// <returns></returns>
+        public override long Increment(string key, long value) => CSRedis.IncrBy(key, value);
+
+        /// <summary>累加，原子操作，乘以100后按整数操作</summary>
+        /// <param name="key">键</param>
+        /// <param name="value">变化量</param>
+        /// <returns></returns>
+        public override double Increment(string key, double value) => (double)CSRedis.IncrByFloat(key, (decimal)value);
+
+        /// <summary>递减，原子操作</summary>
+        /// <param name="key">键</param>
+        /// <param name="value">变化量</param>
+        /// <returns></returns>
+        public override long Decrement(string key, long value) => Increment(key, -value);
+
+        /// <summary>递减，原子操作</summary>
+        /// <param name="key">键</param>
+        /// <param name="value">变化量</param>
+        /// <returns></returns>
+        public override double Decrement(string key, double value) => Increment(key, -value);
+        #endregion
+
         #region 集合操作
+        /// <summary>设置列表</summary>
+        /// <typeparam name="T">元素类型</typeparam>
+        /// <param name="key">键</param>
+        /// <param name="values">列表值</param>
+        /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
+        public override void SetList<T>(string key, IList<T> values, int expire = -1)
+        {
+            CSRedis.RPush<T>(key, values.ToArray());
+            if (expire > 0) CSRedis.Expire(key, expire);
+        }
+
+        /// <summary>获取列表</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public override IList<T> GetList<T>(string key)
+        {
+            T[] result = CSRedis.LRange<T>(key, 0, -1);
+            return result;
+        }
+
         /// <summary>批量获取缓存项</summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="keys"></param>
@@ -187,71 +289,6 @@ namespace WebCore.Cache
         /// <param name="key"></param>
         /// <returns></returns>
         public override ICollection<T> GetSet<T>(string key) => throw new NotSupportedException("Redis未支持该功能");
-        #endregion
-
-        #region 高级操作
-        /// <summary>添加，已存在时不更新</summary>
-        /// <typeparam name="T">值类型</typeparam>
-        /// <param name="key">键</param>
-        /// <param name="value">值</param>
-        /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
-        /// <returns></returns>
-        public override bool Add<T>(string key, T value, int expire = -1)
-        {
-            if (expire < 0) expire = Expire;
-
-            // 没有有效期，直接使用SETNX
-            if (expire <= 0) return CSRedis.SetNx(key, value);
-
-            // 带有有效期
-            return CSRedis.SetNx(key, value) && CSRedis.Expire(key, expire);
-        }
-
-        /// <summary>设置新值并获取旧值，原子操作</summary>
-        /// <typeparam name="T">值类型</typeparam>
-        /// <param name="key">键</param>
-        /// <param name="value">值</param>
-        /// <returns></returns>
-        public override T Replace<T>(string key, T value) => CSRedis.GetSet<T>(key, value);
-
-        /// <summary>尝试获取指定键，返回是否包含值。有可能缓存项刚好是默认值，或者只是反序列化失败</summary>
-        /// <remarks>
-        /// 在 Redis 中，可能有key（此时TryGet返回true），但是因为反序列化失败，从而得不到value。
-        /// </remarks>
-        /// <typeparam name="T">值类型</typeparam>
-        /// <param name="key">键</param>
-        /// <param name="value">值。即使有值也不一定能够返回，可能缓存项刚好是默认值，或者只是反序列化失败</param>
-        /// <returns>返回是否包含值，即使反序列化失败</returns>
-        public override bool TryGetValue<T>(string key, out T value)
-        {
-            T v0 = default, v1 = CSRedis.Get<T>(key);
-            value = v1;
-            return !Equals(v0, v1);
-        }
-
-        /// <summary>累加，原子操作</summary>
-        /// <param name="key">键</param>
-        /// <param name="value">变化量</param>
-        /// <returns></returns>
-        public override long Increment(string key, long value) => CSRedis.IncrBy(key, value);
-
-        /// <summary>累加，原子操作，乘以100后按整数操作</summary>
-        /// <param name="key">键</param>
-        /// <param name="value">变化量</param>
-        /// <returns></returns>
-        public override double Increment(string key, double value) => (double)CSRedis.IncrByFloat(key, (decimal)value);
-
-        /// <summary>递减，原子操作</summary>
-        /// <param name="key">键</param>
-        /// <param name="value">变化量</param>
-        /// <returns></returns>
-        public override long Decrement(string key, long value) => Increment(key, -value);
-
-        /// <summary>递减，原子操作</summary>
-        /// <param name="key">键</param>
-        /// <param name="value">变化量</param>
-        /// <returns></returns>
-        public override double Decrement(string key, double value) => Increment(key, -value);
         #endregion
     }
 }

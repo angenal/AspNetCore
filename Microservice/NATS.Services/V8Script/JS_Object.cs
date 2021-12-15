@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NATS.Services.V8Script
 {
-    public static class ExtensionObject
+    public static class JS_Object
     {
         public static string ToJson<T>(this T obj) => JsonConvert.SerializeObject(obj, NewtonsoftJson.Converters);
 

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace NATS.Services.V8Script
 {
-    public static class ConsoleJs
+    public static class JS_Console
     {
         /// <summary>
         /// console.log(args)

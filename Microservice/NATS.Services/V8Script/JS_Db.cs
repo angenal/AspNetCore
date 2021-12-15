@@ -2,18 +2,16 @@ using Microsoft.ClearScript;
 using Microsoft.ClearScript.V8;
 using NATS.Services.Util;
 using Newtonsoft.Json;
-using RestSharp;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebCore;
-using WebCore.Cache;
 using WebInterface;
 
 namespace NATS.Services.V8Script
 {
-    public sealed class DbJs
+    public sealed class JS_Db
     {
         public readonly SqlSugarClient Db;
 
@@ -25,7 +23,7 @@ namespace NATS.Services.V8Script
         public string prefix => Prefix;
         public string subject => Subject;
 
-        public DbJs(string connectionString, V8ScriptEngine engine, string prefix, string subject)
+        public JS_Db(string connectionString, V8ScriptEngine engine, string prefix, string subject)
         {
             Db = connectionString.NewSqlSugarClient();
             Db.Ado.CommandTimeOut = 120;
@@ -34,7 +32,7 @@ namespace NATS.Services.V8Script
             Subject = subject;
         }
 
-        public DbJs(Config.DbConfig config, V8ScriptEngine engine, string prefix, string subject)
+        public JS_Db(Config.DbConfig config, V8ScriptEngine engine, string prefix, string subject)
             : this($"{config.Type}:{config.Conn}", engine, prefix, subject) { }
 
         /// <summary>
@@ -77,20 +75,6 @@ namespace NATS.Services.V8Script
             return Db.Ado.CommandTimeOut;
         }
 
-        private static string GetCache(CacheType cacheType, string key)
-        {
-            return cacheType == CacheType.Memory
-                ? WebCore.Cache.Memory.Instance.Get<string>(key)
-                : WebCore.Cache.Redis.Instance.Get<string>(key);
-        }
-
-        private static bool SetCache(CacheType cacheType, string key, string value)
-        {
-            return cacheType == CacheType.Memory
-                ? WebCore.Cache.Memory.Instance.Set(key, value)
-                : WebCore.Cache.Redis.Instance.Set(key, value);
-        }
-
         /// <summary>
         /// $db.q: return ResultObject or Array of all rows
         /// $db.q('select * from table1 where id=@id',{id:1})
@@ -112,7 +96,7 @@ namespace NATS.Services.V8Script
             var cacheType = CacheType.Memory;
             var cacheEnabled = args.Length > 2 && Enum.TryParse(args[2].ToString(), out cacheType);
             var cacheKey = cacheEnabled ? (sql + p.ToStr()).Md5() : null;
-            if (cacheEnabled) code = GetCache(cacheType, cacheKey);
+            if (cacheEnabled) code = JS_Cache.Get(cacheType, cacheKey);
 
             if (string.IsNullOrEmpty(code))
             {
@@ -121,7 +105,7 @@ namespace NATS.Services.V8Script
                     return null;
 
                 code = JsonConvert.SerializeObject(dt, NewtonsoftJson.Converters);
-                if (cacheEnabled) SetCache(cacheType, cacheKey, code);
+                if (cacheEnabled) JS_Cache.Set(cacheType, cacheKey, code);
             }
 
             var obj = Engine.Evaluate(JS.SecurityCode(code));
@@ -129,7 +113,7 @@ namespace NATS.Services.V8Script
         }
 
         /// <summary>
-        /// $db.q2: return Cache{ Memory = 0, Redis, Default } ResultObject or Array of all rows
+        /// $db.q2: return Cache{ Memory = 0, Redis, All } ResultObject or Array of all rows
         /// $db.q2(0,'select * from table1 where id=@id',{id:1})
         /// </summary>
         /// <param name="args"></param>
@@ -147,7 +131,7 @@ namespace NATS.Services.V8Script
 
             Enum.TryParse(args[0].ToString(), out CacheType cacheType);
             var cacheKey = (sql + p.ToStr()).Md5();
-            var code = CacheObject.Get(cacheType, cacheKey);
+            var code = JS_Cache.Get(cacheType, cacheKey);
 
             if (string.IsNullOrEmpty(code))
             {
@@ -156,7 +140,7 @@ namespace NATS.Services.V8Script
                     return null;
 
                 code = JsonConvert.SerializeObject(dt, NewtonsoftJson.Converters);
-                CacheObject.Set(cacheType, cacheKey, code);
+                JS_Cache.Set(cacheType, cacheKey, code);
             }
 
             var obj = Engine.Evaluate(JS.SecurityCode(code));
@@ -182,12 +166,12 @@ namespace NATS.Services.V8Script
 
             object obj = null;
 
-            var cacheType = CacheObject.Types.Default;
+            var cacheType = CacheType.Memory;
             var cacheEnabled = args.Length > 2 && Enum.TryParse(args[2].ToString(), out cacheType);
             var cacheKey = cacheEnabled ? (sql + p.ToStr()).Md5() : null;
             if (cacheEnabled)
             {
-                var code = CacheObject.Get(cacheType, cacheKey);
+                var code = JS_Cache.Get(cacheType, cacheKey);
                 if (!string.IsNullOrEmpty(code)) obj = JsonConvert.DeserializeObject(code);
             }
 
@@ -198,13 +182,13 @@ namespace NATS.Services.V8Script
                 if (obj == null || obj == DBNull.Value)
                     return null;
 
-                if (cacheEnabled) CacheObject.Set(cacheType, cacheKey, JsonConvert.SerializeObject(obj, NewtonsoftJson.Converters));
+                if (cacheEnabled) JS_Cache.Set(cacheType, cacheKey, JsonConvert.SerializeObject(obj, NewtonsoftJson.Converters));
             }
             return obj;
         }
 
         /// <summary>
-        /// $db.g2: return Cache{ Memory = 0, Redis, Default } ResultValue of first column in first row
+        /// $db.g2: return Cache{ Memory = 0, Redis, All } ResultValue of first column in first row
         /// $db.g2(0,'select name from table1 where id=@id',{id:1})
         /// </summary>
         /// <param name="args"></param>
@@ -222,9 +206,10 @@ namespace NATS.Services.V8Script
 
             object obj = null;
 
-            Enum.TryParse(args[0].ToString(), out CacheObject.Types cacheType);
+            var cacheType = CacheType.Memory;
+            Enum.TryParse(args[0].ToString(), out cacheType);
             var cacheKey = (sql + p.ToStr()).Md5();
-            var code = CacheObject.Get(cacheType, cacheKey);
+            var code = JS_Cache.Get(cacheType, cacheKey);
             if (!string.IsNullOrEmpty(code)) obj = JsonConvert.DeserializeObject(code);
 
             if (obj == null)
@@ -234,7 +219,7 @@ namespace NATS.Services.V8Script
                 if (obj == null || obj == DBNull.Value)
                     return null;
 
-                CacheObject.Set(cacheType, cacheKey, JsonConvert.SerializeObject(obj, NewtonsoftJson.Converters));
+                JS_Cache.Set(cacheType, cacheKey, JsonConvert.SerializeObject(obj, NewtonsoftJson.Converters));
             }
             return obj;
         }
@@ -278,7 +263,9 @@ namespace NATS.Services.V8Script
 
                         if (i % 201 == 200 || i + 1 == leng)
                         {
-                            count += SQLServer.BatchInsert(dt, Db.Ado.CommandTimeOut, Db.CurrentConnectionConfig.ConnectionString);
+                            count += Db.Insertable(dt).UseSqlServer().ExecuteBulkCopy();
+                            //count += Db.Insertable(Db.Utilities.DataTableToDictionaryList(dt)).AS(dt.TableName).ExecuteCommand();
+                            //count += SQLServer.BatchInsert(dt, Db.Ado.CommandTimeOut, Db.CurrentConnectionConfig.ConnectionString);
                             dt.Clear();
                         }
                     }
@@ -295,7 +282,8 @@ namespace NATS.Services.V8Script
 
                 var sql0 = sql.ToUpper();
                 sql = sql.Trim().TrimEnd(';') + (Db.CurrentConnectionConfig.DbType == DbType.MySql
-                ? (sql0.Contains("LAST_INSERT_ID()") ? "" : ";SELECT LAST_INSERT_ID();") : Db.CurrentConnectionConfig.DbType == DbType.SqlServer
+                ? (sql0.Contains("LAST_INSERT_ID()") ? "" : ";SELECT LAST_INSERT_ID();")
+                : Db.CurrentConnectionConfig.DbType == DbType.SqlServer
                 ? (sql0.Contains("SCOPE_IDENTITY()") ? "" : ";SELECT SCOPE_IDENTITY();") : "");
                 return Db.Ado.GetScalar(sql, p);
             }

@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace NATS.Services.V8Script
 {
-    public static class ExtensionScript
+    public static class JS_Script
     {
         /// <summary>
         /// DateTime.Now.js() => new Date()

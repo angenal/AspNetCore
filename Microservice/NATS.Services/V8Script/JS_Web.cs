@@ -7,7 +7,7 @@ using WebCore;
 
 namespace NATS.Services.V8Script
 {
-    public static class ExtensionWeb
+    public static class JS_Web
     {
         public static Tuple<string, string> MapPath(this Uri address) => new Tuple<string, string>(Environment.CurrentDirectory.Replace('\\', '/').TrimEnd('/') + '/', address.AbsoluteUri.Substring(0, 1 + address.AbsoluteUri.LastIndexOf('/')));
 

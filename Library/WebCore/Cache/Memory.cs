@@ -331,6 +331,17 @@ namespace WebCore.Cache
         #endregion
 
         #region 集合操作
+        /// <summary>设置列表</summary>
+        /// <typeparam name="T">元素类型</typeparam>
+        /// <param name="key">键</param>
+        /// <param name="values">列表值</param>
+        /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
+        public override void SetList<T>(string key, IList<T> values, int expire = -1)
+        {
+            var item = GetOrAddItem(key, k => values, true, expire);
+            item.Visit();
+        }
+
         /// <summary>获取列表</summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
@@ -385,15 +396,16 @@ namespace WebCore.Cache
         /// <summary>获取 或 添加 缓存项</summary>
         /// <param name="key"></param>
         /// <param name="valueFactory"></param>
+        /// <param name="forceAdd"></param>
         /// <returns></returns>
-        protected CacheItem GetOrAddItem(string key, Func<string, object> valueFactory)
+        protected CacheItem GetOrAddItem(string key, Func<string, object> valueFactory, bool forceAdd = false, int expire = -1)
         {
-            var expire = Expire;
+            if (expire < 0) expire = Expire;
 
             CacheItem ci = null;
             do
             {
-                if (_cache.TryGetValue(key, out var item)) return item;
+                if (!forceAdd && _cache.TryGetValue(key, out var item)) return item;
 
                 if (ci == null) ci = new CacheItem(valueFactory(key), expire);
             } while (!_cache.TryAdd(key, ci));

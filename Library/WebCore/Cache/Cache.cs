@@ -103,6 +103,13 @@ namespace WebCore.Cache
             foreach (var item in values) Set(item.Key, item.Value, expire);
         }
 
+        /// <summary>设置列表</summary>
+        /// <typeparam name="T">元素类型</typeparam>
+        /// <param name="key">键</param>
+        /// <param name="values">列表值</param>
+        /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Expire"/></param>
+        public virtual void SetList<T>(string key, IList<T> values, int expire = -1) => throw new NotSupportedException();
+
         /// <summary>获取列表</summary>
         /// <typeparam name="T">元素类型</typeparam>
         /// <param name="key">键</param>
