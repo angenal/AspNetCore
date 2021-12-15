@@ -30,9 +30,9 @@ namespace NATS.Services.V8Script
         public readonly Microsoft.ClearScript.V8.V8Script Script;
 
         public readonly JS_Db Database;
-        public readonly NatsObject NatsObject;
+        public readonly JS_Nats NatsObject;
         public readonly JS_Cache CacheObject;
-        public readonly RedisObject RedisObject;
+        public readonly JS_Redis RedisObject;
 
         /// <summary>
         /// V8 JavaScript Runtime.
@@ -41,7 +41,7 @@ namespace NATS.Services.V8Script
         /// <param name="extensions"></param>
         /// <param name="executing"></param>
         /// <param name="enableDebugging"></param>
-        public JS(string script, Config.DbConfig dbConfig, Config.RedisConfig redisConfig, IConnection connection, string prefix, string subject, bool extensions = true, bool executing = true, bool enableDebugging = false)
+        public JS(string script, DbConfig dbConfig, RedisConfig redisConfig, IConnection connection, string prefix, string subject, bool extensions = true, bool executing = true, bool enableDebugging = false)
         {
             Id = script.Crc32();
 
@@ -65,11 +65,11 @@ namespace NATS.Services.V8Script
                 //Engine.AddHostObject("host", new HostFunctions());
                 //engine.AddHostObject("type", new HostTypeCollection("mscorlib", "System", "System.Core"));
                 Engine.AddHostType("console", typeof(JS_Console));
-                Engine.AddHostObject("$", new AjaxFunctions(Engine));
+                Engine.AddHostObject("$", new JS_Ajax(Engine));
                 Engine.AddHostObject("$db", Database = new JS_Db(dbConfig, Engine, prefix, subject));
-                Engine.AddHostObject("$nats", NatsObject = new NatsObject(connection, prefix, subject));
+                Engine.AddHostObject("$nats", NatsObject = new JS_Nats(connection, prefix, subject));
                 Engine.AddHostObject("$cache", CacheObject = new JS_Cache(redisConfig, Engine, prefix, subject));
-                Engine.AddHostObject("$redis", RedisObject = new RedisObject(redisConfig, Engine, prefix, subject));
+                Engine.AddHostObject("$redis", RedisObject = new JS_Redis(redisConfig, Engine, prefix, subject));
                 Engine.AddHostExtensions();
             }
 

@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace NATS.Services.Config
+namespace NATS.Services
 {
     /// <summary>
     /// 连接redis

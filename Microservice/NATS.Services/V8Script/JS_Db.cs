@@ -32,7 +32,7 @@ namespace NATS.Services.V8Script
             Subject = subject;
         }
 
-        public JS_Db(Config.DbConfig config, V8ScriptEngine engine, string prefix, string subject)
+        public JS_Db(DbConfig config, V8ScriptEngine engine, string prefix, string subject)
             : this($"{config.Type}:{config.Conn}", engine, prefix, subject) { }
 
         /// <summary>

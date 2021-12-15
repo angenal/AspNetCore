@@ -1,4 +1,4 @@
-namespace NATS.Services.Config
+namespace NATS.Services
 {
     /// <summary>
     /// 消息中间件/发布订阅记录列表

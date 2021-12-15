@@ -1,0 +1,38 @@
+# <test> natsql -i 5 -t natsql.test.json
+# <run&> natsql -i 5 -c natsql.yaml
+db:
+  #type: mssql
+  #conn: "Data Source=192.168.100.4;Initial Catalog=EE2WA;User ID=sa;Password=lhyj2014;Pooling=True;Connection TimeOut=10"
+  type: mysql
+  conn: "Server=localhost;Port=3306;Database=test;Uid=root;Pwd=HGJ766GR767FKJU0;Pooling=True;ConnectionTimeOut=10"
+  debug: true
+
+dir: natsql
+js: natsql.js
+
+nats: # 连接nats
+  addr: nats://127.0.0.1:4222
+  token: HGJ766GR767FKJU0
+  subscribe: natsql.test- # 全局订阅前缀=功能配置根目录cache+js目录 function sql(records)
+  amount: 0 # 批量获取记录数限制
+  bulk: 100 # 批量插入记录数<=2000
+  interval: 2000 # 间隔2000毫秒,批量处理一次
+  script: natsql.js # db # A:/database/sqlite/data/natsql.db # 配置订阅任务"subscribe"
+  table: subscribes # 当script配置为db订阅任务时,指定该table
+
+redis: # 连接redis
+  addr: 127.0.0.1:6379
+  db: 2
+  password:
+  username:
+
+log: # 日志跟踪
+  filename: natsql.log # 日志文件
+  maxsize: 20 # 转存大小MB
+  maxage: 1 # 转存时间days
+  maxbackups: 60 # 保留最大旧日志文件数
+  localtime: true # 使用本地时间,不然文件名就是UTC时间
+  timeformat: 15:04:05.000
+  compress: false # 压缩备份gzip
+  writers: stdout # 输出位置(选项:file,stdout)
+  level: info # 日志级别(选项:trace,debug,info,warn,error,fatal,panic,no,disabled)

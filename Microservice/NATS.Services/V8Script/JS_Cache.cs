@@ -27,7 +27,7 @@ namespace NATS.Services.V8Script
         public string prefix => Prefix;
         public string subject => Subject;
 
-        public JS_Cache(Config.RedisConfig config, V8ScriptEngine engine, string prefix, string subject)
+        public JS_Cache(RedisConfig config, V8ScriptEngine engine, string prefix, string subject)
         {
             WebCore.Cache.Memory.Instance = new WebCore.Cache.Memory();
             WebCore.Cache.Redis.Instance = new WebCore.Cache.Redis(config.Addr, config.Password, config.Db);

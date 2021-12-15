@@ -28,7 +28,7 @@ namespace NATS.Services.Util
 
         public static int DefaultExpirationSeconds = 0;
 
-        public static void Init(Config.RedisConfig config, int defaultExpirationSeconds = 3600)
+        public static void Init(RedisConfig config, int defaultExpirationSeconds = 3600)
         {
             if (_configuration != null || inited) return;
 
