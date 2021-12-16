@@ -34,7 +34,7 @@ namespace WebCore
 
             // Occurs when the default application domain's parent process exits.
             AppDomain.CurrentDomain.ProcessExit += Exit;
-            WebCore.Exit.Actions.Add(JobManager.StopAndBlock);
+            WebCore.Exit.AddAction(JobManager.StopAndBlock);
         }
 
         /// <summary>

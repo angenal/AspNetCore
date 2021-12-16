@@ -1,8 +1,7 @@
+using CommandLine;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
-using System.Diagnostics;
 
 namespace NATS.Services
 {
@@ -12,36 +11,26 @@ namespace NATS.Services
         /// <summary></summary>
         public static void Main(string[] args)
         {
+            if (args.Length == 0) { Flags.NotParsed(null); return; }
+            var result = Parser.Default.ParseArguments<Flags>(args).WithNotParsed(Flags.NotParsed);
+            if (result is not Parsed<Flags> parsedResult) return;
+            Flags flags = parsedResult.Value;
+
             // Init
             WebCore.Main.Init();
 
             // Logger
             Logger.Init(args);
 
-            // Performance mark [start]
-            var watch = Stopwatch.StartNew();
-            var separator = new string('-', 20);
+            // Run test
+            if (!string.IsNullOrEmpty(flags.Test)) { Test.Run(flags); return; }
 
-            try
-            {
-                Log.Information($"{separator} Start run host {separator} ");
-
-                CreateHostBuilder(args).Build().Run();
-
-                // Performance mark [stop]
-                watch.Stop();
-                Log.Information($"{separator} Normal exit host {watch.Elapsed} elapsed {separator} ");
-            }
-            catch (Exception ex)
-            {
-                watch.Stop();
-                Log.Information($"{separator} Abnormal exit host {watch.Elapsed} elapsed {separator} ");
-                Log.Fatal(ex, " host error ");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            // Run subscribes
+            Subscribes.Run(flags);
+            IHost host = CreateHostBuilder(args).Build();
+            host.Start();
+            WebCore.Exit.AddAction(host.WaitForShutdown);
+            WebCore.Exit.Wait();
         }
 
         /// <summary></summary>

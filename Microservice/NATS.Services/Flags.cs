@@ -1,12 +1,13 @@
 using CommandLine;
 using System;
+using System.Collections.Generic;
 
 namespace NATS.Services
 {
     /// <summary>
     /// 命令行参数解析
     /// </summary>
-    class Flags
+    public class Flags
     {
         [Option('c', "config", Required = true, Default = "natsql.yaml", HelpText = "sets config file")]
         public string Config { get; set; }
@@ -35,7 +36,7 @@ namespace NATS.Services
         [Option('s', "key", HelpText = "the NatS-TLS key file")]
         public string Key { get; set; }
 
-        public static void Usage()
+        public static void NotParsed(IEnumerable<Error> errors)
         {
             Console.WriteLine(@" Usage of natsql:
   -c --config string

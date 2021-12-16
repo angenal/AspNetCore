@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,7 +29,7 @@ namespace NATS.Services
         {
             while (!stoppingToken.IsCancellationRequested && status == 0)
             {
-                _logger.LogInformation("正在进行: {time}", DateTimeOffset.Now);
+                //_logger.LogInformation("正在进行: {time}", DateTimeOffset.Now);
                 await Task.Delay(5000, stoppingToken); // 间隔5秒打印一次
             }
         }
@@ -41,7 +40,7 @@ namespace NATS.Services
         public void OnStopping()
         {
             status = 1;
-            _logger.LogInformation("正在退出");
+            //_logger.LogInformation("正在退出");
         }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace NATS.Services
         public override Task StopAsync(CancellationToken cancellationToken)
         {
             status = 2;
-            _logger.LogInformation("正在停止");
+            //_logger.LogInformation("正在停止");
 
             return base.StopAsync(cancellationToken);
         }
@@ -66,7 +65,7 @@ namespace NATS.Services
         {
             // 注册:在退出前需要完成的操作
             _host.ApplicationStopping.Register(OnStopping);
-            _logger.LogInformation("开始启动");
+            //_logger.LogInformation("开始启动");
 
             return base.StartAsync(cancellationToken);
         }
