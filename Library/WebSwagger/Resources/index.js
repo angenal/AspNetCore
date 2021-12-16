@@ -36,11 +36,12 @@ function downloadUrlChanged() {
 }
 
 function initTokenStorage(configObject) {
+    configObject.user = { permissions: [] };
     if (configObject.ApiKeyStorage || configObject.BearerStorage) {
         //console.log('init authorize local or session storage');
         if (configObject.ApiKeyStorage) configObject.ApiKeyStorage.authorized = false;
         if (configObject.BearerStorage) configObject.BearerStorage.authorized = false;
-        configObject.onComplete = () => {
+        configObject.onComplete = function () {
             if (configObject.ApiKeyStorage) {
                 var token = getApiKeyStorage(configObject), authorized = !!token;
                 configObject.ApiKeyStorage.authorized = authorized;
@@ -52,18 +53,29 @@ function initTokenStorage(configObject) {
                 if (authorized) swagger_ui.preauthorizeApiKey(configObject.BearerStorage.securityDefinition, token);
             }
         };
-        configObject.requestInterceptor = (request) => {
+        configObject.requestInterceptor = function (request) {
             if (configObject.ApiKeyStorage) {
                 var token = getApiKeyStorage(configObject);
-                if (token && configObject.ApiKeyStorage.securityScheme['in'] == 'header')
+                if (token && configObject.ApiKeyStorage.securityScheme['in'] == 'header') {
                     request.headers[configObject.ApiKeyStorage.securityScheme.name] = token;
+                }
             }
             if (configObject.BearerStorage) {
                 var token = getBearerStorage(configObject);
-                if (token && configObject.BearerStorage.securityScheme['in'] == 'header')
+                if (token && configObject.BearerStorage.securityScheme['in'] == 'header') {
                     request.headers[configObject.BearerStorage.securityScheme.name] = 'Bearer ' + token;
+                }
             }
             return request;
+        };
+        configObject.afterAuthorizedButtonClick = function (saved) {
+            if (!saved) {
+                configObject.user.permissions = [];
+                return;
+            }
+            sendSwaggerRequest('getPermissions', function (data) {
+                if (data) configObject.user.permissions = data.permissions;
+            });
         };
     } else {
         //console.log('Init authorize cookie storage');
@@ -138,13 +150,13 @@ function addAuthorizeListener(configObject) {
                         if (el.length == 0) return;
                         if ($.trim(el.val()) == '') return alert('输入内容不能为空');
                         configObject.ApiKeyStorage.authorized = true;
-                        var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form1.find('h6').hide(); };
-                        setTimeout(authfn, 10); setTimeout(authfn, 20);
+                        var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form1.find('h6').hide(); configObject.afterAuthorizedButtonClick(true); };
+                        setTimeout(authfn, 20);
                         setApiKeyStorage(configObject, el.val());
                     } else if (txtLogout.indexOf(txt) != -1) {
                         configObject.ApiKeyStorage.authorized = false;
-                        var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form1.find('h6').hide(); };
-                        setTimeout(authfn, 10); setTimeout(authfn, 20);
+                        var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form1.find('h6').hide(); configObject.afterAuthorizedButtonClick(false); };
+                        setTimeout(authfn, 20);
                         removeApiKeyStorage(configObject);
                     }
                 }
@@ -156,13 +168,13 @@ function addAuthorizeListener(configObject) {
                         if (el.length == 0) return;
                         if ($.trim(el.val()) == '') return alert('输入内容不能为空');
                         configObject.BearerStorage.authorized = true;
-                        var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form2.find('h6').hide(); };
-                        setTimeout(authfn, 10); setTimeout(authfn, 20);
+                        var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form2.find('h6').hide(); configObject.afterAuthorizedButtonClick(true); };
+                        setTimeout(authfn, 20);
                         setBearerStorage(configObject, el.val());
                     } else if (txtLogout.indexOf(txt) != -1) {
                         configObject.BearerStorage.authorized = false;
-                        var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form2.find('h6').hide(); };
-                        setTimeout(authfn, 10); setTimeout(authfn, 20);
+                        var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form2.find('h6').hide(); configObject.afterAuthorizedButtonClick(false); };
+                        setTimeout(authfn, 20);
                         removeBearerStorage(configObject);
                     }
                 }
@@ -210,4 +222,15 @@ function setBearerStorage(configObject, value) {
 function removeBearerStorage(configObject) {
     var key = configObject.BearerStorage.securityDefinition;
     localStorage.removeItem(key); sessionStorage.removeItem(key);
+}
+
+function sendSwaggerRequest(action, successFunction) {
+    var configObject = window.swagger_config, requestObject = { headers: {} };
+    var headers = configObject.requestInterceptor(requestObject).headers;
+    $.ajax({
+        dataType: "json",
+        url: '/api/swagger/' + action,
+        beforeSend: function (request) { for (var name in headers) request.setRequestHeader(name, headers[name]); },
+        success: successFunction
+    });
 }

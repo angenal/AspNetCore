@@ -10,6 +10,7 @@ namespace WebSwagger.Controllers
     /// Resources 控制器
     /// </summary>
     [AllowAnonymous]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("swagger/resources")]
     public class ResourcesController : Controller
     {
@@ -18,7 +19,6 @@ namespace WebSwagger.Controllers
         /// </summary>
         /// <param name="name">资源文件名</param>
         [HttpGet]
-        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ContentResult> GetAsync([FromQuery] string name)
         {
             var result = new ContentResult();
@@ -37,7 +37,6 @@ namespace WebSwagger.Controllers
         /// </summary>
         /// <param name="name">语言名称</param>
         [HttpGet("getLanguage")]
-        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ContentResult> GetLanguageAsync([FromQuery] string name)
         {
             var result = new ContentResult
