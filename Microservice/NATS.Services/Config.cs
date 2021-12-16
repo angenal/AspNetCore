@@ -3,6 +3,7 @@ using Hangfire.Redis;
 using Microsoft.ClearScript;
 using NATS.Client;
 using Newtonsoft.Json;
+using Serilog;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -339,7 +340,7 @@ namespace NATS.Services
         string SelectItems(Subscribes data)
         {
             var items = Items.Where(i => i.Nats.Name == data.Name).Select(i => new Subscribes() { Id = i.Id, Name = i.Nats.Name, Spec = i.Nats.Spec, Func = i.JsFunction, Content = i.JsContent, CacheDir = i.Nats.CacheDir, MsgLimit = i.Nats.MsgLimit, BytesLimit = i.Nats.BytesLimit, Amount = i.Nats.Amount, Bulk = i.Nats.Bulk, Interval = i.Nats.Interval, Version = i.Nats.Version, Created = i.Nats.Created, Deleted = i.Nats.Deleted });
-            var result = items.Count() == 0 ? "" : JsonConvert.SerializeObject(items.First());
+            var result = !items.Any() ? "" : JsonConvert.SerializeObject(items.First());
             return result;
         }
 
@@ -439,17 +440,17 @@ namespace NATS.Services
             if (IsJsTemplate())
             {
                 // script file content
-                string itemJs = Js;
-                if (data.Deleted && File.Exists(itemJs) && !File.Exists(itemJs + ".bak"))
+                string itemJs = Js, backup = ".bak";
+                if (data.Deleted && File.Exists(itemJs) && !File.Exists(itemJs + backup))
                 {
-                    File.Copy(itemJs, itemJs + ".bak");
+                    File.Copy(itemJs, itemJs + backup);
                     File.Delete(itemJs);
                     return "ok";
                 }
-                if (!data.Deleted && !File.Exists(itemJs) && File.Exists(itemJs + ".bak"))
+                if (!data.Deleted && !File.Exists(itemJs) && File.Exists(itemJs + backup))
                 {
-                    File.Copy(itemJs + ".bak", itemJs);
-                    File.Delete(itemJs + ".bak");
+                    File.Copy(itemJs + backup, itemJs);
+                    File.Delete(itemJs + backup);
                     return "ok";
                 }
             }
@@ -469,7 +470,6 @@ namespace NATS.Services
         /// </summary>
         void InitNatsConnection()
         {
-            if (natsConnection != null || Items.Count == 0) return;
             if (natsConnection != null || Items.Count == 0) return;
 
             natsConnection = Items[0].JsHandler.NewConnection();
@@ -496,8 +496,9 @@ namespace NATS.Services
                         result = JsonConvert.SerializeObject(items);
                         break;
                     default:
-                        if (data.Length < 20) break;
-                        if (data[0] == '{' && data[data.Length - 1] == '}')
+                        int i = data.Length;
+                        if (i < 20) break;
+                        if (data[0] == '{' && data[i - 1] == '}')
                         {
                             var item = new { act = "", data = new Subscribes() };
                             item = JsonConvert.DeserializeAnonymousType(data, item);
@@ -559,13 +560,12 @@ namespace NATS.Services
                             // execute sql command
                             if ("String" == res.GetType().Name && res.ToString().Length >= 20)
                                 res = JS.Database.x(res) + " records affected database";
-                            Console.Write(@"[{0:T}] {1} > return: ", DateTime.Now, Subject);
-                            //V8Script.ConsoleFunctions.log(res);
+                            Log.Information($"[{Subject}] <- @sql: {res}");
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(@"[{0:T}] {1} > error: {2}", DateTime.Now, Subject, ex.Message);
+                        Log.Error(ex, $"[{Subject}] <- @sql: error");
                     }
                 }
             }
@@ -611,7 +611,7 @@ namespace NATS.Services
                                 JS = js;
                             }
 
-                            Console.WriteLine(@"[{0:T}] {1} > update version: {2}", DateTime.Now, Subject, version);
+                            Log.Information($"[{Subject}] <- @update-version: {version}");
                         }
 
                         Nats.Deleted = false;
@@ -652,7 +652,7 @@ namespace NATS.Services
                                 JS = js;
                             }
 
-                            Console.WriteLine(@"[{0:T}] {1} > update version: {2}", DateTime.Now, Subject, version);
+                            Log.Information($"[{Subject}] <- @update-version: {version}");
                         }
 
                         Nats.Deleted = false;
@@ -661,7 +661,7 @@ namespace NATS.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(@"[{0:T}] {1} > error: {2}", DateTime.Now, Subject, ex.Message);
+                    Log.Error(ex, $"[{Subject}] <- @update-version: error");
                 }
             }
         }
