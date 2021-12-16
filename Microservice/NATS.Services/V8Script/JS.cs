@@ -48,7 +48,7 @@ namespace NATS.Services.V8Script
             //var constraints = new V8RuntimeConstraints
             //{
             //    MaxNewSpaceSize = 16,
-            //    MaxOldSpaceSize = 16,
+            //    MaxOldSpaceSize = 8,
             //};
             Engine = enableDebugging ? new V8ScriptEngine(V8ScriptEngineFlags.EnableDebugging) : new V8ScriptEngine();
 
@@ -61,15 +61,19 @@ namespace NATS.Services.V8Script
                 Engine.AddHostType(typeof(HtmlWeb));
                 Engine.AddHostType(typeof(HtmlNode));
                 Engine.AddHostType(typeof(HtmlNodeCollection));
-                Engine.AddHostType(typeof(JS_Script));
                 //Engine.AddHostObject("host", new HostFunctions());
-                //engine.AddHostObject("type", new HostTypeCollection("mscorlib", "System", "System.Core"));
+                //Engine.AddHostObject("type", new HostTypeCollection("mscorlib", "System", "System.Core"));
+                //JS_Script:[this] type extensions
+                Engine.AddHostType(typeof(JS_Script));
+                //JS_Console:[console] static functions
                 Engine.AddHostType("console", typeof(JS_Console));
-                Engine.AddHostObject("$", new JS_Ajax(Engine));
-                Engine.AddHostObject("$db", Database = new JS_Db(dbConfig, Engine, prefix, subject));
-                Engine.AddHostObject("$nats", NatsObject = new JS_Nats(connection, prefix, subject));
-                Engine.AddHostObject("$cache", CacheObject = new JS_Cache(redisConfig, Engine, prefix, subject));
-                Engine.AddHostObject("$redis", RedisObject = new JS_Redis(redisConfig, Engine, prefix, subject));
+
+                //JS_Ajax:[$] object methods
+                Add("$", new JS_Ajax(Engine));
+                Add("$db", Database = new JS_Db(dbConfig, Engine, prefix, subject));
+                Add("$nats", NatsObject = new JS_Nats(connection, prefix, subject));
+                Add("$cache", CacheObject = new JS_Cache(redisConfig, Engine, prefix, subject));
+                Add("$redis", RedisObject = new JS_Redis(redisConfig, Engine, prefix, subject));
                 Engine.AddHostExtensions();
             }
 
@@ -78,13 +82,11 @@ namespace NATS.Services.V8Script
             if (executing) Engine.Execute(Script);
         }
 
-        public void Add<T>() => Engine.AddHostType(typeof(T));
-        public void Add<T>(string itemName) => Engine.AddHostType(itemName, typeof(T));
         public void Add(string itemName, object target) => Engine.AddHostObject(itemName, target);
-        public void Execute(string script) => Engine.Execute(script);
-        public object Eval(string code) => Engine.Evaluate(SecurityCode(code));
-        public object Invoke(string funcName, params object[] args) => Engine.Invoke(funcName, args);
-        public object Invoke(string funcName, string codeEvalToArgs) => Engine.Invoke(funcName, Eval(codeEvalToArgs));
+        //public void Execute(string script) => Engine.Execute(script);
+        //public object Eval(string code) => Engine.Evaluate(SecurityCode(code));
+        //public object Invoke(string funcName, params object[] args) => Engine.Invoke(funcName, args);
+        //public object Invoke(string funcName, string codeEvalToArgs) => Engine.Invoke(funcName, Eval(codeEvalToArgs));
         public static string SecurityCode(string code) => code != null && code.StartsWith("{") ? $"_{new Random().Next(100, 9999)}=" + code : code;
     }
 }
