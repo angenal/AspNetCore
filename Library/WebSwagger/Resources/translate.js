@@ -11,16 +11,32 @@ function swagger_translate() {
     });
 
     $.initialize('.opblock-summary', function () {
-        var configObject = window.swagger_config;
         var div = $(this), s = div.find('.opblock-summary-operation-id').text(), btn = div.find('.authorization__btn');
-        if (!s || s.indexOf('匿名访问') != -1 || s.indexOf('授权访问') == -1) btn.css('visibility', 'hidden');
-        if (typeof configObject != "undefined") {
+        var allowAnonymous = (!s || s.indexOf('匿名访问') != -1 || s.indexOf('授权访问') == -1);
+        if (allowAnonymous) btn.css('visibility', 'hidden');
+        var configObject = window.swagger_config;
+        if (configObject != undefined && configObject != null) {
             var user = configObject.user;
             if (user && user.id) {
-                var role = user.role, permissions = user.permissions;
+                var role1 = user.role || '', permissions1 = user.permissions || [];
+                var role2 = '', permissions2 = '', policy = '';
+                var i0 = s.indexOf('角色'), i1 = s.indexOf('权限'), i2 = s.indexOf('策略');
+                if (i0 > 0) {
+                    if (i1 > i0) {
+                        role2 = s.substring(i0 + 2, i1 - i0);
+                        permissions2 = i2 > i1 ? s.substring(i1 + 2, i2 - i1) : s.substring(i1 + 2);
+                        if (i2 > 0) policy = s.substring(i2 + 2);
+                    } else if (i2 > i0) {
+                        role2 = s.substring(i0 + 2, i2 - i0);
+                        policy = s.substring(i2 + 2);
+                    } else {
+                        role2 = s.substring(i0 + 2);
+                        if (i2 > 0) policy = s.substring(i2 + 2);
+                    }
+                    console.log('角色', role2, '权限', permissions2, '策略', policy);
+                }
                 //div.parent().css('visibility', 'hidden');
             } else {
-                //div.parent().css('visibility', 'hidden');
             }
         }
         if (div.parent().hasClass('opblock-deprecated')) div.click(function () { return false }).parent().click(function () { return false });

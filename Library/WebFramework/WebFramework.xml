@@ -1701,7 +1701,7 @@
             <param name="sizes"></param>
             <returns></returns>
         </member>
-        <member name="M:WebFramework.PostFormFile`1.CheckUploadedFile(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary,Microsoft.AspNetCore.Http.IFormFile,WebCore.FileSomeType,WebCore.Size[],System.String[],System.String)">
+        <member name="M:WebFramework.PostFormFile`1.CheckUploadedFile(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary,Microsoft.AspNetCore.Http.IFormFile,WebCore.FileType,WebCore.Size[],System.String[],System.String)">
             <summary></summary>
         </member>
         <member name="T:WebFramework.Services.ServicesModule">
