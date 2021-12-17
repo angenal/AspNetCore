@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using WebCore;
+using WebInterface.Settings;
 
 namespace WebFramework.Services
 {
@@ -113,7 +114,7 @@ namespace WebFramework.Services
                 options.AddPolicy("test", policy => policy.RequireClaim("name", "测试"));
                 options.AddPolicy("Upload", policy => policy.RequireAuthenticatedUser());
                 options.AddPolicy("User", policy => policy.RequireAssertion(context =>
-                    context.User.HasClaim(c => c.Type == "role" && c.Value.StartsWith("User")) ||
+                    context.User.HasClaim(c => c.Type == JwtSettings.RoleClaimType && c.Value.StartsWith("User")) ||
                     context.User.HasClaim(c => c.Type == "name" && c.Value.StartsWith("User"))));
             });
 

@@ -11,8 +11,18 @@ function swagger_translate() {
     });
 
     $.initialize('.opblock-summary', function () {
+        var configObject = window.swagger_config;
         var div = $(this), s = div.find('.opblock-summary-operation-id').text(), btn = div.find('.authorization__btn');
         if (!s || s.indexOf('匿名访问') != -1 || s.indexOf('授权访问') == -1) btn.css('visibility', 'hidden');
+        if (typeof configObject != "undefined") {
+            var user = configObject.user;
+            if (user && user.id) {
+                var role = user.role, permissions = user.permissions;
+                //div.parent().css('visibility', 'hidden');
+            } else {
+                //div.parent().css('visibility', 'hidden');
+            }
+        }
         if (div.parent().hasClass('opblock-deprecated')) div.click(function () { return false }).parent().click(function () { return false });
         btn.click(function () { return false });
     });

@@ -36,22 +36,23 @@ function downloadUrlChanged() {
 }
 
 function initTokenStorage(configObject) {
-    configObject.user = { permissions: [] };
     if (configObject.ApiKeyStorage || configObject.BearerStorage) {
         //console.log('init authorize local or session storage');
         if (configObject.ApiKeyStorage) configObject.ApiKeyStorage.authorized = false;
         if (configObject.BearerStorage) configObject.BearerStorage.authorized = false;
         configObject.onComplete = function () {
+            var authorized = false;
             if (configObject.ApiKeyStorage) {
-                var token = getApiKeyStorage(configObject), authorized = !!token;
-                configObject.ApiKeyStorage.authorized = authorized;
+                var token = getApiKeyStorage(configObject);
+                configObject.ApiKeyStorage.authorized = authorized = !!token;
                 if (authorized) swagger_ui.preauthorizeApiKey(configObject.ApiKeyStorage.securityDefinition, token);
             }
             if (configObject.BearerStorage) {
-                var token = getBearerStorage(configObject), authorized = !!token;
-                configObject.BearerStorage.authorized = authorized;
+                var token = getBearerStorage(configObject);
+                configObject.BearerStorage.authorized = authorized = !!token;
                 if (authorized) swagger_ui.preauthorizeApiKey(configObject.BearerStorage.securityDefinition, token);
             }
+            configObject.afterAuthorizedButtonClick(authorized);
         };
         configObject.requestInterceptor = function (request) {
             if (configObject.ApiKeyStorage) {
@@ -69,12 +70,9 @@ function initTokenStorage(configObject) {
             return request;
         };
         configObject.afterAuthorizedButtonClick = function (saved) {
-            if (!saved) {
-                configObject.user.permissions = [];
-                return;
-            }
-            sendSwaggerRequest('getPermissions', function (data) {
-                if (data) configObject.user.permissions = data.permissions;
+            if (!saved) return configObject.user = { id: "", role: "", permissions: [] };
+            sendSwaggerRequest('getRolePermissions', function (data) {
+                if (data && data.id) configObject.user = data;
             });
         };
     } else {
