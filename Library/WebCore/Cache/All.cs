@@ -109,7 +109,7 @@ namespace WebCore.Cache
             bool result = memory.SetExpire(key, expire);
             if (result)
             {
-                result = redis.SetExpire(key, expire);
+                JobManager.AddJob(new Action(() => redis.SetExpire(key, expire)), s => s.ToRunNow());
             }
             return result;
         }
@@ -119,12 +119,14 @@ namespace WebCore.Cache
         /// <returns></returns>
         public override TimeSpan GetExpire(string key)
         {
-            TimeSpan ts = memory.GetExpire(key);
-            if (ts == TimeSpan.Zero)
+            TimeSpan expire = memory.GetExpire(key);
+            if (expire <= TimeSpan.Zero)
             {
-                ts = redis.GetExpire(key);
+                expire = redis.GetExpire(key);
+                if (expire <= TimeSpan.Zero) return expire;
+                memory.SetExpire(key, expire);
             }
-            return ts;
+            return expire;
         }
         #endregion
 
