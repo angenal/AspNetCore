@@ -24,7 +24,7 @@ namespace WebSwaggerDemo.NET5.Common
             {
                 if (variable.Length == 0 || !char.IsLetter(variable[0]))
                     return false;
-                bool value = data.Any(v => v.Equals(variable, StringComparison.OrdinalIgnoreCase));
+                bool value = data.Any(v => v == variable);
                 parameters.Add(new Parameter(variable, value.GetType(), value));
             }
             return target.Eval<bool>(expression, parameters.ToArray());
@@ -59,12 +59,12 @@ namespace WebSwaggerDemo.NET5.Common
                 if (item.StartsWith("!"))
                 {
                     string str = item.Substring(1);
-                    bool value = data.Any(v => v.Equals(str, StringComparison.OrdinalIgnoreCase));
+                    bool value = data.Any(v => v == str);
                     expression = expression.Replace(item, !value ? "1" : "0");
                 }
                 else
                 {
-                    bool value = data.Any(v => v.Equals(item, StringComparison.OrdinalIgnoreCase));
+                    bool value = data.Any(v => v == item);
                     expression = expression.Replace(item, value ? "1" : "0");
                 }
             }

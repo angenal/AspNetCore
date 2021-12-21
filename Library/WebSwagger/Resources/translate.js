@@ -17,25 +17,32 @@ function swagger_translate() {
         var configObject = window.swagger_config;
         if (configObject != undefined && configObject != null) {
             var user = configObject.user;
+            //如果已登录授权
             if (user && user.id) {
-                var role1 = user.role || '', permissions1 = user.permissions || [];
-                var role2 = '', permissions2 = '', policy = '';
-                var i0 = s.indexOf('角色'), i1 = s.indexOf('权限'), i2 = s.indexOf('策略');
-                if (i0 > 0) {
-                    if (i1 > i0) {
-                        role2 = s.substring(i0 + 2, i1 - i0);
-                        permissions2 = i2 > i1 ? s.substring(i1 + 2, i2 - i1) : s.substring(i1 + 2);
-                        if (i2 > 0) policy = s.substring(i2 + 2);
-                    } else if (i2 > i0) {
-                        role2 = s.substring(i0 + 2, i2 - i0);
-                        policy = s.substring(i2 + 2);
-                    } else {
-                        role2 = s.substring(i0 + 2);
-                        if (i2 > 0) policy = s.substring(i2 + 2);
-                    }
-                    console.log('角色', role2, '权限', permissions2, '策略', policy);
+                var role1 = user.role ? user.role.split(',') : [], permissions1 = user.permissions || [];
+                //角色
+                var role2_regex = s.match(/\u89d2\u8272([^\u6743\u9650]+)/), role_ok = (role2_regex && role2_regex.length == 2);
+                var role2 = role_ok ? role2_regex[1].split(',') : [];
+                if (role_ok) {
+                    role_ok = role1.filter(function (i) { return role2.indexOf(i) != -1; }).length > 0;
+                } else {
+                    role_ok = 1; //无限制
                 }
-                //div.parent().css('visibility', 'hidden');
+                //权限
+                var permissions2_regex = s.match(/\u6743\u9650([^u7b56\u7565]+)/), permission_ok = (permissions2_regex && permissions2_regex.length == 2);
+                var permissions2 = permission_ok ? permissions2_regex[1] : '';
+                if (permission_ok) {
+                    var permissions = permissions2.replace(' ', '').replace(/\W+/, ',').split(','), permissionJs = '';
+                    $.each(permissions, function (i, v) { if (v) permissionJs += 'var ' + v + '=' + (permissions1.indexOf(v) == -1 ? 'false' : 'true') + ';'; });
+                    permission_ok = eval(permissionJs + permissions2);
+                } else {
+                    permission_ok = 1; //无限制
+                }
+                //策略
+                var policy2_regex = s.match(/\u7b56\u7565(\S+)/), policy_ok = (policy2_regex && policy2_regex.length == 2);
+                var policy2 = policy_ok ? policy2_regex[1] : '';
+                console.log('角色', role2, '权限', permissions2, '策略', policy2);
+                if (!role_ok || !permission_ok) div.parent().hide();
             } else {
             }
         }
