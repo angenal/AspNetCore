@@ -63,6 +63,14 @@ namespace WebCore
         }
 
         /// <summary>
+        /// Runs the job now.
+        /// </summary>
+        public void RunNow(Action job)
+        {
+            JobManager.AddJob(job, s => s.ToRunNow());
+        }
+
+        /// <summary>
         /// Removes the schedule of the given name.
         /// </summary>
         public void RemoveJob(string name)

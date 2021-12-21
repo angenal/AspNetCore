@@ -28,6 +28,11 @@ namespace WebInterface
         void RunEvery(Action job, int interval, string name = null, params Action[] andThenJobs);
 
         /// <summary>
+        /// Runs the job now.
+        /// </summary>
+        void RunNow(Action job);
+
+        /// <summary>
         /// Removes the schedule of the given name.
         /// </summary>
         void RemoveJob(string name);

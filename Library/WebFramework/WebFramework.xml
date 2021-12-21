@@ -1828,6 +1828,16 @@
             Use Compression Middleware
             </summary>
         </member>
+        <member name="T:WebFramework.Services.CoreModule">
+            <summary>
+            WebCore Module
+            </summary>
+        </member>
+        <member name="M:WebFramework.Services.CoreModule.AddCore(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Register WebCore services
+            </summary>
+        </member>
         <member name="T:WebFramework.Services.CryptoModule">
             <summary>
             Crypto Module

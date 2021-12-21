@@ -99,6 +99,9 @@ namespace WebFramework.Services
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssembliesIsSubclassOf<AutoMapper.Profile>());
 
 
+            // WebCore services
+            services.AddCore(config);
+
             // Crypto services
             services.AddCrypto(config);
 

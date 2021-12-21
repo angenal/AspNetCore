@@ -40,15 +40,14 @@ namespace WebCore
             {
                 //_logger.LogInformation("正在进行: {time}", DateTimeOffset.Now);
 
-                var task = await _taskManager.Dequeue(stoppingToken);
-
                 try
                 {
-                    await task(stoppingToken);
+                    var task = await _taskManager.Dequeue(stoppingToken);
+                    if (task != null) await task(stoppingToken);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred executing task service.", nameof(task));
+                    _logger.LogError(ex, "Error occurred executing task service.");
                 }
             }
         }
@@ -77,7 +76,7 @@ namespace WebCore
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred stopping task service.", nameof(task));
+                    _logger.LogError(ex, "Error occurred stopping task service.");
                 }
                 finally
                 {
