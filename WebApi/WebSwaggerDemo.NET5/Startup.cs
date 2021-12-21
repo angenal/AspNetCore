@@ -73,7 +73,7 @@ namespace WebSwaggerDemo.NET5
                 options.AddPolicy("User", policy => policy.RequireAssertion(context =>
                     context.User.HasClaim(c => c.Type == "role" && c.Value.StartsWith("User")) ||
                     context.User.HasClaim(c => c.Type == "name" && c.Value.StartsWith("User"))));
-            }).AddSingleton<IPermissionChecker, PermissionChecker>();
+            }).AddSingleton<IPermissionChecker, PermissionChecker>().AddSingleton<IPermissionStorage>(_ => new PermissionStorage(Configuration.GetConnectionString("Redis")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

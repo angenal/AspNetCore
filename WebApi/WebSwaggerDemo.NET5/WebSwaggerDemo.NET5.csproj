@@ -10,12 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="App_Data\PermissionList\**" />
     <Compile Remove="V1\**" />
     <Compile Remove="V2\**" />
+    <Content Remove="App_Data\PermissionList\**" />
     <Content Remove="V1\**" />
     <Content Remove="V2\**" />
+    <EmbeddedResource Remove="App_Data\PermissionList\**" />
     <EmbeddedResource Remove="V1\**" />
     <EmbeddedResource Remove="V2\**" />
+    <None Remove="App_Data\PermissionList\**" />
     <None Remove="V1\**" />
     <None Remove="V2\**" />
   </ItemGroup>
@@ -38,6 +42,10 @@
     <None Update="WebSwaggerDemo.NET5.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="App_Data\" />
   </ItemGroup>
 
 </Project>

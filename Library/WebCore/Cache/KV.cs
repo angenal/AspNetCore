@@ -1,6 +1,7 @@
 using FASTER.core;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebCore.Cache
@@ -14,6 +15,7 @@ namespace WebCore.Cache
     public class KV<TKey, TValue> where TValue : new()
     {
         private readonly long size;
+        private readonly bool exists;
         private readonly string path;
         private readonly IDevice log;
         private readonly IDevice obj;
@@ -48,7 +50,9 @@ namespace WebCore.Cache
         /// <param name="pageSizeBits">Size of a segment (group of pages), in bits</param>
         /// <param name="memorySizeBits">Total size of in-memory part of log, in bits</param>
         /// <param name="mutableFraction">Fraction of log marked as mutable (in-place updates)</param>
-        public KV(string path, long size = 1L << 20, int pageSizeBits = 22, int memorySizeBits = 30, double mutableFraction = 0.1, Guid? fullCheckpointToken = null)
+        /// <param name="fullCheckpointToken">Initiate full checkpoint</param>
+        /// <param name="seconds">Flush current log, Issue periodic checkpoints</param>
+        public KV(string path, long size = 1L << 20, int pageSizeBits = 22, int memorySizeBits = 30, double mutableFraction = 0.1, Guid? fullCheckpointToken = null, int seconds = 0)
         {
             this.size = size;
             var dirname = typeof(TValue).Name;
@@ -64,13 +68,29 @@ namespace WebCore.Cache
                 }
             }
             this.path = path;
-            log = Devices.CreateLogDevice(Path.Combine(path, $"{size}.log"));
+            var logPath = Path.Combine(path, $"{size}.log");
+            exists = Directory.Exists(logPath);
+            log = Devices.CreateLogDevice(logPath);
             obj = Devices.CreateLogDevice(Path.Combine(path, $"{size}.obj.log"));
             var checkpointSettings = new CheckpointSettings { CheckpointDir = path, CheckPointType = CheckpointType.Snapshot };
             var logSettings = new LogSettings { LogDevice = log, ObjectLogDevice = obj, PageSizeBits = pageSizeBits, MemorySizeBits = memorySizeBits, MutableFraction = mutableFraction };
             store = new FasterKV<TKey, TValue>(size, logSettings, checkpointSettings, SerializerSettings);
-            if (fullCheckpointToken.HasValue) store.Recover(fullCheckpointToken.Value);
-            else if (File.Exists(log.FileName)) store.Recover();
+            if (fullCheckpointToken.HasValue) store.Recover(fullCheckpointToken.Value); else if (exists) store.Recover();
+            if (seconds > 1) IssuePeriodicCheckpoints(seconds * 1000);
+        }
+
+        private void IssuePeriodicCheckpoints(int milliseconds)
+        {
+            var t = new Thread(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(milliseconds);
+                    (_, _) = store.TakeHybridLogCheckpointAsync(CheckpointType.FoldOver).GetAwaiter().GetResult();
+                }
+            })
+            { IsBackground = true };
+            t.Start();
         }
 
         /// <summary>
@@ -84,6 +104,19 @@ namespace WebCore.Cache
         public bool Set(TKey key, TValue value, bool wait = false, bool spinWaitForCommit = false)
         {
             using (var s = store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            {
+                var status = s.Upsert(ref key, ref value);
+                return status == Status.OK && s.CompletePending(wait, spinWaitForCommit);
+            }
+        }
+        /// <summary>
+        /// Set value
+        /// </summary>
+        public bool Set(TKey key, TValue value, string sessionId, bool resume = false, bool wait = false, bool spinWaitForCommit = false)
+        {
+            using (var s = resume == true && exists == true
+                ? store.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 var status = s.Upsert(ref key, ref value);
                 return status == Status.OK && s.CompletePending(wait, spinWaitForCommit);
@@ -104,6 +137,20 @@ namespace WebCore.Cache
                 return status == Status.OK ? valueOut : default;
             }
         }
+        /// <summary>
+        /// Get value
+        /// </summary>
+        public TValue Get(TKey key, string sessionId, bool resume = false)
+        {
+            using (var s = resume == true && exists == true
+                ? store.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+            {
+                var valueOut = new TValue();
+                var status = s.Read(ref key, ref valueOut);
+                return status == Status.OK ? valueOut : default;
+            }
+        }
 
         /// <summary>
         /// Delete value
@@ -113,6 +160,18 @@ namespace WebCore.Cache
         public int Delete(TKey key)
         {
             using (var s = store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            {
+                return (int)s.Delete(ref key);
+            }
+        }
+        /// <summary>
+        /// Delete value
+        /// </summary>
+        public int Delete(TKey key, string sessionId, bool resume = false)
+        {
+            using (var s = resume == true && exists == true
+                ? store.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 return (int)s.Delete(ref key);
             }
@@ -133,14 +192,15 @@ namespace WebCore.Cache
         }
 
         /// <summary>
-        /// Save snapshot and wait for ongoing checkpoint to complete
+        /// Save snapshot and wait for ongoing full checkpoint to complete
         /// </summary>
         /// <param name="dispose"></param>
         /// <returns>Checkpoint token</returns>
         public async Task<Guid> SaveSnapshot(bool dispose = true)
         {
-            if (string.IsNullOrEmpty(path)) return Guid.Empty;
-            if (!store.TakeFullCheckpoint(out Guid token)) CompletePending(true, true);
+            Guid token = Guid.Empty;
+            if (string.IsNullOrEmpty(path)) return token;
+            while (!store.TakeFullCheckpoint(out token)) CompletePending(true, true);
             await store.CompleteCheckpointAsync();
             var filename = Path.Combine(path, $"{size}.checkpoint");
             File.WriteAllText(filename, token.ToString(), System.Text.Encoding.UTF8);

@@ -75,7 +75,7 @@ namespace WebCore.Cache
                 item = redis.Get<T>(key);
                 if (item == null) return item;
                 int expire = (int)redis.GetExpire(key).TotalSeconds;
-                if (expire > 2) memory.Set<T>(key, item, expire);
+                if (expire == -1 || expire > 2) memory.Set<T>(key, item, expire);
             }
             return item;
         }
@@ -257,7 +257,7 @@ namespace WebCore.Cache
                 result = redis.GetList<T>(key);
                 if (!result.Any()) return result;
                 int expire = (int)redis.GetExpire(key).TotalSeconds;
-                if (expire > 2) memory.SetList<T>(key, result, expire);
+                if (expire == -1 || expire > 2) memory.SetList<T>(key, result, expire);
             }
             return result;
         }

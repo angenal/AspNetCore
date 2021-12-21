@@ -7,6 +7,10 @@ namespace WebSwaggerDemo.NET5
     {
         public static void Main(string[] args)
         {
+            // 初始化
+            WebCore.Assemblies.All = System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies;
+            // 系统入口:初始化
+            WebCore.Main.Init();
             CreateHostBuilder(args).Build().Run();
         }
 

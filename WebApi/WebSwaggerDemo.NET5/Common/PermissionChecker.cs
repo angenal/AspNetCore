@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebCore.Cache;
 
@@ -10,7 +9,12 @@ namespace WebSwaggerDemo.NET5.Common
     /// </summary>
     public class PermissionChecker : IPermissionChecker
     {
-        private readonly PermissionStorage storage = new PermissionStorage();
+        private readonly IPermissionStorage storage;
+
+        public PermissionChecker(IPermissionStorage storage)
+        {
+            this.storage = storage;
+        }
 
         /// <summary></summary>
         public async Task<bool> AuthorizeAsync(string permissions, string userIdentityName)
@@ -44,30 +48,30 @@ namespace WebSwaggerDemo.NET5.Common
             return await Task.FromResult(permissions);
         }
     }
-    public sealed class PermissionStorage
+
+    public interface IPermissionStorage
     {
-        private static readonly KV<string, PermissionList> kv;
-        static PermissionStorage()
+        void Set(string[] permissions, string userIdentityName);
+        string[] Get(string userIdentityName);
+    }
+
+    public sealed class PermissionStorage : IPermissionStorage
+    {
+        private readonly All kv;
+
+        public PermissionStorage(string redisConnectionstring)
         {
-            kv = new KV<string, PermissionList>("App_Data");
+            kv = new All(new Memory(), new Redis(redisConnectionstring));
         }
+
         public void Set(string[] permissions, string userIdentityName)
         {
-            kv.Set(userIdentityName, new PermissionList(permissions));
+            kv.Set(userIdentityName, string.Join(",", permissions));
         }
+
         public string[] Get(string userIdentityName)
         {
-            return kv.Get(userIdentityName)?.ToArray() ?? System.Array.Empty<string>();
-        }
-    }
-    public sealed class PermissionList : List<string>
-    {
-        public PermissionList()
-        {
-        }
-        public PermissionList(string[] permissions)
-        {
-            AddRange(permissions);
+            return kv.Get<string>(userIdentityName)?.Split(',') ?? System.Array.Empty<string>();
         }
     }
 }
