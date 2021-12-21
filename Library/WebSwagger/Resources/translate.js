@@ -39,10 +39,10 @@ function swagger_translate() {
                     permission_ok = 1; //无限制
                 }
                 //策略
-                var policy2_regex = s.match(/\u7b56\u7565(\S+)/), policy_ok = (policy2_regex && policy2_regex.length == 2);
-                var policy2 = policy_ok ? policy2_regex[1] : '';
-                console.log('角色', role2, '权限', permissions2, '策略', policy2);
-                if (!role_ok || !permission_ok) div.parent().hide();
+                //var policy2_regex = s.match(/\u7b56\u7565(\S+)/), policy_ok = (policy2_regex && policy2_regex.length == 2);
+                //var policy2 = policy_ok ? policy2_regex[1] : '';
+                //console.log('角色', role2, '权限', permissions2);
+                if (!role_ok || !permission_ok) div.parent().addClass('opblock-deprecated');
             } else {
             }
         }

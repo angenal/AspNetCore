@@ -146,9 +146,6 @@
             检查用户权限
             </summary>
         </member>
-        <member name="F:WebSwaggerDemo.NET5.Common.PermissionChecker.Permissions">
-            <summary></summary>
-        </member>
         <member name="M:WebSwaggerDemo.NET5.Common.PermissionChecker.AuthorizeAsync(System.String,System.String)">
             <summary></summary>
         </member>

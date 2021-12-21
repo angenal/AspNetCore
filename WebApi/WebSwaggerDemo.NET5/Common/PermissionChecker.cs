@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebCore.Cache;
 
 namespace WebSwaggerDemo.NET5.Common
 {
@@ -9,17 +10,16 @@ namespace WebSwaggerDemo.NET5.Common
     /// </summary>
     public class PermissionChecker : IPermissionChecker
     {
-        /// <summary></summary>
-        private static readonly ConcurrentDictionary<string, string[]> Permissions = new ConcurrentDictionary<string, string[]>();
+        private readonly PermissionStorage storage = new PermissionStorage();
 
         /// <summary></summary>
         public async Task<bool> AuthorizeAsync(string permissions, string userIdentityName)
         {
             if (string.IsNullOrEmpty(permissions))
                 return true;
-            if (string.IsNullOrEmpty(userIdentityName) || !Permissions.ContainsKey(userIdentityName))
+            if (string.IsNullOrEmpty(userIdentityName))
                 return false;
-            string[] allPermissions = Permissions[userIdentityName];
+            string[] allPermissions = storage.Get(userIdentityName);
             return await AuthorizeAsync(permissions, allPermissions);
         }
 
@@ -33,15 +33,41 @@ namespace WebSwaggerDemo.NET5.Common
         /// <summary></summary>
         public async Task SetAsync(string[] permissions, string userIdentityName)
         {
-            Permissions[userIdentityName] = permissions;
+            storage.Set(permissions, userIdentityName);
             await Task.CompletedTask;
         }
 
         /// <summary></summary>
         public async Task<string[]> GetAsync(string userIdentityName)
         {
-            string[] permissions = Permissions.ContainsKey(userIdentityName) ? Permissions[userIdentityName] : System.Array.Empty<string>();
+            string[] permissions = storage.Get(userIdentityName);
             return await Task.FromResult(permissions);
+        }
+    }
+    public sealed class PermissionStorage
+    {
+        private static readonly KV<string, PermissionList> kv;
+        static PermissionStorage()
+        {
+            kv = new KV<string, PermissionList>("App_Data");
+        }
+        public void Set(string[] permissions, string userIdentityName)
+        {
+            kv.Set(userIdentityName, new PermissionList(permissions));
+        }
+        public string[] Get(string userIdentityName)
+        {
+            return kv.Get(userIdentityName)?.ToArray() ?? System.Array.Empty<string>();
+        }
+    }
+    public sealed class PermissionList : List<string>
+    {
+        public PermissionList()
+        {
+        }
+        public PermissionList(string[] permissions)
+        {
+            AddRange(permissions);
         }
     }
 }

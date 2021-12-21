@@ -5,7 +5,6 @@ function downloadUrlChanged() {
     $('.swagger-ui .topbar a').attr('href', location.href.split('#')[0].split('?')[0]);
     // Init logout operation
     if (configObject.customAuth && configObject.logoutUrl) {
-        //console.log('Init authorize exit button');
         var btn = document.createElement('button');
         btn.className = 'btn '; btn.innerText = 'Logout';
         if (resource_globalization) btn.innerText = resource_globalization.Logout;
@@ -18,26 +17,23 @@ function downloadUrlChanged() {
     var filterl = [], filterf = function () {
         filterl = $('.filter-container');
         if (filterl.length == 0) return setTimeout(filterf, 50);
-        //$('.swagger-ui .information-container').hide();
         if (filterl.find('section.filter button').length > 0) return;
         filterl.parent().addClass('wrapper');
         filterl.find('.operation-filter-input').attr('placeholder', ' 筛选 / 过滤');
-        var fbutton = $('<button class="btn">展开</button>').click(function () {
-            var btn = $(this), txt = btn.text(), topen = txt == '展开';
-            btn.text(topen ? '折叠' : '展开');
-            $('.opblock-tag-section').each(function (i, v) {
-                var v1 = $(v), v2 = v1.hasClass('is-open');
-                if (topen) { if (!v2) v1.find('h4').trigger('click'); }
-                else { if (v2) v1.find('h4').trigger('click'); }
-            });
+        var foldLen = $('.opblock-tag-section:not(.is-open)').length, openLen = $('.opblock-tag-section.is-open').length;
+        var fbutton = $('<button class="btn">' + (foldLen > openLen ? '展开' : '折叠') + '</button>').click(function () {
+            var btn = $(this), txt = btn.text();
+            btn.text(txt == '展开' ? openOperations() : foldOperations());
         });
         filterl.find('section.filter').append(fbutton);
     }; filterf();
 }
 
+function foldOperations() { $('.opblock-tag-section').each(function (i, v) { var v1 = $(v), v2 = v1.hasClass('is-open'); if (v2) v1.find('h4').trigger('click'); }); return '展开'; }
+function openOperations() { $('.opblock-tag-section').each(function (i, v) { var v1 = $(v), v2 = v1.hasClass('is-open'); if (!v2) v1.find('h4').trigger('click'); }); return '折叠'; }
+
 function initTokenStorage(configObject) {
     if (configObject.ApiKeyStorage || configObject.BearerStorage) {
-        //console.log('init authorize local or session storage');
         if (configObject.ApiKeyStorage) configObject.ApiKeyStorage.authorized = false;
         if (configObject.BearerStorage) configObject.BearerStorage.authorized = false;
         configObject.onComplete = function () {
@@ -148,12 +144,12 @@ function addAuthorizeListener(configObject) {
                         if (el.length == 0) return;
                         if ($.trim(el.val()) == '') return alert('输入内容不能为空');
                         configObject.ApiKeyStorage.authorized = true;
-                        var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form1.find('h6').hide(); configObject.afterAuthorizedButtonClick(true); };
+                        var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form1.find('h6').hide(); configObject.afterAuthorizedButtonClick(true); foldOperations(); };
                         setTimeout(authfn, 20);
                         setApiKeyStorage(configObject, el.val());
                     } else if (txtLogout.indexOf(txt) != -1) {
                         configObject.ApiKeyStorage.authorized = false;
-                        var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form1.find('h6').hide(); configObject.afterAuthorizedButtonClick(false); };
+                        var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form1.find('h6').hide(); configObject.afterAuthorizedButtonClick(false); foldOperations(); };
                         setTimeout(authfn, 20);
                         removeApiKeyStorage(configObject);
                     }
@@ -166,12 +162,12 @@ function addAuthorizeListener(configObject) {
                         if (el.length == 0) return;
                         if ($.trim(el.val()) == '') return alert('输入内容不能为空');
                         configObject.BearerStorage.authorized = true;
-                        var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form2.find('h6').hide(); configObject.afterAuthorizedButtonClick(true); };
+                        var authfn = function () { btnQ.text(txtLogout[1]); btnQ.addClass(clsName); form2.find('h6').hide(); configObject.afterAuthorizedButtonClick(true); foldOperations(); };
                         setTimeout(authfn, 20);
                         setBearerStorage(configObject, el.val());
                     } else if (txtLogout.indexOf(txt) != -1) {
                         configObject.BearerStorage.authorized = false;
-                        var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form2.find('h6').hide(); configObject.afterAuthorizedButtonClick(false); };
+                        var authfn = function () { btnQ.text(txtAuthorize[1]); btnQ.removeClass(clsName); form2.find('h6').hide(); configObject.afterAuthorizedButtonClick(false); foldOperations(); };
                         setTimeout(authfn, 20);
                         removeBearerStorage(configObject);
                     }
