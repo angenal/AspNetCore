@@ -12,6 +12,8 @@ namespace WebCore.Crawler
 
         public static void Load()
         {
+            typeof(AbotX2.Crawler.CrawlerX).Assembly.GetType("AbotX2.Util.InMemoryLicense", true);
+            string p = "Basic";
             //new AbotX2.License().SetLicense(GetLicense(License));
         }
 
