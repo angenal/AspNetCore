@@ -44,6 +44,11 @@
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Crawler\**" />
+    <EmbeddedResource Remove="Crawler\**" />
+    <None Remove="Crawler\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Sodium.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Sodium.cs</LastGenOutput>
@@ -93,9 +98,6 @@
     <ProjectReference Include="..\WebInterface\WebInterface.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AbotX2">
-      <HintPath>DLL\AbotX2.dll</HintPath>
-    </Reference>
     <Reference Include="itextsharp">
       <HintPath>DLL\itextsharp.dll</HintPath>
     </Reference>
