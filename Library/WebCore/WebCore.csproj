@@ -93,6 +93,9 @@
     <ProjectReference Include="..\WebInterface\WebInterface.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="AbotX2">
+      <HintPath>DLL\AbotX2.dll</HintPath>
+    </Reference>
     <Reference Include="itextsharp">
       <HintPath>DLL\itextsharp.dll</HintPath>
     </Reference>
