@@ -18,6 +18,18 @@ namespace WebCore
         /// </summary>
         public static readonly BindingFlags PublicBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty;
 
+        /// <summary>Casts the specified this.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="this">The this.</param>
+        /// <returns></returns>
+        public static T As<T>(this object @this)
+        {
+            Check.NotNull(@this, nameof(@this));
+
+            return (T)@this;
+        }
+
+
         /// <summary>
         /// 转换时间
         /// </summary>

@@ -223,7 +223,7 @@ namespace WebCore
     /// </summary>
     public class ArrayGenerator
     {
-        private readonly Random rand = new Random(Guid.NewGuid().GetHashCode());
+        private readonly Random rand = new Random((int)DateTime.Now.Ticks);
         public List<int> Generate(int length, int min = 0)
         {
             var list = new List<int>();

@@ -61,7 +61,7 @@ namespace WebCore.Documents
                         graphics.Clear(Color.FromArgb(240, 243, 248));
 
                         //画图片的背景噪音线
-                        var r = new Random(Guid.NewGuid().GetHashCode());
+                        var r = new Random((int)DateTime.Now.Ticks);
                         if (degree <= 1)
                         {
                             for (int i = 0; i <= 5; i++)

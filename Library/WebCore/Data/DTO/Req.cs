@@ -13,7 +13,7 @@ namespace WebCore.Data.DTO
         /// 获取 随机数值
         /// </summary>
         /// <returns></returns>
-        public static string Nonce() => new Random().Next(1000, 9999).ToString();
+        public static string Nonce() => new Random((int)DateTime.Now.Ticks).Next(1000, 9999).ToString();
         /// <summary>
         /// 获取 签名 HMAC+MD5
         /// </summary>
