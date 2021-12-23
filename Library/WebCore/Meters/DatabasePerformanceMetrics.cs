@@ -1,7 +1,6 @@
-﻿using System;
-using WebCore.Meters;
+using System;
 
-namespace WebCore
+namespace WebCore.Meters
 {
     public class DatabasePerformanceMetrics
     {

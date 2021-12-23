@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -724,7 +724,7 @@ namespace WebCore.Json
             }
             else
             {
-                compressedSize = SmallStringCompression.Instance.Compress(buffer,
+                compressedSize = Smaz.Instance.Compress(buffer,
                     compressionBuffer,
                     size,
                     maxGoodCompressionSize);

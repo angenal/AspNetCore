@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using WebCore.Json.Parsing;
 
-namespace WebCore
+namespace WebCore.Meters
 {
     public abstract class PerformanceMetrics
     {

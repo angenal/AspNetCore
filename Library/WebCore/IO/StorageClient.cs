@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
 
-namespace WebCore.Documents
+namespace WebCore.IO
 {
     public abstract class StorageClient : IDisposable
     {

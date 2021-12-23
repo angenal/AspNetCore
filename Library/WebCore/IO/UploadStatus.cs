@@ -1,7 +1,6 @@
-﻿using System;
 using System.Diagnostics;
 
-namespace WebCore.Documents
+namespace WebCore.IO
 {
     public class UploadProgress
     {

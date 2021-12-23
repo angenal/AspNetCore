@@ -1,25 +1,29 @@
-// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
 using System;
 using System.Threading;
 
-namespace WebCore.Data
+namespace WebCore
 {
-    public class IdGenerator
+    /// <summary>
+    /// Id Generator
+    /// </summary>
+    public static class Id
     {
         // Base32 encoding - in ascii sort order for easy text based sorting
-        private static readonly string _encode32Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+        const string _encode32Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 
         // Seed the _lastConnectionId for this application instance with
         // the number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001
         // for a roughly increasing _lastId over restarts
-        private static long _lastId = DateTime.UtcNow.Ticks;
+        static long _lastId = DateTime.UtcNow.Ticks;
 
-        public static string GetNextId() => GenerateId(Interlocked.Increment(ref _lastId));
-
-        private static unsafe string GenerateId(long id)
+        /// <summary>
+        /// Generate new id.
+        /// </summary>
+        /// <returns>string: char[13]</returns>
+        public static unsafe string NewId()
         {
+            long id = Interlocked.Increment(ref _lastId);
+
             // The following routine is ~310% faster than calling long.ToString() on x64
             // and ~600% faster than calling long.ToString() on x86 in tight loops of 1 million+ iterations
             // See: https://github.com/aspnet/Hosting/pull/385

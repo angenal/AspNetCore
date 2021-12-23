@@ -90,7 +90,7 @@ namespace WebCore.Json
             }
             else
             {
-                uncompressedSize = SmallStringCompression.Instance.Decompress(Buffer,
+                uncompressedSize = Smaz.Instance.Decompress(Buffer,
                     CompressedSize,
                     tempBuffer,
                     UncompressedSize);
