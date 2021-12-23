@@ -435,7 +435,7 @@ namespace WebCore.Json.Parsing
 
                 if (current is DateTimeOffset dateTime)
                 {
-                    var s = dateTime.ToString(DefaultFormat.DateTimeOffsetFormatsToWrite);
+                    var s = dateTime.ToString(DefaultFormat.DateTimeOffsetToWrite);
 
                     SetStringBuffer(s);
                     _state.CurrentTokenType = JsonParserToken.String;

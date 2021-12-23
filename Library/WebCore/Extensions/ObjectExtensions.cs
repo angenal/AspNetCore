@@ -21,7 +21,7 @@ namespace WebCore
         /// <summary>
         /// 转换时间
         /// </summary>
-        public static readonly JsonConverter[] JsonConverters = new JsonConverter[] { new Newtonsoft.Json.Converters.IsoDateTimeConverter { DateTimeFormat = DefaultFormat.DateTimeFormats } };
+        public static readonly JsonConverter[] JsonConverters = new JsonConverter[] { new Newtonsoft.Json.Converters.IsoDateTimeConverter { DateTimeFormat = DefaultFormat.DateTime } };
 
         /// <summary>
         /// 驼峰命名(首字母小写)

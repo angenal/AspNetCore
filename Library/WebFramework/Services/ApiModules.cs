@@ -121,7 +121,7 @@ namespace WebFramework.Services
             builder.AddNewtonsoftJson(x =>
             {
                 x.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); // 驼峰命名(首字母小写)
-                x.SerializerSettings.DateFormatString = DefaultFormat.DateTimeFormats; // 输出时间格式为"yyyy-MM-dd HH:mm:ss"
+                x.SerializerSettings.DateFormatString = DefaultFormat.DateTime; // 输出时间格式为"yyyy-MM-dd HH:mm:ss"
                 x.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
                 x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 x.SerializerSettings.Converters.Add(new StringEnumConverter());
