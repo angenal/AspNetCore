@@ -76,13 +76,13 @@ namespace WebCore
         /// <summary>Fast access to fields/properties.</summary>
         public static void SetProperty<T>(this T obj, string propName, object value)
         {
-            var accessor = FastMember.TypeAccessor.Create(typeof(T));
+            var accessor = Reflection.TypeAccessor.Create(typeof(T));
             accessor[obj, propName] = value;
         }
         /// <summary>Fast access to fields/properties.</summary>
         public static void SetProperty<T>(this IEnumerable<T> objs, string propName, IEnumerable<object> values)
         {
-            var accessor = FastMember.TypeAccessor.Create(typeof(T));
+            var accessor = Reflection.TypeAccessor.Create(typeof(T));
             var arr1 = objs.ToArray();
             var arr2 = values.ToArray();
             for (int i = 0; i < arr1.Length; i++) accessor[arr1[i], propName] = arr2[i];
@@ -90,19 +90,19 @@ namespace WebCore
         /// <summary>Fast access to fields/properties.</summary>
         public static object GetProperty(this object obj, string propName)
         {
-            var wrapped = FastMember.ObjectAccessor.Create(obj);
+            var wrapped = Reflection.ObjectAccessor.Create(obj);
             return wrapped[propName];
         }
         /// <summary>Fast access to fields/properties.</summary>
         public static object GetProperty(this object obj, string propName, bool allowNonPublicAccessors)
         {
-            var wrapped = FastMember.ObjectAccessor.Create(obj, allowNonPublicAccessors);
+            var wrapped = Reflection.ObjectAccessor.Create(obj, allowNonPublicAccessors);
             return wrapped[propName];
         }
         /// <summary>Fast access to fields/properties.</summary>
         public static IEnumerable<object> GetProperty<T>(this IEnumerable<T> objs, string propName)
         {
-            var accessor = FastMember.TypeAccessor.Create(typeof(T));
+            var accessor = Reflection.TypeAccessor.Create(typeof(T));
             var arr1 = objs.ToArray();
             var list = new List<object>();
             for (int i = 0; i < arr1.Length; i++) list.Add(accessor[arr1[i], propName]);

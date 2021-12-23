@@ -66,7 +66,7 @@ namespace WebCore
             //}
 
             // https://github.com/mgravell/fast-member
-            using (var reader = FastMember.ObjectReader.Create(entities, members))
+            using (var reader = Reflection.ObjectReader.Create(entities, members))
             {
                 table.Load(reader);
             }

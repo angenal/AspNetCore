@@ -58,7 +58,6 @@
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
     <PackageReference Include="CSRedisCore" Version="3.6.6" />
     <PackageReference Include="Esprima" Version="2.0.3" />
-    <PackageReference Include="FastMember" Version="1.5.0" />
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
     <PackageReference Include="Jint" Version="2.11.58" />
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.1.11" />
@@ -87,6 +86,9 @@
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageReference Include="System.Net.Primitives" Version="4.3.1" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <PackageReference Include="System.Threading.ThreadPool" Version="4.3.0" />
     <PackageReference Include="ToolGood.Words" Version="3.0.2.8" />
