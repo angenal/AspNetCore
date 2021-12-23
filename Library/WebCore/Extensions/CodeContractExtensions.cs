@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
@@ -18,7 +18,7 @@ namespace WebCore
         [ContractAbbreviator]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public static void CheckNotNullOrEmpty([ValidatedNotNullAttribute] this string value, string parameterName)
+        public static void CheckNotNullOrEmpty([ValidatedNotNull] this string value, string parameterName)
         {
 #if !LEGACY
             Contract.Requires<ArgumentNullException>(value != null, "The value '" + parameterName + "' cannot be null. ");
@@ -39,7 +39,7 @@ namespace WebCore
         [ContractAbbreviator]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public static void CheckNotNull([ValidatedNotNullAttribute] this object value, string parameterName)
+        public static void CheckNotNull([ValidatedNotNull] this object value, string parameterName)
         {
 #if !LEGACY
             Contract.Requires<ArgumentNullException>(value != null, "The value '" + parameterName + "' cannot be null. ");
@@ -60,7 +60,7 @@ namespace WebCore
         [ContractAbbreviator]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public static void CheckNotNull<T>([ValidatedNotNullAttribute] this T? value, string parameterName)
+        public static void CheckNotNull<T>([ValidatedNotNull] this T? value, string parameterName)
             where T : struct
         {
             // This method is additionally needed so that nullable objects are not boxed to object

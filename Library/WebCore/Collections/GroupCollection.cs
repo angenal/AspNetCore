@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 
@@ -6,13 +6,13 @@ namespace WebCore.Collections
 {
     /// <summary>Groups a set of objects alphabetically (using the ToString() method). </summary>
     /// <typeparam name="T">The item type. </typeparam>
-    public class AlphaGroupCollection<T> : List<Group<T>>, INotifyCollectionChanged
+    public class GroupCollection<T> : List<Group<T>>, INotifyCollectionChanged
     {
         private const string Characters = "#abcdefghijklmnopqrstuvwxyz";
         private Dictionary<string, Group<T>> _groups; // used for faster group access
 
-        /// <summary>Initializes a new instance of the <see cref="AlphaGroupCollection{T}"/> class. </summary>
-        public AlphaGroupCollection()
+        /// <summary>Initializes a new instance of the <see cref="GroupCollection{T}"/> class. </summary>
+        public GroupCollection()
         {
             Initialize(new List<T>());
         }
