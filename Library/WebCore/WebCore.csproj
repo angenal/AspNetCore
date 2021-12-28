@@ -72,7 +72,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Microsoft.FASTER.Core" Version="1.9.6" />
+    <PackageReference Include="Microsoft.FASTER.Core" Version="1.9.10" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="NetTopologySuite" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
