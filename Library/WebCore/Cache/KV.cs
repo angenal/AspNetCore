@@ -31,7 +31,7 @@ namespace WebCore.Cache
         /// Faster Key/Value in-memory cache
         /// https://microsoft.github.io/FASTER
         /// </summary>
-        /// <param name="size"></param>
+        /// <param name="size">size of hash table in #cache lines; 64 bytes per cache line</param>
         public KV(long size = 1L << 20)
         {
             this.size = size;
@@ -47,9 +47,9 @@ namespace WebCore.Cache
         /// </summary>
         /// <param name="path">Path to file that will store the log</param>
         /// <param name="size">hash table size (number of 64-byte buckets, each bucket is 64 bytes, 1 << 20 = 340M snapshot file)</param>
-        /// <param name="pageSizeBits">Size of a segment (group of pages), in bits</param>
-        /// <param name="memorySizeBits">Total size of in-memory part of log, in bits</param>
-        /// <param name="mutableFraction">Fraction of log marked as mutable (in-place updates)</param>
+        /// <param name="pageSizeBits">Size of a segment (group of pages), in bits: 9, 15, 22</param>
+        /// <param name="memorySizeBits">Total size of in-memory part of log, in bits: 14, 20, 30</param>
+        /// <param name="mutableFraction">Fraction of log marked as mutable (in-place updates): 0.1, 0.2, 0.3</param>
         /// <param name="fullCheckpointToken">Initiate full checkpoint</param>
         /// <param name="seconds">Flush current log, Issue periodic checkpoints</param>
         public KV(string path, long size = 1L << 20, int pageSizeBits = 22, int memorySizeBits = 30, double mutableFraction = 0.1, Guid? fullCheckpointToken = null, int seconds = 0)
