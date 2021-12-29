@@ -19,7 +19,7 @@ namespace WebCore.Cache
         private readonly string path;
         private readonly IDevice log;
         private readonly IDevice obj;
-        private readonly FasterKV<TKey, TValue> store;
+        private readonly FasterKV<TKey, TValue> fht;
         private readonly SimpleFunctions<TKey, TValue> fn = new SimpleFunctions<TKey, TValue>();
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace WebCore.Cache
             log = new NullDevice();
             obj = new NullDevice();
             var logSettings = new LogSettings { LogDevice = log, ObjectLogDevice = obj };
-            store = new FasterKV<TKey, TValue>(size, logSettings, null, SerializerSettings);
+            fht = new FasterKV<TKey, TValue>(size, logSettings, null, SerializerSettings);
         }
 
         /// <summary>
@@ -72,8 +72,8 @@ namespace WebCore.Cache
             obj = Devices.CreateLogDevice(Path.Combine(path, $"{size}.obj.log"));
             var checkpointSettings = new CheckpointSettings { CheckpointDir = path, CheckPointType = CheckpointType.Snapshot };
             var logSettings = new LogSettings { LogDevice = log, ObjectLogDevice = obj, PageSizeBits = pageSizeBits, MemorySizeBits = memorySizeBits, MutableFraction = mutableFraction };
-            store = new FasterKV<TKey, TValue>(size, logSettings, checkpointSettings, SerializerSettings);
-            if (fullCheckpointToken.HasValue) store.Recover(fullCheckpointToken.Value); else if (exists) store.Recover();
+            fht = new FasterKV<TKey, TValue>(size, logSettings, checkpointSettings, SerializerSettings);
+            if (fullCheckpointToken.HasValue) fht.Recover(fullCheckpointToken.Value); else if (exists) fht.Recover();
             if (seconds > 1) IssuePeriodicCheckpoints(seconds * 1000);
         }
 
@@ -84,7 +84,7 @@ namespace WebCore.Cache
                 while (true)
                 {
                     Thread.Sleep(milliseconds);
-                    (_, _) = store.TakeHybridLogCheckpointAsync(CheckpointType.FoldOver).GetAwaiter().GetResult();
+                    (_, _) = fht.TakeHybridLogCheckpointAsync(CheckpointType.FoldOver).GetAwaiter().GetResult();
                 }
             })
             { IsBackground = true };
@@ -101,7 +101,7 @@ namespace WebCore.Cache
         /// <returns>True if update and pending operation have completed, false otherwise</returns>
         public bool Set(TKey key, TValue value, bool wait = false, bool spinWaitForCommit = false)
         {
-            using (var s = store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 var status = s.Upsert(ref key, ref value);
                 return status == Status.OK && s.CompletePending(wait, spinWaitForCommit);
@@ -113,8 +113,8 @@ namespace WebCore.Cache
         public bool Set(TKey key, TValue value, string sessionId, bool resume = false, bool wait = false, bool spinWaitForCommit = false)
         {
             using (var s = resume == true && exists == true
-                ? store.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
-                : store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+                ? fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 var status = s.Upsert(ref key, ref value);
                 return status == Status.OK && s.CompletePending(wait, spinWaitForCommit);
@@ -128,7 +128,7 @@ namespace WebCore.Cache
         /// <returns></returns>
         public TValue Get(TKey key)
         {
-            using (var s = store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 var valueOut = new TValue();
                 var status = s.Read(ref key, ref valueOut);
@@ -141,8 +141,8 @@ namespace WebCore.Cache
         public TValue Get(TKey key, string sessionId, bool resume = false)
         {
             using (var s = resume == true && exists == true
-                ? store.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
-                : store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+                ? fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 var valueOut = new TValue();
                 var status = s.Read(ref key, ref valueOut);
@@ -157,7 +157,7 @@ namespace WebCore.Cache
         /// <returns>OK = 0, NOTFOUND = 1, PENDING = 2, ERROR = 3</returns>
         public int Delete(TKey key)
         {
-            using (var s = store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 return (int)s.Delete(ref key);
             }
@@ -168,8 +168,8 @@ namespace WebCore.Cache
         public int Delete(TKey key, string sessionId, bool resume = false)
         {
             using (var s = resume == true && exists == true
-                ? store.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
-                : store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+                ? fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 return (int)s.Delete(ref key);
             }
@@ -183,7 +183,7 @@ namespace WebCore.Cache
         /// <returns>True if all pending operations have completed, false otherwise</returns>
         public bool CompletePending(bool wait = false, bool spinWaitForCommit = false)
         {
-            using (var s = store.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 return s.CompletePending(wait, spinWaitForCommit);
             }
@@ -198,12 +198,12 @@ namespace WebCore.Cache
         {
             Guid token = Guid.Empty;
             if (string.IsNullOrEmpty(path)) return token;
-            while (!store.TakeFullCheckpoint(out token)) CompletePending(true, true);
-            await store.CompleteCheckpointAsync();
+            while (!fht.TakeFullCheckpoint(out token)) CompletePending(true, true);
+            await fht.CompleteCheckpointAsync();
             var filename = Path.Combine(path, $"{size}.checkpoint");
             File.WriteAllText(filename, token.ToString(), System.Text.Encoding.UTF8);
             if (!dispose) return token;
-            store.Dispose();
+            fht.Dispose();
             log.Dispose();
             obj.Dispose();
             return token;

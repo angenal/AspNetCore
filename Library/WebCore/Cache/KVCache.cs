@@ -13,7 +13,7 @@ namespace WebCore.Cache
     {
         private readonly IDevice _log;
         private readonly IDevice _obj;
-        private readonly FasterKV<Md5Key, DataValue> _store;
+        private readonly FasterKV<Md5Key, DataValue> _fht;
         private readonly ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> _session;
 
         /// <summary>
@@ -51,14 +51,14 @@ namespace WebCore.Cache
                 valueSerializer = () => new DataValueSerializer()
             };
 
-            _store = new FasterKV<Md5Key, DataValue>(size, logSettings, checkpointSettings, serializerSettings);
+            _fht = new FasterKV<Md5Key, DataValue>(size, logSettings, checkpointSettings, serializerSettings);
 
             if (checkpointDir.Exists)
             {
                 var files = checkpointDir.GetFiles();
                 if (files.Length > 0)
                 {
-                    _store.Recover();
+                    _fht.Recover();
                 }
                 foreach (var file in files)
                 {
@@ -71,12 +71,12 @@ namespace WebCore.Cache
 
         public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> NewSession(string sessionId = null, bool threadAffinitized = false)
         {
-            return _store.NewSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, threadAffinitized);
+            return _fht.NewSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, threadAffinitized);
         }
 
         public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> ResumeSession(string sessionId, out CommitPoint commitPoint, bool threadAffinitized = false)
         {
-            return _store.ResumeSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, out commitPoint, threadAffinitized);
+            return _fht.ResumeSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, out commitPoint, threadAffinitized);
         }
 
         public byte[] Get(string key)
@@ -178,10 +178,10 @@ namespace WebCore.Cache
         public bool SaveSnapshot(bool saveHybridLog = true)
         {
             bool success = saveHybridLog
-                ? _store.TakeHybridLogCheckpoint(out _)
-                : _store.TakeFullCheckpoint(out _);
+                ? _fht.TakeHybridLogCheckpoint(out _)
+                : _fht.TakeFullCheckpoint(out _);
 
-            _store.CompleteCheckpointAsync().GetAwaiter().GetResult();
+            _fht.CompleteCheckpointAsync().GetAwaiter().GetResult();
 
             return success;
         }
@@ -189,17 +189,17 @@ namespace WebCore.Cache
         public async ValueTask<bool> SaveSnapshotAsync(bool saveHybridLog = true)
         {
             (bool success, _) = saveHybridLog
-                ? await _store.TakeHybridLogCheckpointAsync(CheckpointType.Snapshot)
-                : await _store.TakeFullCheckpointAsync(CheckpointType.Snapshot);
+                ? await _fht.TakeHybridLogCheckpointAsync(CheckpointType.Snapshot)
+                : await _fht.TakeFullCheckpointAsync(CheckpointType.Snapshot);
 
-            await _store.CompleteCheckpointAsync();
+            await _fht.CompleteCheckpointAsync();
 
             return success;
         }
 
         public void Dispose()
         {
-            _store.Dispose();
+            _fht.Dispose();
             _log.Dispose();
             _obj.Dispose();
         }
