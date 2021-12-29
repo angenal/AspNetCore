@@ -13,6 +13,7 @@ namespace WebCore.Cache
     {
         private readonly IDevice _log;
         private readonly IDevice _obj;
+        private readonly string _directory;
         private readonly FasterKV<Md5Key, DataValue> _fht;
         private readonly ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> _session;
 
@@ -27,6 +28,9 @@ namespace WebCore.Cache
         public KVCache(string cacheDirectory = null, long size = 1L << 20, int pageSizeBits = 9, int memorySizeBits = 14, double mutableFraction = 0.1)
         {
             if (string.IsNullOrEmpty(cacheDirectory)) cacheDirectory = Path.GetTempPath();
+            if (!Directory.Exists(cacheDirectory)) Directory.CreateDirectory(cacheDirectory);
+
+            _directory = cacheDirectory;
             _log = Devices.CreateLogDevice(Path.Combine(cacheDirectory, "cache.log"));
             _obj = Devices.CreateLogDevice(Path.Combine(cacheDirectory, "cache.obj.log"));
             var checkpointDir = new DirectoryInfo(Path.Combine(cacheDirectory, "checkpoints"));
@@ -55,18 +59,49 @@ namespace WebCore.Cache
 
             if (checkpointDir.Exists)
             {
-                var files = checkpointDir.GetFiles();
-                if (files.Length > 0)
+                var dirs = checkpointDir.GetDirectories();
+                foreach (var dir in dirs)
                 {
-                    _fht.Recover();
-                }
-                foreach (var file in files)
-                {
-                    file.Delete();
+                    if (!dir.Name.EndsWith("checkpoints")) continue;
+                    if (dir.Name.StartsWith("index"))
+                    {
+                        dirs = dir.GetDirectories();
+                        if (dirs.Length > 0 && Guid.TryParse(dirs[0].Name, out Guid fullCheckpointToken))
+                        {
+                            _fht.Recover(fullCheckpointToken);
+                        }
+                        dir.FullName.DeleteDirectory();
+                        break;
+                    }
+                    else
+                    {
+                        dirs = dir.GetDirectories();
+                        if (dirs.Length > 0 && Guid.TryParse(dirs[0].Name, out Guid hybridLogCheckpointToken))
+                        {
+                            _fht.Recover(hybridLogCheckpointToken, hybridLogCheckpointToken);
+                        }
+                        dir.FullName.DeleteDirectory();
+                        break;
+                    }
                 }
             }
 
             _session = NewSession();
+        }
+
+        public FasterKV<Md5Key, DataValue> GetCache()
+        {
+            return _fht;
+        }
+
+        public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> GetSession()
+        {
+            return _session;
+        }
+
+        public string GetDirectory()
+        {
+            return _directory;
         }
 
         public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> NewSession(string sessionId = null, bool threadAffinitized = false)
@@ -79,26 +114,26 @@ namespace WebCore.Cache
             return _fht.ResumeSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, out commitPoint, threadAffinitized);
         }
 
-        public byte[] Get(string key)
+        public byte[] Get(string key, bool wait = false)
         {
-            return Get(key, _session);
+            return Get(key, wait, _session);
         }
 
-        public byte[] Get(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        public byte[] Get(string key, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
             var (status, output) = session.Read(new Md5Key(key));
 
-            return status == Status.OK ? output.Value : status == Status.PENDING && session.CompletePending(true) ? Get(key, session) : default;
+            return status == Status.OK ? output.Value : status == Status.PENDING && wait == true && session.CompletePending(true) ? Get(key, wait, session) : default;
         }
 
-        public async ValueTask<byte[]> GetAsync(string key)
+        public async ValueTask<byte[]> GetAsync(string key, bool wait = false)
         {
-            return await GetAsync(key, _session);
+            return await GetAsync(key, wait, _session);
         }
 
-        public async ValueTask<byte[]> GetAsync(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        public async ValueTask<byte[]> GetAsync(string key, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -106,15 +141,15 @@ namespace WebCore.Cache
 
             var (status, output) = result.Complete();
 
-            return status == Status.OK ? output.Value : status == Status.PENDING && session.CompletePending(true) ? await GetAsync(key, session) : default;
+            return status == Status.OK ? output.Value : status == Status.PENDING && wait == true && session.CompletePending(true) ? await GetAsync(key, wait, session) : default;
         }
 
-        public bool Set(string key, byte[] value)
+        public bool Set(string key, byte[] value, bool wait = false)
         {
-            return Set(key, value, _session);
+            return Set(key, value, wait, _session);
         }
 
-        public bool Set(string key, byte[] value, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        public bool Set(string key, byte[] value, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -123,15 +158,15 @@ namespace WebCore.Cache
                 Value = value
             });
 
-            return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
         }
 
-        public async Task<bool> SetAsync(string key, byte[] value)
+        public async Task<bool> SetAsync(string key, byte[] value, bool wait = false)
         {
-            return await SetAsync(key, value, _session);
+            return await SetAsync(key, value, wait, _session);
         }
 
-        public async Task<bool> SetAsync(string key, byte[] value, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        public async Task<bool> SetAsync(string key, byte[] value, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -142,29 +177,29 @@ namespace WebCore.Cache
 
             (Status status, _) = result.Complete();
 
-            return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
         }
 
-        public bool Delete(string key)
+        public bool Delete(string key, bool wait = false)
         {
-            return Delete(key, _session);
+            return Delete(key, wait, _session);
         }
 
-        public bool Delete(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        public bool Delete(string key, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
             var status = session.Delete(new Md5Key(key));
 
-            return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
         }
 
-        public async Task<bool> DeleteAsync(string key)
+        public async Task<bool> DeleteAsync(string key, bool wait = false)
         {
-            return await DeleteAsync(key, _session);
+            return await DeleteAsync(key, wait, _session);
         }
 
-        public async Task<bool> DeleteAsync(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        public async Task<bool> DeleteAsync(string key, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -172,7 +207,7 @@ namespace WebCore.Cache
 
             var status = result.Complete();
 
-            return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
         }
 
         public bool SaveSnapshot(bool saveHybridLog = true)
