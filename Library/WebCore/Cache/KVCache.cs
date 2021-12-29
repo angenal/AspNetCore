@@ -79,17 +79,29 @@ namespace WebCore.Cache
             return _store.ResumeSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, out commitPoint, threadAffinitized);
         }
 
-        public byte[] Get(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session = null)
+        public byte[] Get(string key)
         {
-            if (session == null) session = _session;
+            return Get(key, _session);
+        }
+
+        public byte[] Get(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
             var (status, output) = session.Read(new Md5Key(key));
 
             return status == Status.OK ? output.Value : status == Status.PENDING && session.CompletePending(true) ? Get(key, session) : default;
         }
 
-        public async ValueTask<byte[]> GetAsync(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session = null)
+        public async ValueTask<byte[]> GetAsync(string key)
         {
-            if (session == null) session = _session;
+            return await GetAsync(key, _session);
+        }
+
+        public async ValueTask<byte[]> GetAsync(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
             var result = await session.ReadAsync(new Md5Key(key));
 
             var (status, output) = result.Complete();
@@ -97,9 +109,15 @@ namespace WebCore.Cache
             return status == Status.OK ? output.Value : status == Status.PENDING && session.CompletePending(true) ? await GetAsync(key, session) : default;
         }
 
-        public bool Set(string key, byte[] value, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session = null)
+        public bool Set(string key, byte[] value)
         {
-            if (session == null) session = _session;
+            return Set(key, value, _session);
+        }
+
+        public bool Set(string key, byte[] value, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
             var status = session.Upsert(new Md5Key(key), new DataValue
             {
                 Value = value
@@ -108,15 +126,51 @@ namespace WebCore.Cache
             return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
         }
 
-        public async Task<bool> SetAsync(string key, byte[] value, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session = null)
+        public async Task<bool> SetAsync(string key, byte[] value)
         {
-            if (session == null) session = _session;
+            return await SetAsync(key, value, _session);
+        }
+
+        public async Task<bool> SetAsync(string key, byte[] value, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
             var result = await session.RMWAsync(new Md5Key(key), new DataValue
             {
                 Value = value
             });
 
             (Status status, _) = result.Complete();
+
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
+        }
+
+        public bool Delete(string key)
+        {
+            return Delete(key, _session);
+        }
+
+        public bool Delete(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
+            var status = session.Delete(new Md5Key(key));
+
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
+        }
+
+        public async Task<bool> DeleteAsync(string key)
+        {
+            return await DeleteAsync(key, _session);
+        }
+
+        public async Task<bool> DeleteAsync(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
+            var result = await session.DeleteAsync(new Md5Key(key));
+
+            var status = result.Complete();
 
             return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
         }
