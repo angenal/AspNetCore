@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
-    <PackageReference Include="Microsoft.FASTER.Core" Version="1.9.9" />
+    <PackageReference Include="Microsoft.FASTER.Core" Version="1.9.10" />
     <PackageReference Include="NATS.Client" Version="0.14.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="106.15.0" />

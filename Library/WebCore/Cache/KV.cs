@@ -29,7 +29,6 @@ namespace WebCore.Cache
 
         /// <summary>
         /// Faster Key/Value in-memory cache
-        /// https://microsoft.github.io/FASTER
         /// </summary>
         /// <param name="size">size of hash table in #cache lines; 64 bytes per cache line</param>
         public KV(long size = 1L << 20)
@@ -42,8 +41,7 @@ namespace WebCore.Cache
         }
 
         /// <summary>
-        /// Faster Key/Value cache store
-        /// https://microsoft.github.io/FASTER
+        /// Faster Key/Value in-memory and disk cache store
         /// </summary>
         /// <param name="path">Path to file that will store the log</param>
         /// <param name="size">hash table size (number of 64-byte buckets, each bucket is 64 bytes, 1 << 20 = 340M snapshot file)</param>

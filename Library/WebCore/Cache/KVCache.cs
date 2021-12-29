@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 
 namespace WebCore.Cache
 {
+    /// <summary>
+    /// Faster Key/Value is a fast concurrent persistent log and key-value store with cache for larger-than-memory data.
+    /// https://github.com/microsoft/FASTER
+    /// </summary>
     public class KVCache : IDisposable
     {
         private readonly IDevice _log;
@@ -12,14 +16,17 @@ namespace WebCore.Cache
         private readonly FasterKV<Md5Key, DataValue> _store;
         private readonly ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> _session;
 
-        /// <summary></summary>
-        /// <param name="cacheDirectory"></param>
+        /// <summary>
+        /// Faster Key/Value in-memory and disk cache store
+        /// </summary>
+        /// <param name="cacheDirectory">the directory path of cache</param>
         /// <param name="size">size of hash table in #cache lines; 64 bytes per cache line</param>
         /// <param name="pageSizeBits">Size of a segment (group of pages), in bits: 9, 15, 22</param>
         /// <param name="memorySizeBits">Total size of in-memory part of log, in bits: 14, 20, 30</param>
         /// <param name="mutableFraction">Fraction of log marked as mutable (in-place updates): 0.1, 0.2, 0.3</param>
-        public KVCache(string cacheDirectory, long size = 1L << 20, int pageSizeBits = 9, int memorySizeBits = 14, double mutableFraction = 0.1)
+        public KVCache(string cacheDirectory = null, long size = 1L << 20, int pageSizeBits = 9, int memorySizeBits = 14, double mutableFraction = 0.1)
         {
+            if (string.IsNullOrEmpty(cacheDirectory)) cacheDirectory = Path.GetTempPath();
             _log = Devices.CreateLogDevice(Path.Combine(cacheDirectory, "cache.log"));
             _obj = Devices.CreateLogDevice(Path.Combine(cacheDirectory, "cache.obj.log"));
             var checkpointDir = new DirectoryInfo(Path.Combine(cacheDirectory, "checkpoints"));
@@ -59,41 +66,59 @@ namespace WebCore.Cache
                 }
             }
 
-            _session = _store.NewSession(new SimpleFunctions<Md5Key, DataValue>());
+            _session = NewSession();
         }
 
-        public byte[] Get(string key)
+        public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> NewSession(string sessionId = null, bool threadAffinitized = false)
         {
-            var (status, output) = _session.Read(new Md5Key(key));
-
-            return status == Status.OK ? output.Value : default;
+            return _store.NewSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, threadAffinitized);
         }
 
-        public async ValueTask<byte[]> GetAsync(string key)
+        public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> ResumeSession(string sessionId, out CommitPoint commitPoint, bool threadAffinitized = false)
         {
-            var result = await _session.ReadAsync(new Md5Key(key));
+            return _store.ResumeSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, out commitPoint, threadAffinitized);
+        }
+
+        public byte[] Get(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session = null)
+        {
+            if (session == null) session = _session;
+            var (status, output) = session.Read(new Md5Key(key));
+
+            return status == Status.OK ? output.Value : status == Status.PENDING && session.CompletePending(true) ? Get(key, session) : default;
+        }
+
+        public async ValueTask<byte[]> GetAsync(string key, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session = null)
+        {
+            if (session == null) session = _session;
+            var result = await session.ReadAsync(new Md5Key(key));
 
             var (status, output) = result.Complete();
 
-            return status == Status.OK ? output.Value : default;
+            return status == Status.OK ? output.Value : status == Status.PENDING && session.CompletePending(true) ? await GetAsync(key, session) : default;
         }
 
-        public void Set(string key, byte[] value)
+        public bool Set(string key, byte[] value, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session = null)
         {
-            _session.Upsert(new Md5Key(key), new DataValue
-            {
-                Value = value
-            });
-        }
-
-        public async Task SetAsync(string key, byte[] value)
-        {
-            var result = await _session.RMWAsync(new Md5Key(key), new DataValue
+            if (session == null) session = _session;
+            var status = session.Upsert(new Md5Key(key), new DataValue
             {
                 Value = value
             });
 
-            await result.CompleteAsync();
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
+        }
+
+        public async Task<bool> SetAsync(string key, byte[] value, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session = null)
+        {
+            if (session == null) session = _session;
+            var result = await session.RMWAsync(new Md5Key(key), new DataValue
+            {
+                Value = value
+            });
+
+            (Status status, _) = result.Complete();
+
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(true));
         }
 
         public bool SaveSnapshot(bool saveHybridLog = true)

@@ -147,6 +147,6 @@ namespace WebCore.Cache
         public StringValue Value { get; set; }
     }
 
-    // Empty String Context
-    //public class StringContext { }
+    /// <summary>Empty String Context</summary>
+    public class StringContext { }
 }
