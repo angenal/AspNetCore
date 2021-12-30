@@ -56,37 +56,46 @@ namespace WebCore.Cache
             };
 
             _fht = new FasterKV<Md5Key, DataValue>(size, logSettings, checkpointSettings, serializerSettings);
+            Recover(checkpointDir);
+            _session = NewSession();
+        }
 
-            if (checkpointDir.Exists)
+        private void Recover(DirectoryInfo checkpointDir)
+        {
+            if (!checkpointDir.Exists) return;
+            var dirs = checkpointDir.GetDirectories();
+            foreach (var dir in dirs)
             {
-                var dirs = checkpointDir.GetDirectories();
-                foreach (var dir in dirs)
+                if (!dir.Name.EndsWith("checkpoints")) continue;
+                if (dir.Name.StartsWith("index"))
                 {
-                    if (!dir.Name.EndsWith("checkpoints")) continue;
-                    if (dir.Name.StartsWith("index"))
+                    dirs = dir.GetDirectories();
+                    if (dirs.Length > 0 && Guid.TryParse(dirs[0].Name, out Guid fullCheckpointToken))
                     {
-                        dirs = dir.GetDirectories();
-                        if (dirs.Length > 0 && Guid.TryParse(dirs[0].Name, out Guid fullCheckpointToken))
+                        var files = dirs[0].GetFiles();
+                        if (files.Length > 0 && files[0].Length > 64)
                         {
                             _fht.Recover(fullCheckpointToken);
                         }
-                        dir.FullName.DeleteDirectory();
-                        break;
                     }
-                    else
+                    dir.FullName.DeleteDirectory();
+                    break;
+                }
+                else
+                {
+                    dirs = dir.GetDirectories();
+                    if (dirs.Length > 0 && Guid.TryParse(dirs[0].Name, out Guid hybridLogCheckpointToken))
                     {
-                        dirs = dir.GetDirectories();
-                        if (dirs.Length > 0 && Guid.TryParse(dirs[0].Name, out Guid hybridLogCheckpointToken))
+                        var files = dirs[0].GetFiles();
+                        if (files.Length > 0 && files[0].Length > 64)
                         {
                             _fht.Recover(hybridLogCheckpointToken, hybridLogCheckpointToken);
                         }
-                        dir.FullName.DeleteDirectory();
-                        break;
                     }
+                    dir.FullName.DeleteDirectory();
+                    break;
                 }
             }
-
-            _session = NewSession();
         }
 
         public FasterKV<Md5Key, DataValue> GetCache()
