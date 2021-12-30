@@ -11,44 +11,43 @@ namespace WebCore.Cache
     /// </summary>
     public class KVCache : IDisposable
     {
+        private readonly string _path;
         private readonly IDevice _log;
         private readonly IDevice _obj;
-        private readonly string _directory;
         private readonly FasterKV<Md5Key, DataValue> _fht;
         private readonly ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> _session;
 
         /// <summary>
         /// Faster Key/Value in-memory and disk cache store
         /// </summary>
-        /// <param name="cacheDirectory">the directory path of cache</param>
+        /// <param name="path">the directory path of cache</param>
         /// <param name="size">size of hash table in #cache lines; 64 bytes per cache line</param>
         /// <param name="pageSizeBits">Size of a segment (group of pages), in bits: 9, 15, 22</param>
         /// <param name="memorySizeBits">Total size of in-memory part of log, in bits: 14, 20, 30</param>
         /// <param name="mutableFraction">Fraction of log marked as mutable (in-place updates): 0.1, 0.2, 0.3</param>
-        public KVCache(string cacheDirectory = null, long size = 1L << 20, int pageSizeBits = 9, int memorySizeBits = 14, double mutableFraction = 0.1)
+        public KVCache(string path = null, long size = 1L << 20, int pageSizeBits = 9, int memorySizeBits = 14, double mutableFraction = 0.1)
         {
-            if (string.IsNullOrEmpty(cacheDirectory)) cacheDirectory = Path.GetTempPath();
-            if (!Directory.Exists(cacheDirectory)) Directory.CreateDirectory(cacheDirectory);
+            if (string.IsNullOrEmpty(path)) path = Path.GetTempPath();
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
-            _directory = cacheDirectory;
-            _log = Devices.CreateLogDevice(Path.Combine(cacheDirectory, "cache.log"));
-            _obj = Devices.CreateLogDevice(Path.Combine(cacheDirectory, "cache.obj.log"));
-            var checkpointDir = new DirectoryInfo(Path.Combine(cacheDirectory, "checkpoints"));
+            _path = path;
+            _log = Devices.CreateLogDevice(Path.Combine(path, "cache.log"));
+            _obj = Devices.CreateLogDevice(Path.Combine(path, "cache.obj.log"));
 
+            var checkpointDir = new DirectoryInfo(Path.Combine(path, "checkpoints"));
+            var checkpointSettings = new CheckpointSettings
+            {
+                CheckpointDir = checkpointDir.FullName,
+                CheckPointType = CheckpointType.Snapshot
+            };
             var logSettings = new LogSettings
             {
                 LogDevice = _log,
                 ObjectLogDevice = _obj,
-                MutableFraction = mutableFraction,
+                PageSizeBits = pageSizeBits,
                 MemorySizeBits = memorySizeBits,
-                PageSizeBits = pageSizeBits
+                MutableFraction = mutableFraction
             };
-
-            var checkpointSettings = new CheckpointSettings
-            {
-                CheckpointDir = checkpointDir.FullName
-            };
-
             var serializerSettings = new SerializerSettings<Md5Key, DataValue>
             {
                 keySerializer = () => new Md5KeySerializer(),
@@ -56,11 +55,11 @@ namespace WebCore.Cache
             };
 
             _fht = new FasterKV<Md5Key, DataValue>(size, logSettings, checkpointSettings, serializerSettings);
-            Recover(checkpointDir);
+            Recover(_fht, checkpointDir);
             _session = NewSession();
         }
 
-        private void Recover(DirectoryInfo checkpointDir)
+        internal static void Recover<Key, Value>(IFasterKV<Key, Value> fht, DirectoryInfo checkpointDir)
         {
             if (!checkpointDir.Exists) return;
             var dirs = checkpointDir.GetDirectories();
@@ -75,7 +74,7 @@ namespace WebCore.Cache
                         var files = dirs[0].GetFiles();
                         if (files.Length > 0 && files[0].Length > 64)
                         {
-                            _fht.Recover(fullCheckpointToken);
+                            fht.Recover(fullCheckpointToken);
                         }
                     }
                     dir.FullName.DeleteDirectory();
@@ -89,7 +88,7 @@ namespace WebCore.Cache
                         var files = dirs[0].GetFiles();
                         if (files.Length > 0 && files[0].Length > 64)
                         {
-                            _fht.Recover(hybridLogCheckpointToken, hybridLogCheckpointToken);
+                            fht.Recover(hybridLogCheckpointToken, hybridLogCheckpointToken);
                         }
                     }
                     dir.FullName.DeleteDirectory();
@@ -110,7 +109,7 @@ namespace WebCore.Cache
 
         public string GetDirectory()
         {
-            return _directory;
+            return _path;
         }
 
         public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> NewSession(string sessionId = null, bool threadAffinitized = false)

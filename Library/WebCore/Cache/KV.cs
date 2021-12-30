@@ -15,66 +15,72 @@ namespace WebCore.Cache
     public class KV<TKey, TValue> where TValue : new()
     {
         private readonly long size;
-        private readonly bool exists;
-        private readonly string path;
-        private readonly IDevice log;
-        private readonly IDevice obj;
-        private readonly FasterKV<TKey, TValue> fht;
-        private readonly SimpleFunctions<TKey, TValue> fn = new SimpleFunctions<TKey, TValue>();
-
-        /// <summary>
-        /// Sets a new { keySerializer = () => new KeySerializer(), valueSerializer = () => new ValueSerializer() }
-        /// </summary>
-        public static SerializerSettings<TKey, TValue> SerializerSettings = null;
+        private readonly string _path;
+        private readonly IDevice _log;
+        private readonly IDevice _obj;
+        private readonly FasterKV<TKey, TValue> _fht;
+        private readonly ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> _session;
+        public SimpleFunctions<TKey, TValue> fn = new SimpleFunctions<TKey, TValue>();
 
         /// <summary>
         /// Faster Key/Value in-memory cache
         /// </summary>
         /// <param name="size">size of hash table in #cache lines; 64 bytes per cache line</param>
-        public KV(long size = 1L << 20)
+        /// <param name="serializerSettings">Sets a new SerializerSettings { keySerializer = () => new KeySerializer(), valueSerializer = () => new ValueSerializer() }</param>
+        public KV(long size = 1L << 20, SerializerSettings<TKey, TValue> serializerSettings = null)
         {
             this.size = size;
-            log = new NullDevice();
-            obj = new NullDevice();
-            var logSettings = new LogSettings { LogDevice = log, ObjectLogDevice = obj };
-            fht = new FasterKV<TKey, TValue>(size, logSettings, null, SerializerSettings);
+            _log = new NullDevice();
+            _obj = new NullDevice();
+            var logSettings = new LogSettings { LogDevice = _log, ObjectLogDevice = _obj };
+            _fht = new FasterKV<TKey, TValue>(size, logSettings, null, serializerSettings);
+            _session = NewSession();
         }
 
         /// <summary>
         /// Faster Key/Value in-memory and disk cache store
         /// </summary>
-        /// <param name="path">Path to file that will store the log</param>
+        /// <param name="path">the directory path of cache</param>
         /// <param name="size">hash table size (number of 64-byte buckets, each bucket is 64 bytes, 1 << 20 = 340M snapshot file)</param>
         /// <param name="pageSizeBits">Size of a segment (group of pages), in bits: 9, 15, 22</param>
         /// <param name="memorySizeBits">Total size of in-memory part of log, in bits: 14, 20, 30</param>
         /// <param name="mutableFraction">Fraction of log marked as mutable (in-place updates): 0.1, 0.2, 0.3</param>
-        /// <param name="fullCheckpointToken">Initiate full checkpoint</param>
-        /// <param name="seconds">Flush current log, Issue periodic checkpoints</param>
-        public KV(string path, long size = 1L << 20, int pageSizeBits = 22, int memorySizeBits = 30, double mutableFraction = 0.1, Guid? fullCheckpointToken = null, int seconds = 0)
+        /// <param name="serializerSettings">Sets a new SerializerSettings { keySerializer = () => new KeySerializer(), valueSerializer = () => new ValueSerializer() }</param>
+        /// <param name="seconds">Flush current log, Interval more than 2 seconds to issue periodic checkpoints</param>
+        public KV(string path = null, long size = 1L << 20, int pageSizeBits = 22, int memorySizeBits = 30, double mutableFraction = 0.3, SerializerSettings<TKey, TValue> serializerSettings = null, int seconds = 0)
         {
-            this.size = size;
-            var dirname = typeof(TValue).Name;
-            if (!Path.GetDirectoryName(path).EndsWith(dirname)) path = Path.Combine(path, dirname);
+            if (string.IsNullOrEmpty(path)) path = Path.GetTempPath();
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            if (!fullCheckpointToken.HasValue)
+
+            var dirname = typeof(TValue).Name;
+            if (!Path.GetDirectoryName(path).EndsWith(dirname, StringComparison.OrdinalIgnoreCase)) path = Path.Combine(path, dirname);
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+            _path = path;
+            _log = Devices.CreateLogDevice(Path.Combine(path, "cache.log"));
+            _obj = Devices.CreateLogDevice(Path.Combine(path, "cache.obj.log"));
+
+            this.size = size;
+
+            var checkpointDir = new DirectoryInfo(Path.Combine(path, "checkpoints"));
+            var checkpointSettings = new CheckpointSettings
             {
-                var filename = Path.Combine(path, $"{size}.checkpoint");
-                if (File.Exists(filename))
-                {
-                    var s = File.ReadAllText(filename, System.Text.Encoding.UTF8);
-                    if (Guid.TryParse(s, out Guid guid)) fullCheckpointToken = guid;
-                }
-            }
-            this.path = path;
-            var logPath = Path.Combine(path, $"{size}.log");
-            exists = Directory.Exists(logPath);
-            log = Devices.CreateLogDevice(logPath);
-            obj = Devices.CreateLogDevice(Path.Combine(path, $"{size}.obj.log"));
-            var checkpointSettings = new CheckpointSettings { CheckpointDir = path, CheckPointType = CheckpointType.Snapshot };
-            var logSettings = new LogSettings { LogDevice = log, ObjectLogDevice = obj, PageSizeBits = pageSizeBits, MemorySizeBits = memorySizeBits, MutableFraction = mutableFraction };
-            fht = new FasterKV<TKey, TValue>(size, logSettings, checkpointSettings, SerializerSettings);
-            if (fullCheckpointToken.HasValue) fht.Recover(fullCheckpointToken.Value); else if (exists) fht.Recover();
-            if (seconds > 1) IssuePeriodicCheckpoints(seconds * 1000);
+                CheckpointDir = checkpointDir.FullName,
+                CheckPointType = CheckpointType.Snapshot
+            };
+            var logSettings = new LogSettings
+            {
+                LogDevice = _log,
+                ObjectLogDevice = _obj,
+                PageSizeBits = pageSizeBits,
+                MemorySizeBits = memorySizeBits,
+                MutableFraction = mutableFraction
+            };
+
+            _fht = new FasterKV<TKey, TValue>(size, logSettings, checkpointSettings, serializerSettings);
+            KVCache.Recover(_fht, checkpointDir);
+            _session = NewSession();
+            if (seconds > 2) IssuePeriodicCheckpoints(seconds * 1000);
         }
 
         private void IssuePeriodicCheckpoints(int milliseconds)
@@ -84,12 +90,128 @@ namespace WebCore.Cache
                 while (true)
                 {
                     Thread.Sleep(milliseconds);
-                    (_, _) = fht.TakeHybridLogCheckpointAsync(CheckpointType.FoldOver).GetAwaiter().GetResult();
+                    (_, _) = _fht.TakeHybridLogCheckpointAsync(CheckpointType.FoldOver).GetAwaiter().GetResult();
                 }
             })
             { IsBackground = true };
             t.Start();
         }
+
+        public FasterKV<TKey, TValue> GetCache()
+        {
+            return _fht;
+        }
+
+        public ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> GetSession()
+        {
+            return _session;
+        }
+
+        public string GetDirectory()
+        {
+            return _path;
+        }
+
+        public ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> NewSession(string sessionId = null, bool threadAffinitized = false, SimpleFunctions<TKey, TValue> fn = null)
+        {
+            return _fht.NewSession(fn ?? this.fn, sessionId, threadAffinitized);
+        }
+
+        public ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> ResumeSession(string sessionId, out CommitPoint commitPoint, bool threadAffinitized = false, SimpleFunctions<TKey, TValue> fn = null)
+        {
+            return _fht.ResumeSession(fn ?? this.fn, sessionId, out commitPoint, threadAffinitized);
+        }
+
+        public TValue Get(TKey key, bool wait = false)
+        {
+            return Get(key, wait, _session);
+        }
+
+        public TValue Get(TKey key, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
+            var (status, output) = session.Read(key);
+
+            return status == Status.OK ? output : status == Status.PENDING && wait == true && session.CompletePending(true) ? Get(key, wait, session) : default;
+        }
+
+        public async ValueTask<TValue> GetAsync(TKey key, bool wait = false)
+        {
+            return await GetAsync(key, wait, _session);
+        }
+
+        public async ValueTask<TValue> GetAsync(TKey key, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
+            var result = await session.ReadAsync(key);
+
+            var (status, output) = result.Complete();
+
+            return status == Status.OK ? output : status == Status.PENDING && wait == true && session.CompletePending(true) ? await GetAsync(key, wait, session) : default;
+        }
+
+        public bool Set(TKey key, TValue value, bool wait = false)
+        {
+            return Set(key, value, wait, _session);
+        }
+
+        public bool Set(TKey key, TValue value, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
+            var status = session.Upsert(key, value);
+
+            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+        }
+
+        public async Task<bool> SetAsync(TKey key, TValue value, bool wait = false)
+        {
+            return await SetAsync(key, value, wait, _session);
+        }
+
+        public async Task<bool> SetAsync(TKey key, TValue value, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
+            var result = await session.RMWAsync(key, value);
+
+            (Status status, _) = result.Complete();
+
+            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+        }
+
+        public bool Delete(TKey key, bool wait = false)
+        {
+            return Delete(key, wait, _session);
+        }
+
+        public bool Delete(TKey key, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
+            var status = session.Delete(key);
+
+            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+        }
+
+        public async Task<bool> DeleteAsync(TKey key, bool wait = false)
+        {
+            return await DeleteAsync(key, wait, _session);
+        }
+
+        public async Task<bool> DeleteAsync(TKey key, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        {
+            if (session == null) throw new ArgumentNullException(nameof(session));
+
+            var result = await session.DeleteAsync(key);
+
+            var status = result.Complete();
+
+            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+        }
+
 
         /// <summary>
         /// Set value
@@ -99,9 +221,9 @@ namespace WebCore.Cache
         /// <param name="wait">Wait for all pending operations on session to complete</param>
         /// <param name="spinWaitForCommit">Spin-wait until ongoing commit/checkpoint, if any, completes</param>
         /// <returns>True if update and pending operation have completed, false otherwise</returns>
-        public bool Set(TKey key, TValue value, bool wait = false, bool spinWaitForCommit = false)
+        public bool SetFor(TKey key, TValue value, bool wait = false, bool spinWaitForCommit = false)
         {
-            using (var s = fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 var status = s.Upsert(ref key, ref value);
                 return status == Status.OK && s.CompletePending(wait, spinWaitForCommit);
@@ -110,11 +232,11 @@ namespace WebCore.Cache
         /// <summary>
         /// Set value
         /// </summary>
-        public bool Set(TKey key, TValue value, string sessionId, bool resume = false, bool wait = false, bool spinWaitForCommit = false)
+        public bool SetFor(TKey key, TValue value, string sessionId, bool resume = false, bool wait = false, bool spinWaitForCommit = false)
         {
-            using (var s = resume == true && exists == true
-                ? fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
-                : fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+            using (var s = resume == true
+                ? _fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 var status = s.Upsert(ref key, ref value);
                 return status == Status.OK && s.CompletePending(wait, spinWaitForCommit);
@@ -126,9 +248,9 @@ namespace WebCore.Cache
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public TValue Get(TKey key)
+        public TValue GetFor(TKey key)
         {
-            using (var s = fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 var valueOut = new TValue();
                 var status = s.Read(ref key, ref valueOut);
@@ -138,11 +260,11 @@ namespace WebCore.Cache
         /// <summary>
         /// Get value
         /// </summary>
-        public TValue Get(TKey key, string sessionId, bool resume = false)
+        public TValue GetFor(TKey key, string sessionId, bool resume = false)
         {
-            using (var s = resume == true && exists == true
-                ? fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
-                : fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+            using (var s = resume == true
+                ? _fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 var valueOut = new TValue();
                 var status = s.Read(ref key, ref valueOut);
@@ -155,9 +277,9 @@ namespace WebCore.Cache
         /// </summary>
         /// <param name="key"></param>
         /// <returns>OK = 0, NOTFOUND = 1, PENDING = 2, ERROR = 3</returns>
-        public int Delete(TKey key)
+        public int DeleteFor(TKey key)
         {
-            using (var s = fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 return (int)s.Delete(ref key);
             }
@@ -165,11 +287,11 @@ namespace WebCore.Cache
         /// <summary>
         /// Delete value
         /// </summary>
-        public int Delete(TKey key, string sessionId, bool resume = false)
+        public int DeleteFor(TKey key, string sessionId, bool resume = false)
         {
-            using (var s = resume == true && exists == true
-                ? fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
-                : fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+            using (var s = resume == true
+                ? _fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 return (int)s.Delete(ref key);
             }
@@ -183,7 +305,7 @@ namespace WebCore.Cache
         /// <returns>True if all pending operations have completed, false otherwise</returns>
         public bool CompletePending(bool wait = false, bool spinWaitForCommit = false)
         {
-            using (var s = fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 return s.CompletePending(wait, spinWaitForCommit);
             }
@@ -197,15 +319,15 @@ namespace WebCore.Cache
         public async Task<Guid> SaveSnapshot(bool dispose = true)
         {
             Guid token = Guid.Empty;
-            if (string.IsNullOrEmpty(path)) return token;
-            while (!fht.TakeFullCheckpoint(out token)) CompletePending(true, true);
-            await fht.CompleteCheckpointAsync();
-            var filename = Path.Combine(path, $"{size}.checkpoint");
+            if (string.IsNullOrEmpty(_path)) return token;
+            while (!_fht.TakeFullCheckpoint(out token)) CompletePending(true, true);
+            await _fht.CompleteCheckpointAsync();
+            var filename = Path.Combine(_path, $"{size}.checkpoint");
             File.WriteAllText(filename, token.ToString(), System.Text.Encoding.UTF8);
             if (!dispose) return token;
-            fht.Dispose();
-            log.Dispose();
-            obj.Dispose();
+            _fht.Dispose();
+            _log.Dispose();
+            _obj.Dispose();
             return token;
         }
 
