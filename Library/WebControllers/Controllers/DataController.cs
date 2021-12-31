@@ -360,10 +360,10 @@ namespace WebControllers.Controllers
         /// </summary>
         [HttpPost("{dispose=0}")]
         [Produces(Produces.JSON)]
-        [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> TextSnapshot([FromQuery] string dispose)
         {
-            var result = await hashtable.SaveSnapshot("0" != dispose && "false" != dispose);
+            var result = await hashtable.SaveSnapshotAsync();
             return Ok(result);
         }
 
