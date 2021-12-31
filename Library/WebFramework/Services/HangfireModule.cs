@@ -2,6 +2,7 @@ using Hangfire;
 using Hangfire.Annotations;
 using Hangfire.Dashboard;
 using Hangfire.LiteDB;
+using Hangfire.Logging;
 using Hangfire.MemoryStorage;
 using Hangfire.Pro.Redis;
 using Microsoft.AspNetCore.Builder;
@@ -55,7 +56,7 @@ namespace WebFramework.Services
                     PrepareSchemaIfNecessary = true,                     // 如果设置为true 则创建数据库表 默认true
                     DashboardJobListLimit = 50000,                       // 仪表板作业列表限制 默认50000
                     //InvisibilityTimeout = TimeSpan.FromMinutes(5),     // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
-                }));
+                }).UseLogProvider(new NoLoggingProvider()));
             // LiteDb Storage
             else if (config.GetSection("Hangfire:LiteDB").Exists())
                 services.AddHangfire(x => x.UseLiteDbStorage(config.GetSection("Hangfire:LiteDB").Value, new LiteDbStorageOptions
@@ -67,7 +68,7 @@ namespace WebFramework.Services
                     CountersAggregateInterval = TimeSpan.FromMinutes(5), // 聚合计数器的间隔 默认5分钟
                     DistributedLockLifetime = TimeSpan.FromSeconds(30),  // 分布式锁的生存期 默认30秒
                     InvisibilityTimeout = TimeSpan.FromMinutes(30),      // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认30分钟
-                }));
+                }).UseLogProvider(new NoLoggingProvider()));
             // Redis Storage  https://stackexchange.github.io/StackExchange.Redis/Configuration.html
             else if (config.GetSection("Hangfire:Redis").Exists())
                 services.AddHangfire(x => x.UseRedisStorage(config.GetSection("Hangfire:Redis").Value, new RedisStorageOptions
@@ -76,7 +77,7 @@ namespace WebFramework.Services
                     MaxDeletedListLength = 1000,
                     MaxSucceededListLength = 1000,
                     InvisibilityTimeout = TimeSpan.FromMinutes(5),       // 超时后由另一个工作进程接手该后台作业任务（重新加入）默认5分钟
-                }));
+                }).UseLogProvider(new NoLoggingProvider()));
             // Hangfire.AspNetCore + HangFire.Redis.StackExchange  https://github.com/marcoCasamento/Hangfire.Redis.StackExchange
             //services.AddHangfire(x => x.UseRedisStorage(StackExchange.Redis.ConnectionMultiplexer.Connect(config.GetSection("Hangfire:Redis").Value), new RedisStorageOptions
             //{
@@ -90,7 +91,7 @@ namespace WebFramework.Services
                 {
                     JobExpirationCheckInterval = TimeSpan.FromHours(1),   // 作业到期检查间隔（管理过期记录）默认1小时
                     CountersAggregateInterval = TimeSpan.FromMinutes(5),  // 聚合计数器的间隔 默认5分钟
-                }));
+                }).UseLogProvider(new NoLoggingProvider()));
                 services.AddHangfireServer(options =>
                 {
                     options.Queues = new[] { "default" };
@@ -252,4 +253,9 @@ namespace WebFramework.Services
             return !Scheme.Equals(authValues.Scheme, StringComparison.InvariantCultureIgnoreCase);
         }
     }
+
+    /// <summary></summary>
+    public class NoLoggingProvider : ILogProvider { public ILog GetLogger(string name) { return new NoLoggingLogger(); } }
+    /// <summary></summary>
+    public class NoLoggingLogger : ILog { public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null) { return false; } }
 }

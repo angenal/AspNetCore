@@ -2141,6 +2141,12 @@
         <member name="M:WebFramework.Services.HangfireBasicAuthenticationFilter.Not_Basic_Authentication(System.Net.Http.Headers.AuthenticationHeaderValue)">
             <summary></summary>
         </member>
+        <member name="T:WebFramework.Services.NoLoggingProvider">
+            <summary></summary>
+        </member>
+        <member name="T:WebFramework.Services.NoLoggingLogger">
+            <summary></summary>
+        </member>
         <member name="T:WebFramework.Services.IdentityModule">
             <summary>
             Identity Module: Identity system for the specified User and Role types.
