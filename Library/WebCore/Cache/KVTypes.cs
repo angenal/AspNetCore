@@ -42,18 +42,23 @@ namespace WebCore.Cache
     {
         public string Key { get; set; }
 
-        public long GetHashCode64(ref StringKey key)
+        public StringKey()
         {
-            byte[] k = Encoding.UTF8.GetBytes(key.Key);
-            return GetHashCode64(ref k);
         }
 
-        unsafe long GetHashCode64(ref byte[] k)
+        public StringKey(string key)
         {
-            fixed (byte* b = k)
-            {
-                return Utility.HashBytes(b, k.Length);
-            }
+            Key = key;
+        }
+
+        public StringKey(byte[] key)
+        {
+            Key = Encoding.UTF8.GetString(key);
+        }
+
+        public long GetHashCode64(ref StringKey key)
+        {
+            return (long)Hashing.HashString(key.Key);
         }
 
         public bool Equals(ref StringKey key1, ref StringKey key2)
