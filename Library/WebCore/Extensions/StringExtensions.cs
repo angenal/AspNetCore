@@ -272,6 +272,55 @@ namespace WebCore
         }
 
         /// <summary>
+        /// 小数格式化
+        /// </summary>
+        /// <param name="i">原始数据</param>
+        /// <param name="digit">显示位数</param>
+        /// <param name="round">默认不进行四舍五入</param>
+        /// <returns></returns>
+        public static string ToString(this double i, int digit, bool round = false)
+        {
+            var x = round ? digit - 1 : digit; var v = i.ToString($"f{digit + 1}");
+            while (0 <= digit--) v = v.TrimEnd('0');
+            v = v.TrimEnd('.'); var s = v.Split('.');
+            if (s.Length == 2 && s[1].Length > x) v = string.Join(".", s[0], s[1].Substring(0, x));
+            return v;
+        }
+        /// <summary>
+        /// 小数格式化
+        /// </summary>
+        /// <param name="i">原始数据</param>
+        /// <param name="digit">显示位数</param>
+        /// <param name="round">默认不进行四舍五入</param>
+        /// <returns></returns>
+        public static string ToString(this double? i, int digit, bool round = false)
+        {
+            return (i ?? 0).ToString(digit, round);
+        }
+        /// <summary>
+        /// 小数格式化
+        /// </summary>
+        /// <param name="i">原始数据</param>
+        /// <param name="digit">显示位数</param>
+        /// <param name="round">默认不进行四舍五入</param>
+        /// <returns></returns>
+        public static double Format(this double? i, int digit, bool round = false)
+        {
+            return double.Parse(i?.ToString(digit, round) ?? "0");
+        }
+        /// <summary>
+        /// 小数格式化
+        /// </summary>
+        /// <param name="i">原始数据</param>
+        /// <param name="digit">显示位数</param>
+        /// <param name="round">默认不进行四舍五入</param>
+        /// <returns></returns>
+        public static double Format(this double i, int digit, bool round = false)
+        {
+            return double.Parse(i.ToString(digit, round));
+        }
+
+        /// <summary>
         /// 判断是否为空字符串
         /// </summary>
         /// <param name="value"></param>
