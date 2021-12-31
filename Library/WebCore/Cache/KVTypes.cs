@@ -56,6 +56,16 @@ namespace WebCore.Cache
             Key = Encoding.UTF8.GetString(key);
         }
 
+        public static implicit operator StringKey(string key)
+        {
+            return new StringKey(key);
+        }
+
+        public static implicit operator StringKey(byte[] key)
+        {
+            return new StringKey(key);
+        }
+
         public long GetHashCode64(ref StringKey key)
         {
             return (long)Hashing.HashString(key.Key);
@@ -63,7 +73,7 @@ namespace WebCore.Cache
 
         public bool Equals(ref StringKey key1, ref StringKey key2)
         {
-            return key1.Key.Equals(key2.Key);
+            return key1.Key.Equals(key2.Key, StringComparison.Ordinal);
         }
     }
 
