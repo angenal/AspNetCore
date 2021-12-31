@@ -59,6 +59,9 @@ namespace WebCore.Cache
             _session = NewSession();
         }
 
+        /// <summary>
+        /// Auto recover using a separate index and log checkpoint token
+        /// </summary>
         internal static void Recover<Key, Value>(IFasterKV<Key, Value> fht, DirectoryInfo checkpointDir)
         {
             if (!checkpointDir.Exists) return;
@@ -97,51 +100,100 @@ namespace WebCore.Cache
             }
         }
 
+        /// <summary></summary>
         public FasterKV<Md5Key, DataValue> GetCache()
         {
             return _fht;
         }
 
+        /// <summary></summary>
         public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> GetSession()
         {
             return _session;
         }
 
+        /// <summary></summary>
         public string GetDirectory()
         {
             return _path;
         }
 
+        /// <summary>
+        /// Start a new client session with FASTER. For performance reasons, 
+        /// please use FasterKV<Key, Value>.For(functions).NewSession<Functions>(...) instead of this overload.
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="threadAffinitized"></param>
+        /// <returns></returns>
         public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> NewSession(string sessionId = null, bool threadAffinitized = false)
         {
             return _fht.NewSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, threadAffinitized);
         }
 
+        /// <summary>
+        /// Resume (continue) prior client session with FASTER; used during recovery from
+        /// failure. For performance reasons this overload is not recommended if functions
+        /// is value type (struct).
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="commitPoint"></param>
+        /// <param name="threadAffinitized"></param>
+        /// <returns></returns>
         public ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> ResumeSession(string sessionId, out CommitPoint commitPoint, bool threadAffinitized = false)
         {
             return _fht.ResumeSession(new SimpleFunctions<Md5Key, DataValue>(), sessionId, out commitPoint, threadAffinitized);
         }
 
-        public byte[] Get(string key, bool wait = false)
+        /// <summary>
+        /// Get operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public byte[] Get(string key, bool wait = false, bool spinWaitForCommit = false)
         {
-            return Get(key, wait, _session);
+            return Get(key, wait, spinWaitForCommit, _session);
         }
 
-        public byte[] Get(string key, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        /// <summary>
+        /// Get operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public byte[] Get(string key, bool wait, bool spinWaitForCommit, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
             var (status, output) = session.Read(new Md5Key(key));
 
-            return status == Status.OK ? output.Value : status == Status.PENDING && wait == true && session.CompletePending(true) ? Get(key, wait, session) : default;
+            return status == Status.OK ? output.Value : status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit) ? Get(key, false, false, session) : default;
         }
 
-        public async ValueTask<byte[]> GetAsync(string key, bool wait = false)
+        /// <summary>
+        /// Get operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public async ValueTask<byte[]> GetAsync(string key, bool wait = false, bool spinWaitForCommit = false)
         {
-            return await GetAsync(key, wait, _session);
+            return await GetAsync(key, wait, spinWaitForCommit, _session);
         }
 
-        public async ValueTask<byte[]> GetAsync(string key, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        /// <summary>
+        /// Get operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public async ValueTask<byte[]> GetAsync(string key, bool wait, bool spinWaitForCommit, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -149,15 +201,32 @@ namespace WebCore.Cache
 
             var (status, output) = result.Complete();
 
-            return status == Status.OK ? output.Value : status == Status.PENDING && wait == true && session.CompletePending(true) ? await GetAsync(key, wait, session) : default;
+            return status == Status.OK ? output.Value : status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit) ? await GetAsync(key, false, false, session) : default;
         }
 
-        public bool Set(string key, byte[] value, bool wait = false)
+        /// <summary>
+        /// Set operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public bool Set(string key, byte[] value, bool wait = false, bool spinWaitForCommit = false)
         {
-            return Set(key, value, wait, _session);
+            return Set(key, value, wait, spinWaitForCommit, _session);
         }
 
-        public bool Set(string key, byte[] value, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        /// <summary>
+        /// Set operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public bool Set(string key, byte[] value, bool wait, bool spinWaitForCommit, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -166,15 +235,32 @@ namespace WebCore.Cache
                 Value = value
             });
 
-            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit));
         }
 
-        public async Task<bool> SetAsync(string key, byte[] value, bool wait = false)
+        /// <summary>
+        /// Set operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public async Task<bool> SetAsync(string key, byte[] value, bool wait = false, bool spinWaitForCommit = false)
         {
-            return await SetAsync(key, value, wait, _session);
+            return await SetAsync(key, value, wait, spinWaitForCommit, _session);
         }
 
-        public async Task<bool> SetAsync(string key, byte[] value, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        /// <summary>
+        /// Set operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public async Task<bool> SetAsync(string key, byte[] value, bool wait, bool spinWaitForCommit, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -185,29 +271,59 @@ namespace WebCore.Cache
 
             (Status status, _) = result.Complete();
 
-            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit));
         }
 
-        public bool Delete(string key, bool wait = false)
+        /// <summary>
+        /// Delete operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public bool Delete(string key, bool wait = false, bool spinWaitForCommit = false)
         {
-            return Delete(key, wait, _session);
+            return Delete(key, wait, spinWaitForCommit, _session);
         }
 
-        public bool Delete(string key, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        /// <summary>
+        /// Delete operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public bool Delete(string key, bool wait, bool spinWaitForCommit, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
             var status = session.Delete(new Md5Key(key));
 
-            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit));
         }
 
-        public async Task<bool> DeleteAsync(string key, bool wait = false)
+        /// <summary>
+        /// Delete operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteAsync(string key, bool wait = false, bool spinWaitForCommit = false)
         {
-            return await DeleteAsync(key, wait, _session);
+            return await DeleteAsync(key, wait, spinWaitForCommit, _session);
         }
 
-        public async Task<bool> DeleteAsync(string key, bool wait, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
+        /// <summary>
+        /// Delete operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteAsync(string key, bool wait, bool spinWaitForCommit, ClientSession<Md5Key, DataValue, DataValue, DataValue, Empty, IFunctions<Md5Key, DataValue, DataValue, DataValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -215,9 +331,14 @@ namespace WebCore.Cache
 
             var status = result.Complete();
 
-            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit));
         }
 
+        /// <summary>
+        /// Save snapshot and wait for ongoing full checkpoint to complete
+        /// </summary>
+        /// <param name="saveHybridLog">Save snapshot for hybrid log-only checkpoint</param>
+        /// <returns></returns>
         public bool SaveSnapshot(bool saveHybridLog = true)
         {
             bool success = saveHybridLog
@@ -229,6 +350,11 @@ namespace WebCore.Cache
             return success;
         }
 
+        /// <summary>
+        /// Save snapshot and wait for ongoing full checkpoint to complete
+        /// </summary>
+        /// <param name="saveHybridLog">Save snapshot for hybrid log-only checkpoint</param>
+        /// <returns></returns>
         public async ValueTask<bool> SaveSnapshotAsync(bool saveHybridLog = true)
         {
             (bool success, _) = saveHybridLog
@@ -240,6 +366,7 @@ namespace WebCore.Cache
             return success;
         }
 
+        /// <summary></summary>
         public void Dispose()
         {
             _fht.Dispose();

@@ -12,14 +12,14 @@ namespace WebCore.Cache
     /// </summary>
     /// <typeparam name="TKey">Recommend string</typeparam>
     /// <typeparam name="TValue">Custom class</typeparam>
-    public class KV<TKey, TValue> where TValue : new()
+    public class KV<TKey, TValue> : IDisposable where TValue : new()
     {
-        private readonly long size;
         private readonly string _path;
         private readonly IDevice _log;
         private readonly IDevice _obj;
         private readonly FasterKV<TKey, TValue> _fht;
         private readonly ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> _session;
+        /// <summary>new session functions</summary>
         public SimpleFunctions<TKey, TValue> fn = new SimpleFunctions<TKey, TValue>();
 
         /// <summary>
@@ -29,7 +29,6 @@ namespace WebCore.Cache
         /// <param name="serializerSettings">Sets a new SerializerSettings { keySerializer = () => new KeySerializer(), valueSerializer = () => new ValueSerializer() }</param>
         public KV(long size = 1L << 20, SerializerSettings<TKey, TValue> serializerSettings = null)
         {
-            this.size = size;
             _log = new NullDevice();
             _obj = new NullDevice();
             var logSettings = new LogSettings { LogDevice = _log, ObjectLogDevice = _obj };
@@ -60,8 +59,6 @@ namespace WebCore.Cache
             _log = Devices.CreateLogDevice(Path.Combine(path, "cache.log"));
             _obj = Devices.CreateLogDevice(Path.Combine(path, "cache.obj.log"));
 
-            this.size = size;
-
             var checkpointDir = new DirectoryInfo(Path.Combine(path, "checkpoints"));
             var checkpointSettings = new CheckpointSettings
             {
@@ -83,6 +80,7 @@ namespace WebCore.Cache
             if (seconds > 2) IssuePeriodicCheckpoints(seconds * 1000);
         }
 
+        /// <summary></summary>
         private void IssuePeriodicCheckpoints(int milliseconds)
         {
             var t = new Thread(() =>
@@ -97,51 +95,102 @@ namespace WebCore.Cache
             t.Start();
         }
 
+        /// <summary></summary>
         public FasterKV<TKey, TValue> GetCache()
         {
             return _fht;
         }
 
+        /// <summary></summary>
         public ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> GetSession()
         {
             return _session;
         }
 
+        /// <summary></summary>
         public string GetDirectory()
         {
             return _path;
         }
 
+        /// <summary>
+        /// Start a new client session with FASTER. For performance reasons, 
+        /// please use FasterKV<Key, Value>.For(functions).NewSession<Functions>(...) instead of this overload.
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="threadAffinitized"></param>
+        /// <param name="fn"></param>
+        /// <returns></returns>
         public ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> NewSession(string sessionId = null, bool threadAffinitized = false, SimpleFunctions<TKey, TValue> fn = null)
         {
             return _fht.NewSession(fn ?? this.fn, sessionId, threadAffinitized);
         }
 
+        /// <summary>
+        /// Resume (continue) prior client session with FASTER; used during recovery from
+        /// failure. For performance reasons this overload is not recommended if functions
+        /// is value type (struct).
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="commitPoint"></param>
+        /// <param name="threadAffinitized"></param>
+        /// <param name="fn"></param>
+        /// <returns></returns>
         public ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> ResumeSession(string sessionId, out CommitPoint commitPoint, bool threadAffinitized = false, SimpleFunctions<TKey, TValue> fn = null)
         {
             return _fht.ResumeSession(fn ?? this.fn, sessionId, out commitPoint, threadAffinitized);
         }
 
-        public TValue Get(TKey key, bool wait = false)
+        /// <summary>
+        /// Get operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public TValue Get(TKey key, bool wait = false, bool spinWaitForCommit = false)
         {
-            return Get(key, wait, _session);
+            return Get(key, wait, spinWaitForCommit, _session);
         }
 
-        public TValue Get(TKey key, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        /// <summary>
+        /// Get operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public TValue Get(TKey key, bool wait, bool spinWaitForCommit, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
             var (status, output) = session.Read(key);
 
-            return status == Status.OK ? output : status == Status.PENDING && wait == true && session.CompletePending(true) ? Get(key, wait, session) : default;
+            return status == Status.OK ? output : status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit) ? Get(key, false, false, session) : default;
         }
 
-        public async ValueTask<TValue> GetAsync(TKey key, bool wait = false)
+        /// <summary>
+        /// Get operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public async ValueTask<TValue> GetAsync(TKey key, bool wait = false, bool spinWaitForCommit = false)
         {
-            return await GetAsync(key, wait, _session);
+            return await GetAsync(key, wait, spinWaitForCommit, _session);
         }
 
-        public async ValueTask<TValue> GetAsync(TKey key, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        /// <summary>
+        /// Get operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public async ValueTask<TValue> GetAsync(TKey key, bool wait, bool spinWaitForCommit, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -149,29 +198,63 @@ namespace WebCore.Cache
 
             var (status, output) = result.Complete();
 
-            return status == Status.OK ? output : status == Status.PENDING && wait == true && session.CompletePending(true) ? await GetAsync(key, wait, session) : default;
+            return status == Status.OK ? output : status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit) ? await GetAsync(key, false, false, session) : default;
         }
 
-        public bool Set(TKey key, TValue value, bool wait = false)
+        /// <summary>
+        /// Set operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public bool Set(TKey key, TValue value, bool wait = false, bool spinWaitForCommit = false)
         {
-            return Set(key, value, wait, _session);
+            return Set(key, value, wait, spinWaitForCommit, _session);
         }
 
-        public bool Set(TKey key, TValue value, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        /// <summary>
+        /// Set operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public bool Set(TKey key, TValue value, bool wait, bool spinWaitForCommit, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
             var status = session.Upsert(key, value);
 
-            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit));
         }
 
-        public async Task<bool> SetAsync(TKey key, TValue value, bool wait = false)
+        /// <summary>
+        /// Set operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public async Task<bool> SetAsync(TKey key, TValue value, bool wait = false, bool spinWaitForCommit = false)
         {
-            return await SetAsync(key, value, wait, _session);
+            return await SetAsync(key, value, wait, spinWaitForCommit, _session);
         }
 
-        public async Task<bool> SetAsync(TKey key, TValue value, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        /// <summary>
+        /// Set operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public async Task<bool> SetAsync(TKey key, TValue value, bool wait, bool spinWaitForCommit, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -179,29 +262,59 @@ namespace WebCore.Cache
 
             (Status status, _) = result.Complete();
 
-            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit));
         }
 
-        public bool Delete(TKey key, bool wait = false)
+        /// <summary>
+        /// Delete operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public bool Delete(TKey key, bool wait = false, bool spinWaitForCommit = false)
         {
-            return Delete(key, wait, _session);
+            return Delete(key, wait, spinWaitForCommit, _session);
         }
 
-        public bool Delete(TKey key, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        /// <summary>
+        /// Delete operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public bool Delete(TKey key, bool wait, bool spinWaitForCommit, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
             var status = session.Delete(key);
 
-            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit));
         }
 
-        public async Task<bool> DeleteAsync(TKey key, bool wait = false)
+        /// <summary>
+        /// Delete operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteAsync(TKey key, bool wait = false, bool spinWaitForCommit = false)
         {
-            return await DeleteAsync(key, wait, _session);
+            return await DeleteAsync(key, wait, spinWaitForCommit, _session);
         }
 
-        public async Task<bool> DeleteAsync(TKey key, bool wait, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
+        /// <summary>
+        /// Delete operation
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="wait">Wait for all pending operations on session to complete</param>
+        /// <param name="spinWaitForCommit"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteAsync(TKey key, bool wait, bool spinWaitForCommit, ClientSession<TKey, TValue, TValue, TValue, Empty, IFunctions<TKey, TValue, TValue, TValue, Empty>> session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
 
@@ -209,48 +322,48 @@ namespace WebCore.Cache
 
             var status = result.Complete();
 
-            return status == Status.OK || (status == Status.PENDING && wait == true && session.CompletePending(true));
+            return status == Status.OK || (status == Status.PENDING && session.CompletePending(wait, spinWaitForCommit));
         }
 
 
         /// <summary>
-        /// Set value
+        /// Set value with new session functions
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="wait">Wait for all pending operations on session to complete</param>
         /// <param name="spinWaitForCommit">Spin-wait until ongoing commit/checkpoint, if any, completes</param>
         /// <returns>True if update and pending operation have completed, false otherwise</returns>
-        public bool SetFor(TKey key, TValue value, bool wait = false, bool spinWaitForCommit = false)
+        public bool Set(TKey key, TValue value, SimpleFunctions<TKey, TValue> fn, bool wait = false, bool spinWaitForCommit = false)
         {
-            using (var s = _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = _fht.For(fn ?? this.fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 var status = s.Upsert(ref key, ref value);
-                return status == Status.OK && s.CompletePending(wait, spinWaitForCommit);
+                return status == Status.OK || (status == Status.PENDING && s.CompletePending(wait, spinWaitForCommit));
             }
         }
         /// <summary>
-        /// Set value
+        /// Set value with new session functions
         /// </summary>
-        public bool SetFor(TKey key, TValue value, string sessionId, bool resume = false, bool wait = false, bool spinWaitForCommit = false)
+        public bool Set(TKey key, TValue value, SimpleFunctions<TKey, TValue> fn, string sessionId, bool resume = false, bool wait = false, bool spinWaitForCommit = false)
         {
             using (var s = resume == true
-                ? _fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
-                : _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+                ? _fht.For(fn ?? this.fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : _fht.For(fn ?? this.fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 var status = s.Upsert(ref key, ref value);
-                return status == Status.OK && s.CompletePending(wait, spinWaitForCommit);
+                return status == Status.OK || (status == Status.PENDING && s.CompletePending(wait, spinWaitForCommit));
             }
         }
 
         /// <summary>
-        /// Get value
+        /// Get value with new session functions
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public TValue GetFor(TKey key)
+        public TValue Get(TKey key, SimpleFunctions<TKey, TValue> fn)
         {
-            using (var s = _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = _fht.For(fn ?? this.fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 var valueOut = new TValue();
                 var status = s.Read(ref key, ref valueOut);
@@ -258,13 +371,13 @@ namespace WebCore.Cache
             }
         }
         /// <summary>
-        /// Get value
+        /// Get value with new session functions
         /// </summary>
-        public TValue GetFor(TKey key, string sessionId, bool resume = false)
+        public TValue Get(TKey key, SimpleFunctions<TKey, TValue> fn, string sessionId, bool resume = false)
         {
             using (var s = resume == true
-                ? _fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
-                : _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+                ? _fht.For(fn ?? this.fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : _fht.For(fn ?? this.fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
                 var valueOut = new TValue();
                 var status = s.Read(ref key, ref valueOut);
@@ -273,39 +386,43 @@ namespace WebCore.Cache
         }
 
         /// <summary>
-        /// Delete value
+        /// Delete value with new session functions
         /// </summary>
         /// <param name="key"></param>
         /// <returns>OK = 0, NOTFOUND = 1, PENDING = 2, ERROR = 3</returns>
-        public int DeleteFor(TKey key)
+        public bool Delete(TKey key, SimpleFunctions<TKey, TValue> fn)
         {
-            using (var s = _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = _fht.For(fn ?? this.fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
-                return (int)s.Delete(ref key);
+                var status = s.Delete(ref key);
+
+                return status == Status.OK || (status == Status.PENDING && s.CompletePending(true));
             }
         }
         /// <summary>
-        /// Delete value
+        /// Delete value with new session functions
         /// </summary>
-        public int DeleteFor(TKey key, string sessionId, bool resume = false)
+        public bool Delete(TKey key, SimpleFunctions<TKey, TValue> fn, string sessionId, bool resume = false)
         {
             using (var s = resume == true
-                ? _fht.For(fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
-                : _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
+                ? _fht.For(fn ?? this.fn).ResumeSession<SimpleFunctions<TKey, TValue>>(sessionId, out _)
+                : _fht.For(fn ?? this.fn).NewSession<SimpleFunctions<TKey, TValue>>(sessionId))
             {
-                return (int)s.Delete(ref key);
+                var status = s.Delete(ref key);
+
+                return status == Status.OK || (status == Status.PENDING && s.CompletePending(true));
             }
         }
 
         /// <summary>
-        /// Complete outstanding pending operations
+        /// Complete outstanding pending operations with new session functions
         /// </summary>
         /// <param name="wait">Wait for all pending operations on session to complete</param>
         /// <param name="spinWaitForCommit">Spin-wait until ongoing commit/checkpoint, if any, completes</param>
         /// <returns>True if all pending operations have completed, false otherwise</returns>
-        public bool CompletePending(bool wait = false, bool spinWaitForCommit = false)
+        public bool CompletePending(SimpleFunctions<TKey, TValue> fn = null, bool wait = false, bool spinWaitForCommit = false)
         {
-            using (var s = _fht.For(fn).NewSession<SimpleFunctions<TKey, TValue>>())
+            using (var s = _fht.For(fn ?? this.fn).NewSession<SimpleFunctions<TKey, TValue>>())
             {
                 return s.CompletePending(wait, spinWaitForCommit);
             }
@@ -314,30 +431,41 @@ namespace WebCore.Cache
         /// <summary>
         /// Save snapshot and wait for ongoing full checkpoint to complete
         /// </summary>
-        /// <param name="dispose"></param>
-        /// <returns>Checkpoint token</returns>
-        public async Task<Guid> SaveSnapshot(bool dispose = true)
+        /// <param name="saveHybridLog">Save snapshot for hybrid log-only checkpoint</param>
+        /// <returns></returns>
+        public bool SaveSnapshot(bool saveHybridLog = true)
         {
-            Guid token = Guid.Empty;
-            if (string.IsNullOrEmpty(_path)) return token;
-            while (!_fht.TakeFullCheckpoint(out token)) CompletePending(true, true);
-            await _fht.CompleteCheckpointAsync();
-            var filename = Path.Combine(_path, $"{size}.checkpoint");
-            File.WriteAllText(filename, token.ToString(), System.Text.Encoding.UTF8);
-            if (!dispose) return token;
-            _fht.Dispose();
-            _log.Dispose();
-            _obj.Dispose();
-            return token;
+            bool success = saveHybridLog
+                ? _fht.TakeHybridLogCheckpoint(out _)
+                : _fht.TakeFullCheckpoint(out _);
+
+            _fht.CompleteCheckpointAsync().GetAwaiter().GetResult();
+
+            return success;
         }
 
         /// <summary>
-        /// Hashtable dispose and wait for ongoing checkpoint to complete
+        /// Save snapshot and wait for ongoing full checkpoint to complete
         /// </summary>
-        /// <returns>Checkpoint token</returns>
-        public async Task<Guid> Dispose()
+        /// <param name="saveHybridLog">Save snapshot for hybrid log-only checkpoint</param>
+        /// <returns></returns>
+        public async ValueTask<bool> SaveSnapshotAsync(bool saveHybridLog = true)
         {
-            return await SaveSnapshot(true);
+            (bool success, _) = saveHybridLog
+                ? await _fht.TakeHybridLogCheckpointAsync(CheckpointType.Snapshot)
+                : await _fht.TakeFullCheckpointAsync(CheckpointType.Snapshot);
+
+            await _fht.CompleteCheckpointAsync();
+
+            return success;
+        }
+
+        /// <summary></summary>
+        public void Dispose()
+        {
+            _fht.Dispose();
+            _log.Dispose();
+            _obj.Dispose();
         }
     }
 }
