@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace WebCore.Json
@@ -99,7 +99,7 @@ namespace WebCore.Json
                     return currentType & TypesMask;
                 default:
                     ThrowInvalidType(currentType);
-                    return default(BlittableJsonToken);// will never happen
+                    return default; // will never happen
             }
         }
 

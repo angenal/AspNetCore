@@ -61,7 +61,7 @@ namespace WebCore
             {
                 var waitAsync = _tcs.Task;
                 _parent._token.ThrowIfCancellationRequested();
-                var result = await Task.WhenAny(waitAsync, TimeoutManager.WaitFor(timeout, _parent._token)).ConfigureAwait(false);
+                var result = await Task.WhenAny(waitAsync, Timeout.Wait(timeout, _parent._token)).ConfigureAwait(false);
                 if (_parent._token != CancellationToken.None)
                     return result == waitAsync && !_parent._token.IsCancellationRequested;
 

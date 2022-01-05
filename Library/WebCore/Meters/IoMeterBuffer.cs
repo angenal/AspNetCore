@@ -87,7 +87,7 @@ namespace WebCore.Meters
                 Size = size;
                 FileSize = filesize;
                 Start = DateTime.UtcNow;
-                End = default(DateTime);
+                End = default;
                 OnFileChange = onFileChange;
                 CompressedSize = 0;
                 Acceleration = 1;

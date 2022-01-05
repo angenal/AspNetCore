@@ -26,9 +26,7 @@ namespace WebCore.Json
 
         public unsafe BlittableJsonReaderObject CreateReader()
         {
-            byte* ptr;
-            int size;
-            _unmanagedWriteBuffer.EnsureSingleChunk(out ptr, out size);
+            _unmanagedWriteBuffer.EnsureSingleChunk(out byte* ptr, out int size);
             _lastSize = size;
             var reader = new BlittableJsonReaderObject(
                 ptr,
@@ -39,7 +37,7 @@ namespace WebCore.Json
             //we don't care to lose instance of write buffer,
             //since when context is reset, the allocated memory is "reclaimed"
 
-            _unmanagedWriteBuffer = default(TWriter);
+            _unmanagedWriteBuffer = default;
             return reader;
         }
 

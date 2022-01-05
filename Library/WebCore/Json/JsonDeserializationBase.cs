@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -563,7 +563,7 @@ namespace WebCore.Json
         {
             if (json.TryGet(name, out BlittableJsonReaderObject obj) == false || obj == null)
             {
-                return default(T);
+                return default;
             }
 
             return converter(obj);
@@ -601,7 +601,7 @@ namespace WebCore.Json
         {
             if (TryGetNullableTimeSpan(json, propertyName, out var nullableTimeSpan) == false)
             {
-                timeSpan = default(TimeSpan);
+                timeSpan = default;
                 return false;
             }
 

@@ -81,7 +81,7 @@ namespace WebCore.Logging
 
         public bool Dequeue(out T entry)
         {
-            entry = default(T);
+            entry = default;
             var readIndex = PositionToArrayIndex(_readPos);
             var writeIndex = PositionToArrayIndex(_writePos);
 
@@ -89,7 +89,7 @@ namespace WebCore.Logging
                 return false; // queue empty
 
             entry = _data[readIndex];
-            _data[readIndex] = default(T);
+            _data[readIndex] = default;
             _readPos++;
 
             return true;

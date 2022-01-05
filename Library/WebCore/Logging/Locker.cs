@@ -41,7 +41,7 @@ namespace WebCore.Logging
             if (_lockTaken == false)
             {
                 var sp = Stopwatch.StartNew();
-                Monitor.TryEnter(_locker, Timeout.Infinite, ref _lockTaken);
+                Monitor.TryEnter(_locker, System.Threading.Timeout.Infinite, ref _lockTaken);
                 Debug.Assert(_lockTaken);
                 if (_logger.IsInfoEnabled)
                 {

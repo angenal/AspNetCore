@@ -1,8 +1,8 @@
-using WebCore.Binary;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using WebCore.Binary;
 
 namespace WebCore
 {
@@ -271,7 +271,7 @@ namespace WebCore
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static uint CharToUInt32<TCharacterModifier>(string buffer, uint position) where TCharacterModifier : struct, ICharacterModifier
             {
-                TCharacterModifier modifier = default(TCharacterModifier);
+                TCharacterModifier modifier = default;
                 return (uint)modifier.Modify(buffer[(int)position + 1]) << 16 | modifier.Modify(buffer[(int)position]);
             }
 
@@ -1045,7 +1045,7 @@ namespace WebCore
                 uint final = 0x80;
                 if ((len & 1) != 0) // Case we have yet another char available to process.
                 {
-                    TCharacterModifier modifier = default(TCharacterModifier);
+                    TCharacterModifier modifier = default;
                     final = (final << 16) | modifier.Modify(buffer[position]);
                 }
 
@@ -1058,7 +1058,7 @@ namespace WebCore
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static uint CharToUInt32<TCharacterModifier>(string buffer, int position) where TCharacterModifier : struct, ICharacterModifier
             {
-                TCharacterModifier modifier = default(TCharacterModifier);
+                TCharacterModifier modifier = default;
                 return (uint)modifier.Modify(buffer[position + 1]) << 16 | modifier.Modify(buffer[position]);
             }
 

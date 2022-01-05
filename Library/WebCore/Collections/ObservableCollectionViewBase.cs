@@ -111,26 +111,6 @@ namespace WebCore.Collections
             }
         }
 
-        /// <summary>Adds a multiple elements to the underlying collection. </summary>
-        /// <param name="items">The items to add. </param>
-        [Obsolete("Use methods on Items property instead. 9/20/2014")]
-        public void AddRange(IEnumerable<TItem> items)
-        {
-            var old = TrackCollectionChanges;
-            TrackCollectionChanges = false;
-
-            var collection = Items as MtObservableCollection<TItem>;
-            if (collection != null)
-                collection.AddRange(items);
-            else
-            {
-                foreach (var i in items)
-                    Add(i);
-            }
-
-            TrackCollectionChanges = old;
-        }
-
         /// <summary>Releases all used resources and deregisters all events on the items and the underlying collection. </summary>
         public void Dispose()
         {
@@ -139,20 +119,6 @@ namespace WebCore.Collections
 
             _internalCollection = null;
             Items = null;
-        }
-
-        /// <summary>Releases all used resources and deregisters all events on the items and the underlying collection. </summary>
-        [Obsolete("Use Dispose instead. 5/17/2014")]
-        public void Close()
-        {
-            Dispose();
-        }
-
-        /// <summary>Refreshes the view. </summary>
-        [Obsolete("Use Refresh method instead. 10/19/2014")]
-        public void Update()
-        {
-            Refresh();
         }
 
         /// <summary>Refreshes the view. </summary>
@@ -255,8 +221,8 @@ namespace WebCore.Collections
 
         private void TrackAllItems()
         {
-            foreach (var i in Items.OfType<INotifyPropertyChanged>())
-                RegisterEvent(i);
+            foreach (var item in Items.OfType<INotifyPropertyChanged>())
+                RegisterEvent(item);
         }
 
         private void UntrackAllItems()

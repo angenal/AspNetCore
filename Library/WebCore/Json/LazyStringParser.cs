@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace WebCore.Json
@@ -17,7 +17,7 @@ namespace WebCore.Json
 
         public static bool TryParseTimeSpan(byte* buffer, int len, out TimeSpan ts)
         {
-            ts = default(TimeSpan);
+            ts = default;
 
             if (len < 8)
                 return false;
@@ -118,7 +118,7 @@ namespace WebCore.Json
         
         public static bool TryParseTimeSpan(char* buffer, int len, out TimeSpan ts)
         {
-            ts = default(TimeSpan);
+            ts = default;
 
             if (len < 8)
                 return false;
@@ -219,8 +219,8 @@ namespace WebCore.Json
 
         public static Result TryParseDateTime(char* buffer, int len, out DateTime dt, out DateTimeOffset dto)
         {
-            dt = default(DateTime);
-            dto = default(DateTimeOffset);
+            dt = default;
+            dto = default;
 
             if (len < 19)
                 goto Failed;
@@ -309,8 +309,8 @@ namespace WebCore.Json
 
         public static Result TryParseDateTime(byte* buffer, int len, out DateTime dt, out DateTimeOffset dto)
         {
-            dt = default(DateTime);
-            dto = default(DateTimeOffset);
+            dt = default;
+            dto = default;
 
             if (len < 19)
                 goto Failed;

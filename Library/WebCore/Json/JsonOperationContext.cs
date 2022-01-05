@@ -589,7 +589,7 @@ namespace WebCore.Json
             _jsonParserState.Reset();
             UnmanagedJsonParser parser = null;
             BlittableJsonDocumentBuilder builder = null;
-            var managedBuffer = default(ReturnBuffer);
+            ReturnBuffer managedBuffer = default;
             var generation = _generation;
 
             try
@@ -759,7 +759,7 @@ namespace WebCore.Json
         public async ValueTask<BlittableJsonReaderObject> ParseToMemoryAsync(WebSocket webSocket, string debugTag,
            BlittableJsonDocumentBuilder.UsageMode mode,
            ManagedPinnedBuffer bytes,
-           CancellationToken token = default(CancellationToken)
+           CancellationToken token = default
            )
         {
             if (Disposed)

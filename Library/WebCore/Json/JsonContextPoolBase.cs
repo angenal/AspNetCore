@@ -1,5 +1,4 @@
-﻿using System;
-using System.Buffers;
+using System;
 using System.Threading;
 using WebCore.LowMemory;
 using WebCore.Threading;
@@ -170,7 +169,7 @@ namespace WebCore.Json
                 return true;
             }
 
-            context = default(T);
+            context = default;
             disposable = null;
             return false;
         }

@@ -96,11 +96,11 @@ namespace WebCore.Data
                 }
                 catch (Exception ex)
                 {
-                    CompleteWaitingWithException(type, default(TIdentity), null, ex);
+                    CompleteWaitingWithException(type, default, null, ex);
                 }
                 finally
                 {
-                    CompleteWaiting(type, default(TIdentity), null);
+                    CompleteWaiting(type, default, null);
                     _loadingItems.Remove(tuple);
                 }
                 return null;
@@ -140,7 +140,7 @@ namespace WebCore.Data
 
             if (_fullLoadingTypes.Contains(type)) // already loading
             {
-                await WaitUntilCompleted(type, default(TIdentity), null);
+                await WaitUntilCompleted(type, default, null);
                 return List[type].Select(p => p.Value).ToList();
             }
 
@@ -160,11 +160,11 @@ namespace WebCore.Data
             }
             catch (Exception ex)
             {
-                CompleteWaitingWithException(type, default(TIdentity), null, ex);
+                CompleteWaitingWithException(type, default, null, ex);
             }
             finally
             {
-                CompleteWaiting(type, default(TIdentity), null);
+                CompleteWaiting(type, default, null);
                 _fullLoadingTypes.Remove(type);
             }
             return null;
@@ -210,7 +210,7 @@ namespace WebCore.Data
 #endif
 
             // check loaded
-            TIdentity foreignId = default(TIdentity);
+            TIdentity foreignId = default;
             if (!reload)
             {
                 var currentValue = property.GetValue(item, null);

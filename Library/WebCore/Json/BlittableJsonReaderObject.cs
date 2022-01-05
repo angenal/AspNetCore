@@ -42,7 +42,7 @@ namespace WebCore.Json
             _context.Write(stream, this);
         }
 
-        public BlittableJsonReaderObject(byte* mem, int size, JsonOperationContext context, UnmanagedWriteBuffer buffer = default(UnmanagedWriteBuffer))
+        public BlittableJsonReaderObject(byte* mem, int size, JsonOperationContext context, UnmanagedWriteBuffer buffer = default)
             : base(context)
         {
             if (size == 0)
@@ -232,7 +232,7 @@ namespace WebCore.Json
             }
             catch
             {
-                obj = default(T);
+                obj = default;
                 return false;
             }
         }
@@ -242,7 +242,7 @@ namespace WebCore.Json
             object result;
             if (TryGetMember(name, out result) == false)
             {
-                obj = default(T);
+                obj = default;
                 return false;
             }
 
@@ -264,29 +264,29 @@ namespace WebCore.Json
         {
             if (result == null)
             {
-                obj = default(T);
+                obj = default;
             }
-            else if (result is T)
+            else if (result is T t)
             {
-                obj = (T)result;
+                obj = t;
             }
             //just in case -> have better exception in this use-case
             else if (typeof(T) == typeof(BlittableJsonReaderObject) &&
                      result.GetType() == typeof(BlittableJsonReaderArray))
             {
-                obj = default(T);
+                obj = default;
                 ThrowFormatException(result, result.GetType().FullName, nameof(BlittableJsonReaderObject));
             }
             //just in case -> have better exception in this use-case
             else if (typeof(T) == typeof(BlittableJsonReaderArray) &&
                      result.GetType() == typeof(BlittableJsonReaderObject))
             {
-                obj = default(T);
+                obj = default;
                 ThrowFormatException(result, result.GetType().FullName, nameof(BlittableJsonReaderArray));
             }
             else
             {
-                obj = default(T);
+                obj = default;
                 var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
                 try
                 {

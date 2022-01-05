@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using WebCore.Collections;
@@ -124,14 +124,14 @@ namespace WebCore.Json
             _debugTag = null;
             _mode = UsageMode.None;
             _continuationState.Clear();
-            _writeToken = default(WriteToken);
+            _writeToken = default;
             _writer.Reset();
             _cacheItem.Reset();
         }
 
         public void Renew(string debugTag, UsageMode mode)
         {
-            _writeToken = default(WriteToken);
+            _writeToken = default;
             _debugTag = debugTag;
             _mode = mode;
 

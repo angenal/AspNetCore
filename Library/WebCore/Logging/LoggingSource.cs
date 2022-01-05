@@ -123,7 +123,7 @@ namespace WebCore.Logging
             SetupLogMode(logMode, path, retentionTime);
         }
 
-        public void SetupLogMode(LogMode logMode, string path, TimeSpan retentionTime = default(TimeSpan))
+        public void SetupLogMode(LogMode logMode, string path, TimeSpan retentionTime = default)
         {
             lock (this)
             {
@@ -131,7 +131,7 @@ namespace WebCore.Logging
                     return;
                 LogMode = logMode;
                 _path = path;
-                _retentionTime = retentionTime == default(TimeSpan) ? TimeSpan.FromDays(3) : retentionTime;
+                _retentionTime = retentionTime == default ? TimeSpan.FromDays(3) : retentionTime;
 
                 IsInfoEnabled = (logMode & LogMode.Information) == LogMode.Information;
                 IsOperationsEnabled = (logMode & LogMode.Operations) == LogMode.Operations;

@@ -492,7 +492,7 @@ namespace WebCore.Compression
                 return srcBase + ((ushort*)ctx->hashTable)[h];
 
             ThrowException(new NotSupportedException("TTableType directive is not supported."));
-            return default(byte*);
+            return default;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

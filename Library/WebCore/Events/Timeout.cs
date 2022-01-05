@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebCore
 {
-    public static class TimeoutManager
+    /// <summary>A non blocking timeout management.</summary>
+    public static class Timeout
     {
         private static readonly ConcurrentDictionary<uint, TimerTaskHolder> Values = new ConcurrentDictionary<uint, TimerTaskHolder>();
         private static readonly Task InfiniteTask = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously).Task;
@@ -105,19 +106,23 @@ namespace WebCore
             return value;
         }
 
-        public static async Task WaitFor(TimeSpan duration, CancellationToken token = default(CancellationToken))
+        /// <summary>
+        /// Run non blocking timeout event
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static async Task Wait(TimeSpan duration, CancellationToken token = default)
         {
             if (duration == TimeSpan.Zero)
                 return;
 
             if (token.IsCancellationRequested)
-            {
                 return;
-            }
 
             Task task;
             // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            if (duration != Timeout.InfiniteTimeSpan)
+            if (duration != System.Threading.Timeout.InfiniteTimeSpan && duration > TimeSpan.Zero)
                 task = WaitForInternal(duration, token);
             else
                 task = InfiniteTask;

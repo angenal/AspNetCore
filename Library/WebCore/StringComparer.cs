@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace WebCore
@@ -9,7 +9,7 @@ namespace WebCore
     /// </summary>
     public struct OrdinalStringStructComparer : IEqualityComparer<string>
     {
-        public static readonly OrdinalStringStructComparer Instance = default(OrdinalStringStructComparer);
+        public static readonly OrdinalStringStructComparer Instance = default;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(string x, string y)
@@ -43,7 +43,7 @@ namespace WebCore
     /// </summary>
     public struct OrdinalIgnoreCaseStringStructComparer : IEqualityComparer<string>
     {        
-        public static readonly OrdinalIgnoreCaseStringStructComparer Instance = default(OrdinalIgnoreCaseStringStructComparer);
+        public static readonly OrdinalIgnoreCaseStringStructComparer Instance = default;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(string x, string y)
