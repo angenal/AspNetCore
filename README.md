@@ -125,6 +125,7 @@ dotnet nuget push -s http://nuget.xxx.com/v3/index.json -k {ApiKey} {PackageId}.
          - [`身份认证`](https://www.cnblogs.com/JulianHuang/p/13725873.html)
             - `Claim`*申明*身份的片段数据→`ClaimsIdentity`*单个身份*信息→`ClaimsPrincipal`*主体*身份的集合
          - [`访问控制(casbin)`](https://casbin.org/)→[`资源命名(upspin)`](https://github.com/upspin/upspin)→[`准入控制(AdmissionControl)`](https://juejin.cn/book/6844733753063915533/section/6844733753131008007)
+         - [`访问权限` Asp.Net Core Identity](https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/identity?tabs=visual-studio%2Caspnetcore2x)、[Identity Server 4](https://identityserver4.readthedocs.io/en/latest/)
        - [Asp.Net Core 混合全球化与本地化支持](https://www.cnblogs.com/coredx/p/12271537.html)
        - [EntityFramework Core 2.x/3.x （ef core） 在迁移中自动生成数据库表和列说明](https://www.cnblogs.com/coredx/p/10026783.html)
        - [应用程序容器化](https://docs.microsoft.com/zh-cn/dotnet/core/docker/build-container)
@@ -145,7 +146,7 @@ dotnet nuget push -s http://nuget.xxx.com/v3/index.json -k {ApiKey} {PackageId}.
     - [Linq扩展 System.Linq.Dynamic.Core](https://github.com/StefH/System.Linq.Dynamic.Core)
     - [科学计算 MathNet](https://github.com/mathnet/mathnet-numerics)
     - [定时任务 Quartz.Net](https://www.quartz-scheduler.net)
-    - [权限 Asp.Net Core Identity](https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/identity?tabs=visual-studio%2Caspnetcore2x)、[Identity Server 4](https://identityserver4.readthedocs.io/en/latest/)
+    - [包装调用本机 Windows API](https://github.com/dahall/vanara)
     - [单元测试/库 Verify](https://github.com/VerifyTests/Verify)
     - [基准/压测/库 Powerful .NET library for benchmark](https://github.com/dotnet/BenchmarkDotNet)
     - [基准/压测/工具 NBomber](https://github.com/PragmaticFlow/NBomber)
@@ -261,4 +262,3 @@ foreach (var t in GetType().GetAssembly().GetTypes().Where(t => t.IsPublic && t.
     ![](https://github.com/angenalZZZ/AspNetCore/blob/master/screenshots/sparse_connectivity.png)
 
 ----
-
