@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using WebCore;
+using WebInterface;
 using WebSwagger;
 using WebSwaggerDemo.NET5.Common;
 using WebSwaggerDemo.NET5.Filters;
@@ -74,6 +76,17 @@ namespace WebSwaggerDemo.NET5
                     context.User.HasClaim(c => c.Type == "role" && c.Value.StartsWith("User")) ||
                     context.User.HasClaim(c => c.Type == "name" && c.Value.StartsWith("User"))));
             }).AddSingleton<IPermissionChecker, PermissionChecker>().AddSingleton<IPermissionStorage>(_ => new PermissionStorage(Configuration.GetConnectionString("Redis")));
+
+
+            // BackgroundService: TaskService
+            services.AddHostedService<TaskService>();
+            // FluentScheduler: TaskManager
+            services.AddSingleton<ITaskManager, TaskManager>(_ => TaskManager.Default);
+            // Allow to raise a task completion source with minimal costs and attempt to avoid stalls due to thread pool starvation.
+            services.AddSingleton<ITaskExecutor, TaskExecutor>(_ => TaskExecutor.Default);
+
+
+            // other services
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace WebFramework.Models.Entities
+namespace WebInterface
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
     /// <summary>

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebFramework.Models.DTO
+namespace WebCore.Models.DTO
 {
     /// <summary>
     ///

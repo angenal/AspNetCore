@@ -466,6 +466,22 @@
             值
             </summary>
         </member>
+        <member name="T:WebSwaggerDemo.NET5.Controllers.TaskController">
+            <summary>
+            任务 控制器
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.TaskController.Query(WebCore.Models.DTO.IdInput)">
+            <summary>
+            查询
+            </summary>
+        </member>
+        <member name="M:WebSwaggerDemo.NET5.Controllers.TaskController.Post(WebCore.Models.DTO.IdInput)">
+            <summary>
+            提交
+            </summary>
+            <param name="sample">查询例子</param>
+        </member>
         <member name="T:WebSwaggerDemo.NET5.Filters.AsyncSessionFilter">
             <summary>
             用户会话处理 by Jwt Token

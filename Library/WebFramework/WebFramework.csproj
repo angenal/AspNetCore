@@ -101,4 +101,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Entities\" />
+  </ItemGroup>
+
 </Project>

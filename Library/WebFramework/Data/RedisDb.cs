@@ -2,7 +2,7 @@ using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using WebCore;
-using WebFramework.Models.DTO;
+using WebCore.Models.DTO;
 
 namespace WebFramework.Data
 {
