@@ -2,25 +2,27 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using WebInterface;
 
 namespace WebCore
 {
-    /// <summary>
-    /// Allow to raise a task completion source with minimal costs and attempt to avoid stalls due to thread pool starvation
-    /// </summary>
-    public static class TaskExecutor
+    /// <summary>Allow to raise a task completion source with minimal costs and attempt to avoid stalls due to thread pool starvation. </summary>
+    public class TaskExecutor : ITaskExecutor
     {
-        private static readonly Runner Instance = new Runner();
+        /// <summary></summary>
+        public static TaskExecutor Default = new TaskExecutor();
+
+        private readonly Runner runner = new Runner();
 
         /// <summary>
         /// Execute callback only once
         /// </summary>
         /// <param name="callback">Represents a callback method to be executed by a thread pool thread</param>
         /// <param name="state"></param>
-        public static void Execute(WaitCallback callback, object state)
+        public void Execute(WaitCallback callback, object state)
         {
             callback = new RunOnce(callback).Execute;
-            Instance.Enqueue(callback, state);
+            runner.Enqueue(callback, state);
             ThreadPool.QueueUserWorkItem(callback, state);
         }
 
@@ -29,7 +31,7 @@ namespace WebCore
         /// </summary>
         /// <param name="task">Represents the producer side of a Task unbound to a delegate, providing access to the consumer side through the Task Completion Source</param>
         /// <param name="result"></param>
-        public static void Complete(TaskCompletionSource<object> task, object result = null)
+        public void Complete(TaskCompletionSource<object> task, object result = null)
         {
             task.TrySetResult(result);
         }
@@ -39,7 +41,7 @@ namespace WebCore
         /// </summary>
         /// <param name="task">Represents the producer side of a Task unbound to a delegate, providing access to the consumer side through the Task Completion Source</param>
         /// <param name="result"></param>
-        public static void CompleteAndReplace(ref TaskCompletionSource<object> task, object result = null)
+        public void CompleteAndReplace(ref TaskCompletionSource<object> task, object result = null)
         {
             var task2 = Interlocked.Exchange(ref task, new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously));
             task2.TrySetResult(result);
@@ -51,7 +53,7 @@ namespace WebCore
         /// <param name="task">Represents the producer side of a Task unbound to a delegate, providing access to the consumer side through the Task Completion Source</param>
         /// <param name="act"></param>
         /// <param name="result"></param>
-        public static void CompleteAndContinueWith(ref TaskCompletionSource<object> task, Action act, object result = null)
+        public void CompleteAndContinueWith(ref TaskCompletionSource<object> task, Action act, object result = null)
         {
             var task2 = Interlocked.Exchange(ref task, new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously));
             Execute(state =>
@@ -62,7 +64,8 @@ namespace WebCore
             }, (task2, act));
         }
 
-        private class RunOnce
+        /// <summary></summary>
+        class RunOnce
         {
             private WaitCallback _callback;
 
@@ -84,7 +87,8 @@ namespace WebCore
             }
         }
 
-        private class Runner
+        /// <summary></summary>
+        class Runner
         {
             private const string TasksExecuterThreadName = "TaskExecuter";
             private readonly ConcurrentQueue<(WaitCallback, object)> _actions = new ConcurrentQueue<(WaitCallback, object)>();
