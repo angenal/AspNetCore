@@ -8,6 +8,11 @@ namespace WebInterface
     public interface ITaskManager
     {
         /// <summary>
+        /// Adds an task to the end of non blocking concurrency queue.
+        /// </summary>
+        void Enqueue(Action job);
+
+        /// <summary>
         /// Adds an task to the end of the concurrent queue.
         /// </summary>
         void Enqueue(Func<CancellationToken, Task> task);

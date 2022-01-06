@@ -471,16 +471,15 @@
             任务 控制器
             </summary>
         </member>
-        <member name="M:WebSwaggerDemo.NET5.Controllers.TaskController.Query(WebCore.Models.DTO.IdInput)">
+        <member name="M:WebSwaggerDemo.NET5.Controllers.TaskController.Get(WebCore.Models.DTO.IdInput)">
             <summary>
             查询
             </summary>
         </member>
-        <member name="M:WebSwaggerDemo.NET5.Controllers.TaskController.Post(WebCore.Models.DTO.IdInput)">
+        <member name="M:WebSwaggerDemo.NET5.Controllers.TaskController.Set(WebCore.Models.DTO.IdInput,System.Int32)">
             <summary>
             提交
             </summary>
-            <param name="sample">查询例子</param>
         </member>
         <member name="T:WebSwaggerDemo.NET5.Filters.AsyncSessionFilter">
             <summary>

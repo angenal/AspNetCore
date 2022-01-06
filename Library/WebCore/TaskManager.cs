@@ -17,6 +17,14 @@ namespace WebCore
         private readonly ConcurrentQueue<Func<CancellationToken, Task>> tasks = new ConcurrentQueue<Func<CancellationToken, Task>>();
 
         /// <summary>
+        /// Adds an task to the end of non blocking concurrency queue.
+        /// </summary>
+        public void Enqueue(Action job)
+        {
+            JobManager.AddJob(job, s => s.ToRunNow());
+        }
+
+        /// <summary>
         /// Adds an task to the end of the concurrent queue.
         /// </summary>
         public void Enqueue(Func<CancellationToken, Task> task)
