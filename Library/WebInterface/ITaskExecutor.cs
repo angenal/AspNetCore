@@ -11,8 +11,9 @@ namespace WebInterface
         /// Execute callback only once
         /// </summary>
         /// <param name="callback">Represents a callback method to be executed by a thread pool thread</param>
-        /// <param name="state"></param>
-        void Execute(WaitCallback callback, object state);
+        /// <param name="state">Parameter for callback</param>
+        /// <param name="laterOnEvent">later on event</param>
+        void Execute(WaitCallback callback, object state, bool laterOnEvent = false);
 
         /// <summary>
         /// Complete a task

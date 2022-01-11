@@ -89,7 +89,6 @@ namespace WebCore.Reflection
                 get { return CallSiteCache.GetValue(name, target); }
                 set { CallSiteCache.SetValue(name, target, value); }
             }
-
         }
     }
 }

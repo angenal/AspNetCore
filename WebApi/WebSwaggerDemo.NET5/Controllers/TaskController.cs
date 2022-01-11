@@ -51,10 +51,12 @@ namespace WebSwaggerDemo.NET5.Controllers
             string key = $"{input.Id}";
             string value = DateTime.Now.ToDateTimeString();
 
+            // 不可能阻塞(输出后执行)
             taskExecutor.Execute(state =>
             {
-                Trace.WriteLine($"In: {DateTime.Now.Ticks}  {state.ToJson()}");
-            }, new { key, value });
+                dynamic input = state.ToDynamic();
+                Trace.WriteLine($"In: {DateTime.Now.Ticks}  {{ key: '{input.key}', value: '{input.value}' }}");
+            }, new { key, value }.ToDynamic(), true);
 
             // 有可能阻塞(输出前执行)
             taskManager.Enqueue(async token =>

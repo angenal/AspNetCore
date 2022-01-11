@@ -75,15 +75,15 @@ namespace WebSwaggerDemo.NET5
                 options.AddPolicy("User", policy => policy.RequireAssertion(context =>
                     context.User.HasClaim(c => c.Type == "role" && c.Value.StartsWith("User")) ||
                     context.User.HasClaim(c => c.Type == "name" && c.Value.StartsWith("User"))));
-            }).AddSingleton<IPermissionChecker, PermissionChecker>().AddSingleton<IPermissionStorage>(_ => new PermissionStorage(Configuration.GetConnectionString("Redis")));
+            }).AddSingleton<IPermissionChecker, PermissionChecker>().AddSingleton<IPermissionStorage>(new PermissionStorage(Configuration.GetConnectionString("Redis")));
 
 
             // BackgroundService: TaskService
             services.AddHostedService<TaskService>();
             // FluentScheduler: TaskManager
-            services.AddSingleton<ITaskManager, TaskManager>(_ => TaskManager.Default);
+            services.AddSingleton<ITaskManager>(TaskManager.Default);
             // Allow to raise a task completion source with minimal costs and attempt to avoid stalls due to thread pool starvation.
-            services.AddSingleton<ITaskExecutor, TaskExecutor>(_ => TaskExecutor.Default);
+            services.AddSingleton<ITaskExecutor>(TaskExecutor.Default);
 
 
             // other services

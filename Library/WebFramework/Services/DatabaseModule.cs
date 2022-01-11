@@ -34,10 +34,10 @@ namespace WebFramework.Services
             }
             // Database: LiteDB (similar to sqlite)
             var liteDb = new LiteDb(config, "LiteDB", false);
-            if (liteDb.HasConnectionString) services.AddSingleton<ILiteDb, LiteDb>(_ => liteDb);
+            if (liteDb.HasConnectionString) services.AddSingleton<ILiteDb>(liteDb);
             // Database: Microsoft SQL Server Client
             var mssqlDb = new SQLServerDb(config, "DefaultConnection");
-            if (mssqlDb.HasConnectionString) services.AddSingleton<ISQLServerDb, SQLServerDb>(_ => mssqlDb);
+            if (mssqlDb.HasConnectionString) services.AddSingleton<ISQLServerDb>(mssqlDb);
             //// Database: PostgreSQL Client - Depend on Npgsql.EntityFrameworkCore.PostgreSQL, Microsoft.EntityFrameworkCore.UnitOfWork
             //var pgsqlDb = new PostgreSqlDb(config, "PostgreDB");
             //var connectionString = pgsqlDb.GetConnectionString();

@@ -1,3 +1,4 @@
+using CSRedis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,24 +16,26 @@ namespace WebCore.Cache
     public class Redis : Cache
     {
         #region 属性
-        public CSRedis.CSRedisClient CSRedis { get; set; }
+        public CSRedisClient Client { get; private set; }
         #endregion
 
         #region 静态默认实现
         /// <summary>默认缓存</summary>
-        public static ICache Instance { get; set; } = new Redis("127.0.0.1:6379");
+        public static ICache Instance { get; set; }// = new Redis("127.0.0.1:6379");
         #endregion
 
         #region 构造
         public Redis(string connectionstring)
         {
             Name = nameof(Redis);
-            CSRedis = new CSRedis.CSRedisClient(connectionstring);
+            Client = new CSRedisClient(connectionstring);
+            if (Instance == null) Instance = new Redis(connectionstring);
         }
         public Redis(string masterConnectionstring, string[] sentinels, bool readOnly = false)
         {
             Name = nameof(Redis);
-            CSRedis = new CSRedis.CSRedisClient(masterConnectionstring, sentinels, readOnly);
+            Client = new CSRedisClient(masterConnectionstring, sentinels, readOnly);
+            if (Instance == null) Instance = new Redis(masterConnectionstring, sentinels, readOnly);
         }
         /// <summary>
         /// 新建Redis缓存实例
@@ -69,50 +72,51 @@ namespace WebCore.Cache
             s.Append($",testcluster={testcluster}");
             if (!string.IsNullOrEmpty(name)) s.Append($",name={name}");
             if (!string.IsNullOrEmpty(prefix)) s.Append($",prefix={prefix}");
-            CSRedis = new CSRedis.CSRedisClient(s.ToString());
+            Client = new CSRedisClient(s.ToString());
+            if (Instance == null) Instance = new Redis(server, password, defaultDatabase, poolsize, preheat, tryit, idleTimeout, connectTimeout, syncTimeout, ssl, testcluster, name, prefix);
         }
         /// <summary>已重载。</summary>
         /// <returns></returns>
-        public override string ToString() => CSRedis.ToString();
+        public override string ToString() => Client.ToString();
         #endregion
 
         #region 基础操作
         /// <summary>缓存个数</summary>
-        public override int Count => CSRedis.Nodes.Count;
+        public override int Count => Client.Nodes.Count;
 
         /// <summary>获取所有键，相当不安全，禁止使用。</summary>
-        public override ICollection<string> Keys => CSRedis.Keys("*");
+        public override ICollection<string> Keys => Client.Keys("*");
 
         /// <summary>单个实体项</summary>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
-        public override bool Set<T>(string key, T value, int expire = -1) => CSRedis.Set(key, value, expire);
+        public override bool Set<T>(string key, T value, int expire = -1) => Client.Set(key, value, expire);
 
         /// <summary>获取单体</summary>
         /// <param name="key">键</param>
-        public override T Get<T>(string key) => CSRedis.Get<T>(key);
+        public override T Get<T>(string key) => Client.Get<T>(key);
 
         /// <summary>批量移除缓存项</summary>
         /// <param name="keys">键集合</param>
-        public override int Remove(params string[] keys) => (int)CSRedis.Del(keys);
+        public override int Remove(params string[] keys) => (int)Client.Del(keys);
 
         /// <summary>清空所有缓存项</summary>
-        public override void Clear() => CSRedis.Eval("FLUSHDB", "");
+        public override void Clear() => Client.Eval("FLUSHDB", "");
 
         /// <summary>是否存在</summary>
         /// <param name="key">键</param>
-        public override bool ContainsKey(string key) => CSRedis.Exists(key);
+        public override bool ContainsKey(string key) => Client.Exists(key);
 
         /// <summary>设置缓存项有效期</summary>
         /// <param name="key">键</param>
         /// <param name="expire">过期时间</param>
-        public override bool SetExpire(string key, TimeSpan expire) => CSRedis.Expire(key, (int)expire.TotalSeconds);
+        public override bool SetExpire(string key, TimeSpan expire) => Client.Expire(key, (int)expire.TotalSeconds);
 
         /// <summary>获取缓存项有效期</summary>
         /// <param name="key">键</param>
         /// <returns></returns>
-        public override TimeSpan GetExpire(string key) => TimeSpan.FromSeconds(CSRedis.Ttl(key));
+        public override TimeSpan GetExpire(string key) => TimeSpan.FromSeconds(Client.Ttl(key));
         #endregion
 
         #region 高级操作
@@ -127,10 +131,10 @@ namespace WebCore.Cache
             if (expire < 0) expire = Expire;
 
             // 没有有效期，直接使用SETNX
-            if (expire <= 0) return CSRedis.SetNx(key, value);
+            if (expire <= 0) return Client.SetNx(key, value);
 
             // 带有有效期
-            return CSRedis.SetNx(key, value) && CSRedis.Expire(key, expire);
+            return Client.SetNx(key, value) && Client.Expire(key, expire);
         }
 
         /// <summary>设置新值并获取旧值，原子操作</summary>
@@ -138,7 +142,7 @@ namespace WebCore.Cache
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public override T Replace<T>(string key, T value) => CSRedis.GetSet<T>(key, value);
+        public override T Replace<T>(string key, T value) => Client.GetSet<T>(key, value);
 
         /// <summary>尝试获取指定键，返回是否包含值。有可能缓存项刚好是默认值，或者只是反序列化失败</summary>
         /// <remarks>
@@ -150,7 +154,7 @@ namespace WebCore.Cache
         /// <returns>返回是否包含值，即使反序列化失败</returns>
         public override bool TryGetValue<T>(string key, out T value)
         {
-            T v0 = default, v1 = CSRedis.Get<T>(key);
+            T v0 = default, v1 = Client.Get<T>(key);
             value = v1;
             return !Equals(v0, v1);
         }
@@ -175,13 +179,13 @@ namespace WebCore.Cache
         /// <param name="key">键</param>
         /// <param name="value">变化量</param>
         /// <returns></returns>
-        public override long Increment(string key, long value) => CSRedis.IncrBy(key, value);
+        public override long Increment(string key, long value) => Client.IncrBy(key, value);
 
         /// <summary>累加，原子操作，乘以100后按整数操作</summary>
         /// <param name="key">键</param>
         /// <param name="value">变化量</param>
         /// <returns></returns>
-        public override double Increment(string key, double value) => (double)CSRedis.IncrByFloat(key, (decimal)value);
+        public override double Increment(string key, double value) => (double)Client.IncrByFloat(key, (decimal)value);
 
         /// <summary>递减，原子操作</summary>
         /// <param name="key">键</param>
@@ -204,8 +208,8 @@ namespace WebCore.Cache
         /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
         public override void SetList<T>(string key, IList<T> values, int expire = -1)
         {
-            CSRedis.RPush<T>(key, values.ToArray());
-            if (expire > 0) CSRedis.Expire(key, expire);
+            Client.RPush<T>(key, values.ToArray());
+            if (expire > 0) Client.Expire(key, expire);
         }
 
         /// <summary>获取列表</summary>
@@ -214,7 +218,7 @@ namespace WebCore.Cache
         /// <returns></returns>
         public override IList<T> GetList<T>(string key)
         {
-            T[] result = CSRedis.LRange<T>(key, 0, -1);
+            T[] result = Client.LRange<T>(key, 0, -1);
             return result;
         }
 
@@ -225,7 +229,7 @@ namespace WebCore.Cache
         public override IDictionary<string, T> GetAll<T>(IEnumerable<string> keys)
         {
             string[] ks = keys.ToArray();
-            T[] vs = CSRedis.MGet<T>(ks);
+            T[] vs = Client.MGet<T>(ks);
             var result = new Dictionary<string, T>();
             for (int i = 0; i < ks.Length; i++) result[ks[i]] = vs[i];
             return result;
@@ -252,7 +256,7 @@ namespace WebCore.Cache
             }
 
             // 使用管道批量设置
-            var pipe = CSRedis.StartPipe();
+            var pipe = Client.StartPipe();
             try
             {
                 foreach (var item in values)

@@ -207,12 +207,6 @@ namespace WebFramework.Services
 
             // Hangfire: Background jobs and workers
             services.AddHangfire(config);
-            // BackgroundService: TaskService
-            services.AddHostedService<TaskService>();
-            // FluentScheduler: TaskManager
-            services.AddSingleton<ITaskManager, TaskManager>(_ => TaskManager.Default);
-            // Allow to raise a task completion source with minimal costs and attempt to avoid stalls due to thread pool starvation.
-            services.AddSingleton<ITaskExecutor, TaskExecutor>(_ => TaskExecutor.Default);
 
 
             // other services

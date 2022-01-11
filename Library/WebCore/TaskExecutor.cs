@@ -17,11 +17,12 @@ namespace WebCore
         /// Execute callback only once
         /// </summary>
         /// <param name="callback">Represents a callback method to be executed by a thread pool thread</param>
-        /// <param name="state"></param>
-        public void Execute(WaitCallback callback, object state)
+        /// <param name="state">Parameter for callback</param>
+        /// <param name="laterOnEvent">later on event</param>
+        public void Execute(WaitCallback callback, object state, bool laterOnEvent = false)
         {
             callback = new RunOnce(callback).Execute;
-            runner.Enqueue(callback, state);
+            runner.Enqueue(callback, state, laterOnEvent);
             ThreadPool.QueueUserWorkItem(callback, state);
         }
 

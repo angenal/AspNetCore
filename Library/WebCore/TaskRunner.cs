@@ -33,19 +33,20 @@ namespace WebCore
     /// <summary>Runner is a bit very high frequency events.</summary>
     public class Runner
     {
-        private const string TasksExecuterThreadName = "Runner";
-        private readonly ConcurrentQueue<(WaitCallback, object)> _actions = new ConcurrentQueue<(WaitCallback, object)>();
+        private readonly ConcurrentQueue<(WaitCallback, object)> _actions1 = new ConcurrentQueue<(WaitCallback, object)>();
+        private readonly ConcurrentQueue<(WaitCallback, Parameter)> _actions2 = new ConcurrentQueue<(WaitCallback, Parameter)>();
 
-        private readonly ManualResetEventSlim _event = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim _event1 = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim _event2 = new ManualResetEventSlim(false);
 
-        private void Run()
+        private void Run1()
         {
             Utils.NativeMemory.EnsureRegistered();
 
             int tries = 0, count = 1 + Environment.ProcessorCount;
             while (true)
             {
-                while (_actions.TryDequeue(out (WaitCallback callback, object state) result))
+                while (_actions1.TryDequeue(out (WaitCallback callback, object state) result))
                 {
                     try { result.callback(result.state); }
                     catch (Exception e) { Trace.TraceError(e.ToString()); }
@@ -61,8 +62,8 @@ namespace WebCore
                 }
                 else
                 {
-                    _event.WaitHandle.WaitOne();
-                    _event.Reset();
+                    _event1.WaitHandle.WaitOne();
+                    _event1.Reset();
 
                     // Nothing we can do here, just block.
                     tries = 0;
@@ -70,41 +71,16 @@ namespace WebCore
             }
         }
 
-        public void Enqueue(WaitCallback callback, object state)
-        {
-            _actions.Enqueue((callback, state));
-            _event.Set();
-        }
-
-        public Runner()
-        {
-            new Thread(Run)
-            {
-                IsBackground = true,
-                Name = TasksExecuterThreadName
-            }.Start();
-        }
-    }
-
-    /// <summary>Runner is a bit very high frequency delegate events.</summary>
-    public class RunnerDelegate
-    {
-        private const string TasksExecuterThreadName = "RunnerDelegate";
-        private readonly ConcurrentQueue<(WaitCallback, DelegateObject)> _actions = new ConcurrentQueue<(WaitCallback, DelegateObject)>();
-
-        private readonly ManualResetEventSlim _event = new ManualResetEventSlim(false);
-
-        private void Run()
+        private void Run2()
         {
             Utils.NativeMemory.EnsureRegistered();
 
             int tries = 0, count = 1 + Environment.ProcessorCount;
             while (true)
             {
-                long time = DateTimeOffset.Now.ToUnixTimeSeconds();
-                while (_actions.TryDequeue(out (WaitCallback callback, DelegateObject state) result))
+                while (_actions2.TryDequeue(out (WaitCallback callback, Parameter state) result))
                 {
-                    while (result.state.Time > time) Thread.Sleep(1);
+                    while (result.state.Time > DateTimeOffset.Now.ToUnixTimeSeconds()) { Thread.Sleep(1000); }
                     try { result.callback(result.state.State); }
                     catch (Exception e) { Trace.TraceError(e.ToString()); }
                 }
@@ -119,8 +95,8 @@ namespace WebCore
                 }
                 else
                 {
-                    _event.WaitHandle.WaitOne();
-                    _event.Reset();
+                    _event2.WaitHandle.WaitOne();
+                    _event2.Reset();
 
                     // Nothing we can do here, just block.
                     tries = 0;
@@ -128,22 +104,38 @@ namespace WebCore
             }
         }
 
-        public void Enqueue(WaitCallback callback, object state)
+        /// <summary></summary>
+        public void Enqueue(WaitCallback callback, object state, bool laterOnEvent = false)
         {
-            _actions.Enqueue((callback, new DelegateObject { Time = 1 + DateTimeOffset.Now.ToUnixTimeSeconds(), State = state }));
-            _event.Set();
+            if (laterOnEvent)
+            {
+                _actions2.Enqueue((callback, new Parameter { Time = 1 + DateTimeOffset.Now.ToUnixTimeSeconds(), State = state }));
+                _event2.Set();
+            }
+            else
+            {
+                _actions1.Enqueue((callback, state));
+                _event1.Set();
+            }
         }
 
-        public RunnerDelegate()
+        /// <summary></summary>
+        public Runner()
         {
-            new Thread(Run)
+            new Thread(Run1)
             {
                 IsBackground = true,
-                Name = TasksExecuterThreadName
+                Name = "Runner1"
+            }.Start();
+            new Thread(Run2)
+            {
+                IsBackground = true,
+                Name = "Runner2"
             }.Start();
         }
 
-        internal class DelegateObject
+        /// <summary></summary>
+        internal class Parameter
         {
             internal long Time { get; set; }
             internal object State { get; set; }

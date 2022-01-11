@@ -15,7 +15,12 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection AddCore(this IServiceCollection services, IConfiguration config)
         {
-            services.AddSingleton<ITaskManager>(_ => TaskManager.Default);
+            // BackgroundService: TaskService
+            services.AddHostedService<TaskService>();
+            // FluentScheduler: TaskManager
+            services.AddSingleton<ITaskManager>(TaskManager.Default);
+            // Allow to raise a task completion source with minimal costs and attempt to avoid stalls due to thread pool starvation.
+            services.AddSingleton<ITaskExecutor>(TaskExecutor.Default);
 
             return services;
         }
