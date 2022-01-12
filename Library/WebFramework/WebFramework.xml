@@ -28,6 +28,26 @@
         <member name="M:WebFramework.ApiController.Error(System.String,System.String,System.Int32)">
             <summary></summary>
         </member>
+        <member name="M:WebFramework.ApiController.Run(System.Threading.WaitCallback,System.Object,System.Boolean)">
+            <summary>
+            运行非阻塞的队列任务(输出后执行)可提高响应速度
+            </summary>
+            <param name="callback">任务: state => { dynamic input = state.ToDynamic(); }</param>
+            <param name="state">任务参数: new { value }.ToDynamic()</param>
+            <param name="laterOnEvent">是否为非阻塞的任务</param>
+        </member>
+        <member name="M:WebFramework.ApiController.Run(System.Action)">
+            <summary>
+            运行非阻塞的队列任务(输出后执行)可提高响应速度
+            </summary>
+            <param name="task">任务: () => { 可访问外部变量 }</param>
+        </member>
+        <member name="M:WebFramework.ApiController.Run(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task})">
+            <summary>
+            运行高效的队列任务(有可能阻塞)可提高响应速度
+            </summary>
+            <param name="task">任务: async token => { await Task.CompletedTask; }</param>
+        </member>
         <member name="T:WebFramework.ErrorJsonBadRequestResultObject">
             <summary>
             Json format for specifying errors in HTTP API responses
