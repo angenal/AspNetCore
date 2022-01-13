@@ -3,6 +3,8 @@ using EasyCaching.ResponseCaching;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebCore.Cache;
+using WebInterface;
 
 namespace WebFramework.Services
 {
@@ -18,7 +20,13 @@ namespace WebFramework.Services
         /// </summary>
         public static IServiceCollection AddCache(this IServiceCollection services, IConfiguration config)
         {
-            UseEasyCaching = config.GetSection("easycaching").Exists();
+            var connectionstring = config.GetConnectionString("Redis");
+            if (!string.IsNullOrEmpty(connectionstring))
+            {
+                Redis.Instance = new Redis(connectionstring);
+                services.AddSingleton(Redis.Instance);
+                services.AddSingleton<ICache>(new All(Memory.Instance, Redis.Instance));
+            }
 
             // Caching: a non distributed in memory implementation
             services.AddMemoryCache(); // IMemoryCache cache
@@ -32,6 +40,7 @@ namespace WebFramework.Services
             //services.AddSingleton<IDistributedCache>(new CSRedisCache(RedisHelper.Instance));
 
             // Caching: response caching services, replaced by EasyCaching.ResponseCaching
+            UseEasyCaching = config.GetSection("easycaching").Exists();
             if (!UseEasyCaching) return services.AddResponseCaching();
 
 

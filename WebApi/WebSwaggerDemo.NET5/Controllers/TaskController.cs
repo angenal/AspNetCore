@@ -55,7 +55,7 @@ namespace WebSwaggerDemo.NET5.Controllers
             taskExecutor.Execute(state =>
             {
                 dynamic input = state.ToDynamic();
-                Trace.WriteLine($"In: {DateTime.Now.Ticks}  {{ key: '{input.key}', value: '{input.value}' }}");
+                Trace.WriteLine($"In: {DateTime.Now.Ticks}  {{ key: '{input.key}', value: '{input.value}', t: {DateTime.Now.Ticks} }}");
             }, new { key, value }.ToDynamic(), true);
 
             // 有可能阻塞(输出前执行)

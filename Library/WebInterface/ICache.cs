@@ -179,4 +179,7 @@ namespace WebInterface
         double Decrement(string key, double value);
         #endregion
     }
+
+    /// <summary>Redis缓存接口</summary>
+    public interface IRedisCache : ICache { }
 }

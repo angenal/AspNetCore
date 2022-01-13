@@ -61,7 +61,7 @@ namespace WebSwaggerDemo.NET5.Common
 
         public PermissionStorage(string redisConnectionstring)
         {
-            kv = new All(new Memory(), new Redis(redisConnectionstring));
+            kv = new All(Memory.Instance, Redis.Instance = new Redis(redisConnectionstring));
         }
 
         public void Set(string[] permissions, string userIdentityName)

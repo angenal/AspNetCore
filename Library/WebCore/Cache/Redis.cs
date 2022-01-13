@@ -13,29 +13,30 @@ namespace WebCore.Cache
     /// <remarks>
     /// 依赖库 https://www.nuget.org/packages/CSRedisCore
     /// </remarks>
-    public class Redis : Cache
+    public class Redis : Cache, IRedisCache
     {
         #region 属性
-        public CSRedisClient Client { get; private set; }
+        public CSRedisClient Client { get; set; }
         #endregion
 
         #region 静态默认实现
         /// <summary>默认缓存</summary>
-        public static ICache Instance { get; set; }// = new Redis("127.0.0.1:6379");
+        public static IRedisCache Instance { get; set; }
         #endregion
 
         #region 构造
+        public Redis()
+        {
+        }
         public Redis(string connectionstring)
         {
             Name = nameof(Redis);
             Client = new CSRedisClient(connectionstring);
-            if (Instance == null) Instance = new Redis(connectionstring);
         }
         public Redis(string masterConnectionstring, string[] sentinels, bool readOnly = false)
         {
             Name = nameof(Redis);
             Client = new CSRedisClient(masterConnectionstring, sentinels, readOnly);
-            if (Instance == null) Instance = new Redis(masterConnectionstring, sentinels, readOnly);
         }
         /// <summary>
         /// 新建Redis缓存实例
@@ -73,7 +74,6 @@ namespace WebCore.Cache
             if (!string.IsNullOrEmpty(name)) s.Append($",name={name}");
             if (!string.IsNullOrEmpty(prefix)) s.Append($",prefix={prefix}");
             Client = new CSRedisClient(s.ToString());
-            if (Instance == null) Instance = new Redis(server, password, defaultDatabase, poolsize, preheat, tryit, idleTimeout, connectTimeout, syncTimeout, ssl, testcluster, name, prefix);
         }
         /// <summary>已重载。</summary>
         /// <returns></returns>
