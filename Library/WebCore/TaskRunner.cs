@@ -31,22 +31,23 @@ namespace WebCore
     }
 
     /// <summary>Runner is a bit very high frequency events.</summary>
-    public class Runner
+    public class Runner1
     {
-        private readonly ConcurrentQueue<(WaitCallback, object)> _actions1 = new ConcurrentQueue<(WaitCallback, object)>();
-        private readonly ConcurrentQueue<(WaitCallback, Parameter)> _actions2 = new ConcurrentQueue<(WaitCallback, Parameter)>();
+        private readonly ConcurrentQueue<(WaitCallback, object)> _actions = new ConcurrentQueue<(WaitCallback, object)>();
 
-        private readonly ManualResetEventSlim _event1 = new ManualResetEventSlim(false);
-        private readonly ManualResetEventSlim _event2 = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim _event = new ManualResetEventSlim(false);
 
-        private void Run1()
+        private readonly ThreadLocal<Thread> ThreadAllocations;
+
+        private void Run()
         {
-            Utils.NativeMemory.EnsureRegistered();
+            //Utils.NativeMemory.EnsureRegistered();
+            GC.KeepAlive(ThreadAllocations.Value); // side affecty
 
             int tries = 0, count = 1 + Environment.ProcessorCount;
             while (true)
             {
-                while (_actions1.TryDequeue(out (WaitCallback callback, object state) result))
+                while (_actions.TryDequeue(out (WaitCallback callback, object state) result))
                 {
                     try
                     {
@@ -68,8 +69,8 @@ namespace WebCore
                 }
                 else
                 {
-                    _event1.WaitHandle.WaitOne();
-                    _event1.Reset();
+                    _event.WaitHandle.WaitOne();
+                    _event.Reset();
 
                     // Nothing we can do here, just block.
                     tries = 0;
@@ -77,14 +78,38 @@ namespace WebCore
             }
         }
 
-        private void Run2()
+        /// <summary></summary>
+        public void Enqueue(WaitCallback callback, object state)
         {
-            Utils.NativeMemory.EnsureRegistered();
+            _actions.Enqueue((callback, state));
+            _event.Set();
+        }
+
+        /// <summary></summary>
+        public Runner1()
+        {
+            ThreadAllocations = new ThreadLocal<Thread>(() => new Thread(Run) { Name = nameof(Runner1), IsBackground = true }, trackAllValues: true);
+            ThreadAllocations.Value.Start();
+        }
+    }
+
+    /// <summary>Runner is a bit very high frequency events.</summary>
+    public class Runner2
+    {
+        private readonly ConcurrentQueue<(WaitCallback, Parameter)> _actions = new ConcurrentQueue<(WaitCallback, Parameter)>();
+
+        private readonly ManualResetEventSlim _event = new ManualResetEventSlim(false);
+
+        private readonly ThreadLocal<Thread> ThreadAllocations;
+
+        private void Run()
+        {
+            GC.KeepAlive(ThreadAllocations.Value); // side affecty
 
             int tries = 0, count = 1 + Environment.ProcessorCount;
             while (true)
             {
-                while (_actions2.TryDequeue(out (WaitCallback callback, Parameter state) result))
+                while (_actions.TryDequeue(out (WaitCallback callback, Parameter state) result))
                 {
                     while (result.state.Time > DateTimeOffset.Now.ToUnixTimeSeconds())
                     {
@@ -110,8 +135,8 @@ namespace WebCore
                 }
                 else
                 {
-                    _event2.WaitHandle.WaitOne();
-                    _event2.Reset();
+                    _event.WaitHandle.WaitOne();
+                    _event.Reset();
 
                     // Nothing we can do here, just block.
                     tries = 0;
@@ -120,33 +145,17 @@ namespace WebCore
         }
 
         /// <summary></summary>
-        public void Enqueue(WaitCallback callback, object state, bool laterOnEvent = false)
+        public void Enqueue(WaitCallback callback, object state)
         {
-            if (laterOnEvent)
-            {
-                _actions2.Enqueue((callback, new Parameter { Time = 1 + DateTimeOffset.Now.ToUnixTimeSeconds(), State = state }));
-                _event2.Set();
-            }
-            else
-            {
-                _actions1.Enqueue((callback, state));
-                _event1.Set();
-            }
+            _actions.Enqueue((callback, new Parameter { Time = 1 + DateTimeOffset.Now.ToUnixTimeSeconds(), State = state }));
+            _event.Set();
         }
 
         /// <summary></summary>
-        public Runner()
+        public Runner2()
         {
-            new Thread(Run1)
-            {
-                IsBackground = true,
-                Name = "Runner1"
-            }.Start();
-            new Thread(Run2)
-            {
-                IsBackground = true,
-                Name = "Runner2"
-            }.Start();
+            ThreadAllocations = new ThreadLocal<Thread>(() => new Thread(Run) { Name = nameof(Runner2), IsBackground = true }, trackAllValues: true);
+            ThreadAllocations.Value.Start();
         }
 
         /// <summary></summary>

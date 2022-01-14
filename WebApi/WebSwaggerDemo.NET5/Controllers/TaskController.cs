@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using WebCore;
 using WebCore.Models.DTO;
@@ -55,6 +56,7 @@ namespace WebSwaggerDemo.NET5.Controllers
             taskExecutor.Execute(state =>
             {
                 dynamic input = state.ToDynamic();
+                Thread.Sleep(10000);
                 Trace.WriteLine($"In: {DateTime.Now.Ticks}  {{ key: '{input.key}', value: '{input.value}', t: {DateTime.Now.Ticks} }}");
             }, new { key, value }.ToDynamic(), true);
 

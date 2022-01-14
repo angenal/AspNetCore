@@ -11,7 +11,8 @@ namespace WebCore
         /// <summary></summary>
         public static TaskExecutor Default = new TaskExecutor();
 
-        private readonly Runner runner = new Runner();
+        private readonly Runner1 runner1 = new Runner1();
+        private readonly Runner2 runner2 = new Runner2();
 
         /// <summary>
         /// Execute callback only once
@@ -22,7 +23,14 @@ namespace WebCore
         public void Execute(WaitCallback callback, object state, bool laterOnEvent = false)
         {
             callback = new RunOnce(callback).Execute;
-            runner.Enqueue(callback, state, laterOnEvent);
+            if (laterOnEvent == false)
+            {
+                runner1.Enqueue(callback, state);
+            }
+            else
+            {
+                runner2.Enqueue(callback, state);
+            }
             ThreadPool.QueueUserWorkItem(callback, state);
         }
 
