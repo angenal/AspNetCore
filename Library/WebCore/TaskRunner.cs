@@ -78,7 +78,7 @@ namespace WebCore
             }
         }
 
-        /// <summary></summary>
+        /// <summary>Add an event.</summary>
         public void Enqueue(WaitCallback callback, object state)
         {
             _actions.Enqueue((callback, state));
@@ -93,7 +93,7 @@ namespace WebCore
         }
     }
 
-    /// <summary>Runner is a bit very high frequency events.</summary>
+    /// <summary>Runner is a bit very high frequency events with a delay of 1 second.</summary>
     public class Runner2
     {
         private readonly ConcurrentQueue<(WaitCallback, Parameter)> _actions = new ConcurrentQueue<(WaitCallback, Parameter)>();
@@ -144,7 +144,7 @@ namespace WebCore
             }
         }
 
-        /// <summary></summary>
+        /// <summary>Add an event with a delay of 1 second.</summary>
         public void Enqueue(WaitCallback callback, object state)
         {
             _actions.Enqueue((callback, new Parameter { Time = 1 + DateTimeOffset.Now.ToUnixTimeSeconds(), State = state }));
