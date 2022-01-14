@@ -48,8 +48,14 @@ namespace WebCore
             {
                 while (_actions1.TryDequeue(out (WaitCallback callback, object state) result))
                 {
-                    try { result.callback(result.state); }
-                    catch (Exception e) { Trace.TraceError(e.ToString()); }
+                    try
+                    {
+                        result.callback(result.state);
+                    }
+                    catch (Exception e)
+                    {
+                        Trace.TraceError(e.ToString());
+                    }
                 }
 
                 // PERF: Entering a kernel lock even if the ManualResetEventSlim will try to avoid that doing some spin locking is very costly.
@@ -80,9 +86,18 @@ namespace WebCore
             {
                 while (_actions2.TryDequeue(out (WaitCallback callback, Parameter state) result))
                 {
-                    while (result.state.Time > DateTimeOffset.Now.ToUnixTimeSeconds()) { Thread.Sleep(1000); }
-                    try { result.callback(result.state.State); }
-                    catch (Exception e) { Trace.TraceError(e.ToString()); }
+                    while (result.state.Time > DateTimeOffset.Now.ToUnixTimeSeconds())
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    try
+                    {
+                        result.callback(result.state.State);
+                    }
+                    catch (Exception e)
+                    {
+                        Trace.TraceError(e.ToString());
+                    }
                 }
 
                 // PERF: Entering a kernel lock even if the ManualResetEventSlim will try to avoid that doing some spin locking is very costly.
