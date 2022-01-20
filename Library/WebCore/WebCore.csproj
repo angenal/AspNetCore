@@ -56,8 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
-    <PackageReference Include="CSRedisCore" Version="3.6.6" />
-    <PackageReference Include="Esprima" Version="2.0.3" />
+    <PackageReference Include="CSRedisCore" Version="3.6.8" />
+    <PackageReference Include="Esprima" Version="2.1.2" />
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
     <PackageReference Include="Jint" Version="2.11.58" />
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.1.11" />
@@ -77,7 +77,7 @@
     <PackageReference Include="NetTopologySuite" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
-    <PackageReference Include="NodaTime" Version="3.0.7" />
+    <PackageReference Include="NodaTime" Version="3.0.9" />
     <PackageReference Include="SkiaSharp" Version="1.68.3" />
     <PackageReference Include="Sodium.Core" Version="1.2.3" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
