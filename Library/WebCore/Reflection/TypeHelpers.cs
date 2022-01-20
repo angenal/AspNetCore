@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using WebCore.Reflection;
 
 namespace WebCore
@@ -47,6 +48,26 @@ namespace WebCore
             for (int i = 0; i < arr1.Length; i++) list.Add(accessor[arr1[i], propName]);
             return list;
         }
+
+        public static int ForEach(this Type enumType, Action<(string name, int value, string description)> action)
+        {
+            if (enumType.BaseType != typeof(Enum)) return 0;
+            var arr = Enum.GetNames(enumType);
+            foreach (var name in arr)
+            {
+                var description = "";
+                var value = Enum.Parse(enumType, name);
+                var field = enumType.GetField(name);
+                if (field != null)
+                {
+                    var attr = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute), false) as DescriptionAttribute;
+                    if (attr != null) description = attr.Description;
+                }
+                action((name, (int)value, description));
+            }
+            return arr.Length;
+        }
+
 
         /// <summary>
         /// Represents an object whose members can be dynamically added and removed at runtime.
@@ -375,6 +396,54 @@ namespace WebCore
                 return Activator.CreateInstance(type);
             }
             return result;
+        }
+
+        public static string GetTypeNameForSerialization(this Type t)
+        {
+            return RemoveAssemblyDetails(t.AssemblyQualifiedName);
+        }
+
+        private static string RemoveAssemblyDetails(string fullyQualifiedTypeName)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            // loop through the type name and filter out qualified assembly details from nested type names
+            bool writingAssemblyName = false;
+            bool skippingAssemblyDetails = false;
+            for (int i = 0; i < fullyQualifiedTypeName.Length; i++)
+            {
+                char current = fullyQualifiedTypeName[i];
+                switch (current)
+                {
+                    case '[':
+                        writingAssemblyName = false;
+                        skippingAssemblyDetails = false;
+                        builder.Append(current);
+                        break;
+                    case ']':
+                        writingAssemblyName = false;
+                        skippingAssemblyDetails = false;
+                        builder.Append(current);
+                        break;
+                    case ',':
+                        if (!writingAssemblyName)
+                        {
+                            writingAssemblyName = true;
+                            builder.Append(current);
+                        }
+                        else
+                        {
+                            skippingAssemblyDetails = true;
+                        }
+                        break;
+                    default:
+                        if (!skippingAssemblyDetails)
+                            builder.Append(current);
+                        break;
+                }
+            }
+
+            return builder.ToString();
         }
 
         public static IEnumerable<TypeInfo> GetConstructibleTypes(this Assembly assembly)
