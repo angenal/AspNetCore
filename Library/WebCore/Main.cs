@@ -52,5 +52,10 @@ namespace WebCore
         {
             WebCore.Exit.Return();
         }
+
+        /// <summary>
+        /// 释放系统资源
+        /// </summary>
+        public static void Dispose() { }
     }
 }

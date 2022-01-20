@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using WebInterface.Settings;
 
@@ -126,6 +127,18 @@ namespace WebFramework.Services
                 //app.UseMetricsPostAndPutSizeTrackingMiddleware();
                 //app.UseMetricsRequestTrackingMiddleware();
             }
+
+            var applicationLifetime = app.ApplicationServices.GetRequiredService<IHostApplicationLifetime>();
+
+            applicationLifetime.ApplicationStopping.Register(() =>
+            {
+                WebCore.Exit.Wait();
+            });
+
+            applicationLifetime.ApplicationStopped.Register(() =>
+            {
+                WebCore.Main.Dispose();
+            });
 
             return app;
         }
