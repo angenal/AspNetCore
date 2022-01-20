@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebCore
@@ -262,17 +263,88 @@ namespace WebCore
             return item;
         }
 
-        public static int ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
-            var s = enumerable as T[] ?? enumerable.ToArray();
-            s.ToList().ForEach(action);
-            return s.Length;
+            if (enumerable == null || !enumerable.Any()) return;
+            var s = enumerable.ToList();
+            s.ForEach(action);
         }
-        public static async Task<int> ForEachAsync<T>(this IEnumerable<T> enumerable, Func<T, Task> action)
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<IEnumerable<T>> action, int batchSize)
         {
-            var s = enumerable as T[] ?? enumerable.ToArray();
-            if (s.Any()) await Task.WhenAll(s.Select(action));
-            return s.Length;
+            if (enumerable == null || !enumerable.Any()) return;
+            var s = enumerable.ToList();
+            if (s.Count == 0) return;
+            if (s.Count <= batchSize || batchSize < 1)
+            {
+                action(s);
+                return;
+            }
+            var batch = new List<T>(batchSize);
+            var enumerator = s.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                batch.Add(enumerator.Current);
+                if (batch.Count >= batchSize)
+                {
+                    action(batch);
+                    batch.Clear();
+                }
+            }
+            if (batch.Count > 0)
+            {
+                action(batch);
+            }
+        }
+        public static async Task ForEachAsync<T>(this IEnumerable<T> enumerable, Func<T, Task> action)
+        {
+            if (enumerable == null || !enumerable.Any()) return;
+            await Task.WhenAll(enumerable.Select(action));
+        }
+        public static async Task ForEachAsync<T>(this IEnumerable<T> enumerable, Func<IEnumerable<T>, Task> action, int batchSize)
+        {
+            if (enumerable == null) return;
+            var s = enumerable.ToList();
+            if (s.Count == 0) return;
+            if (s.Count <= batchSize || batchSize < 1)
+            {
+                await action(s);
+                return;
+            }
+            var batch = new List<T>(batchSize);
+            var enumerator = s.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                batch.Add(enumerator.Current);
+                if (batch.Count >= batchSize)
+                {
+                    await action(batch);
+                    batch.Clear();
+                }
+            }
+            if (batch.Count > 0)
+            {
+                await action(batch);
+            }
+        }
+        public static async Task ForEachAsync<T>(this IAsyncEnumerable<T> enumerable, Func<IEnumerable<T>, Task> action, int batchSize = 2, CancellationToken cancellationToken = default)
+        {
+            if (enumerable == null || !await enumerable.AnyAsync()) return;
+            if (batchSize < 2) batchSize = 2;
+            var batch = new List<T>(batchSize);
+            var enumerator = enumerable.WithCancellation(cancellationToken).ConfigureAwait(false).GetAsyncEnumerator();
+            while (await enumerator.MoveNextAsync())
+            {
+                batch.Add(enumerator.Current);
+                if (batch.Count >= batchSize)
+                {
+                    await action(batch);
+                    batch.Clear();
+                }
+            }
+            if (batch.Count > 0)
+            {
+                await action(batch);
+            }
         }
 
 
@@ -420,7 +492,34 @@ namespace WebCore
         /// <param name="length"></param>
         /// <param name="min"></param>
         /// <returns></returns>
-        public static List<int> RandomArray(this int length, int min = 0) => new ArrayGenerator().Generate(length, min);
+        public static List<int> RandomArray(this int length, int min = 0) => ArrayGenerator.Generate(length, min);
 
+        /// <summary>
+        /// Random Array
+        /// </summary>
+        class ArrayGenerator
+        {
+            public static List<int> Generate(int length, int min = 0)
+            {
+                var rand = new Random((int)DateTime.Now.Ticks);
+                var list = new List<int>();
+                for (int i = 0; i < length; i++)
+                    list.Add(i + min);
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    int next = rand.Next(0, i + 1);
+                    Swap(ref list, i, next);
+                }
+
+                return list;
+            }
+            static void Swap(ref List<int> nums, int i, int j)
+            {
+                var tmp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = tmp;
+            }
+        }
     }
 }
