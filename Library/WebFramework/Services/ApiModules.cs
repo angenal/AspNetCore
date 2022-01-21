@@ -242,6 +242,9 @@ namespace WebFramework.Services
             // Use ApiServer (Kestrel,IIS)
             app.UseApiServer(config);
 
+            // Use WebCore
+            app.UseCore(config);
+
             // HTTP proxies forward information
             app.UseForwardedHeaders().UseCertificateForwarding();
 

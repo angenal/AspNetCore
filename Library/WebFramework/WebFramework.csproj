@@ -11,11 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="App.Metrics.AspNetCore" Version="4.2.0" />
-    <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.2.0" />
-    <PackageReference Include="App.Metrics.Prometheus" Version="4.2.0" />
-    <PackageReference Include="App.Metrics.Reporting.InfluxDB" Version="4.2.0" />
-    <PackageReference Include="AspNetCoreRateLimit" Version="3.2.2" />
+    <PackageReference Include="App.Metrics.AspNetCore" Version="4.3.0" />
+    <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0" />
+    <PackageReference Include="App.Metrics.Prometheus" Version="4.3.0" />
+    <PackageReference Include="App.Metrics.Reporting.InfluxDB" Version="4.3.0" />
+    <PackageReference Include="AspNetCoreRateLimit" Version="4.0.1" />
     <PackageReference Include="Autofac" Version="6.2.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
@@ -86,6 +86,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.5" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="tusdotnet" Version="2.4.0" />
+    <PackageReference Include="WorkflowCore.Users" Version="3.6.2" />
   </ItemGroup>
 
   <ItemGroup>
