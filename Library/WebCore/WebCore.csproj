@@ -92,6 +92,8 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <PackageReference Include="System.Threading.ThreadPool" Version="4.3.0" />
     <PackageReference Include="ToolGood.Words" Version="3.0.2.8" />
+    <PackageReference Include="WorkflowCore" Version="3.6.2" />
+    <PackageReference Include="WorkflowCore.Users" Version="3.6.2" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Xml\" />

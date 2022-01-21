@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 using WebCore;
 using WebInterface;
+using WorkflowCore.Interface;
 
 namespace WebFramework.Services
 {
@@ -36,15 +38,15 @@ namespace WebFramework.Services
         {
             // Start Workflow Core
             // https://github.com/zhenl/ZL.WorflowCoreDemo/blob/master/ZL.WorkflowCoreDemo.UserWorkflow/Program.cs
-            //var host = app.ApplicationServices.GetService<IWorkflowHost>();
-            //Debug.WriteLine("Register workflow...");
+            var host = app.ApplicationServices.GetService<IWorkflowHost>();
 
-            //host.RegisterWorkflow<HumanWorkflow>();
+            Debug.WriteLine("Register Workflow1 ...");
+            host.RegisterWorkflow<Workflow1>();
 
-            //Debug.WriteLine("Starting workflow...");
-            //host.Start();
+            Debug.WriteLine("Starting workflow...");
+            host.Start();
 
-            //var workflowId = host.StartWorkflow("HumanWorkflow").Result;
+            //var workflowId = host.StartWorkflow("1").Result;
             //host.PublishUserAction(workflowId, "", 0);
 
             return app;
