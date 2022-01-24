@@ -1547,6 +1547,11 @@
             Register WebCore services
             </summary>
         </member>
+        <member name="M:WebFramework.Services.CoreModule.UseCore(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Use WebCore Middleware
+            </summary>
+        </member>
         <member name="T:WebFramework.Services.CryptoModule">
             <summary>
             Crypto Module

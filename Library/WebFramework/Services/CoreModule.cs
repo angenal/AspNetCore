@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
 using WebCore;
 using WebInterface;
-using WorkflowCore.Interface;
 
 namespace WebFramework.Services
 {
@@ -36,16 +35,16 @@ namespace WebFramework.Services
         /// </summary>
         public static IApplicationBuilder UseCore(this IApplicationBuilder app, IConfiguration config)
         {
-            // Start Workflow Core
-            // https://github.com/zhenl/ZL.WorflowCoreDemo/blob/master/ZL.WorkflowCoreDemo.UserWorkflow/Program.cs
-            var host = app.ApplicationServices.GetService<IWorkflowHost>();
+            var host = app.ApplicationServices.GetService<IHostApplicationLifetime>();
 
-            Debug.WriteLine("Register Workflow1 ...");
-            host.RegisterWorkflow<Workflow1>();
-
-            Debug.WriteLine("Starting workflow...");
-            host.Start();
-
+            // Register Workflow  https://github.com/zhenl/ZL.WorflowCoreDemo/blob/master/ZL.WorkflowCoreDemo.UserWorkflow/Program.cs
+            //var workflowHost = app.ApplicationServices.GetService<IWorkflowHost>();
+            //host.ApplicationStopping.Register(workflowHost.Stop);
+            //Debug.WriteLine("Register Workflow1 ...");
+            //workflowHost.RegisterWorkflow<Workflow1>();
+            //Debug.WriteLine("Starting workflow...");
+            //workflowHost.Start();
+            // Use IWorkflowController  https://www.cnblogs.com/edisonchou/p/lightweight_workflow_engine_for_dotnetcore.html
             //var workflowId = host.StartWorkflow("1").Result;
             //host.PublishUserAction(workflowId, "", 0);
 

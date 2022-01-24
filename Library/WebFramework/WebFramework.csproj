@@ -17,6 +17,7 @@
     <PackageReference Include="App.Metrics.Reporting.InfluxDB" Version="4.3.0" />
     <PackageReference Include="AspNetCoreRateLimit" Version="4.0.1" />
     <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="4.1.2" />
@@ -80,7 +81,7 @@
     <PackageReference Include="Serilog.Sinks.LiteDB" Version="1.0.29" />
     <PackageReference Include="Serilog.Sinks.RavenDB" Version="3.0.0" />
     <PackageReference Include="SqlSugarCore" Version="5.0.4" />
-    <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.79" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.1.5" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.5" />
