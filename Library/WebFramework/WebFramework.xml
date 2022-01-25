@@ -8,6 +8,12 @@
             <summary>
             Api ControllerBase Extensions
             </summary>
+            <summary>
+            ApiController Extensions ITaskExecutor, ITaskManager
+            </summary>
+            <summary>
+            ApiController Extensions IWorkflowController
+            </summary>
         </member>
         <member name="F:WebFramework.ApiController.user">
             <summary>
@@ -47,6 +53,36 @@
             运行高效的队列任务(有可能阻塞)可提高响应速度
             </summary>
             <param name="task">任务: async token => { await Task.CompletedTask; }</param>
+        </member>
+        <member name="M:WebFramework.ApiController.PublishEvent(System.String,System.String,System.Object,System.Nullable{System.DateTime})">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.ApiController.RegisterWorkflow``1">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.ApiController.RegisterWorkflow``2">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.ApiController.ResumeWorkflow(System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.ApiController.StartWorkflow(System.String,System.Object,System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.ApiController.StartWorkflow(System.String,System.Nullable{System.Int32},System.Object,System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.ApiController.StartWorkflow``1(System.String,``0,System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.ApiController.StartWorkflow``1(System.String,System.Nullable{System.Int32},``0,System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.ApiController.SuspendWorkflow(System.String)">
+            <summary></summary>
+        </member>
+        <member name="M:WebFramework.ApiController.TerminateWorkflow(System.String)">
+            <summary></summary>
         </member>
         <member name="T:WebFramework.ErrorJsonBadRequestResultObject">
             <summary>
