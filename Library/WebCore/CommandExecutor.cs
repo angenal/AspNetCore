@@ -11,6 +11,35 @@ namespace WebCore
         /// Gets a command executor that uses /bin/bash to execute commands.
         /// </summary>
         public static ICommandExecutor Bash { get; } = new BashCommandExecutor();
+
+        /// <summary>
+        /// Executes the specified command.
+        /// </summary>
+        /// <param name="fileName">executable file path</param>
+        /// <param name="arguments">command arguments</param>
+        /// <param name="standardOutput"></param>
+        /// <param name="standardError"></param>
+        /// <returns></returns>
+        public static bool Execute(string fileName, string arguments, out string standardOutput, out string standardError)
+        {
+            Process process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = fileName,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                }
+            };
+            process.Start();
+            process.WaitForExit();
+            standardOutput = process.StandardOutput.ReadToEnd();
+            standardError = process.StandardError.ReadToEnd();
+            return process.ExitCode == 0;
+        }
     }
     /// <summary>
     /// An implementation of <see cref="ICommandExecutor"/> that uses /bin/bash to execute commands.
@@ -47,17 +76,17 @@ namespace WebCore
         /// <returns>The output.</returns>
         protected string RunWithShell(string shell, string command)
         {
-            var psi = new ProcessStartInfo();
-            psi.FileName = shell;
-            psi.Arguments = command;
-            psi.RedirectStandardOutput = true;
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-
-            using (var process = Process.Start(psi))
+            using (Process process = Process.Start(new ProcessStartInfo
             {
-                process?.WaitForExit();
-                return process?.StandardOutput.ReadToEnd();
+                FileName = shell,
+                Arguments = command,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }))
+            {
+                process.WaitForExit();
+                return process.StandardOutput.ReadToEnd();
             }
         }
     }

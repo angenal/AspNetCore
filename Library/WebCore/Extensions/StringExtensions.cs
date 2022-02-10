@@ -93,6 +93,14 @@ namespace WebCore
         public static bool Compare(this byte[] a, byte[] b) => Sodium.Utilities.Compare(a, b);
 
 
+        /// <summary>
+        /// Replaces the name of each environment variable embedded in the specified string.
+        /// for example "%WINDIR%"
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string EnvironmentVariable(this string name) => Environment.ExpandEnvironmentVariables(name);
+
         /// <summary>Converts a string to a <see cref="Version"/> object. </summary>
         /// <param name="version">The version as string. </param>
         /// <returns>The version. </returns>
