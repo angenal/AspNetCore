@@ -187,6 +187,17 @@ namespace WebCore.Cache
 
             return item.ExpiredTime == DateTime.MaxValue ? TimeSpan.MaxValue : item.Expired ? TimeSpan.Zero : item.ExpiredTime - DateTime.Now;
         }
+        /// <summary>
+        /// 以秒为单位，返回给定 key 的剩余生存时间
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns></returns>
+        public override long Ttl(string key)
+        {
+            if (!cache.TryGetValue(key, out var item) || item == null) return 0;
+
+            return item.ExpiredTime == DateTime.MaxValue ? -1 : item.Expired ? 0 : Convert.ToInt64((item.ExpiredTime - DateTime.Now).TotalSeconds);
+        }
         #endregion
 
         #region 高级操作
@@ -242,7 +253,7 @@ namespace WebCore.Cache
 
         /// <summary>尝试获取指定键，返回是否包含值。有可能缓存项刚好是默认值，或者只是反序列化失败</summary>
         /// <remarks>
-        /// 在 MemoryCache 中，如果某个key过期，在清理之前仍然可以通过TryGet访问，并且更新访问时间，避免被清理。
+        /// 在 Memory 中，如果某个key过期，在清理之前仍然可以通过TryGet访问，并且更新访问时间，避免被清理。
         /// </remarks>
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="key">键</param>
@@ -272,16 +283,21 @@ namespace WebCore.Cache
         {
             if (expire < 0) expire = Expire;
 
-            CacheItem ci = null;
+            CacheItem i = null;
             do
             {
                 if (cache.TryGetValue(key, out var item)) return (T)item.Visit();
-                if (ci == null) ci = new CacheItem(callback(key), expire);
-            } while (!cache.TryAdd(key, ci));
+                if (i == null)
+                {
+                    T value = callback.Invoke(key);
+                    if (value == null) return value;
+                    i = new CacheItem(value, expire);
+                }
+            } while (!cache.TryAdd(key, i));
 
             Interlocked.Increment(ref _count);
 
-            return (T)ci.Visit();
+            return (T)i.Visit();
         }
 
         /// <summary>累加，原子操作</summary>

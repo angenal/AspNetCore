@@ -80,6 +80,12 @@ namespace WebCore.Cache
         /// <param name="key">键</param>
         /// <returns>永不过期：TimeSpan.MaxValue 不存在该缓存：TimeSpan.Zero</returns>
         public abstract TimeSpan GetExpire(string key);
+        /// <summary>
+        /// 以秒为单位，返回给定 key 的剩余生存时间
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns></returns>
+        public abstract long Ttl(string key);
         #endregion
 
         #region 集合操作

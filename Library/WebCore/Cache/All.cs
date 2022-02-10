@@ -119,6 +119,17 @@ namespace WebCore.Cache
             }
             return expire;
         }
+        /// <summary>
+        /// 以秒为单位，返回给定 key 的剩余生存时间
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns></returns>
+        public override long Ttl(string key)
+        {
+            var ttl = memory.Ttl(key);
+            if (ttl == 0) ttl = redis.Ttl(key);
+            return ttl;
+        }
         #endregion
 
         #region 高级操作
@@ -131,10 +142,7 @@ namespace WebCore.Cache
         public override bool Add<T>(string key, T value, int expire = -1)
         {
             bool result = memory.Add<T>(key, value, expire);
-            if (result)
-            {
-                JobManager.AddJob(new Action(() => redis.Add<T>(key, value, expire)), s => s.ToRunNow());
-            }
+            if (result) JobManager.AddJob(new Action(() => redis.Add<T>(key, value, expire)), s => s.ToRunNow());
             return result;
         }
 
@@ -161,10 +169,7 @@ namespace WebCore.Cache
         public override bool TryGetValue<T>(string key, out T value)
         {
             bool result = memory.TryGetValue<T>(key, out value);
-            if (!result)
-            {
-                result = redis.TryGetValue<T>(key, out value);
-            }
+            if (!result) result = redis.TryGetValue<T>(key, out value);
             return result;
         }
 

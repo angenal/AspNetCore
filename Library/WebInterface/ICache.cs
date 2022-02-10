@@ -67,6 +67,12 @@ namespace WebInterface
         /// <param name="key">键</param>
         /// <returns></returns>
         TimeSpan GetExpire(string key);
+        /// <summary>
+        /// 以秒为单位，返回给定 key 的剩余生存时间
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns></returns>
+        long Ttl(string key);
         #endregion
 
         #region 集合操作
@@ -181,5 +187,22 @@ namespace WebInterface
     }
 
     /// <summary>Redis缓存接口</summary>
-    public interface IRedisCache : ICache { }
+    public interface IRedisCache : ICache
+    {
+        /// <summary>
+        /// 获取指定 key 的值
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns></returns>
+        string Get(string key);
+        /// <summary>
+        /// 设置指定 key 的值，所有写入参数object都支持string | byte[] | 数值 | 对象
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="value">参数object都支持</param>
+        /// <param name="expireSeconds">过期(秒单位)</param>
+        /// <param name="notExist">notExist: Nx, exists: Xx</param>
+        /// <returns></returns>
+        bool Set(string key, object value, int expireSeconds = -1, bool? notExist = null);
+    }
 }

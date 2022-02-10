@@ -108,9 +108,39 @@ namespace WebCore.Cache
             return result;
         }
 
+        /// <summary>
+        /// 设置指定 key 的值，所有写入参数object都支持string | byte[] | 数值 | 对象
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="value">参数object都支持</param>
+        /// <param name="expireSeconds">过期(秒单位)</param>
+        /// <param name="notExist">notExist: Nx, exists: Xx</param>
+        /// <returns></returns>
+        public bool Set(string key, object value, int expireSeconds = -1, bool? notExist = null)
+        {
+            if (expireSeconds < 0) expireSeconds = Expire;
+
+            RedisExistence? exists = null;
+            if (notExist.HasValue) exists = notExist == true ? RedisExistence.Nx : RedisExistence.Xx;
+
+            var result = Client.Set(key, value, expireSeconds <= 0 ? -1 : expireSeconds, exists);
+
+            if (result) { if (exists != null && exists == RedisExistence.Nx) Interlocked.Increment(ref _count); }
+            else if (expireSeconds > 0) Client.Expire(key, expireSeconds);
+
+            return result;
+        }
+
         /// <summary>获取单体</summary>
         /// <param name="key">键</param>
         public override T Get<T>(string key) => Client.Get<T>(key);
+
+        /// <summary>
+        /// 获取指定 key 的值
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns></returns>
+        public string Get(string key) => Client.Get(key);
 
         /// <summary>批量移除缓存项</summary>
         /// <param name="keys">键集合</param>
@@ -118,7 +148,7 @@ namespace WebCore.Cache
         {
             var count = (int)Client.Del(keys);
 
-            Interlocked.Add(ref _count, -1 * count);
+            Interlocked.Add(ref _count, -count);
 
             return count;
         }
@@ -151,6 +181,16 @@ namespace WebCore.Cache
             var ttl = Client.Ttl(key);
             return ttl == -1 ? TimeSpan.MaxValue : ttl == -2 ? TimeSpan.Zero : TimeSpan.FromSeconds(ttl);
         }
+        /// <summary>
+        /// 以秒为单位，返回给定 key 的剩余生存时间
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns></returns>
+        public override long Ttl(string key)
+        {
+            var ttl = Client.Ttl(key);
+            return ttl == -1 ? -1 : ttl == -2 ? 0 : ttl;
+        }
         #endregion
 
         #region 高级操作
@@ -180,7 +220,14 @@ namespace WebCore.Cache
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public override T Replace<T>(string key, T value) => Client.GetSet<T>(key, value);
+        public override T Replace<T>(string key, T value)
+        {
+            T v0 = default, v1 = Client.GetSet<T>(key, value);
+
+            if (Equals(v0, v1)) Interlocked.Increment(ref _count);
+
+            return v1;
+        }
 
         /// <summary>尝试获取指定键，返回是否包含值。有可能缓存项刚好是默认值，或者只是反序列化失败</summary>
         /// <remarks>
@@ -219,7 +266,7 @@ namespace WebCore.Cache
         /// <returns></returns>
         public override long Increment(string key, long value) => Client.IncrBy(key, value);
 
-        /// <summary>累加，原子操作，乘以100后按整数操作</summary>
+        /// <summary>累加，原子操作</summary>
         /// <param name="key">键</param>
         /// <param name="value">变化量</param>
         /// <returns></returns>
