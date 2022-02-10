@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using WebInterface;
 
 namespace WebCore.Cache
@@ -80,18 +81,32 @@ namespace WebCore.Cache
         public override string ToString() => Client.ToString();
         #endregion
 
-        #region 基础操作
-        /// <summary>缓存个数</summary>
-        public override int Count => Client.Nodes.Count;
+        #region 缓存属性
+        private int _count;
+        /// <summary>缓存项。原子计数</summary>
+        public override int Count => _count;
 
         /// <summary>获取所有键，相当不安全，禁止使用。</summary>
         public override ICollection<string> Keys => Client.Keys("*");
+        #endregion
+
+        #region 基础操作
 
         /// <summary>单个实体项</summary>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
         /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
-        public override bool Set<T>(string key, T value, int expire = -1) => Client.Set(key, value, expire);
+        public override bool Set<T>(string key, T value, int expire = -1)
+        {
+            if (expire < 0) expire = Expire;
+
+            var result = Client.Set(key, value, expire <= 0 ? -1 : expire, RedisExistence.Nx);
+
+            if (result) Interlocked.Increment(ref _count);
+            else if (expire > 0) Client.Expire(key, expire);
+
+            return result;
+        }
 
         /// <summary>获取单体</summary>
         /// <param name="key">键</param>
@@ -99,10 +114,21 @@ namespace WebCore.Cache
 
         /// <summary>批量移除缓存项</summary>
         /// <param name="keys">键集合</param>
-        public override int Remove(params string[] keys) => (int)Client.Del(keys);
+        public override int Remove(params string[] keys)
+        {
+            var count = (int)Client.Del(keys);
 
-        /// <summary>清空所有缓存项</summary>
-        public override void Clear() => Client.Eval("FLUSHDB", "");
+            Interlocked.Add(ref _count, -1 * count);
+
+            return count;
+        }
+
+        /// <summary>清空所有缓存项，相当不安全，禁止使用。</summary>
+        public override void Clear()
+        {
+            Client.Eval("FLUSHDB", "");
+            _count = 0;
+        }
 
         /// <summary>是否存在</summary>
         /// <param name="key">键</param>
@@ -111,16 +137,24 @@ namespace WebCore.Cache
         /// <summary>设置缓存项有效期</summary>
         /// <param name="key">键</param>
         /// <param name="expire">过期时间</param>
-        public override bool SetExpire(string key, TimeSpan expire) => Client.Expire(key, (int)expire.TotalSeconds);
+        public override bool SetExpire(string key, TimeSpan expire)
+        {
+            if (expire == TimeSpan.MaxValue || expire <= TimeSpan.Zero) return Client.Expire(key, -1);
+            return Client.Expire(key, expire);
+        }
 
         /// <summary>获取缓存项有效期</summary>
         /// <param name="key">键</param>
-        /// <returns></returns>
-        public override TimeSpan GetExpire(string key) => TimeSpan.FromSeconds(Client.Ttl(key));
+        /// <returns>永不过期：TimeSpan.MaxValue 不存在该缓存：TimeSpan.Zero</returns>
+        public override TimeSpan GetExpire(string key)
+        {
+            var ttl = Client.Ttl(key);
+            return ttl == -1 ? TimeSpan.MaxValue : ttl == -2 ? TimeSpan.Zero : TimeSpan.FromSeconds(ttl);
+        }
         #endregion
 
         #region 高级操作
-        /// <summary>添加，已存在时不更新</summary>
+        /// <summary>添加，已存在时不更新，常用于锁争夺</summary>
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
@@ -134,7 +168,11 @@ namespace WebCore.Cache
             if (expire <= 0) return Client.SetNx(key, value);
 
             // 带有有效期
-            return Client.SetNx(key, value) && Client.Expire(key, expire);
+            var result = Client.Set(key, value, expire, RedisExistence.Nx);
+
+            if (result) Interlocked.Increment(ref _count);
+
+            return result;
         }
 
         /// <summary>设置新值并获取旧值，原子操作</summary>

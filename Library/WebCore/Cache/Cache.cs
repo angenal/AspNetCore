@@ -14,8 +14,8 @@ namespace WebCore.Cache
         /// <summary>名称</summary>
         public string Name { get; set; }
 
-        /// <summary>默认过期时间。避免Set操作时没有设置过期时间，默认0秒表示不过期</summary>
-        public int Expire { get; set; }
+        /// <summary>默认过期时间(1天)。避免Set操作时没有设置过期时间，默认0秒表示不过期</summary>
+        public int Expire { get; set; } = 24 * 3600;
 
         /// <summary>获取和设置缓存，使用默认过期时间</summary>
         /// <param name="key"></param>
@@ -78,7 +78,7 @@ namespace WebCore.Cache
 
         /// <summary>获取缓存项有效期</summary>
         /// <param name="key">键</param>
-        /// <returns></returns>
+        /// <returns>永不过期：TimeSpan.MaxValue 不存在该缓存：TimeSpan.Zero</returns>
         public abstract TimeSpan GetExpire(string key);
         #endregion
 
@@ -142,11 +142,11 @@ namespace WebCore.Cache
         #endregion
 
         #region 高级操作
-        /// <summary>添加，已存在时不更新</summary>
+        /// <summary>添加，已存在时不更新，常用于锁争夺</summary>
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
-        /// <param name="expire">过期时间，秒</param>
+        /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
         /// <returns></returns>
         public virtual bool Add<T>(string key, T value, int expire = -1)
         {

@@ -17,7 +17,7 @@ namespace WebCore.Cache
     {
         #region 属性
         /// <summary>缓存核心</summary>
-        protected ConcurrentDictionary<string, CacheItem> _cache;
+        protected ConcurrentDictionary<string, CacheItem> cache;
 
         /// <summary>容量。容量超标时，采用LRU机制删除，默认1000000</summary>
         public int Capacity { get; set; } = 1000000;
@@ -48,7 +48,7 @@ namespace WebCore.Cache
         public override int Count => _count;
 
         /// <summary>所有键。实际返回只读列表新实例，数据量较大时注意性能</summary>
-        public override ICollection<string> Keys => _cache.Keys;
+        public override ICollection<string> Keys => cache.Keys;
         #endregion
 
         #region 方法
@@ -56,9 +56,9 @@ namespace WebCore.Cache
         /// <param name="config"></param>
         public override void Init(string config)
         {
-            if (_cache == null)
+            if (cache == null)
             {
-                _cache = new ConcurrentDictionary<string, CacheItem>();
+                cache = new ConcurrentDictionary<string, CacheItem>();
                 int interval = Period < 10 ? 10 : Period;
                 JobManager.AddJob(RemoveNotAlive, s => s.ToRunEvery(interval));
             }
@@ -77,10 +77,10 @@ namespace WebCore.Cache
             CacheItem ci = null;
             do
             {
-                if (_cache.TryGetValue(key, out var item)) return (T)item.Visit();
+                if (cache.TryGetValue(key, out var item)) return (T)item.Visit();
 
                 if (ci == null) ci = new CacheItem(value, expire);
-            } while (!_cache.TryAdd(key, ci));
+            } while (!cache.TryAdd(key, ci));
 
             Interlocked.Increment(ref _count);
 
@@ -92,40 +92,38 @@ namespace WebCore.Cache
         /// <summary>是否包含缓存项</summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public override bool ContainsKey(string key) => _cache.TryGetValue(key, out var item) && item != null && !item.Expired;
+        public override bool ContainsKey(string key) => cache.TryGetValue(key, out var item) && item != null && !item.Expired;
 
         /// <summary>添加缓存项，已存在时更新</summary>
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
-        /// <param name="expire">过期时间，秒</param>
+        /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
         /// <returns></returns>
         public override bool Set<T>(string key, T value, int expire = -1)
         {
             if (expire < 0) expire = Expire;
 
-            //_cache.AddOrUpdate(key,
+            //cache.AddOrUpdate(key,
             //    k => new CacheItem(value, expire),
             //    (k, item) =>
             //    {
             //        item.Value = value;
             //        item.ExpiredTime = DateTime.Now.AddSeconds(expire);
-
             //        return item;
             //    });
 
             // 不用AddOrUpdate，避免匿名委托带来的GC损耗
-            CacheItem ci = null;
+            CacheItem i = null;
             do
             {
-                if (_cache.TryGetValue(key, out var item))
+                if (cache.TryGetValue(key, out var item))
                 {
                     item.Set(value, expire);
                     return true;
                 }
-
-                if (ci == null) ci = new CacheItem(value, expire);
-            } while (!_cache.TryAdd(key, ci));
+                if (i == null) i = new CacheItem(value, expire);
+            } while (!cache.TryAdd(key, i));
 
             Interlocked.Increment(ref _count);
 
@@ -137,7 +135,7 @@ namespace WebCore.Cache
         /// <returns></returns>
         public override T Get<T>(string key)
         {
-            if (!_cache.TryGetValue(key, out var item) || item == null || item.Expired) return default;
+            if (!cache.TryGetValue(key, out var item) || item == null || item.Expired) return default;
 
             return item.Visit().As<T>();
         }
@@ -150,7 +148,7 @@ namespace WebCore.Cache
             var count = 0;
             foreach (var k in keys)
             {
-                if (_cache.TryRemove(k, out _))
+                if (cache.TryRemove(k, out _))
                 {
                     count++;
 
@@ -163,7 +161,7 @@ namespace WebCore.Cache
         /// <summary>清空所有缓存项</summary>
         public override void Clear()
         {
-            _cache.Clear();
+            cache.Clear();
             _count = 0;
         }
 
@@ -173,21 +171,21 @@ namespace WebCore.Cache
         /// <returns>设置是否成功</returns>
         public override bool SetExpire(string key, TimeSpan expire)
         {
-            if (!_cache.TryGetValue(key, out var item) || item == null) return false;
+            if (!cache.TryGetValue(key, out var item) || item == null) return false;
 
-            item.ExpiredTime = DateTime.Now.Add(expire);
+            item.ExpiredTime = expire == TimeSpan.MaxValue || expire <= TimeSpan.Zero ? DateTime.MaxValue : DateTime.Now.Add(expire);
 
             return true;
         }
 
         /// <summary>获取缓存项有效期，不存在时返回Zero</summary>
         /// <param name="key">键</param>
-        /// <returns></returns>
+        /// <returns>永不过期：TimeSpan.MaxValue 不存在该缓存：TimeSpan.Zero</returns>
         public override TimeSpan GetExpire(string key)
         {
-            if (!_cache.TryGetValue(key, out var item) || item == null) return TimeSpan.Zero;
+            if (!cache.TryGetValue(key, out var item) || item == null) return TimeSpan.Zero;
 
-            return item.ExpiredTime - DateTime.Now;
+            return item.ExpiredTime == DateTime.MaxValue ? TimeSpan.MaxValue : item.Expired ? TimeSpan.Zero : item.ExpiredTime - DateTime.Now;
         }
         #endregion
 
@@ -196,19 +194,18 @@ namespace WebCore.Cache
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
-        /// <param name="expire">过期时间，秒</param>
+        /// <param name="expire">过期时间，秒。小于0时采用默认缓存时间<seealso cref="Cache.Expire"/></param>
         /// <returns></returns>
         public override bool Add<T>(string key, T value, int expire = -1)
         {
             if (expire < 0) expire = Expire;
 
-            CacheItem ci = null;
+            CacheItem i = null;
             do
             {
-                if (_cache.TryGetValue(key, out _)) return false;
-
-                if (ci == null) ci = new CacheItem(value, expire);
-            } while (!_cache.TryAdd(key, ci));
+                if (cache.TryGetValue(key, out _)) return false;
+                if (i == null) i = new CacheItem(value, expire);
+            } while (!cache.TryAdd(key, i));
 
             Interlocked.Increment(ref _count);
 
@@ -224,10 +221,10 @@ namespace WebCore.Cache
         {
             var expire = Expire;
 
-            CacheItem ci = null;
+            CacheItem i = null;
             do
             {
-                if (_cache.TryGetValue(key, out var item))
+                if (cache.TryGetValue(key, out var item))
                 {
                     var rs = item.Value;
                     // 如果已经过期，不要返回旧值
@@ -235,9 +232,8 @@ namespace WebCore.Cache
                     item.Set(value, expire);
                     return (T)rs;
                 }
-
-                if (ci == null) ci = new CacheItem(value, expire);
-            } while (!_cache.TryAdd(key, ci));
+                if (i == null) i = new CacheItem(value, expire);
+            } while (!cache.TryAdd(key, i));
 
             Interlocked.Increment(ref _count);
 
@@ -257,7 +253,7 @@ namespace WebCore.Cache
             value = default;
 
             // 没有值，直接结束
-            if (!_cache.TryGetValue(key, out var item) || item == null) return false;
+            if (!cache.TryGetValue(key, out var item) || item == null) return false;
 
             // 得到已有值
             value = item.Visit().As<T>();
@@ -279,10 +275,9 @@ namespace WebCore.Cache
             CacheItem ci = null;
             do
             {
-                if (_cache.TryGetValue(key, out var item)) return (T)item.Visit();
-
+                if (cache.TryGetValue(key, out var item)) return (T)item.Visit();
                 if (ci == null) ci = new CacheItem(callback(key), expire);
-            } while (!_cache.TryAdd(key, ci));
+            } while (!cache.TryAdd(key, ci));
 
             Interlocked.Increment(ref _count);
 
@@ -405,10 +400,9 @@ namespace WebCore.Cache
             CacheItem ci = null;
             do
             {
-                if (!forceAdd && _cache.TryGetValue(key, out var item)) return item;
-
+                if (!forceAdd && cache.TryGetValue(key, out var item)) return item;
                 if (ci == null) ci = new CacheItem(valueFactory(key), expire);
-            } while (!_cache.TryAdd(key, ci));
+            } while (!cache.TryAdd(key, ci));
 
             Interlocked.Increment(ref _count);
 
@@ -420,9 +414,9 @@ namespace WebCore.Cache
         /// <summary>缓存项</summary>
         protected class CacheItem
         {
-            private object _Value;
+            private object _value;
             /// <summary>数值</summary>
-            public object Value { get => _Value; set => _Value = value; }
+            public object Value { get => _value; set => _value = value; }
 
             /// <summary>过期时间</summary>
             public DateTime ExpiredTime { get; set; }
@@ -446,10 +440,7 @@ namespace WebCore.Cache
                 Value = value;
 
                 var now = VisitTime = DateTime.Now;
-                if (expire <= 0)
-                    ExpiredTime = DateTime.MaxValue;
-                else
-                    ExpiredTime = now.AddSeconds(expire);
+                ExpiredTime = expire <= 0 ? DateTime.MaxValue : now.AddSeconds(expire);
             }
 
             /// <summary>更新访问时间并返回数值</summary>
@@ -470,23 +461,25 @@ namespace WebCore.Cache
                 object newValue, oldValue;
                 do
                 {
-                    oldValue = _Value ?? 0;
+                    oldValue = _value ?? 0;
                     switch (code)
                     {
+                        case TypeCode.Int16:
                         case TypeCode.Int32:
                         case TypeCode.Int64:
                             newValue = Convert.ToInt64(oldValue) + Convert.ToInt64(value);
                             break;
                         case TypeCode.Single:
                         case TypeCode.Double:
+                        case TypeCode.Decimal:
                             newValue = Convert.ToDouble(oldValue) + Convert.ToDouble(value);
                             break;
                         default:
                             throw new NotSupportedException($"不支持类型[{value.GetType().FullName}]的递增");
                     }
-                } while (Interlocked.CompareExchange(ref _Value, newValue, oldValue) != oldValue);
+                } while (Interlocked.CompareExchange(ref _value, newValue, oldValue) != oldValue);
 
-                Visit();
+                VisitTime = DateTime.Now;
 
                 return newValue;
             }
@@ -502,23 +495,25 @@ namespace WebCore.Cache
                 object oldValue;
                 do
                 {
-                    oldValue = _Value ?? 0;
+                    oldValue = _value ?? 0;
                     switch (code)
                     {
+                        case TypeCode.Int16:
                         case TypeCode.Int32:
                         case TypeCode.Int64:
                             newValue = Convert.ToInt64(oldValue) - Convert.ToInt64(value);
                             break;
                         case TypeCode.Single:
                         case TypeCode.Double:
+                        case TypeCode.Decimal:
                             newValue = Convert.ToDouble(oldValue) - Convert.ToDouble(value);
                             break;
                         default:
                             throw new NotSupportedException($"不支持类型[{value.GetType().FullName}]的递减");
                     }
-                } while (Interlocked.CompareExchange(ref _Value, newValue, oldValue) != oldValue);
+                } while (Interlocked.CompareExchange(ref _value, newValue, oldValue) != oldValue);
 
-                Visit();
+                VisitTime = DateTime.Now;
 
                 return newValue;
             }
@@ -530,7 +525,7 @@ namespace WebCore.Cache
         /// <summary>移除过期的缓存项</summary>
         private void RemoveNotAlive()
         {
-            var dic = _cache;
+            var dic = cache;
             if (_count == 0 && !dic.Any()) return;
 
             // 过期时间升序，用于缓存满以后删除
@@ -590,7 +585,7 @@ namespace WebCore.Cache
             foreach (var item in list)
             {
                 OnExpire(item);
-                _cache.TryRemove(item, out _);
+                cache.TryRemove(item, out _);
             }
 
             // 修正

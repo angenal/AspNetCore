@@ -15,7 +15,7 @@ namespace WebCore.Cache
         /// <summary>内存缓存(字典缓存)</summary>
         protected ICache memory;
         /// <summary>Redis缓存</summary>
-        protected ICache redis;
+        protected IRedisCache redis;
         #endregion
 
         #region 静态默认实现
@@ -27,7 +27,7 @@ namespace WebCore.Cache
         /// <summary>实例化一个内存字典缓存</summary>
         public All() : this(Memory.Instance, Redis.Instance)
         { }
-        public All(ICache memory, ICache redis)
+        public All(ICache memory, IRedisCache redis)
         {
             this.memory = memory;
             this.redis = redis;
@@ -57,10 +57,7 @@ namespace WebCore.Cache
         public override bool Set<T>(string key, T value, int expire = -1)
         {
             bool result = memory.Set<T>(key, value, expire);
-            if (result)
-            {
-                JobManager.AddJob(new Action(() => redis.Set<T>(key, value, expire)), s => s.ToRunNow());
-            }
+            if (result) JobManager.AddJob(new Action(() => redis.Set<T>(key, value, expire)), s => s.ToRunNow());
             return result;
         }
 
@@ -75,7 +72,7 @@ namespace WebCore.Cache
                 item = redis.Get<T>(key);
                 if (item == null) return item;
                 int expire = (int)redis.GetExpire(key).TotalSeconds;
-                if (expire == -1 || expire > 2) memory.Set<T>(key, item, expire);
+                if (expire == -1 || expire > 1) memory.Set<T>(key, item, expire);
             }
             return item;
         }
@@ -86,10 +83,7 @@ namespace WebCore.Cache
         public override int Remove(params string[] keys)
         {
             var count = memory.Remove(keys);
-            if (count > 0)
-            {
-                redis.Remove(keys);
-            }
+            if (count > 0) redis.Remove(keys);
             return count;
         }
 
@@ -107,10 +101,7 @@ namespace WebCore.Cache
         public override bool SetExpire(string key, TimeSpan expire)
         {
             bool result = memory.SetExpire(key, expire);
-            if (result)
-            {
-                JobManager.AddJob(new Action(() => redis.SetExpire(key, expire)), s => s.ToRunNow());
-            }
+            if (result) JobManager.AddJob(new Action(() => redis.SetExpire(key, expire)), s => s.ToRunNow());
             return result;
         }
 
