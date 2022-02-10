@@ -8,9 +8,7 @@ namespace WebCore
 {
     public static class DataTableExtensions
     {
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="table"></param>
         /// <param name="excludes"></param>
@@ -18,7 +16,7 @@ namespace WebCore
         public static List<T> ToEntities<T>(this DataTable table, params string[] excludes) where T : new()
         {
             if (table == null || Activator.CreateInstance(typeof(T)) == null) return null;
-            var ps = typeof(T).GetProperties(ReflectionExtensions.PublicBindingAttr).Where(p => !excludes.Any(u => u.Equals(p.Name, StringComparison.OrdinalIgnoreCase))).ToArray();
+            var ps = typeof(T).GetProperties(TypeHelpers.PublicBindingAttr).Where(p => !excludes.Any(u => u.Equals(p.Name, StringComparison.OrdinalIgnoreCase))).ToArray();
             var entities = new List<T>();
             foreach (DataRow row in table.Rows)
             {
@@ -36,9 +34,7 @@ namespace WebCore
             return entities;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="entities"></param>
         /// <param name="members"></param>
