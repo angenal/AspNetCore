@@ -4,9 +4,7 @@ namespace WebCore
 {
     public static class GuidExtensions
     {
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         /// <param name="guid"></param>
         /// <param name="shift"></param>
         /// <returns></returns>
@@ -20,9 +18,7 @@ namespace WebCore
 
             return Math.Abs(res);
         }
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         /// <param name="guid"></param>
         /// <param name="shift"></param>
         /// <returns></returns>
@@ -31,9 +27,7 @@ namespace WebCore
             var c = ToInt(guid, shift);
             return c == 0 ? string.Empty : c.ToString("x8");
         }
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         /// <param name="guid"></param>
         /// <param name="shift"></param>
         /// <returns></returns>
@@ -42,9 +36,7 @@ namespace WebCore
             var c = ToInt(guid, shift);
             return c == 0 ? string.Empty : c.ToString("X8");
         }
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary></summary>
         /// <param name="toUppercase"></param>
         /// <returns></returns>
         public static string ToShortString(bool toUppercase = false)
@@ -53,6 +45,11 @@ namespace WebCore
             foreach (var b in Guid.NewGuid().ToByteArray()) i *= b + 1;
             string retVal = (i - DateTime.Now.Ticks).ToString("x");
             return toUppercase ? retVal.ToUpper() : retVal.ToLower();
+        }
+        /// <summary></summary>
+        public static string ToRegistryString(this Guid guid)
+        {
+            return guid.ToString("B");
         }
     }
 }
