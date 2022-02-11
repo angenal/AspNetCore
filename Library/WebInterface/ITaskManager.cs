@@ -35,7 +35,7 @@ namespace WebInterface
         /// <summary>
         /// Runs the job now.
         /// </summary>
-        void RunNow(Action job);
+        void RunNow(Action job, string name = null);
 
         /// <summary>
         /// Removes the schedule of the given name.

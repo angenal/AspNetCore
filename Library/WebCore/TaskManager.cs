@@ -73,9 +73,13 @@ namespace WebCore
         /// <summary>
         /// Runs the job now.
         /// </summary>
-        public void RunNow(Action job)
+        public void RunNow(Action job, string name = null)
         {
-            JobManager.AddJob(job, s => s.ToRunNow());
+            JobManager.AddJob(job, s =>
+            {
+                if (!string.IsNullOrEmpty(name)) s = s.WithName(name);
+                s.ToRunNow();
+            });
         }
 
         /// <summary>
