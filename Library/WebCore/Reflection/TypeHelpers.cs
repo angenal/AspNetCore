@@ -1226,7 +1226,7 @@ namespace WebCore
         private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
         {
             ctorArgs = ctorArgs ?? new object[0];
-            var types = ctorArgs.ConvertAll(a => a == null ? typeof(object) : a.GetType());
+            var types = Array.ConvertAll(ctorArgs, a => a == null ? typeof(object) : a.GetType());
             var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
             if (constructor != null) return (TBase)Instantiate(constructor, ctorArgs);
 
