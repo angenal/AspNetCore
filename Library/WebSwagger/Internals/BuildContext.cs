@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using WebSwagger.Core.Groups;
 
@@ -75,7 +74,7 @@ namespace WebSwagger.Internals
         {
             lock (Lock)
             {
-                Debug.WriteLine("BuildApiDoc");
+                //Debug.WriteLine("BuildApiDoc");
                 var apiGroupContext = this.GetApiGroupContext();
                 BuildSwaggerDoc(apiGroupContext);
                 BuildSwaggerEndpoint(apiGroupContext);
@@ -94,7 +93,7 @@ namespace WebSwagger.Internals
                 // 锁住对象，防止多线程
                 lock (Lock)
                 {
-                    Debug.WriteLine($"Build Swagger Document Key: {info.Key}");
+                    //Debug.WriteLine($"Build Swagger Document Key: {info.Key}");
                     DocOptions.SwaggerGenOptions.SwaggerGeneratorOptions.SwaggerDocs[info.Key] = info.Value;
                 }
             }

@@ -60,21 +60,25 @@ namespace WebCore
         /// <summary>Represents an object whose members can be dynamically added and removed at runtime.</summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static System.Dynamic.ExpandoObject ToDynamic(this object source)
+        public static System.Dynamic.ExpandoObject ToDynamic(this object source, bool allowNonPublicAccessors = false)
         {
             if (source == null) throw new ArgumentNullException("source");
             if (source is System.Dynamic.ExpandoObject dlr) return dlr;
-            dlr = new System.Dynamic.ExpandoObject();
 
             var type = source.GetType();
-            var accessor = TypeAccessor.Create(type);
+            dlr = new System.Dynamic.ExpandoObject();
+
+            // TypeAccessor: Provides by-name member-access to objects of a given type
+            var accessor = TypeAccessor.Create(type, allowNonPublicAccessors);
             if (accessor.GetMembersSupported)
             {
+                // TypeAccessor: Query the members available for this type, Implementation provided by RuntimeTypeAccessor.
                 var members = accessor.GetMembers();
                 foreach (var member in members) dlr.SetProperty(member.Name, accessor[source, member.Name]);
             }
             else
             {
+                // Retrieves a collection that represents all the fields and properties defined on a specified type at run time.
                 var members = type.GetMembersInHierarchy();
                 foreach (var member in members) dlr.SetProperty(member.Name, accessor[source, member.Name]);
             }
@@ -1025,21 +1029,34 @@ namespace WebCore
             yield break;
         }
 
-        public static IEnumerable<MemberInfo> GetMembersInHierarchy(this Type type)
+        /// <summary>Retrieves a collection that represents all the fields and properties defined on a specified type at run time.</summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static IEnumerable<MemberInfo> GetMembersInHierarchy(this Type type, bool allowNonPublicAccessors = false)
         {
             do
             {
-                foreach (PropertyInfo propertyInfo in from pi in type.GetRuntimeProperties()
-                                                      where !(pi.GetMethod ?? pi.SetMethod).IsStatic
-                                                      select pi)
+                if (allowNonPublicAccessors)
                 {
-                    yield return propertyInfo;
+                    foreach (PropertyInfo propertyInfo in from pi in type.GetRuntimeProperties() where !(pi.GetMethod ?? pi.SetMethod).IsStatic select pi)
+                    {
+                        yield return propertyInfo;
+                    }
+                    foreach (FieldInfo fieldInfo in from f in type.GetRuntimeFields() where !f.IsStatic select f)
+                    {
+                        yield return fieldInfo;
+                    }
                 }
-                foreach (FieldInfo fieldInfo in from f in type.GetRuntimeFields()
-                                                where !f.IsStatic
-                                                select f)
+                else
                 {
-                    yield return fieldInfo;
+                    foreach (PropertyInfo propertyInfo in from pi in type.GetRuntimeProperties() where pi.GetMethod != null && !pi.GetMethod.IsStatic && pi.GetMethod.IsPublic select pi)
+                    {
+                        yield return propertyInfo;
+                    }
+                    foreach (FieldInfo fieldInfo in from f in type.GetRuntimeFields() where !f.IsStatic && f.IsPublic select f)
+                    {
+                        yield return fieldInfo;
+                    }
                 }
                 type = type.BaseType;
             }
@@ -1047,11 +1064,9 @@ namespace WebCore
             yield break;
         }
 
-        public static IEnumerable<MemberInfo> GetMembersInHierarchy(this Type type, string name)
+        public static IEnumerable<MemberInfo> GetMembersInHierarchy(this Type type, string name, bool allowNonPublicAccessors = false)
         {
-            return from m in type.GetMembersInHierarchy()
-                   where m.Name == name
-                   select m;
+            return from m in type.GetMembersInHierarchy(allowNonPublicAccessors) where m.Name == name select m;
         }
 
         public static object GetDefaultValue(this Type type)

@@ -56,9 +56,9 @@ namespace WebSwaggerDemo.NET5.Controllers
             taskExecutor.Execute(state =>
             {
                 dynamic input = state.ToDynamic();
-                Thread.Sleep(10000);
+                Thread.Sleep(3000);
                 Trace.WriteLine($"In: {DateTime.Now.Ticks}  {{ key: '{input.key}', value: '{input.value}', t: {DateTime.Now.Ticks} }}");
-            }, new { key, value }.ToDynamic(), true);
+            }, new { key, value }, true);
 
             // 有可能阻塞(输出前执行)
             taskManager.Enqueue(async token =>

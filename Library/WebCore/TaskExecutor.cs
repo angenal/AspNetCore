@@ -11,8 +11,23 @@ namespace WebCore
         /// <summary></summary>
         public static TaskExecutor Default = new TaskExecutor();
 
-        private readonly Runner1 runner1 = new Runner1();
-        private readonly Runner2 runner2 = new Runner2();
+        private readonly Runner1[] r1;
+        private readonly Runner2[] r2;
+        private readonly int c = 0;
+        private int i1 = 0, i2 = 0;
+
+        /// <summary></summary>
+        public TaskExecutor()
+        {
+            c = Environment.ProcessorCount;
+            r1 = new Runner1[c];
+            r2 = new Runner2[c];
+            for (int i = 0; i < c; i++)
+            {
+                r1[i] = new Runner1();
+                r2[i] = new Runner2();
+            }
+        }
 
         /// <summary>
         /// Execute callback only once
@@ -25,11 +40,13 @@ namespace WebCore
             callback = new RunOnce(callback).Execute;
             if (laterOnEvent == false)
             {
-                runner1.Enqueue(callback, state);
+                int i = Math.Abs(Interlocked.Increment(ref i1) % c);
+                r1[i].Enqueue(callback, state);
             }
             else
             {
-                runner2.Enqueue(callback, state);
+                int i = Math.Abs(Interlocked.Increment(ref i2) % c);
+                r2[i].Enqueue(callback, state);
             }
             ThreadPool.QueueUserWorkItem(callback, state);
         }
