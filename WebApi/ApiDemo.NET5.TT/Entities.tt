@@ -1,4 +1,5 @@
-<#@ template debug="true" hostspecific="false" language="C#" #><#@ assembly name="System.Core.dll" #><#@ assembly name="System.Data.dll" #><#@ assembly name="System.Data.DataSetExtensions.dll" #><#@ assembly name="System.Xml.dll" #><#@ import namespace="System" #><#@ import namespace="System.Collections.Generic" #><#@ import namespace="System.Data" #><#@ import namespace="System.Data.Common" #><#@ import namespace="System.Data.SqlClient" #><#@ import namespace="System.Linq" #><#@ import namespace="System.IO" #><#@ import namespace="System.Xml" #><#@ output extension=".cs" #>using System;
+<#@ template debug="true" hostspecific="false" language="C#" #><#@ assembly name="System.Core.dll" #><#@ assembly name="System.Data.dll" #><#@ assembly name="System.Data.DataSetExtensions.dll" #><#@ assembly name="System.Xml.dll" #><#@ import namespace="System" #><#@ import namespace="System.Collections.Generic" #><#@ import namespace="System.Data" #><#@ import namespace="System.Data.Common" #><#@ import namespace="System.Data.SqlClient" #><#@ import namespace="System.Linq" #><#@ import namespace="System.IO" #><#@ import namespace="System.Xml" #><#@ output extension=".cs" #>
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,7 +24,7 @@ namespace ApiDemo.NET5.Models.Entities
 		[Required]
 <# } else { #>
 
-<# } #><# if(TT_MSSQL.AsString(col.Type) == "string"){ #>
+<# } #><# if(TT_MSSQL.AsString(col.Type) == "string" && col.MaxLength > 0){ #>
 		[MaxLength(<#=col.MaxLength#>)]
 <# } #>
         public <#= TT_MSSQL.AsString(col.Type) #><# if(col.IsNull&&TT_MSSQL.AsType(col.Type).IsValueType){ #><#= '?' #><# } #> <#= col.Name #> { get; set; }
@@ -58,12 +59,7 @@ namespace ApiDemo.NET5.Models.Entities
         }
         public static IEnumerable<TT_Column> GetColumns(string id)
         {
-            var sql = @"select col.name,systype.name as type,col.is_nullable,col.max_length,
-is_primary=case when exists(select * from sys.index_columns as indexcols left join sys.indexes as indexs on indexs.index_id=indexcols.index_id and indexs.[object_id]=indexcols.[object_id] left join sys.all_objects as allobj on indexs.name=allobj.name where indexcols.[object_id]=col.[object_id] and indexs.is_primary_key=1 and allobj.type='PK' and indexcols.column_id=col.column_id) then convert(bit,1) else convert(bit,0) end,
-col.is_identity,isnull(propertys.value,'') as remark 
-from sys.all_columns as col left join sys.types as systype on col.user_type_id=systype.user_type_id 
-LEFT JOIN sys.extended_properties propertys ON propertys.major_id=col.[object_id] and propertys.minor_id=col.column_id 
-where col.[object_id]=@id order by col.column_id";
+            var sql = "select col.name,systype.name as type,col.is_nullable,max_length=case when systype.name='text' or systype.name='ntext' then 0 else col.max_length end,is_primary=case when exists(select * from sys.index_columns as indexcols left join sys.indexes as indexs on indexs.index_id=indexcols.index_id and indexs.[object_id]=indexcols.[object_id] left join sys.all_objects as allobj on indexs.name=allobj.name where indexcols.[object_id]=col.[object_id] and indexs.is_primary_key=1 and allobj.type='PK' and indexcols.column_id=col.column_id) then convert(bit,1) else convert(bit,0) end,col.is_identity,isnull(propertys.value,'') as remark from sys.all_columns as col left join sys.types as systype on col.user_type_id=systype.user_type_id LEFT JOIN sys.extended_properties propertys ON propertys.major_id=col.[object_id] and propertys.minor_id=col.column_id where col.[object_id]=@id order by col.column_id";
             var data = new List<TT_Column>();
             using (IDataReader reader = ExecuteReader(sql, new SqlParameter("@id", id)))
             {
@@ -74,7 +70,7 @@ where col.[object_id]=@id order by col.column_id";
                         Name = reader.GetString(0),
                         Type = reader.GetString(1),
                         IsNull = reader.GetBoolean(2),
-                        MaxLength = reader.GetInt16(3),
+                        MaxLength = reader.GetInt32(3),
                         IsPrimary = reader.GetBoolean(4),
                         IsIdentity = reader.GetBoolean(5),
                         Remark = reader.GetString(6)
