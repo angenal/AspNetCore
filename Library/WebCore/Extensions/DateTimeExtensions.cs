@@ -500,7 +500,7 @@ namespace WebCore
         /// <returns></returns>
         public static DateTime ToEndOfWeek(this DateTime dt)
         {
-            return dt.AddDays(7 - dt.DayOfWeek.GetHashCode()).ToEndOfDay();
+            return dt.AddDays(dt.DayOfWeek == DayOfWeek.Sunday ? 0 : 7 - dt.DayOfWeek.GetHashCode()).ToEndOfDay();
         }
         /// <summary>
         /// Sets the time part to the latest time of this month.
