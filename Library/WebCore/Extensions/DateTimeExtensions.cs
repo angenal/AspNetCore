@@ -491,6 +491,22 @@ namespace WebCore
             return dt.HasValue ? dt.Value.ToEndOfDay() : (DateTime?)null;
         }
 
+        /// <summary>Resets the time part to 00:59:59. </summary>
+        /// <param name="dt">The date time to work with. </param>
+        /// <returns></returns>
+        public static DateTime ToEndOfHour(this DateTime dt)
+        {
+            return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 59, 59);
+        }
+
+        /// <summary>Resets the time part to 00:59:59. </summary>
+        /// <param name="dt">The date time to work with. </param>
+        /// <returns></returns>
+        public static DateTime? ToEndOfHour(this DateTime? dt)
+        {
+            return dt.HasValue ? dt.Value.ToEndOfHour() : (DateTime?)null;
+        }
+
 
 
         /// <summary>
@@ -640,6 +656,15 @@ namespace WebCore
             return dt.ToString(format);
         }
 
+        /// <summary>
+        /// Convert to UTC and ISO 8601 format: yyyy-MM-ddTHH:mm:ssZ
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public static string ToIsoTime(this DateTime dateTime)
+        {
+            return dateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
+        }
 
 
         /// <summary>
