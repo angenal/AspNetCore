@@ -58,6 +58,34 @@ namespace WebCore
         }
 
         /// <summary>
+        /// Adds a job schedule to the job manager, runs the job once at the given time.
+        /// </summary>
+        /// <param name="hours">The hours (0 through 23)</param>
+        /// <param name="minutes">The minutes (0 through 59)</param>
+        public void RunOnceAt(Action job, int hours, int minutes, string name = null, params Action[] andThenJobs)
+        {
+            JobManager.AddJob(job, s =>
+            {
+                if (!string.IsNullOrEmpty(name)) s = s.WithName(name);
+                foreach (Action andThenJob in andThenJobs) s = s.AndThen(andThenJob);
+                s.ToRunOnceAt(hours, minutes);
+            });
+        }
+
+        /// <summary>
+        /// Adds a job schedule to the job manager, runs the job once after the given interval.
+        /// </summary>
+        public void RunOnceIn(Action job, int interval, string name = null, params Action[] andThenJobs)
+        {
+            JobManager.AddJob(job, s =>
+            {
+                if (!string.IsNullOrEmpty(name)) s = s.WithName(name);
+                foreach (Action andThenJob in andThenJobs) s = s.AndThen(andThenJob);
+                s.ToRunOnceIn(interval);
+            });
+        }
+
+        /// <summary>
         /// Adds a job schedule to the job manager, runs the job according to the given interval.
         /// </summary>
         public void RunEvery(Action job, int interval, string name = null, params Action[] andThenJobs)
