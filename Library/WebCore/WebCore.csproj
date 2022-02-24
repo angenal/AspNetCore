@@ -62,7 +62,7 @@
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
-    <PackageReference Include="CSRedisCore" Version="3.6.8" />
+    <PackageReference Include="CSRedisCore" Version="3.6.9" />
     <PackageReference Include="Esprima" Version="2.1.2" />
     <PackageReference Include="FluentFTP" Version="35.2.3" />
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
