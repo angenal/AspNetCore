@@ -28,6 +28,18 @@ namespace WebInterface
         void RunOnceAt(Action job, DateTime time, string name = null, params Action[] andThenJobs);
 
         /// <summary>
+        /// Adds a job schedule to the job manager, runs the job once at the given time.
+        /// </summary>
+        /// <param name="hours">The hours (0 through 23)</param>
+        /// <param name="minutes">The minutes (0 through 59)</param>
+        void RunOnceAt(Action job, int hours, int minutes, string name = null, params Action[] andThenJobs);
+
+        /// <summary>
+        /// Adds a job schedule to the job manager, runs the job once after the given interval.
+        /// </summary>
+        void RunOnceIn(Action job, int interval, string name = null, params Action[] andThenJobs);
+
+        /// <summary>
         /// Adds a job schedule to the job manager, runs the job according to the given interval.
         /// </summary>
         void RunEvery(Action job, int interval, string name = null, params Action[] andThenJobs);
