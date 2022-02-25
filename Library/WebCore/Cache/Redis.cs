@@ -1,9 +1,11 @@
 using CSRedis;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using WebInterface;
 
 namespace WebCore.Cache
@@ -29,15 +31,20 @@ namespace WebCore.Cache
         public Redis()
         {
         }
+        /// <summary>
+        /// 新建Redis缓存实例
+        /// </summary>
         public Redis(string connectionstring)
         {
             Name = nameof(Redis);
             Client = new CSRedisClient(connectionstring);
+            if (RedisHelper.Instance == null) RedisHelper.Initialization(Client);
         }
         public Redis(string masterConnectionstring, string[] sentinels, bool readOnly = false)
         {
             Name = nameof(Redis);
             Client = new CSRedisClient(masterConnectionstring, sentinels, readOnly);
+            if (RedisHelper.Instance == null) RedisHelper.Initialization(Client);
         }
         /// <summary>
         /// 新建Redis缓存实例
@@ -75,6 +82,7 @@ namespace WebCore.Cache
             if (!string.IsNullOrEmpty(name)) s.Append($",name={name}");
             if (!string.IsNullOrEmpty(prefix)) s.Append($",prefix={prefix}");
             Client = new CSRedisClient(s.ToString());
+            if (RedisHelper.Instance == null) RedisHelper.Initialization(Client);
         }
         /// <summary>已重载。</summary>
         /// <returns></returns>
@@ -379,5 +387,131 @@ namespace WebCore.Cache
         /// <returns></returns>
         public override ICollection<T> GetSet<T>(string key) => throw new NotSupportedException("Redis未支持该功能");
         #endregion
+    }
+
+
+    /// <summary>生产者消费者</summary>
+    /// <typeparam name="T"></typeparam>
+    public class RedisQueue<T> : IDisposable, IProducerConsumer<T>
+    {
+        private readonly IProducerConsumerCollection<T> _collection = new ConcurrentQueue<T>();
+        private readonly SemaphoreSlim _occupiedNodes = new SemaphoreSlim(0);
+        private readonly string _countKey = $"RQC{typeof(T).Name}";
+        private readonly string _channel = $"RQD{typeof(T).Name}";
+
+        /// <summary>实例化Redis队列</summary>
+        public RedisQueue()
+        {
+            RedisHelper.Subscribe((_channel, Handle));
+        }
+        /// <summary>实例化Redis队列</summary>
+        public RedisQueue(string connectionstring)
+        {
+            if (RedisHelper.Instance == null) RedisHelper.Initialization(new CSRedisClient(connectionstring));
+            RedisHelper.Subscribe((_channel, Handle));
+        }
+
+        private void Handle(CSRedisClient.SubscribeMessageEventArgs msg)
+        {
+            T item = msg.Body.ToObject<T>();
+            if (_collection.TryAdd(item)) _occupiedNodes.Release();
+        }
+
+        /// <summary>元素个数</summary>
+        public int Count => RedisHelper.Get<int>(_countKey);
+
+        /// <summary>集合是否为空</summary>
+        public bool IsEmpty
+        {
+            get => Count == 0;
+        }
+
+        /// <summary>销毁</summary>
+        void IDisposable.Dispose()
+        {
+            _occupiedNodes.Dispose();
+        }
+
+        /// <summary>生产添加</summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public int Add(params T[] values)
+        {
+            var count = 0;
+            foreach (var item in values)
+            {
+                var message = item.ToJson();
+                if (RedisHelper.Publish(_channel, message) > 0)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>消费获取</summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public IEnumerable<T> Take(int count = 1)
+        {
+            if (count <= 0) yield break;
+
+            for (var i = 0; i < count; i++)
+            {
+                if (!_collection.TryTake(out var item)) break;
+
+                yield return item;
+            }
+        }
+
+        /// <summary>消费一个</summary>
+        /// <param name="timeout">超时。默认0秒，永久等待</param>
+        /// <returns></returns>
+        public T TakeOne(int timeout = 0)
+        {
+            if (!_occupiedNodes.Wait(0))
+            {
+                if (timeout <= 0 || !_occupiedNodes.Wait(timeout * 1000)) return default;
+            }
+
+            return _collection.TryTake(out var item) ? item : default;
+        }
+
+        /// <summary>消费获取，异步阻塞</summary>
+        /// <param name="timeout">超时。默认0秒，永久等待</param>
+        /// <returns></returns>
+        public async Task<T> TakeOneAsync(int timeout = 0)
+        {
+            if (!_occupiedNodes.Wait(0))
+            {
+                if (timeout <= 0) return default;
+
+                if (!await _occupiedNodes.WaitAsync(timeout * 1000)) return default;
+            }
+
+            return _collection.TryTake(out var item) ? item : default;
+        }
+
+        /// <summary>消费获取，异步阻塞</summary>
+        /// <param name="timeout">超时。默认0秒，永久等待</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns></returns>
+        public async Task<T> TakeOneAsync(int timeout, CancellationToken cancellationToken)
+        {
+            if (!_occupiedNodes.Wait(0))
+            {
+                if (timeout <= 0) return default;
+
+                if (!await _occupiedNodes.WaitAsync(timeout * 1000, cancellationToken)) return default;
+            }
+
+            return _collection.TryTake(out var item) ? item : default;
+        }
+
+        /// <summary>确认消费</summary>
+        /// <param name="keys"></param>
+        /// <returns></returns>
+        public int Acknowledge(params string[] keys) => 0;
     }
 }
