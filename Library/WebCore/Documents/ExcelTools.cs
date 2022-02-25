@@ -52,6 +52,16 @@ namespace WebCore.Documents
             }
         }
 
+        /// <summary>
+        /// 导出 Excel 文档(*.xls,*.xlsx)
+        /// </summary>
+        /// <param name="templateFile">Excel模板文档</param>
+        /// <param name="saveFileName">导出文件路径</param>
+        /// <param name="list">数据列表</param>
+        /// <param name="columnHeaders">列名关系{"A1","Hashtable:Key1"}</param>
+        /// <param name="copyStyles">复制数据行第一行样式</param>
+        /// <param name="password">文件密码,输入密码才能打开</param>
+        /// <param name="readOnlyProtect">只读保护</param>
         public void ExportWithList(string templateFile, string saveFileName, IEnumerable<Hashtable> list, Dictionary<string, string> columnHeaders, bool copyStyles = true, string password = null, bool readOnlyProtect = false)
         {
             if (string.IsNullOrEmpty(templateFile))
@@ -102,6 +112,16 @@ namespace WebCore.Documents
             doc.Dispose();
         }
 
+        /// <summary>
+        /// 导出 Excel 文档(*.xls,*.xlsx)
+        /// </summary>
+        /// <param name="templateFile">Excel模板文档</param>
+        /// <param name="outputStream">输出字节流</param>
+        /// <param name="list">数据列表</param>
+        /// <param name="columnHeaders">列名关系{"A1","Hashtable:Key1"}</param>
+        /// <param name="copyStyles">复制数据行第一行样式</param>
+        /// <param name="password">文件密码,输入密码才能打开</param>
+        /// <param name="readOnlyProtect">只读保护</param>
         public void ExportWithList(string templateFile, Stream outputStream, IEnumerable<Hashtable> list, Dictionary<string, string> columnHeaders, bool copyStyles = true, string password = null, bool readOnlyProtect = false)
         {
             if (string.IsNullOrEmpty(templateFile))
@@ -152,6 +172,17 @@ namespace WebCore.Documents
             doc.Dispose();
         }
 
+        /// <summary>
+        /// 导出 Excel 文档(*.xls,*.xlsx)
+        /// </summary>
+        /// <param name="saveFileName">导出文件路径</param>
+        /// <param name="dataTable">数据列表</param>
+        /// <param name="columnHeaders">包含列名</param>
+        /// <param name="firstRow">第一行</param>
+        /// <param name="firstColumn">第一列</param>
+        /// <param name="action">其它处理</param>
+        /// <param name="password">文件密码,输入密码才能打开</param>
+        /// <param name="readOnlyProtect">只读保护</param>
         public void ExportWithDataTable(string saveFileName, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, string password = null, bool readOnlyProtect = false)
         {
             if (string.IsNullOrEmpty(saveFileName))
@@ -180,6 +211,17 @@ namespace WebCore.Documents
             doc.Dispose();
         }
 
+        /// <summary>
+        /// 导出 Excel 文档(*.xls,*.xlsx)
+        /// </summary>
+        /// <param name="outputStream">输出字节流</param>
+        /// <param name="dataTable">数据列表</param>
+        /// <param name="columnHeaders">包含列名</param>
+        /// <param name="firstRow">第一行</param>
+        /// <param name="firstColumn">第一列</param>
+        /// <param name="action">其它处理</param>
+        /// <param name="password">文件密码,输入密码才能打开</param>
+        /// <param name="readOnlyProtect">只读保护</param>
         public void ExportWithDataTable(Stream outputStream, DataTable dataTable, bool columnHeaders = true, int firstRow = 1, int firstColumn = 1, string password = null, bool readOnlyProtect = false)
         {
             if (outputStream == null)
@@ -208,6 +250,17 @@ namespace WebCore.Documents
             doc.Dispose();
         }
 
+        /// <summary>
+        /// 另存 Excel 文档(*.pdf,*.html,*.png)
+        /// </summary>
+        /// <param name="source">来源文件(*.xls,*.xlsx)</param>
+        /// <param name="outputDirectory">输出目录</param>
+        /// <param name="outputFileFormat">选择一种输出格式(pdf,html,png)</param>
+        /// <param name="uriString">返回文件路径前缀网址</param>
+        /// <param name="password">文件密码,输入密码才能打开</param>
+        /// <param name="name">返回文件名(不包含文件扩展类型)</param>
+        /// <param name="ts">返回文件名后缀</param>
+        /// <returns></returns>
         public string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null)
         {
             string filename = source.FullName, dirString = outputDirectory, fName, fPath;
@@ -298,6 +351,159 @@ namespace WebCore.Documents
             }
 
             throw new ArgumentNullException(nameof(outputFileFormat));
+        }
+
+
+        /// <summary>
+        /// Excel文件转换为DataSet
+        /// </summary>
+        /// <param name="path">Excel文件路径</param>
+        /// <param name="columnsCount">表格列数限制</param>
+        /// <param name="hasTitle">是否有表头</param>
+        /// <param name="columnsName">表格列名列表</param>
+        /// <param name="skipFirstColumnEmptyRow">跳过第一列为空的数据</param>
+        /// <param name="getBackgroundColor">获取背景颜色RGB格式: #000000</param>
+        /// <param name="trimText">清除单元格中的空白字符</param>
+        public DataSet ImportDataSet(string path, int[] columnsCount, bool[] hasTitle, string[][] columnsName, bool[] skipFirstColumnEmptyRow, bool[] getBackgroundColor, bool[] trimText)
+        {
+            using (var workbook = new Workbook())
+            {
+                workbook.LoadFromFile(path);
+                var ds = new DataSet();
+                var count = workbook.Worksheets.Count;
+                if (count == 0) return ds;
+                for (var i = 0; i < count; i++)
+                {
+                    var sheet = workbook.Worksheets[i];
+                    var table = SheetToDataTable(sheet, columnsCount[i], hasTitle[i], columnsName[i], skipFirstColumnEmptyRow[i], getBackgroundColor[i], trimText[i]);
+                    ds.Tables.Add(table);
+                }
+                return ds;
+            }
+        }
+
+        /// <summary>
+        /// Excel文件流转换为DataSet
+        /// </summary>
+        /// <param name="stream">Excel文件流</param>
+        /// <param name="worksheetIndex">工作表索引</param>
+        /// <param name="columnsCount">表格列数限制</param>
+        /// <param name="hasTitle">是否有表头</param>
+        /// <param name="columnsName">表格列名列表</param>
+        /// <param name="skipFirstColumnEmptyRow">跳过第一列为空的数据</param>
+        /// <param name="getBackgroundColor">获取背景颜色RGB格式: #000000</param>
+        /// <param name="trimText">清除单元格中的空白字符</param>
+        public DataSet ImportDataSet(Stream stream, int[] columnsCount, bool[] hasTitle, string[][] columnsName, bool[] skipFirstColumnEmptyRow, bool[] getBackgroundColor, bool[] trimText)
+        {
+            using (var workbook = new Workbook())
+            {
+                workbook.LoadFromStream(stream);
+                var ds = new DataSet();
+                var count = workbook.Worksheets.Count;
+                if (count == 0) return ds;
+                for (var i = 0; i < count; i++)
+                {
+                    var sheet = workbook.Worksheets[i];
+                    var table = SheetToDataTable(sheet, columnsCount[i], hasTitle[i], columnsName[i], skipFirstColumnEmptyRow[i], getBackgroundColor[i], trimText[i]);
+                    ds.Tables.Add(table);
+                }
+                return ds;
+            }
+        }
+
+        /// <summary>
+        /// Excel文件转换为DataTable
+        /// </summary>
+        /// <param name="path">Excel文件路径</param>
+        /// <param name="worksheetIndex">工作表索引</param>
+        /// <param name="columnsCount">表格列数限制</param>
+        /// <param name="hasTitle">是否有表头</param>
+        /// <param name="columnsName">表格列名列表</param>
+        /// <param name="skipFirstColumnEmptyRow">跳过第一列为空的数据</param>
+        /// <param name="getBackgroundColor">获取背景颜色RGB格式: #000000</param>
+        /// <param name="trimText">清除单元格中的空白字符</param>
+        public DataTable ImportDataTable(string path, int worksheetIndex = 0, int columnsCount = 0, bool hasTitle = true, string[] columnsName = null, bool skipFirstColumnEmptyRow = true, bool getBackgroundColor = false, bool trimText = false)
+        {
+            using (var workbook = new Workbook())
+            {
+                workbook.LoadFromFile(path);
+                if (worksheetIndex >= workbook.Worksheets.Count) return new DataTable();
+                var sheet = workbook.Worksheets[worksheetIndex];
+                return SheetToDataTable(sheet, columnsCount, hasTitle, columnsName, skipFirstColumnEmptyRow, getBackgroundColor, trimText);
+            }
+        }
+
+        /// <summary>
+        /// Excel文件流转换为DataTable
+        /// </summary>
+        /// <param name="stream">Excel文件流</param>
+        /// <param name="worksheetIndex">工作表索引</param>
+        /// <param name="columnsCount">表格列数限制</param>
+        /// <param name="hasTitle">是否有表头</param>
+        /// <param name="columnsName">表格列名列表</param>
+        /// <param name="skipFirstColumnEmptyRow">跳过第一列为空的数据</param>
+        /// <param name="getBackgroundColor">获取背景颜色RGB格式: #000000</param>
+        /// <param name="trimText">清除单元格中的空白字符</param>
+        public DataTable ImportDataTable(Stream stream, int worksheetIndex = 0, int columnsCount = 0, bool hasTitle = true, string[] columnsName = null, bool skipFirstColumnEmptyRow = true, bool getBackgroundColor = false, bool trimText = false)
+        {
+            using (var workbook = new Workbook())
+            {
+                workbook.LoadFromStream(stream);
+                if (worksheetIndex >= workbook.Worksheets.Count) return new DataTable();
+                var sheet = workbook.Worksheets[worksheetIndex];
+                return SheetToDataTable(sheet, columnsCount, hasTitle, columnsName, skipFirstColumnEmptyRow, getBackgroundColor, trimText);
+            }
+        }
+
+        static DataTable SheetToDataTable(Worksheet sheet, int columnsCount = 0, bool hasTitle = true, string[] columnsName = null, bool skipFirstColumnEmptyRow = true, bool getBackgroundColor = false, bool trimText = false)
+        {
+            int iRowCount = sheet.Rows.Length;
+            int iColCount = sheet.Columns.Length;
+            if (0 < columnsCount && columnsCount <= iColCount) iColCount = columnsCount;
+            var dt = new DataTable();
+            // 生成表头
+            if (columnsName == null || columnsName.Length == 0)
+            {
+                for (int i = 0; i < iColCount; i++)
+                {
+                    var columnName = "column" + i;
+                    if (hasTitle)
+                    {
+                        var text = sheet.Range[1, i + 1].DisplayedText;
+                        if (!string.IsNullOrEmpty(text)) columnName = trimText ? text.Trim() : text;
+                    }
+                    while (dt.Columns.Contains(columnName)) columnName += "_1";
+                    dt.Columns.Add(new DataColumn(columnName));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < iColCount; i++)
+                {
+                    var columnName = columnsName[i];
+                    while (dt.Columns.Contains(columnName)) columnName += "_1";
+                    dt.Columns.Add(new DataColumn(columnName));
+                }
+            }
+            // 生成数据
+            for (int iRow = hasTitle ? 2 : 1; iRow <= iRowCount; iRow++)
+            {
+                if (skipFirstColumnEmptyRow && string.IsNullOrEmpty(sheet.Range[iRow, 1].DisplayedText)) continue;
+                DataRow dr = dt.NewRow();
+                for (int iCol = 1; iCol <= iColCount; iCol++)
+                {
+                    var text = sheet.Range[iRow, iCol].DisplayedText ?? "";
+                    if (trimText) text = text.Trim();
+                    if (getBackgroundColor)
+                    {
+                        var color = sheet.Range[iRow, iCol].Style.Color;
+                        text += "#" + color.R.ToString("x2") + color.G.ToString("x2") + color.B.ToString("x2");
+                    }
+                    dr[iCol - 1] = text;
+                }
+                dt.Rows.Add(dr);
+            }
+            return dt;
         }
     }
 }
