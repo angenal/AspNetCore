@@ -69,5 +69,56 @@ namespace WebInterface
         /// <param name="ts">返回文件名后缀</param>
         /// <returns></returns>
         string SaveToFile(FileInfo source, string outputDirectory, string outputFileFormat, string uriString = null, string password = null, string name = null, string ts = null);
+
+        /// <summary>
+        /// Excel文件转换为DataSet
+        /// </summary>
+        /// <param name="path">Excel文件路径</param>
+        /// <param name="columnsCount">表格列数限制</param>
+        /// <param name="hasTitle">是否有表头</param>
+        /// <param name="columnsName">表格列名列表</param>
+        /// <param name="skipFirstColumnEmptyRow">跳过第一列为空的数据</param>
+        /// <param name="getBackgroundColor">获取背景颜色RGB格式: #000000</param>
+        /// <param name="trimText">清除单元格中的空白字符</param>
+        DataSet ImportDataSet(string path, int[] columnsCount, bool[] hasTitle, string[][] columnsName, bool[] skipFirstColumnEmptyRow, bool[] getBackgroundColor, bool[] trimText);
+
+        /// <summary>
+        /// Excel文件流转换为DataSet
+        /// </summary>
+        /// <param name="stream">Excel文件流</param>
+        /// <param name="worksheetIndex">工作表索引</param>
+        /// <param name="columnsCount">表格列数限制</param>
+        /// <param name="hasTitle">是否有表头</param>
+        /// <param name="columnsName">表格列名列表</param>
+        /// <param name="skipFirstColumnEmptyRow">跳过第一列为空的数据</param>
+        /// <param name="getBackgroundColor">获取背景颜色RGB格式: #000000</param>
+        /// <param name="trimText">清除单元格中的空白字符</param>
+        DataSet ImportDataSet(Stream stream, int[] columnsCount, bool[] hasTitle, string[][] columnsName, bool[] skipFirstColumnEmptyRow, bool[] getBackgroundColor, bool[] trimText);
+
+        /// <summary>
+        /// Excel文件转换为DataTable
+        /// </summary>
+        /// <param name="path">Excel文件路径</param>
+        /// <param name="worksheetIndex">工作表索引</param>
+        /// <param name="columnsCount">表格列数限制</param>
+        /// <param name="hasTitle">是否有表头</param>
+        /// <param name="columnsName">表格列名列表</param>
+        /// <param name="skipFirstColumnEmptyRow">跳过第一列为空的数据</param>
+        /// <param name="getBackgroundColor">获取背景颜色RGB格式: #000000</param>
+        /// <param name="trimText">清除单元格中的空白字符</param>
+        DataTable ImportDataTable(string path, int worksheetIndex = 0, int columnsCount = 0, bool hasTitle = true, string[] columnsName = null, bool skipFirstColumnEmptyRow = true, bool getBackgroundColor = false, bool trimText = false);
+
+        /// <summary>
+        /// Excel文件流转换为DataTable
+        /// </summary>
+        /// <param name="stream">Excel文件流</param>
+        /// <param name="worksheetIndex">工作表索引</param>
+        /// <param name="columnsCount">表格列数限制</param>
+        /// <param name="hasTitle">是否有表头</param>
+        /// <param name="columnsName">表格列名列表</param>
+        /// <param name="skipFirstColumnEmptyRow">跳过第一列为空的数据</param>
+        /// <param name="getBackgroundColor">获取背景颜色RGB格式: #000000</param>
+        /// <param name="trimText">清除单元格中的空白字符</param>
+        DataTable ImportDataTable(Stream stream, int worksheetIndex = 0, int columnsCount = 0, bool hasTitle = true, string[] columnsName = null, bool skipFirstColumnEmptyRow = true, bool getBackgroundColor = false, bool trimText = false);
     }
 }
