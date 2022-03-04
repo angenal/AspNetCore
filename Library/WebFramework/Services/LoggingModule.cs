@@ -243,7 +243,7 @@ namespace WebFramework.Services
                 // Output to File
                 .WriteTo.File(dir.FullName, restrictedToMinimumLevel: LogEventLevel.Warning, outputTemplate: template, buffered: true, shared: false, flushToDiskInterval: TimeSpan.FromSeconds(5), rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7, encoding: Encoding.UTF8)
                 // Output to RavenDB
-                .WriteTo.RavenDB(RavenDb.CreateRavenDocStore(env), errorExpiration: TimeSpan.FromDays(60))
+                //.WriteTo.RavenDB(RavenDb.CreateRavenDocStore(env), errorExpiration: TimeSpan.FromDays(60))
                 .CreateLogger();
 
             // Adds middleware for streamlined request logging
