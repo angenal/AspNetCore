@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Raven.Client.Documents;
-using Raven.Client.Http;
 using System.IO;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -14,6 +12,7 @@ namespace WebFramework.Data
     public class RavenDb
     {
         internal static X509Certificate2 cert;
+        // <PackageReference Include="Serilog.Sinks.RavenDB" Version="3.0.0" />
 
         /// <summary></summary>
         public static IDocumentStore CreateRavenDocStore(IWebHostEnvironment env,
@@ -21,6 +20,7 @@ namespace WebFramework.Data
             string database = "app", string certPassword = "UsawpF4uIKy5Ju7P",
             string databaseDevelopment = "test", string certDevelopmentPassword = "UsawpF4uIKy5Ju7P")
         {
+            // <PackageReference Include="Serilog.Sinks.RavenDB" Version="3.0.0" />
             RequestExecutor.RemoteCertificateValidationCallback += RemoteCertificateValidationCallback;
 
             var db = new DocumentStore { Urls = new[] { connectionString } };
