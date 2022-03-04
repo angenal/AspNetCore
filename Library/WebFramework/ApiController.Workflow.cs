@@ -15,7 +15,7 @@ namespace WebFramework
         //public IWorkflowHost WorkflowHost => _workflowHost ??= HttpContext.RequestServices.GetService<IWorkflowHost>();
         //private IWorkflowHost _workflowHost;
         /// <summary></summary>
-        public async Task PublishEvent(string eventName, string eventKey, object eventData, System.DateTime? effectiveDate = null)
+        protected async Task PublishEvent(string eventName, string eventKey, object eventData, System.DateTime? effectiveDate = null)
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -28,7 +28,7 @@ namespace WebFramework
             }
         }
         /// <summary></summary>
-        public void RegisterWorkflow<TWorkflow>() where TWorkflow : IWorkflow
+        protected void RegisterWorkflow<TWorkflow>() where TWorkflow : IWorkflow
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -41,7 +41,7 @@ namespace WebFramework
             }
         }
         /// <summary></summary>
-        public void RegisterWorkflow<TWorkflow, TData>() where TWorkflow : IWorkflow<TData> where TData : new()
+        protected void RegisterWorkflow<TWorkflow, TData>() where TWorkflow : IWorkflow<TData> where TData : new()
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -54,7 +54,7 @@ namespace WebFramework
             }
         }
         /// <summary></summary>
-        public async Task<bool> ResumeWorkflow(string workflowId)
+        protected async Task<bool> ResumeWorkflow(string workflowId)
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -65,7 +65,7 @@ namespace WebFramework
             return await host.ResumeWorkflow(workflowId);
         }
         /// <summary></summary>
-        public async Task<string> StartWorkflow(string workflowId, object data = null, string reference = null)
+        protected async Task<string> StartWorkflow(string workflowId, object data = null, string reference = null)
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -76,7 +76,7 @@ namespace WebFramework
             return await host.StartWorkflow(workflowId, data, reference);
         }
         /// <summary></summary>
-        public async Task<string> StartWorkflow(string workflowId, int? version, object data = null, string reference = null)
+        protected async Task<string> StartWorkflow(string workflowId, int? version, object data = null, string reference = null)
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -87,7 +87,7 @@ namespace WebFramework
             return await host.StartWorkflow(workflowId, version, data, reference);
         }
         /// <summary></summary>
-        public async Task<string> StartWorkflow<TData>(string workflowId, TData data = null, string reference = null) where TData : class, new()
+        protected async Task<string> StartWorkflow<TData>(string workflowId, TData data = null, string reference = null) where TData : class, new()
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -98,7 +98,7 @@ namespace WebFramework
             return await host.StartWorkflow<TData>(workflowId, data, reference);
         }
         /// <summary></summary>
-        public async Task<string> StartWorkflow<TData>(string workflowId, int? version, TData data = null, string reference = null) where TData : class, new()
+        protected async Task<string> StartWorkflow<TData>(string workflowId, int? version, TData data = null, string reference = null) where TData : class, new()
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -109,7 +109,7 @@ namespace WebFramework
             return await host.StartWorkflow<TData>(workflowId, version, data, reference);
         }
         /// <summary></summary>
-        public async Task<bool> SuspendWorkflow(string workflowId)
+        protected async Task<bool> SuspendWorkflow(string workflowId)
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -120,7 +120,7 @@ namespace WebFramework
             return await host.SuspendWorkflow(workflowId);
         }
         /// <summary></summary>
-        public async Task<bool> TerminateWorkflow(string workflowId)
+        protected async Task<bool> TerminateWorkflow(string workflowId)
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -133,7 +133,7 @@ namespace WebFramework
         #endregion
 
         #region WorkflowHostExtensions
-        public IEnumerable<Models.DTO.OpenUserAction> GetOpenUserActions(string workflowId)
+        protected IEnumerable<Models.DTO.OpenUserAction> GetOpenUserActions(string workflowId)
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
@@ -143,7 +143,7 @@ namespace WebFramework
             }
             return host.GetOpenUserActions(workflowId).Select(t => new Models.DTO.OpenUserAction { Key = t.Key, Prompt = t.Prompt, AssignedPrincipal = t.AssignedPrincipal, Options = t.Options });
         }
-        public async Task PublishUserAction(string actionKey, string user, object value)
+        protected async Task PublishUserAction(string actionKey, string user, object value)
         {
             var host = HttpContext.RequestServices.GetService<IWorkflowHost>();
             if (host == null)
