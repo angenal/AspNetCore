@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -58,13 +58,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="Autofac" Version="6.3.0" />
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
     <PackageReference Include="CSRedisCore" Version="3.6.9" />
     <PackageReference Include="Esprima" Version="2.1.2" />
-    <PackageReference Include="FluentFTP" Version="35.2.3" />
+    <PackageReference Include="FluentFTP" Version="37.0.2" />
     <PackageReference Include="FluentScheduler" Version="5.5.1" />
     <PackageReference Include="Jint" Version="2.11.58" />
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.1.11" />
@@ -80,7 +80,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Microsoft.FASTER.Core" Version="1.9.10" />
+    <PackageReference Include="Microsoft.FASTER.Core" Version="1.9.14" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="NetTopologySuite" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -88,7 +88,7 @@
     <PackageReference Include="NodaTime" Version="3.0.9" />
     <PackageReference Include="SkiaSharp" Version="1.68.3" />
     <PackageReference Include="Sodium.Core" Version="1.2.3" />
-    <PackageReference Include="StackExchange.Redis" Version="2.2.79" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
     <PackageReference Include="System.Management" Version="5.0.0" />
@@ -100,7 +100,7 @@
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
     <PackageReference Include="System.Threading.ThreadPool" Version="4.3.0" />
-    <PackageReference Include="ToolGood.Words" Version="3.0.2.8" />
+    <PackageReference Include="ToolGood.Words" Version="3.0.3.1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Xml\" />
