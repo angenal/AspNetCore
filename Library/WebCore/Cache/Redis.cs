@@ -25,9 +25,18 @@ namespace WebCore.Cache
         #region 静态默认实现
         /// <summary>默认缓存</summary>
         public static IRedisCache Instance { get; set; }
+        private static int I = 0;
+        private void Initialization(string masterConnectionstring, string[] sentinels, bool readOnly = false)
+        {
+            Name = nameof(Redis);
+            Client = sentinels.Length == 0 ? new CSRedisClient(masterConnectionstring) : new CSRedisClient(masterConnectionstring, sentinels, readOnly);
+            // RedisHelper.Initialization(new CSRedis.CSRedisClient("127.0.0.1:6379,password=123,defaultDatabase=13,poolsize=50,ssl=false,writeBuffer=10240,prefix=key前辍"));
+            if (Interlocked.CompareExchange(ref I, 1, 0) == 0) RedisHelper.Initialization(Client);
+        }
         #endregion
 
         #region 构造
+        /// <summary></summary>
         public Redis()
         {
         }
@@ -36,15 +45,14 @@ namespace WebCore.Cache
         /// </summary>
         public Redis(string connectionstring)
         {
-            Name = nameof(Redis);
-            Client = new CSRedisClient(connectionstring);
-            if (RedisHelper.Instance == null) RedisHelper.Initialization(Client);
+            Initialization(connectionstring, new string[0]);
         }
+        /// <summary>
+        /// 新建Redis缓存实例
+        /// </summary>
         public Redis(string masterConnectionstring, string[] sentinels, bool readOnly = false)
         {
-            Name = nameof(Redis);
-            Client = new CSRedisClient(masterConnectionstring, sentinels, readOnly);
-            if (RedisHelper.Instance == null) RedisHelper.Initialization(Client);
+            Initialization(masterConnectionstring, sentinels, readOnly);
         }
         /// <summary>
         /// 新建Redis缓存实例
@@ -67,7 +75,6 @@ namespace WebCore.Cache
             int idleTimeout = 20000, int connectTimeout = 5000, int syncTimeout = 10000,
             bool ssl = false, bool testcluster = true, string name = "", string prefix = "")
         {
-            Name = nameof(Redis);
             var s = new StringBuilder(server);
             if (!string.IsNullOrEmpty(password)) s.Append($",password={password}");
             s.Append($",defaultDatabase={defaultDatabase}");
@@ -81,8 +88,7 @@ namespace WebCore.Cache
             s.Append($",testcluster={testcluster}");
             if (!string.IsNullOrEmpty(name)) s.Append($",name={name}");
             if (!string.IsNullOrEmpty(prefix)) s.Append($",prefix={prefix}");
-            Client = new CSRedisClient(s.ToString());
-            if (RedisHelper.Instance == null) RedisHelper.Initialization(Client);
+            Initialization(s.ToString(), new string[0]);
         }
         /// <summary>已重载。</summary>
         /// <returns></returns>
