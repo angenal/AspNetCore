@@ -508,17 +508,6 @@
         <member name="M:WebFramework.Data.LiteDbExtensions.WhereIF``1(LiteDB.ILiteQueryable{``0},System.Boolean,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
             <summary></summary>
         </member>
-        <member name="T:WebFramework.Data.RavenDb">
-            <summary>
-            RavenDB database service.
-            </summary>
-        </member>
-        <member name="M:WebFramework.Data.RavenDb.CreateRavenDocStore(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,System.String,System.String,System.String,System.String,System.String)">
-            <summary></summary>
-        </member>
-        <member name="M:WebFramework.Data.RavenDb.RemoteCertificateValidationCallback(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
-            <summary></summary>
-        </member>
         <member name="T:WebFramework.Data.RedisManager">
             <summary>
             Redis db manager
@@ -1948,7 +1937,7 @@
             Register services
             </summary>
         </member>
-        <member name="M:WebFramework.Services.LimitingModule.UseLimiting(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+        <member name="M:WebFramework.Services.LimitingModule.UseLimiting(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Configure services
             </summary>
