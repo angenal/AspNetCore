@@ -261,7 +261,7 @@ namespace WebFramework.Services
             app.UseCors();
 
             // Use ip rate limiting middleware
-            app.UseLimiting();
+            app.UseLimiting(config);
 
             // Use i18n supports multi language
             app.UseResources();
