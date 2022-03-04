@@ -84,6 +84,8 @@ namespace WebFramework.Services
                         Array.Empty<string>()
                     }
                 });
+                // provide a custom strategy for generating the unique Id's that are used to reference object Schema's
+                c.CustomSchemaIds(i => i.FullName);
             });
 
             // Adds the Swagger Generator opt-in component to support Newtonsoft.Json serializer behaviors.
