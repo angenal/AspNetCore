@@ -103,7 +103,7 @@ namespace WebControllers.Controllers
         /// <param name="code">客户端获取到的参数,会被传递至微信服务器进行验证.</param>
         /// <param name="state">通过该随机KEY值缓存openid(选填)</param>
         /// <param name="returnUrl">跳转URL(选填)</param>
-        [HttpGet]
+        [HttpGet("Openid")]
         [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Openid(string code, string state, string returnUrl)
@@ -147,7 +147,7 @@ namespace WebControllers.Controllers
         /// <param name="state">通过该随机KEY值缓存userinfo(选填)</param>
         /// <param name="openid">通过openid获取userinfo(选填)</param>
         /// <param name="returnUrl">跳转URL(选填)</param>
-        [HttpGet]
+        [HttpGet("Userinfo")]
         [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Userinfo(string code, string state, string openid, string returnUrl)
@@ -213,7 +213,7 @@ namespace WebControllers.Controllers
         /// </summary>
         /// <param name="state">通过该随机KEY值缓存openid</param>
         /// <param name="openid">通过openid获取userinfo</param>
-        [HttpGet]
+        [HttpGet("Subscribeinfo")]
         [Produces(Produces.JSON)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Subscribeinfo(string state, string openid)
