@@ -141,8 +141,10 @@ function swagger_translate() {
         $(this).find('tr.responses-header > td.response-col_status').html(resource_globalization["Code"]);
         $(this).find('tr.responses-header > td.response-col_description').html(resource_globalization["Details"]);
 
-        $(this).find('tr.response > td.response-col_description').find('h5:first').html(resource_globalization["ResponseBody"]);
-        $(this).find('tr.response > td.response-col_description').find('h5').eq(1).html(resource_globalization["ResponseHeaders"]);
+        var h5l3 = $(this).find('tr.response > td.response-col_description').find('h5');
+        h5l3.eq(0).html(resource_globalization["ResponseBody"]);
+        h5l3.eq(1).html(resource_globalization["ResponseHeaders"]);
+        h5l3.eq(2).html(resource_globalization["RequestDuration"]);
 
         $(this).parent('div').next('h4').html(resource_globalization["Responses"]);
     });
@@ -155,6 +157,7 @@ function swagger_translate() {
     $.initialize('.model-box', function () {
         var td = $(this).find('table.model tr.description td'), p = td.find('p');
         td.eq(0).html(resource_globalization["ResponseTypeFields"]);
+        td.eq(1).find('p').html(resource_globalization["ResponseHeaderDescription"]);
         if (p.length == 1 && !$.trim(p.text())) p.html(resource_globalization["Description"]);
         $(this).find('table.model tr:last:not(.property-row)').remove();
     });
