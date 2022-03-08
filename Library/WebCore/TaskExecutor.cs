@@ -35,7 +35,7 @@ namespace WebCore
         /// <param name="callback">Represents a callback method to be executed by a thread pool thread</param>
         /// <param name="state">Parameter for callback</param>
         /// <param name="laterOnEvent">later on event</param>
-        public void Execute(WaitCallback callback, object state, bool laterOnEvent = false)
+        public void Execute(WaitCallback callback, object state, bool laterOnEvent = true)
         {
             callback = new RunOnce(callback).Execute;
             if (laterOnEvent == false)
