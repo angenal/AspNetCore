@@ -13,6 +13,7 @@ var resource_globalization = {
     "Code": "状态码",
     "Details": "详情",
     "RequestBody": "请求体",
+    "RequestDuration": "响应时间",
     "ResponseBody": "响应体",
     "ResponseHeaders": "响应头",
     "ResponseHeaderName": "响应",
