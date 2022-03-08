@@ -117,6 +117,7 @@ namespace WebCore
                     }
                     try
                     {
+                        Thread.Sleep(0);
                         result.callback(result.state.State);
                     }
                     catch (Exception e)
