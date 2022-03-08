@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using WebCore;
 using WebCore.Models.DTO;
@@ -56,9 +55,8 @@ namespace WebSwaggerDemo.NET5.Controllers
             taskExecutor.Execute(state =>
             {
                 dynamic input = state.ToDynamic();
-                Thread.Sleep(3000);
-                Trace.WriteLine($"In: {DateTime.Now.Ticks}  {{ key: '{input.key}', value: '{input.value}', t: {DateTime.Now.Ticks} }}");
-            }, new { key, value }, true);
+                Trace.WriteLine($"In.Task: {DateTime.Now.Ticks}  {{ t: {input.t}, key: '{input.key}', value: '{input.value}' }}");
+            }, new { key, value, t = DateTime.Now.Ticks });
 
             // 有可能阻塞(输出前执行)
             taskManager.Enqueue(async token =>
@@ -69,7 +67,6 @@ namespace WebSwaggerDemo.NET5.Controllers
                 WebCore.Cache.Memory.Instance.Set(key, value, expire);
                 await Task.CompletedTask;
             });
-            Trace.WriteLine($"Out.Queue: {DateTime.Now.Ticks}");
 
             // 不可能阻塞(输出后执行) 可提高响应速度
             taskManager.Enqueue(() =>
@@ -78,9 +75,10 @@ namespace WebSwaggerDemo.NET5.Controllers
 
                 WebCore.Cache.Redis.Instance.Set(key, value, expire);
             });
-            Trace.WriteLine($"Out.Job: {DateTime.Now.Ticks}");
 
-            return Result.Success(new { input.Id, value, t = DateTime.Now.Ticks.ToString() });
+            Trace.WriteLine($"Out.Ticks: {DateTime.Now.Ticks}");
+
+            return Result.Success(new { input.Id, value, t = DateTime.Now.Ticks });
         }
     }
 }
