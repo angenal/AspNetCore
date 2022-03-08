@@ -89,7 +89,7 @@
 }
 
 .swagger-ui table tbody tr td:first-of-type {
-    min-width: 10em;
+    min-width: 8em;
 }
 
 .swagger-ui .parameters-col_description {
@@ -130,8 +130,8 @@
     border-bottom: 1px dotted #bdb5b5;
 }
 
-.swagger-ui table.model tr.property-row td:first-child {
-    padding-right: .5em;
+.swagger-ui table.model tr.property-row td {
+    vertical-align: bottom;
 }
 
 .swagger-ui table.model tbody tr td:first-of-type {
