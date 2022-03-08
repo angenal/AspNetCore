@@ -13,7 +13,7 @@ namespace WebInterface
         /// <param name="callback">Represents a callback method to be executed by a thread pool thread</param>
         /// <param name="state">Parameter for callback</param>
         /// <param name="laterOnEvent">later on event</param>
-        void Execute(WaitCallback callback, object state, bool laterOnEvent = false);
+        void Execute(WaitCallback callback, object state, bool laterOnEvent = true);
 
         /// <summary>
         /// Complete a task
