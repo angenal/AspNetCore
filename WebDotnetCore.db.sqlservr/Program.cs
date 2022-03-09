@@ -1,12 +1,9 @@
-﻿using System;
-using System.IO;
 using Microsoft.AspNetCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WebDotnetCore.db.sqlservr.yz.Models;
-using WebFramework.Extensions;
+using System;
 
 namespace WebDotnetCore.db.sqlservr
 {
@@ -40,7 +37,7 @@ namespace WebDotnetCore.db.sqlservr
                 //.UseKestrel(o => o.Listen(System.Net.IPAddress.Loopback, 5002, c => c.UseHttps("WebRootCA.pfx", "123456")))
                 //.UseUrls("http://*:0")//http://localhost:5002;http://localhost:5003
                 .UseConfiguration(new ConfigurationBuilder()//开始配置
-                .SetBasePath(Directory.GetCurrentDirectory())//设置工作目录|根目录
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)//设置工作目录|根目录
                 .AddCommandLine(args)//添加对命令参数的支持
                 .AddJsonFile("host.json", optional: true)//告诉Kestrel读取config文件
                 .Build())//配置完成
