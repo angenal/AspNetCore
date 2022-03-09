@@ -157,7 +157,7 @@ namespace WebFramework.Services
         /// <returns></returns>
         public static LoggerConfiguration NewLoggerConfiguration(string path = "appsettings-serilog.json") => new LoggerConfiguration()
             .ReadFrom.Configuration(new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile(path, optional: false, reloadOnChange: true)
             .Build());
 
