@@ -16,7 +16,7 @@ namespace NATS.Services
         public static void Init(string[] args)
         {
             var environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production";
-            string basePath = Directory.GetCurrentDirectory(), serilogAppsettings = "appsettings.serilog.json";
+            string basePath = AppDomain.CurrentDomain.BaseDirectory, serilogAppsettings = "appsettings.serilog.json";
             if (File.Exists(Path.Join(basePath, serilogAppsettings)))
             {
                 var builder = new ConfigurationBuilder().SetBasePath(basePath)
