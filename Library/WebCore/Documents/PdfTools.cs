@@ -128,7 +128,7 @@ namespace WebCore.Documents
             ps.HashAlgorithm = (SignLib.HashAlgorithm)Enum.Parse(typeof(SignLib.HashAlgorithm), hashAlgorithm);
 
             // Load the signature certificate from a PFX or P12 file
-            var certificateFile = Path.Combine(Directory.GetCurrentDirectory(), CertificateFile);
+            var certificateFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CertificateFile);
             ps.DigitalSignatureCertificate = DigitalCertificate.LoadCertificate(certificateFile, CertificatePassword);
 
             // Write the signed file
