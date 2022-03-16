@@ -43,7 +43,7 @@ namespace WebCore.Documents
         /// <param name="dictBookMark">数据字典</param>
         /// <param name="password">文件密码,输入密码才能打开</param>
         /// <param name="readOnlyProtect">只读保护</param>
-        public void ExportWithBookMark(string templateFile, string saveFileName, Dictionary<string, string> dictBookMark, string password = null, bool readOnlyProtect = false)
+        public static void ExportWithBookMark(string templateFile, string saveFileName, Dictionary<string, string> dictBookMark, string password = null, bool readOnlyProtect = false)
         {
             if (string.IsNullOrEmpty(templateFile))
                 throw new ArgumentNullException(nameof(templateFile));
@@ -62,13 +62,17 @@ namespace WebCore.Documents
             {
                 string key = bookmark.Name;
                 if (!dictBookMark.ContainsKey(key)) continue;
+                var textRange = FindBookmarkTextRange(bookmark);
+                if (textRange == null) continue;
                 // 创建文本内容
                 var sec = doc.AddSection();
                 var range = sec.AddParagraph().AppendText(dictBookMark[key]);
                 // 创建文本格式
-                var format = bookmark.BookmarkStart.PreviousSibling is ITextRange tr1 ? tr1.CharacterFormat : (bookmark.BookmarkEnd.NextSibling as ITextRange)?.CharacterFormat;
-                if (format != null) range.CharacterFormat.GetType().GetMethod("ImportContainer", BindingFlags.NonPublic | BindingFlags.Instance)?.Invoke(range.CharacterFormat, new object[] { format });
-                var text = new TextBodyPart(new TextBodySelection(sec.Paragraphs[0].Items.FirstItem as ParagraphBase, sec.Paragraphs[sec.Paragraphs.Count - 1].Items.LastItem as ParagraphBase));
+                var obj = range.CharacterFormat.GetType().GetMethod("ImportContainer", BindingFlags.NonPublic | BindingFlags.Instance);
+                obj?.Invoke(range.CharacterFormat, new[] { textRange.CharacterFormat });
+                var par1 = sec.Paragraphs[0].Items.FirstItem as ParagraphBase;
+                var par2 = sec.Paragraphs[sec.Paragraphs.Count > 1 ? sec.Paragraphs.Count - 1 : 0].Items.LastItem as ParagraphBase;
+                var text = new TextBodyPart(new TextBodySelection(par1, par2));
                 // 定位书签
                 nav.MoveToBookmark(key, true, true);
                 // 删除原有的书签内容
@@ -95,6 +99,20 @@ namespace WebCore.Documents
             }
             doc.SaveToFile(saveFileName);
             doc.Dispose();
+        }
+
+        /// <summary>
+        /// Find bookmark textRange
+        /// </summary>
+        /// <param name="bookmark"></param>
+        /// <returns></returns>
+        private static ITextRange FindBookmarkTextRange(Bookmark bookmark)
+        {
+            var s = bookmark.BookmarkStart.Owner.ChildObjects;
+            for (int i = 0, c = s.Count; i < c; i++) if (s[i] is ITextRange tr0) return tr0;
+            if (bookmark.BookmarkStart.PreviousSibling is ITextRange tr1) return tr1;
+            if (bookmark.BookmarkEnd.NextSibling is ITextRange tr2) return tr2;
+            return null;
         }
 
         /// <summary>
