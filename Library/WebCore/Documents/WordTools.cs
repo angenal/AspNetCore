@@ -113,7 +113,7 @@ namespace WebCore.Documents
         static ITextRange FindBookmarkTextRange(Bookmark bookmark)
         {
             var s = bookmark.BookmarkStart.Owner.ChildObjects;
-            for (int i = 0, c = s.Count; i < c; i++) if (s[i] is ITextRange tr0) return tr0;
+            for (int i = s.Count - 1; i >= 0; i--) if (s[i] is ITextRange tr0) return tr0;
             if (bookmark.BookmarkStart.PreviousSibling is ITextRange tr1) return tr1;
             if (bookmark.BookmarkEnd.NextSibling is ITextRange tr2) return tr2;
             return null;
