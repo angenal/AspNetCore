@@ -68,8 +68,7 @@ namespace WebCore.Documents
                 var sec = doc.AddSection();
                 var range = sec.AddParagraph().AppendText(dictBookMark[key]);
                 // 创建文本格式
-                var obj = range.CharacterFormat.GetType().GetMethod("ImportContainer", BindingFlags.NonPublic | BindingFlags.Instance);
-                obj?.Invoke(range.CharacterFormat, new[] { textRange.CharacterFormat });
+                ImportContainerMethod.Invoke(range.CharacterFormat, new[] { textRange.CharacterFormat });
                 var par1 = sec.Paragraphs[0].Items.FirstItem as ParagraphBase;
                 var par2 = sec.Paragraphs[sec.Paragraphs.Count > 1 ? sec.Paragraphs.Count - 1 : 0].Items.LastItem as ParagraphBase;
                 var text = new TextBodyPart(new TextBodySelection(par1, par2));
@@ -102,11 +101,16 @@ namespace WebCore.Documents
         }
 
         /// <summary>
+        /// CharacterFormat's ImportContainer protected internal method
+        /// </summary>
+        static readonly MethodInfo ImportContainerMethod = typeof(Spire.Doc.Formatting.CharacterFormat).GetMethod("ImportContainer", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        /// <summary>
         /// Find bookmark textRange
         /// </summary>
         /// <param name="bookmark"></param>
         /// <returns></returns>
-        private static ITextRange FindBookmarkTextRange(Bookmark bookmark)
+        static ITextRange FindBookmarkTextRange(Bookmark bookmark)
         {
             var s = bookmark.BookmarkStart.Owner.ChildObjects;
             for (int i = 0, c = s.Count; i < c; i++) if (s[i] is ITextRange tr0) return tr0;
