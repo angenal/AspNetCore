@@ -43,7 +43,7 @@ namespace WebCore.Documents
         /// <param name="dictBookMark">数据字典</param>
         /// <param name="password">文件密码,输入密码才能打开</param>
         /// <param name="readOnlyProtect">只读保护</param>
-        public static void ExportWithBookMark(string templateFile, string saveFileName, Dictionary<string, string> dictBookMark, string password = null, bool readOnlyProtect = false)
+        public void ExportWithBookMark(string templateFile, string saveFileName, Dictionary<string, string> dictBookMark, string password = null, bool readOnlyProtect = false)
         {
             if (string.IsNullOrEmpty(templateFile))
                 throw new ArgumentNullException(nameof(templateFile));
@@ -62,7 +62,7 @@ namespace WebCore.Documents
             {
                 string key = bookmark.Name;
                 if (!dictBookMark.ContainsKey(key)) continue;
-                var textRange = FindBookmarkTextRange(bookmark);
+                var textRange = FindBookmarkText(bookmark);
                 if (textRange == null) continue;
                 // 创建文本内容
                 var sec = doc.AddSection();
@@ -91,7 +91,11 @@ namespace WebCore.Documents
                 }
             }
             // 加密文档与只读保护
-            if (!string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(password))
+            {
+                if (readOnlyProtect) doc.Protect(ProtectionType.AllowOnlyReading);
+            }
+            else
             {
                 doc.Encrypt(password);
                 if (readOnlyProtect) doc.Protect(ProtectionType.AllowOnlyReading, password);
@@ -100,22 +104,33 @@ namespace WebCore.Documents
             doc.Dispose();
         }
 
-        /// <summary>
-        /// CharacterFormat's ImportContainer protected internal method
-        /// </summary>
+        /// <summary>CharacterFormat's ImportContainer protected internal method</summary>
         static readonly MethodInfo ImportContainerMethod = typeof(Spire.Doc.Formatting.CharacterFormat).GetMethod("ImportContainer", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        /// <summary>
-        /// Find bookmark textRange
-        /// </summary>
-        /// <param name="bookmark"></param>
-        /// <returns></returns>
-        static ITextRange FindBookmarkTextRange(Bookmark bookmark)
+        /// <summary>Find bookmark textRange</summary>
+        static ITextRange FindBookmarkText(Bookmark bookmark)
         {
-            var s = bookmark.BookmarkStart.Owner.ChildObjects;
-            for (int i = s.Count - 1; i >= 0; i--) if (s[i] is ITextRange tr0) return tr0;
-            if (bookmark.BookmarkStart.PreviousSibling is ITextRange tr1) return tr1;
-            if (bookmark.BookmarkEnd.NextSibling is ITextRange tr2) return tr2;
+            var t = FindBookmarkTextRange(bookmark.BookmarkStart.Owner.ChildObjects);
+            if (t != null) return t;
+            t = FindBookmarkTextRange(bookmark.BookmarkStart.PreviousSibling.Owner.ChildObjects);
+            if (t != null) return t;
+            t = FindBookmarkTextRange(bookmark.BookmarkEnd.NextSibling.Owner.ChildObjects);
+            return t;
+        }
+
+        /// <summary>Find bookmark textRange</summary>
+        static ITextRange FindBookmarkTextRange(DocumentObjectCollection s)
+        {
+            int c = s.Count, b = c / 2, i;
+            if (b > 1)
+            {
+                for (i = b; i < c; i++) if (s[i] is ITextRange t) return t;
+                for (i = b - 1; i >= 0; i--) if (s[i] is ITextRange t) return t;
+            }
+            else
+            {
+                for (i = c - 1; i >= 0; i--) if (s[i] is ITextRange t) return t;
+            }
             return null;
         }
 
